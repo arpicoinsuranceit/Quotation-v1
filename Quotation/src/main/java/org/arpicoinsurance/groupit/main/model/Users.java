@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -175,7 +176,7 @@ public class Users implements Serializable{
 	}
 
 	@ManyToOne(cascade=CascadeType.ALL)
-	@Column(nullable=false)
+	@JoinColumn(nullable=false)
 	public Designation getDesignation() {
 		return designation;
 	}
