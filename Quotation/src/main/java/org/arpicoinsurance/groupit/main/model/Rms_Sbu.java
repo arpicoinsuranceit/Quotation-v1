@@ -32,7 +32,7 @@ public class Rms_Sbu implements Serializable{
 	public Rms_Sbu() {}
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer getSbuId() {
 		return sbuId;
 	}
