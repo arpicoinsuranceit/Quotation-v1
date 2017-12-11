@@ -1,4 +1,4 @@
-package org.arpicoinsurance.groupit.main;
+package org.arpicoinsurance.groupit.main.model;
 
 import java.io.Serializable;
 import java.util.Date;
