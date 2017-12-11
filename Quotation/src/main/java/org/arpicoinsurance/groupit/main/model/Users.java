@@ -3,6 +3,8 @@ package org.arpicoinsurance.groupit.main.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -172,7 +174,8 @@ public class Users implements Serializable{
 		this.lockin_date = lockin_date;
 	}
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
+	@Column(nullable=false)
 	public Designation getDesignation() {
 		return designation;
 	}
