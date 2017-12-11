@@ -31,7 +31,7 @@ public class Users implements Serializable{
 	private Date lockin_date;
 	
 	private Designation designation;
-	
+	private Branch branch;
 	public Users() {}
 
 	@Id
@@ -179,6 +179,15 @@ public class Users implements Serializable{
 
 	public void setDesignation(Designation designation) {
 		this.designation = designation;
+	}
+
+	@ManyToOne
+	public Branch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(Branch branch) {
+		this.branch = branch;
 	}
 	
 	

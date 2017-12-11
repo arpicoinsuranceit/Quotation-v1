@@ -19,6 +19,7 @@ public class Quotation implements Serializable{
 	private String quotationNum;
 	private Products products;
 	private CustomerDetails customerDetails;
+	private Users user;
 	
 	public Quotation(){}
 
@@ -58,5 +59,15 @@ public class Quotation implements Serializable{
 
 	public void setCustomerDetails(CustomerDetails customerDetails) {
 		this.customerDetails = customerDetails;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id", nullable = false)
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 }
