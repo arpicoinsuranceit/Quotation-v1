@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Users implements Serializable{
@@ -30,6 +32,7 @@ public class Users implements Serializable{
 	private Date modifydate;
 	private Date lockin_date;
 	
+	private Login login;
 	private Designation designation;
 	private Branch branch;
 	public Users() {}
@@ -188,6 +191,16 @@ public class Users implements Serializable{
 
 	public void setBranch(Branch branch) {
 		this.branch = branch;
+	}
+
+	@OneToOne
+	@JoinColumn(nullable = false)
+	public Login getLogin() {
+		return login;
+	}
+
+	public void setLogin(Login login) {
+		this.login = login;
 	}
 	
 	

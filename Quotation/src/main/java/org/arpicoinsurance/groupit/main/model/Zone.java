@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -76,6 +77,7 @@ public class Zone implements Serializable{
 	}
 
 	@ManyToOne
+	@JoinColumn(nullable = false)
 	public Rms_Sbu getRms_Sbu() {
 		return rms_Sbu;
 	}
