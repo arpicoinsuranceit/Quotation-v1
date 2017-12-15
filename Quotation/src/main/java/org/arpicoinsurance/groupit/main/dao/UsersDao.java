@@ -13,4 +13,7 @@ public interface UsersDao extends CrudRepository<Users,String> {
 	@Modifying
 	@Query("DELETE FROM Users where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
+	
+	@Query("from Users where login_login_id=?1")
+	Users findByLoginId(Integer id) throws Exception;
 }
