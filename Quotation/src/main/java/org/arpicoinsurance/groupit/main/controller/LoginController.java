@@ -10,6 +10,7 @@ import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.model.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.security.JwtGenerator;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +35,12 @@ public class LoginController {
 	@Autowired
 	UsersDao userDao;
 	
-	@RequestMapping(value="/login",method=RequestMethod.GET)
+	/*@RequestMapping(value="/login/addlogin",method=RequestMethod.GET)
+	public String navLogin() {
+		return "Hello World";
+	}*/
+	
+	@RequestMapping(value="/login/view",method=RequestMethod.GET)
 	public List<Login> getAllLogin() {
 		try {
 			List<Login> loginList=loginService.getAllLogin();
@@ -47,7 +53,7 @@ public class LoginController {
 		return null;
 	}
 	
-	@RequestMapping(value="/login/{id}",method=RequestMethod.GET)
+	/*@RequestMapping(value="/login/{id}",method=RequestMethod.GET)
 	public Login getLogin(@PathVariable Integer id) {
 		try {
 			Login login=loginService.getLogin(id);
@@ -114,6 +120,6 @@ public class LoginController {
 				out.close();
 			}
 		}
-	}
+	}*/
 
 }
