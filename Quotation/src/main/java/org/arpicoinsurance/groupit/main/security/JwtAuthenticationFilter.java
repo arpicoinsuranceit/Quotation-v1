@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
 	public JwtAuthenticationFilter() {
-		super("/login/**");
+		super("/logins/**");
 	}
 
 

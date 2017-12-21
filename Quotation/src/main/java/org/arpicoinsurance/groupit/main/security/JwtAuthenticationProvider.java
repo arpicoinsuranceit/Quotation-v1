@@ -1,8 +1,8 @@
 package org.arpicoinsurance.groupit.main.security;
 
+import org.arpicoinsurance.groupit.main.model.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.JwtAuthenticationToken;
 import org.arpicoinsurance.groupit.main.model.JwtUserDetails;
-import org.arpicoinsurance.groupit.main.model.Login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -37,13 +37,13 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
 		
 		String token=authToken.getToken();
 		
-		Login jwtLogin=validator.validate(token);
+		HelperLogin jwtLogin=validator.validate(token);
 		
 		if(jwtLogin==null) {
 			throw new RuntimeException("JWT Token is incorrect..");
 		}
 		
-		return new JwtUserDetails(jwtLogin.getUserName(),jwtLogin.getPassword(),jwtLogin.getLoginId());
+		return new JwtUserDetails(jwtLogin.getUserCode(),jwtLogin.getUserFullName(),jwtLogin.getUserId());
 	}
 
 }

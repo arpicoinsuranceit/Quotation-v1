@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.security;
 
-import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.HelperLogin;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -10,13 +10,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtGenerator {
 
-	public String generate(Login login) {
+	public String generate(HelperLogin login) {
 		
 		Claims claims=Jwts.claims().
-				setSubject(login.getUserName());
+				setSubject(login.getUserCode());
 		
-		claims.put("loginId", login.getLoginId());
-		claims.put("password", login.getPassword());
+		claims.put("userId", login.getUserId());
+		claims.put("fullName", login.getUserFullName());
 				
 		return Jwts.builder().setClaims(claims)
 				.signWith(SignatureAlgorithm.HS512, "harindi")

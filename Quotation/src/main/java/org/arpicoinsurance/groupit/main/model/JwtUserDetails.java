@@ -7,18 +7,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtUserDetails implements UserDetails {
 
-	private Integer loginId;
+	private Integer userId;
     private String userName;
-    private String password;
+    private String fullName;
 	
 	public JwtUserDetails() {
 	}
 	
 	
-	public JwtUserDetails(String userName,String password,Integer loginId) {
+	public JwtUserDetails(String userName,String fullName,Integer userId) {
 		this.userName=userName;
-		this.password=password;
-		this.loginId=loginId;
+		this.fullName=fullName;
+		this.userId=userId;
 	}
 	
 	@Override
@@ -26,10 +26,6 @@ public class JwtUserDetails implements UserDetails {
 		return null;
 	}
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
 
 	@Override
 	public String getUsername() {
@@ -56,8 +52,8 @@ public class JwtUserDetails implements UserDetails {
 		return true;
 	}
 	
-	public Integer getLoginId() {
-		return loginId;
+	public Integer getUserId() {
+		return userId;
 	}
 
 
@@ -65,8 +61,15 @@ public class JwtUserDetails implements UserDetails {
 		return userName;
 	}
 	
-	public String getUPassword() {
-		return password;
+	public String getFullName() {
+		return fullName;
+	}
+
+
+	@Override
+	public String getPassword() {
+		
+		return null;
 	}
 
 
