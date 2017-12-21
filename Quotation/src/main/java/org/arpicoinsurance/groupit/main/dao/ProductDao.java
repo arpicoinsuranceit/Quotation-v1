@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.dao;
 
 import org.arpicoinsurance.groupit.main.model.Products;
-import org.arpicoinsurance.groupit.main.model.Zone;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
