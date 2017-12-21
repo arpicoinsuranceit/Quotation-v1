@@ -1,9 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletResponse;
-
+import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.model.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
@@ -25,9 +22,11 @@ public class TokenController {
 	@Autowired
 	private LoginService loginService;
 	
+	@Autowired
+	private UsersDao userDao;
 	
 	@Autowired
-	UsersDao userDao;
+	private LoginDao loginDao;
 	
 	private JwtGenerator generator;
 	
@@ -38,6 +37,55 @@ public class TokenController {
 	@RequestMapping(value="/checks",method=RequestMethod.POST)
 	public String generate(@RequestBody Login logins) {
 		
+		if(logins.getLocks()==0) {
+			return loginToSystem(logins);
+		}
+		
+		if(logins.getLocks()==1) {
+			return checkPwAndUserName(logins);
+		}
+		
+		return null;
+		
+	}
+	
+	private String loginToSystem(Login logins) {
+		try {
+			Login login=loginService.checkLogin(logins.getUserName(), logins.getPassword());
+			Users users=null;
+			HelperLogin helperLogin=new HelperLogin();
+			
+			if(login!=null) {
+				
+				Integer dayCount=getNewPwDayCount(login.getLoginId());
+				
+				if(dayCount<=0) {
+					return "Pw Change";
+				}else {
+				
+					users=userDao.findByLoginId(login.getLoginId());
+					
+					if(users!=null) {
+						helperLogin.setUserCode(users.getUser_Code());
+						helperLogin.setUserFullName(users.getUser_Name());
+						helperLogin.setUserId(users.getUserId());
+						
+						return generator.generate(helperLogin);
+					}
+				}
+				
+			}else {
+				return "Not Found";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	private String checkPwAndUserName(Login logins) {
 		try {
 			Login login=loginService.checkLogin(logins.getUserName(), logins.getPassword());
 			Users users=null;
@@ -45,12 +93,12 @@ public class TokenController {
 			
 			if(login!=null) {
 				users=userDao.findByLoginId(login.getLoginId());
-				
+			
 				if(users!=null) {
 					helperLogin.setUserCode(users.getUser_Code());
 					helperLogin.setUserFullName(users.getUser_Name());
 					helperLogin.setUserId(users.getUserId());
-					
+				
 					return generator.generate(helperLogin);
 				}
 				
@@ -63,6 +111,27 @@ public class TokenController {
 		}
 		
 		return null;
+	}
+	
+	private Integer getNewPwDayCount(Integer loginId) {
+		Integer dayCount=0;
+		Integer count=0;
+		try {
+			dayCount = loginDao.findDaysToNextPsw(loginId);
+			
+			if(dayCount!=null) {
+				if(dayCount<=45) {
+					count=45-dayCount;
+				}else {
+					count=-1;
+				}
+			}else {
+				count=-1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		return count;
 	}
 }
