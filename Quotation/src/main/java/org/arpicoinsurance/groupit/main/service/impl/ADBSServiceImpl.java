@@ -5,7 +5,7 @@ import org.arpicoinsurance.groupit.main.service.ADBSService;
 public class ADBSServiceImpl implements ADBSService{
 
 	@Override
-	public Double calculateADB() throws Exception {
+	public Double calculateADBS() throws Exception {
 		
 		return null;
 	}
