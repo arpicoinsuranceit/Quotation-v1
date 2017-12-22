@@ -16,4 +16,7 @@ public interface LoginDao extends CrudRepository<Login,String> {
 	
 	@Query("from Login where user_name=?1 and password=?2")
 	Login findByUserNameAndPsw(String userName,String Password) throws Exception;
+	
+	@Query("select datediff(curdate(),modifydate) from Login where login_id=?1")
+	Integer findDaysToNextPsw(Integer id) throws Exception;
 }
