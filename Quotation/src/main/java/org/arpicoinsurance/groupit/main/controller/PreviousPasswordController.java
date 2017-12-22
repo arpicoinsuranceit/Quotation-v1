@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpSession;
+
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.PreviousPassword;
 import org.arpicoinsurance.groupit.main.model.Users;
-import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.arpicoinsurance.groupit.main.service.PreviousPasswordService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,7 @@ public class PreviousPasswordController {
 	private UsersService usersService;
 	
 	@Autowired
-	private LoginService loginService;
-	
+	private HttpSession session;
 	
 	@RequestMapping(value="/password",method=RequestMethod.POST)
 	public String changePassword(@RequestBody Login login) {
@@ -61,7 +61,6 @@ public class PreviousPasswordController {
 						password.setDisableDate(new Date());
 						password.setDisabledBy(login.getUserName());
 						password.setLogin(users.getLogin());
-						
 						
 						if(previousPasswordService.savePassword(password,login2)) {
 							return "Success";

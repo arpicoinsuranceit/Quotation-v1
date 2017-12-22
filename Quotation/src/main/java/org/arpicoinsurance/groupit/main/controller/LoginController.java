@@ -3,8 +3,8 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class LoginController {
 	HttpServletResponse response;
 	
 	@Autowired
-	UsersDao userDao;
+	private HttpSession session;
 	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)

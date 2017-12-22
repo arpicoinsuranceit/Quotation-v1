@@ -1,5 +1,7 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
+import javax.servlet.http.HttpSession;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
@@ -29,6 +31,9 @@ public class TokenController {
 	@Autowired
 	private LoginDao loginDao;
 	
+	@Autowired
+	private HttpSession session;
+	
 	private JwtGenerator generator;
 	
 	TokenController(JwtGenerator generator){
@@ -56,6 +61,8 @@ public class TokenController {
 			Users users=null;
 			HelperLogin helperLogin=new HelperLogin();
 			
+			session.setAttribute("log", "aaa");
+			
 			if(login!=null) {
 				
 				Integer dayCount=getNewPwDayCount(login.getLoginId());
@@ -70,7 +77,7 @@ public class TokenController {
 						helperLogin.setUserCode(users.getUser_Code());
 						helperLogin.setUserFullName(users.getUser_Name());
 						helperLogin.setUserId(users.getUserId());
-						
+						loginDao.updateOne(new Date(), login.getLoginId());
 						return generator.generate(helperLogin);
 					}
 				}
