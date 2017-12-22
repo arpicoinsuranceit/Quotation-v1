@@ -39,8 +39,7 @@ public class PreviousPasswordController {
 				Users users=usersService.getUser(login.getLocks());
 				List<PreviousPassword> passwordList=previousPasswordService.
 						getLatestPassword(users.getLogin().getLoginId()); // Get the previous password list using loginId
-				System.out.println(login.getPassword());
-				System.out.println(users.getLogin().getPassword());
+				
 				if(!(login.getPassword().equals(users.getLogin().getPassword()))) {
 					if(!isPasswordUsedBefore(login,passwordList)) {
 						Login login2=new Login();
@@ -62,7 +61,6 @@ public class PreviousPasswordController {
 						password.setDisabledBy(login.getUserName());
 						password.setLogin(users.getLogin());
 						
-						//return "Success";
 						
 						if(previousPasswordService.savePassword(password,login2)) {
 							return "Success";
@@ -107,7 +105,7 @@ public class PreviousPasswordController {
 			if(passwordList.size()<=5) {
 				for(int i=0;i<passwordList.size();i++) {
 					PreviousPassword password=passwordList.get(i);
-					if(password.getPassword()==login.getPassword()) {
+					if(password.getPassword().equals(login.getPassword())) {
 						return true;
 					}
 				}
@@ -116,7 +114,7 @@ public class PreviousPasswordController {
 			if(passwordList.size()>5) {
 				for(int i=0;i<5;i++) {
 					PreviousPassword password=passwordList.get(i);
-					if(password.getPassword()==login.getPassword()) {
+					if(password.getPassword().equals(login.getPassword())) {
 						return true;
 					}
 				}
