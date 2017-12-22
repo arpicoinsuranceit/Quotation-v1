@@ -1,5 +1,9 @@
 package org.arpicoinsurance.groupit.main.dao;
 
+import java.util.Date;
+
+import javax.transaction.Transactional;
+
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +23,9 @@ public interface LoginDao extends CrudRepository<Login,String> {
 	
 	@Query("select datediff(curdate(),modifydate) from Login where login_id=?1")
 	Integer findDaysToNextPsw(Integer id) throws Exception;
+	
+	@Modifying
+	@Query("Update Login set last_log=?1 where id=?2")
+	@Transactional
+	Integer updateOne(Date date,Integer id) throws Exception;
 }
