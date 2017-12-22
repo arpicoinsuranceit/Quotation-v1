@@ -3,7 +3,6 @@ package org.arpicoinsurance.groupit.main.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.dao.PreviousPasswordDao;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.PreviousPassword;
@@ -19,13 +18,19 @@ public class PreviousPasswordServiceImpl implements PreviousPasswordService{
 
 	@Autowired
 	private PreviousPasswordDao passwordDao;
+	
+	@Autowired
+	private LoginService loginService;
 
 
 	@Override
-	public boolean savePassword(PreviousPassword password) throws Exception {
-		if(passwordDao.save(password)!=null) {
-			return true;
+	public boolean savePassword(PreviousPassword password,Login login) throws Exception {
+		if(loginService.updateLogin(login)) {
+			if(passwordDao.save(password)!=null) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 
