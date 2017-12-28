@@ -19,4 +19,10 @@ public interface LoginService {
 	
 	Login checkLogin(String user_name,String password)throws Exception;
 	
+	Login checkLogin(String user_name)throws Exception;
+	
+	Integer updateLock(Integer lock,Integer id)throws Exception;
+	
+	Integer updateFailCount(Integer failCount,Integer id)throws Exception;
+	
 }

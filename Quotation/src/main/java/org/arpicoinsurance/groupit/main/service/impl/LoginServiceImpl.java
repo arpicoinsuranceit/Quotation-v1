@@ -59,4 +59,21 @@ public class LoginServiceImpl implements LoginService{
 		
 	}
 
+	@Override
+	public Login checkLogin(String user_name) throws Exception {
+		return loginDao.findByUserName(user_name);
+	}
+
+	@Override
+	public Integer updateLock(Integer lock, Integer id) throws Exception {
+		
+		return loginDao.updateOne(lock, id);
+	}
+
+	@Override
+	public Integer updateFailCount(Integer failCount, Integer id) throws Exception {
+		
+		return loginDao.updateFailCount(failCount, id);
+	}
+
 }
