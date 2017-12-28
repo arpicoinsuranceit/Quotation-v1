@@ -134,7 +134,7 @@ public class TokenController {
 						logs.setDate(new Date());
 						logs.setData("");
 						
-						setSession(logs);
+						//setSession(logs);
 						
 						return generator.generate(helperLogin);
 					}
@@ -187,7 +187,7 @@ public class TokenController {
 		return count;
 	}
 	
-	private void setSession(Logs logs) {
+	/*private void setSession(Logs logs) {
 		ArrayList<Logs> logList=(ArrayList<Logs>) session.getAttribute("log_list");
 		if(logList==null) {
 			logList=new ArrayList<>();
@@ -198,5 +198,5 @@ public class TokenController {
 		ArrayList<Logs> logList2=(ArrayList<Logs>) session.getAttribute("log_list");
 		System.out.println(session.getId());
 		
-	}
+	}*/
 }
