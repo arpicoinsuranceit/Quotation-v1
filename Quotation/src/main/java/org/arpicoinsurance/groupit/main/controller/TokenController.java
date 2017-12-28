@@ -93,7 +93,7 @@ public class TokenController {
 							logs.setDate(new Date());
 							logs.setData("");
 							
-							setSession(logs);
+							//setSession(logs);
 							
 							return generator.generate(helperLogin);
 						}
