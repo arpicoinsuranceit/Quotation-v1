@@ -16,7 +16,7 @@ public class OcupationLoading implements Serializable {
 
 	private Integer ocuLoadingId;
 	private Double value;
-	private Products products;
+	private Benefits benefits;
 	private Occupation occupation;
 	
 	private String ocuLoadingCreateBy;
@@ -42,14 +42,14 @@ public class OcupationLoading implements Serializable {
 	}
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "product_id", nullable = false)
-	public Products getProducts() {
-		return products;
+	@JoinColumn(name = "benifit_id", nullable = false)
+	public Benefits getBenefits() {
+		return benefits;
 	}
 	
 	
-	public void setProducts(Products products) {
-		this.products = products;
+	public void setBenefits(Benefits benefits) {
+		this.benefits = benefits;
 	}
 	
 	@ManyToOne(cascade = CascadeType.ALL)

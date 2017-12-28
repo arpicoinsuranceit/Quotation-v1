@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class Benefits implements Serializable{
 	
 	private Integer id;
+	private String riderCode;
 	private String benefitName;
 	private Integer benefitMinAge;
 	private Integer benefitMaxAge;
@@ -96,5 +97,13 @@ public class Benefits implements Serializable{
 
 	public void setBenefitModifyDate(Date benefitModifyDate) {
 		this.benefitModifyDate = benefitModifyDate;
+	}
+
+	public String getRiderCode() {
+		return riderCode;
+	}
+
+	public void setRiderCode(String riderCode) {
+		this.riderCode = riderCode;
 	}
 }
