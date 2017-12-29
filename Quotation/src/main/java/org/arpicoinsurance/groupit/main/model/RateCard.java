@@ -90,4 +90,12 @@ public class RateCard {
 		this.sumasu = sumasu;
 	}
 	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "ID : "+id+" Rcdcod : "+rcdcod+" Term : "+term+" Rate : "+rate;
+	}
+	
+	
+	
 }
