@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpSession;
-
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.PreviousPassword;
@@ -30,8 +27,6 @@ public class PreviousPasswordController {
 	@Autowired
 	private UsersService usersService;
 	
-	@Autowired
-	private HttpSession session;
 	
 	@RequestMapping(value="/password",method=RequestMethod.POST)
 	public String changePassword(@RequestBody Login login) {

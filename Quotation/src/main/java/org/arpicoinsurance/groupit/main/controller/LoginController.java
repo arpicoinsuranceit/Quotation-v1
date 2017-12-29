@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @CrossOrigin(origins = "*")
 public class LoginController {
@@ -26,11 +27,11 @@ public class LoginController {
 	@Autowired
 	HttpServletResponse response;
 	
-	@Autowired
-	private HttpSession session;
+	//@Autowired
+	//private HttpSession session;
 	
-	@Autowired
-	private LogService logService;
+	//@Autowired
+	//private LogService logService;
 	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
@@ -50,7 +51,7 @@ public class LoginController {
 	public String logout() {
 		System.out.println("Called Logout");
 		try {
-			saveData();
+			//saveData();
 			//session.invalidate();
 			return "201";
 		} catch (Exception e) {
@@ -90,7 +91,7 @@ public class LoginController {
 		return "409";
 	}
 	
-	public void saveData() {
+	/*public void saveData() {
 		ArrayList<Logs> logList=(ArrayList<Logs>) session.getAttribute("log_list");
 		
 		System.out.println(session.getId());
@@ -105,7 +106,7 @@ public class LoginController {
 		}else {
 			System.out.println("Null ");
 		}
-	}
+	}*/
 	
 
 }
