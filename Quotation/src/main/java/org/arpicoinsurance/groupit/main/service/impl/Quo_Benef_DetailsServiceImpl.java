@@ -53,9 +53,9 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	}
 
 	@Override
-	public List<Quo_Benef_Details> getQuo_Benef_DetailsByQid(Integer id) throws Exception {
+	public List<Quo_Benef_Details> getQuo_Benef_DetailsByUser(Integer id) throws Exception {
 		List<Quo_Benef_Details> qbd = new ArrayList<>();
-		quoBenefDao.findAll().forEach(qbd::add);
+		quoBenefDao.findByUserId().forEach(qbd::add);
 		return qbd;
 	}
 

@@ -20,7 +20,7 @@ public class Quo_Benef_DetailsController {
 	@RequestMapping(method=RequestMethod.GET, value="/quobenfdetail/{id}")
 	public ArrayList<Quo_Benef_Details> getByQuotationNum(@PathVariable Integer id){
 		try {
-			ArrayList<Quo_Benef_Details>qbdList=(ArrayList<Quo_Benef_Details>) quoBenefDetailService.getQuo_Benef_DetailsByQid(id);
+			ArrayList<Quo_Benef_Details>qbdList=(ArrayList<Quo_Benef_Details>) quoBenefDetailService.getQuo_Benef_DetailsByUser(id);
 			
 			return qbdList;
 		} catch (Exception e) {

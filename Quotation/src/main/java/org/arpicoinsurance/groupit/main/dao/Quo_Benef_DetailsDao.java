@@ -14,6 +14,6 @@ public interface Quo_Benef_DetailsDao extends CrudRepository<Quo_Benef_Details,S
 	@Query("DELETE FROM Quo_Benef_Details where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
 	
-	@Query("from Quo_Benef_Details qb,Quotation q where q.id=qb.quotation and q.quotationNum=?1")
-	List<Quo_Benef_Details> findByQuoId(Integer id) throws Exception;
+	@Query("from Quo_Benef_Details as qbd,Quotation as q,QuotationDetails as qd,Login as login")
+	List<Quo_Benef_Details> findByUserId() throws Exception;
 }

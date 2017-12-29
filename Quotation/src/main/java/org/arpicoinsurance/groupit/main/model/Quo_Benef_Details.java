@@ -16,7 +16,7 @@ public class Quo_Benef_Details implements Serializable{
 	private Double riderPremium;
 	private Integer riderTerm;
 	
-	private Quotation quotation;
+	private QuotationDetails quotationDetails;
 	private Benefits benefit;
 	
 	private String quo_Benef_CreateBy;
@@ -38,12 +38,12 @@ public class Quo_Benef_Details implements Serializable{
 	}
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="quo_Id",nullable=false)
-	public Quotation getQuotation() {
-		return quotation;
+	@JoinColumn(name="quodetails_Id",nullable=false)
+	public QuotationDetails getQuotationDetails() {
+		return quotationDetails;
 	}
-	public void setQuotation(Quotation quoId) {
-		this.quotation = quoId;
+	public void setQuotationDetails(QuotationDetails quotationDetails) {
+		this.quotationDetails = quotationDetails;
 	}
 	
 	@ManyToOne(cascade = CascadeType.ALL)
