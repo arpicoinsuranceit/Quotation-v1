@@ -1,19 +1,15 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.http.HttpSession;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.model.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
-import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.security.JwtGenerator;
-import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,17 +25,11 @@ public class TokenController {
 	@Autowired
 	private LoginService loginService;
 
-	// @Autowired
-	// private LogService logService;
-
 	@Autowired
 	private UsersDao userDao;
 
 	@Autowired
 	private LoginDao loginDao;
-
-	// @Autowired
-	// private HttpSession session;
 
 	private JwtGenerator generator;
 
@@ -85,14 +75,6 @@ public class TokenController {
 								helperLogin.setUserFullName(users.getUser_Name());
 								helperLogin.setUserId(users.getUserId());
 								loginDao.updateOne(new Date(), login.getLoginId());
-
-								Logs logs = new Logs();
-								logs.setHeading("Login To System");
-								logs.setUserId(users.getUserId());
-								logs.setDate(new Date());
-								logs.setData("");
-
-								// setSession(logs);
 
 								loginService.updateFailCount(0, users.getLogin().getLoginId());
 
@@ -141,14 +123,6 @@ public class TokenController {
 						helperLogin.setUserCode(users.getUser_Code());
 						helperLogin.setUserFullName(users.getUser_Name());
 						helperLogin.setUserId(users.getUserId());
-
-						Logs logs = new Logs();
-						logs.setHeading("Login To Change Password");
-						logs.setUserId(users.getUserId());
-						logs.setDate(new Date());
-						logs.setData("");
-
-						// setSession(logs);
 
 						return generator.generate(helperLogin);
 					}
