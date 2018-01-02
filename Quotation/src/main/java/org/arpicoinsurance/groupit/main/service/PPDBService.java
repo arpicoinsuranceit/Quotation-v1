@@ -1,5 +1,8 @@
 package org.arpicoinsurance.groupit.main.service;
 
+import java.math.BigDecimal;
+
 public interface PPDBService {
-	Double calculatePPDB() throws Exception;
+	BigDecimal calculatePPDB(double ridsumasu, String payFrequency, double relief)throws Exception;
+	BigDecimal calculatePPDBS(double ridsumasu, String payFrequency, double relief)throws Exception;
 }
