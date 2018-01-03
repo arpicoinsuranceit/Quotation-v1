@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.SCIBService;
+import org.arpicoinsurance.groupit.main.service.rider.SCIBService;
 
 public class SCIBServiceImpl implements SCIBService{
 

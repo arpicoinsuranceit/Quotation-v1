@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.SUHRBCService;
+import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
 
 public class SUHRBCServiceImpl implements SUHRBCService{
 

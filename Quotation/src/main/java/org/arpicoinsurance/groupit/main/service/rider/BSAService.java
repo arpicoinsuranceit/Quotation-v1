@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service;
+package org.arpicoinsurance.groupit.main.service.rider;
 
-public interface L2Service {
+public interface BSAService {
 	
 	Double calculateL2()throws Exception;
 

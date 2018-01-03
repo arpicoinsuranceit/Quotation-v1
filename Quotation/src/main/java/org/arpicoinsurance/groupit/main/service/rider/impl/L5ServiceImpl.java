@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.L5Service;
+import org.arpicoinsurance.groupit.main.service.rider.L5Service;
 
 public class L5ServiceImpl implements L5Service{
 

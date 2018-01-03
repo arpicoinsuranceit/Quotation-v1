@@ -3,23 +3,25 @@ package org.arpicoinsurance.groupit.main.helper;
 import java.util.ArrayList;
 
 public class PersonalInfo {
-	private String mdob;
+	private Integer mage;
 	private String mgenger;
 	private Integer mocu;
-	private String sdob;
+	private Integer sage;
 	private String sgenger;
 	private Integer socu;
 	private Integer term;
 	private String frequance;
+	private Double bsa;
 	
 	private ArrayList<Children> childrens;
 
-	public String getMdob() {
-		return mdob;
+	
+	public Integer getMage() {
+		return mage;
 	}
 
-	public void setMdob(String mdob) {
-		this.mdob = mdob;
+	public void setMage(Integer mage) {
+		this.mage = mage;
 	}
 
 	public String getMgenger() {
@@ -38,12 +40,12 @@ public class PersonalInfo {
 		this.mocu = mocu;
 	}
 
-	public String getSdob() {
-		return sdob;
+	public Integer getSage() {
+		return sage;
 	}
 
-	public void setSdob(String sdob) {
-		this.sdob = sdob;
+	public void setSage(Integer sage) {
+		this.sage = sage;
 	}
 
 	public String getSgenger() {
@@ -84,6 +86,14 @@ public class PersonalInfo {
 
 	public void setChildrens(ArrayList<Children> childrens) {
 		this.childrens = childrens;
+	}
+
+	public Double getBsa() {
+		return bsa;
+	}
+
+	public void setBsa(Double bsa) {
+		this.bsa = bsa;
 	}
 
 		

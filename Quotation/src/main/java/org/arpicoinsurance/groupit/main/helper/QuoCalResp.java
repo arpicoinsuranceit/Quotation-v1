@@ -10,7 +10,6 @@ public class QuoCalResp {
 	private Double at8;
 	private Double at10;
 	
-	private Double bsa;
 	private Double adb;
 	private Double atpb;
 	private Double cib;
@@ -83,12 +82,6 @@ public class QuoCalResp {
 	}
 	public void setAt10(Double at10) {
 		this.at10 = at10;
-	}
-	public Double getBsa() {
-		return bsa;
-	}
-	public void setBsa(Double bsa) {
-		this.bsa = bsa;
 	}
 	public Double getAdb() {
 		return adb;

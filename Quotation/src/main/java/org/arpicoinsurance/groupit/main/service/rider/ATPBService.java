@@ -1,10 +1,10 @@
-package org.arpicoinsurance.groupit.main.service;
+package org.arpicoinsurance.groupit.main.service.rider;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 public interface ATPBService {
 	
-	BigDecimal calculateATPB(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief)throws Exception;
+	BigDecimal calculateATPB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief)throws Exception;
 
 }

@@ -1,10 +1,10 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
-import org.arpicoinsurance.groupit.main.service.PPDBService;
+import org.arpicoinsurance.groupit.main.service.rider.PPDBService;
 
 public class PPDBServiceImpl implements PPDBService{
 
@@ -17,7 +17,7 @@ public class PPDBServiceImpl implements PPDBService{
 			premiumPPDB = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}else {
 			// (((1*@rider_sum_assured@)/1000)/@payment_frequency@)*@relief@
-			premiumPPDB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(CalculationUtils.getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
+			premiumPPDB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		return premiumPPDB;
 	}
@@ -31,7 +31,7 @@ public class PPDBServiceImpl implements PPDBService{
 			premiumPPDBS = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}else {
 			// (((1*@rider_sum_assured@)/1000)/@payment_frequency@)*@relief@
-			premiumPPDBS = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(CalculationUtils.getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
+			premiumPPDBS = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		return premiumPPDBS;
 	}

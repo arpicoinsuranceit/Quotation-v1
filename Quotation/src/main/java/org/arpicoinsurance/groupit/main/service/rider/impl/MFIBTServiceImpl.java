@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.MFIBTService;
+import org.arpicoinsurance.groupit.main.service.rider.MFIBTService;
 
 public class MFIBTServiceImpl implements MFIBTService{
 

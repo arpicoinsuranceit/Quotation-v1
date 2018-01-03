@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.CIBCService;
+import org.arpicoinsurance.groupit.main.service.rider.CIBCService;
 
 public class CIBCServiceImpl implements CIBCService{
 

@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.TPDBService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDBService;
 
 public class TPDBServiceimpl implements TPDBService {
 

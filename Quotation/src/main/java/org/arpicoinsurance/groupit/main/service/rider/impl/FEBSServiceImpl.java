@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.FEBSService;
+import org.arpicoinsurance.groupit.main.service.rider.FEBSService;
 
 public class FEBSServiceImpl implements FEBSService{
 

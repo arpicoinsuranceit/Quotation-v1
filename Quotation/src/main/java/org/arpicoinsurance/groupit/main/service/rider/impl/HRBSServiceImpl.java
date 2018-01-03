@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.HRBSService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBSService;
 
 public class HRBSServiceImpl implements HRBSService{
 

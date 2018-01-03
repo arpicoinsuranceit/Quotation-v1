@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.HBCService;
+import org.arpicoinsurance.groupit.main.service.rider.HBCService;
 
 public class HBCServiceImpl implements HBCService{
 

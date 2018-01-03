@@ -2,7 +2,7 @@ package org.arpicoinsurance.groupit.main.common;
 
 public class CalculationUtils {
 	
-	public static int getPayterm(String payFrequency) {
+	public int getPayterm(String payFrequency) {
 		switch(payFrequency) {
 	        case "M" :
 	        	return 12;
@@ -19,7 +19,7 @@ public class CalculationUtils {
 		}
 	}
 	
-	public static double getRebate(String payFrequency) {
+	public double getRebate(String payFrequency) {
 		switch(payFrequency) {
 	        case "M" :
 	        	return 0.0;
@@ -36,7 +36,7 @@ public class CalculationUtils {
 		}
 	}
 	
-	public static double getRebate(int term, String payFrequency) {
+	public double getRebate(int term, String payFrequency) {
 		switch(payFrequency) {
 	        case "M" :
 	        	return 0.0;

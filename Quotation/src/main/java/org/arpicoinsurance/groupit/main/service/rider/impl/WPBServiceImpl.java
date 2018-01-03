@@ -1,6 +1,6 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.WPBService;
+import org.arpicoinsurance.groupit.main.service.rider.WPBService;
 
 public class WPBServiceImpl implements WPBService{
 

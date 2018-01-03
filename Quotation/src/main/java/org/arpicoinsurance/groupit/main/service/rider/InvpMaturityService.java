@@ -1,11 +1,11 @@
-package org.arpicoinsurance.groupit.main.service;
+package org.arpicoinsurance.groupit.main.service.rider;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public interface L3Service {
+public interface InvpMaturityService {
 	
-	BigDecimal calculateL3(int age, int term, double intrat, Date chedat, double bassum, int paytrm)throws Exception;
+	BigDecimal calculateInvpMaturaty(Integer age, Integer term, Double intrat, Date chedat, Double bassum, Integer paytrm)throws Exception;
 
 
 }
