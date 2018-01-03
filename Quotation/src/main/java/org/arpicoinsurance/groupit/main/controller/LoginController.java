@@ -1,12 +1,8 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.arpicoinsurance.groupit.main.model.Login;
-import org.arpicoinsurance.groupit.main.model.Logs;
-import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,12 +23,6 @@ public class LoginController {
 	@Autowired
 	HttpServletResponse response;
 	
-	//@Autowired
-	//private HttpSession session;
-	
-	//@Autowired
-	//private LogService logService;
-	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public List<Login> getAllLogin() {
@@ -49,10 +39,8 @@ public class LoginController {
 	
 	@RequestMapping(value="/logOut",method=RequestMethod.GET)
 	public String logout() {
-		System.out.println("Called Logout");
+		
 		try {
-			//saveData();
-			//session.invalidate();
 			return "201";
 		} catch (Exception e) {
 			e.printStackTrace();
