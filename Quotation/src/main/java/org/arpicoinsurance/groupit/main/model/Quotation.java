@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.model;
 
 import java.io.Serializable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,12 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.Cascade;
-
 @Entity
 public class Quotation implements Serializable{
 	private Integer id;
 	private String quotationNum;
+	private String status;
 	private Products products;
 	private CustomerDetails customerDetails;
 	private Users user;
@@ -39,6 +37,14 @@ public class Quotation implements Serializable{
 
 	public void setQuotationNum(String quotationNum) {
 		this.quotationNum = quotationNum;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -70,4 +76,5 @@ public class Quotation implements Serializable{
 	public void setUser(Users user) {
 		this.user = user;
 	}
+
 }

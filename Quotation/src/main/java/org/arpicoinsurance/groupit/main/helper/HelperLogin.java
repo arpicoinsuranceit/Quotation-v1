@@ -1,4 +1,4 @@
-package org.arpicoinsurance.groupit.main.model;
+package org.arpicoinsurance.groupit.main.helper;
 
 public class HelperLogin {
 	
