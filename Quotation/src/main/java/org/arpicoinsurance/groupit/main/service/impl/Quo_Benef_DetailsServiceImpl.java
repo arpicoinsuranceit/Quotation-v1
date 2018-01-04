@@ -18,17 +18,11 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	
 	@Override
 	public boolean saveQuo_Benef_Details(Quo_Benef_Details qbd) throws Exception {
-		if(quoBenefDao.save(qbd)!=null) {
-			return true;
-		}
 		return false;
 	}
 
 	@Override
 	public boolean updateQuo_Benef_Details(Quo_Benef_Details qbd) throws Exception {
-		if(quoBenefDao.save(qbd)!=null) {
-			return true;
-		}
 		return false;
 	}
 
@@ -47,9 +41,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Override
 	public List<Quo_Benef_Details> getAllQuo_Benef_Details() throws Exception {
-		List<Quo_Benef_Details> qbd = new ArrayList<>();
-		quoBenefDao.findAll().forEach(qbd::add);
-		return qbd;
+		return null;
 	}
 
 	@Override

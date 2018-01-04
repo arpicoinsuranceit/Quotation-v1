@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.security;
 
-import org.arpicoinsurance.groupit.main.model.HelperLogin;
+import org.arpicoinsurance.groupit.main.helper.HelperLogin;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;

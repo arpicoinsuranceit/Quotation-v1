@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
-import org.arpicoinsurance.groupit.main.model.HelperLogin;
+import org.arpicoinsurance.groupit.main.helper.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.security.JwtGenerator;

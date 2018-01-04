@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.security;
 
-import org.arpicoinsurance.groupit.main.model.HelperLogin;
+import org.arpicoinsurance.groupit.main.helper.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.JwtAuthenticationToken;
 import org.arpicoinsurance.groupit.main.model.JwtUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
