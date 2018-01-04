@@ -85,6 +85,7 @@ public class INVEPServiceImpl implements INVPService{
 				}
 			}
 			
+			calResp.setTotPremium(calResp.getBasicSumAssured()+calResp.getExtraOE()+calResp.getAddBenif());
 			
 			
 			
@@ -141,29 +142,33 @@ public class INVEPServiceImpl implements INVPService{
 	
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
 			Integer term, Double occupationValue, QuoCalResp calResp) throws Exception{
+		Double bnf=calResp.getAddBenif();
+		
 		switch (type) {
 		case "ADB":
-				System.out.println(ridsumasu);
-				System.out.println(payFrequency);
-				
 				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 1.0);
 				calResp.setAdb(adb.doubleValue());
+				calResp.setAddBenif(bnf+=adb.doubleValue());
 			break;
 		case "ADBS":
 				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 1.0);
 				calResp.setAdbs(adbs.doubleValue());
+				calResp.setAddBenif(bnf+=adbs.doubleValue());
 			break;
 		case "ATPB":
 				BigDecimal atpb= atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 				calResp.setAtpb(atpb.doubleValue());
+				calResp.setAddBenif(bnf+=atpb.doubleValue());
 		break;
 		case "TPDASB":
 				BigDecimal tpdasb= tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0);
 				calResp.setTpdasb(tpdasb.doubleValue());
+				calResp.setAddBenif(bnf+=tpdasb.doubleValue());
 		break;
 		case "TPDASBS":
 				BigDecimal tpdasbs= tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 0.0);
 				calResp.setTpdasbs(tpdasbs.doubleValue());
+				calResp.setAddBenif(bnf+=tpdasbs.doubleValue());
 		break;
 
 		default:

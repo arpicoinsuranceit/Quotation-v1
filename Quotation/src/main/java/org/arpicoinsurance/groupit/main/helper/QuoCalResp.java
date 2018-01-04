@@ -1,44 +1,44 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 public class QuoCalResp {
-	private Double basicSumAssured;
-	private Double extraOE;
-	private Double addBenif;
-	private Double totPremium;
+	private Double basicSumAssured = 0.00;
+	private Double extraOE= 0.00;
+	private Double addBenif= 0.00;
+	private Double totPremium= 0.00;
 	
-	private Double at6;
-	private Double at8;
-	private Double at10;
+	private Double at6= 0.00;
+	private Double at8= 0.00;
+	private Double at10= 0.00;
 	
-	private Double adb;
-	private Double atpb;
-	private Double cib;
-	private Double feb;
-	private Double hb;
-	private Double hrb;
-	private Double mifdb;
-	private Double mifdbt;
-	private Double mifdt;
-	private Double ppdb;
-	private Double suhrb;
-	private Double tpdasb;
-	private Double tpdb;
-	private Double wpb;
-	private Double bsas;
-	private Double adbs;
-	private Double cibs;
-	private Double febs;
-	private Double hbs;
-	private Double hrbs;
-	private Double ppdbs;
-	private Double suhrbs;
-	private Double tpdasbs;
-	private Double tpdbs;
-	private Double wpbs;
-	private Double cibc;
-	private Double hbc;
-	private Double hrbc;
-	private Double suhrbc;
+	private Double adb= 0.00;
+	private Double atpb= 0.00;
+	private Double cib= 0.00;
+	private Double feb= 0.00;
+	private Double hb= 0.00;
+	private Double hrb= 0.00;
+	private Double mifdb= 0.00;
+	private Double mifdbt= 0.00;
+	private Double mifdt= 0.00;
+	private Double ppdb= 0.00;
+	private Double suhrb= 0.00;
+	private Double tpdasb= 0.00;
+	private Double tpdb= 0.00;
+	private Double wpb= 0.00;
+	private Double bsas= 0.00;
+	private Double adbs= 0.00;
+	private Double cibs= 0.00;
+	private Double febs= 0.00;
+	private Double hbs= 0.00;
+	private Double hrbs= 0.00;
+	private Double ppdbs= 0.00;
+	private Double suhrbs= 0.00;
+	private Double tpdasbs= 0.00;
+	private Double tpdbs= 0.00;
+	private Double wpbs= 0.00;
+	private Double cibc= 0.00;
+	private Double hbc= 0.00;
+	private Double hrbc= 0.00;
+	private Double suhrbc= 0.00;
 	
 	
 	public Double getBasicSumAssured() {
