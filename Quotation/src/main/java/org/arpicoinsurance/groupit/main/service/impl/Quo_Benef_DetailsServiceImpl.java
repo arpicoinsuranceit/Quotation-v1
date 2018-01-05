@@ -80,7 +80,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	//set customer and spouse details according to quotationdetail object
 	private QuoCustomer setCustomerDetails(QuotationDetails quoDetails) {
 		QuoCustomer customer=new QuoCustomer();
-		customer.setTerm(quoDetails.getPayTerm());
+		customer.setTerm(quoDetails.getTopTerm());
 		customer.setMode(quoDetails.getPayMode());
 		
 		if(quoDetails.getPayMode()!=null) {
