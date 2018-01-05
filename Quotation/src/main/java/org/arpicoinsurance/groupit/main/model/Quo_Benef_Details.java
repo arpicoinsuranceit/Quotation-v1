@@ -15,6 +15,7 @@ public class Quo_Benef_Details implements Serializable{
 	private Integer quo_Benef_DetailsId;
 	private Double riderPremium;
 	private Integer riderTerm;
+	private Double riderSum;
 	
 	private QuotationDetails quotationDetails;
 	private Benefits benefit;
@@ -90,6 +91,14 @@ public class Quo_Benef_Details implements Serializable{
 	}
 	public void setQuo_Benef_ModifyDate(Date quo_Benef_ModifyDate) {
 		this.quo_Benef_ModifyDate = quo_Benef_ModifyDate;
+	}
+
+	public Double getRiderSum() {
+		return riderSum;
+	}
+
+	public void setRiderSum(Double riderSum) {
+		this.riderSum = riderSum;
 	}
 	
 	
