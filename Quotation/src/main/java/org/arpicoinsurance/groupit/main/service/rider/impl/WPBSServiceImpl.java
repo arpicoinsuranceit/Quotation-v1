@@ -1,13 +1,27 @@
 package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.rider.WPBService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class WPBSServiceImpl implements WPBService {
+import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
+import org.arpicoinsurance.groupit.main.service.rider.WPBSService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+public class WPBSServiceImpl implements WPBSService {
 
 	@Override
-	public double calculateWPB() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public BigDecimal calculateWPBS(QuoCalResp calResp) throws Exception {
+		BigDecimal premiumWPBS = new BigDecimal(0);
+		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getBsas() == null ? 0.0 : calResp.getBsas()));
+		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getFebs() == null ? 0.0 : calResp.getFebs()));
+		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getCibs() == null ? 0.0 : calResp.getCibs()));
+		premiumWPBS = premiumWPBS.multiply(new BigDecimal(0.05)).setScale(0, RoundingMode.HALF_UP);
+		System.out.println("premiumWPBS : "+premiumWPBS.toString());
+		return premiumWPBS;
 	}
+
 
 }

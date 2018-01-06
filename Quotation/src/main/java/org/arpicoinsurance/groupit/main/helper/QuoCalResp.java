@@ -16,9 +16,9 @@ public class QuoCalResp {
 	private Double feb;
 	private Double hb;
 	private Double hrb;
-	private Double mifdb;
-	private Double mifdbt;
-	private Double mifdt;
+	private Double mifdb; // ** Remane as mfidb
+	private Double mifdbt; // ** Remane as mfidbt
+	private Double mifdt; // ** Remane as mfidt
 	private Double ppdb;
 	private Double suhrb;
 	private Double tpdasb;
