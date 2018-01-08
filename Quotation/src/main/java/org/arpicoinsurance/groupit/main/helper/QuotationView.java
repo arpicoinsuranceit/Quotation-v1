@@ -7,7 +7,7 @@ public class QuotationView {
 	private QuoCustomer custDetails;
 	private ArrayList<QuoBenf> mainLifeBenf;
 	private ArrayList<QuoBenf> spouseBenf;
-	private ArrayList<QuoBenf> childBenf;
+	private ArrayList<QuoChildBenef> childBenf;
 	public Integer getQuoDetailId() {
 		return quoDetailId;
 	}
@@ -32,12 +32,13 @@ public class QuotationView {
 	public void setSpouseBenf(ArrayList<QuoBenf> spouseBenf) {
 		this.spouseBenf = spouseBenf;
 	}
-	public ArrayList<QuoBenf> getChildBenf() {
+	public ArrayList<QuoChildBenef> getChildBenf() {
 		return childBenf;
 	}
-	public void setChildBenf(ArrayList<QuoBenf> childBenf) {
+	public void setChildBenf(ArrayList<QuoChildBenef> childBenf) {
 		this.childBenf = childBenf;
 	}
+	
 	
 	
 }

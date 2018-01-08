@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Child implements Serializable {
+public class Child implements Serializable{
 	private Integer childId;
 	private String childName;
 	private String childNic;
@@ -68,6 +68,7 @@ public class Child implements Serializable {
 	public void setChildRelation(String childRelation) {
 		this.childRelation = childRelation;
 	}
+
 	
 	
 }

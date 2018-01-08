@@ -2,14 +2,21 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
+import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.model.Benefits;
+import org.arpicoinsurance.groupit.main.model.Child;
+import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.service.Quo_Benef_Child_DetailsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +31,9 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
+	
+	@Autowired
+	private Quo_Benef_Child_DetailsService childBenefService;
 	
 	@Override
 	public boolean saveQuo_Benef_Details(Quo_Benef_Details qbd) throws Exception {
@@ -85,13 +95,13 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		
 		if(quoDetails.getPayMode()!=null) {
 			if(quoDetails.getPayMode().equals("m")) {
-				customer.setModePremium(quoDetails.getPremiumMonth());
+				customer.setModePremium(quoDetails.getPremiumMonthT());
 			}else if(quoDetails.getPayMode().equals("y")) {
-				customer.setModePremium(quoDetails.getPremiumYear());
+				customer.setModePremium(quoDetails.getPremiumYearT());
 			}else if(quoDetails.getPayMode().equals("q")) {
-				customer.setModePremium(quoDetails.getPremiumQuater());
+				customer.setModePremium(quoDetails.getPremiumQuaterT());
 			}else if(quoDetails.getPayMode().equals("h")) {
-				customer.setModePremium(quoDetails.getPremiumHalf());
+				customer.setModePremium(quoDetails.getPremiumHalfT());
 			}else {
 				
 			}
@@ -120,7 +130,8 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	private QuotationView getQuotationBenfList(List<Quo_Benef_Details> benfDetails,QuoCustomer customer,Integer qdId) throws Exception {
 		ArrayList<QuoBenf> mainLifeBenef=new ArrayList<>();
 		ArrayList<QuoBenf> spouseBenef=new ArrayList<>();
-		ArrayList<QuoBenf> childBenef=new ArrayList<>();
+		
+		TreeMap< String, QuoChildBenef> childMap=new TreeMap<>();
 		
 		QuotationView quotationView=new QuotationView();
 		quotationView.setCustDetails(customer);
@@ -140,19 +151,52 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				qb.setRiderSum(quo_Benef_Details.getRiderSum());
 				mainLifeBenef.add(qb);
 			}else if(benf.getBenefitType().equals("c")) {//check benf_type is child
-				QuoBenf qb=new QuoBenf();
-				qb.setBenfName(benf.getBenefitName());
-				qb.setPremium(quo_Benef_Details.getRiderPremium());
-				qb.setRiderSum(quo_Benef_Details.getRiderSum());
-				childBenef.add(qb);
+				
+				List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
+				if(!qbcd.isEmpty()) {
+					QuoBenf qb=new QuoBenf();
+					qb.setBenfName(benf.getBenefitName());
+					qb.setPremium(quo_Benef_Details.getRiderPremium());
+					qb.setRiderSum(quo_Benef_Details.getRiderSum());
+					
+					for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
+						Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
+						if(!childMap.containsKey(child.getChildName())) {
+							ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+							benfs.add(qb);
+							
+							QuoChildBenef benef=new QuoChildBenef();//create QuoChildBenef object
+							benef.setChild(child);
+							benef.setBenfs(benfs);//set list of benefits
+							
+							childMap.put(child.getChildName(), benef);
+						}else {
+							QuoChildBenef childBenefit=childMap.get(child.getChildName());
+							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+							benflist.add(qb);
+							
+							childMap.get("Lakwan").setBenfs(benflist);
+						}
+					}
+					
+				}
+				
+				
 			}else {
 				
 			}
 		}
 		
+		Set<Entry<String, QuoChildBenef>> benefs=childMap.entrySet();
+		ArrayList<QuoChildBenef> childBenefList=new ArrayList<>();
+		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
+			QuoChildBenef cb=entry.getValue();
+			childBenefList.add(cb);
+		}
+		
 		quotationView.setMainLifeBenf(mainLifeBenef);
 		quotationView.setSpouseBenf(spouseBenef);
-		quotationView.setChildBenf(childBenef);
+		quotationView.setChildBenf(childBenefList);
 		quotationView.setQuoDetailId(qdId);
 		
 		
