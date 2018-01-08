@@ -18,7 +18,6 @@ import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
 import org.arpicoinsurance.groupit.main.service.rider.CIBCService;
 import org.arpicoinsurance.groupit.main.service.rider.CIBService;
-import org.arpicoinsurance.groupit.main.service.rider.FEBSService;
 import org.arpicoinsurance.groupit.main.service.rider.FEBService;
 import org.arpicoinsurance.groupit.main.service.rider.HBCService;
 import org.arpicoinsurance.groupit.main.service.rider.HBSService;
