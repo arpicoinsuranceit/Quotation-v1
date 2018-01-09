@@ -6,6 +6,11 @@ public class Children {
 	private String _cDob;
 	private String _cNic;
 	private String _cTitle;
+	private boolean _cSuhrbc;
+	private boolean _cCibc;
+	private boolean _cHrbc;
+	private boolean _cHbc;
+	
 	
 	public boolean is_cActive() {
 		return _cActive;
@@ -36,6 +41,30 @@ public class Children {
 	}
 	public void set_cTitle(String _cTitle) {
 		this._cTitle = _cTitle;
+	}
+	public boolean is_cSuhrbc() {
+		return _cSuhrbc;
+	}
+	public void set_cSuhrbc(boolean _cSuhrbc) {
+		this._cSuhrbc = _cSuhrbc;
+	}
+	public boolean is_cCibc() {
+		return _cCibc;
+	}
+	public void set_cCibc(boolean _cCibc) {
+		this._cCibc = _cCibc;
+	}
+	public boolean is_cHrbc() {
+		return _cHrbc;
+	}
+	public void set_cHrbc(boolean _cHrbc) {
+		this._cHrbc = _cHrbc;
+	}
+	public boolean is_cHbc() {
+		return _cHbc;
+	}
+	public void set_cHbc(boolean _cHbc) {
+		this._cHbc = _cHbc;
 	}
 	
 }

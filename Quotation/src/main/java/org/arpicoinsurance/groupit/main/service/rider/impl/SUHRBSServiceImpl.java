@@ -24,7 +24,14 @@ public class SUHRBSServiceImpl implements SUHRBSService{
 			String payFrequency, Double relief) throws Exception {
 		BigDecimal premiumSUHRBS = new BigDecimal(0);
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(age, age, age, age, sex, term, ridsumasu, chedat, chedat);
-		System.out.println("SUHRBS age : "+age+" sex : "+sex+" ridsumasu : "+ridsumasu+" term : "+term+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardSUHRB.getRate());
+		System.out.println("SUHRBS age : "+age);
+		System.out.println("sex : "+sex);
+		System.out.println("ridsumasu : "+ridsumasu);
+		System.out.println("term : "+term);
+		System.out.println("payFrequency : "+payFrequency);
+		System.out.println("relief : "+relief);
+		System.out.println("Rate : "+rateCardSUHRB.getRate());
+		
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@) *@relief@)
 			premiumSUHRBS = new BigDecimal(rateCardSUHRB.getRate()).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
