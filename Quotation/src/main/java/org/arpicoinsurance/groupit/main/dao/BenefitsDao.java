@@ -13,4 +13,7 @@ public interface BenefitsDao extends CrudRepository<Benefits,String> {
 	@Modifying
 	@Query("DELETE FROM Benefits where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
+	
+	Benefits findByRiderCode(String riderCode) throws Exception;
+	
 }
