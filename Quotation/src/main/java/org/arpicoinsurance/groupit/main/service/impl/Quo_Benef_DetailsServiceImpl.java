@@ -175,7 +175,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
 							benflist.add(qb);
 							
-							childMap.get("Lakwan").setBenfs(benflist);
+							childMap.get(child.getChildName()).setBenfs(benflist);
 						}
 					}
 					
