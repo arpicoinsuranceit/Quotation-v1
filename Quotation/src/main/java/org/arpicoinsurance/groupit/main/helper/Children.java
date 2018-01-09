@@ -4,6 +4,7 @@ public class Children {
 	private boolean _cActive;
 	private String _cName;
 	private String _cDob;
+	private Integer _cAge;
 	private String _cNic;
 	private String _cTitle;
 	private boolean _cSuhrbc;
@@ -29,6 +30,12 @@ public class Children {
 	}
 	public void set_cDob(String _cDob) {
 		this._cDob = _cDob;
+	}
+	public Integer get_cAge() {
+		return _cAge;
+	}
+	public void set_cAge(Integer _cAge) {
+		this._cAge = _cAge;
 	}
 	public String get_cNic() {
 		return _cNic;
