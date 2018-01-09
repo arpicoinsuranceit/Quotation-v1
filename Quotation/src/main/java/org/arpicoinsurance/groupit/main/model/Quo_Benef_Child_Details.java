@@ -15,6 +15,8 @@ public class Quo_Benef_Child_Details implements Serializable{
 	private Integer quo_Benef_ChildId;
 	private CustChildDetails child;
 	private Quo_Benef_Details quoBenefDetails;
+	private Double premium;
+	private Integer term;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,6 +43,18 @@ public class Quo_Benef_Child_Details implements Serializable{
 	}
 	public void setQuoBenefDetails(Quo_Benef_Details quoBenefDetails) {
 		this.quoBenefDetails = quoBenefDetails;
+	}
+	public Double getPremium() {
+		return premium;
+	}
+	public void setPremium(Double premium) {
+		this.premium = premium;
+	}
+	public Integer getTerm() {
+		return term;
+	}
+	public void setTerm(Integer term) {
+		this.term = term;
 	}
 	
 	
