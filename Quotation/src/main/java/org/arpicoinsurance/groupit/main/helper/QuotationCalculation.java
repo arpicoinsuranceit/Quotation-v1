@@ -1,10 +1,8 @@
 package org.arpicoinsurance.groupit.main.helper;
 
-import java.util.ArrayList;
-
 public class QuotationCalculation{
 	private PersonalInfo _personalInfo;
-	private ArrayList<Benifict> _riderDetails;
+	private RiderDetails _riderDetails = null;
 	
 	public PersonalInfo get_personalInfo() {
 		return _personalInfo;
@@ -12,10 +10,11 @@ public class QuotationCalculation{
 	public void set_personalInfo(PersonalInfo _personalInfo) {
 		this._personalInfo = _personalInfo;
 	}
-	public ArrayList<Benifict> get_riderDetails() {
+	public RiderDetails get_riderDetails() {
 		return _riderDetails;
 	}
-	public void set_riderDetails(ArrayList<Benifict> _riderDetails) {
+	public void set_riderDetails(RiderDetails _riderDetails) {
 		this._riderDetails = _riderDetails;
 	}
+	
 }

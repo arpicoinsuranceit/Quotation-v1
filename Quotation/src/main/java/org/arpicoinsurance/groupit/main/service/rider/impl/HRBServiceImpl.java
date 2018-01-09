@@ -25,6 +25,7 @@ public class HRBServiceImpl implements HRBService{
 			Date chedat, String payFrequency, Double relief) throws Exception {
 		BigDecimal premiumHRB = new BigDecimal(0);
 		RateCardHRB rateCardHRB = rateCardHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndSumasuAndAdlcntAndChlcntAndStrdatLessThanOrStrdat(age, age, age, age, sex, ridsumasu, adlcnt, chlcnt, chedat, chedat);
+		System.out.println("Rate : "+rateCardHRB.getRate());
 		System.out.println("HRB age : "+age+" sex : "+sex+" ridsumasu : "+ridsumasu+" adlcnt : "+adlcnt+" chlcnt : "+chlcnt+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardHRB.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@) *@relief@)

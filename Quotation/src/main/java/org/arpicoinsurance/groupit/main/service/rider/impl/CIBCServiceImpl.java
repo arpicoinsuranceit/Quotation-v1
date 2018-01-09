@@ -24,7 +24,11 @@ public class CIBCServiceImpl implements CIBCService{
 			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		BigDecimal premiumCIBC = new BigDecimal(0);
+		System.out.println(age + " " +term + " "+ chedat);
 		RateCardCIBC rateCardCIBC = rateCardCIBCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
+		
+		System.out.println(" Rate : "+rateCardCIBC.getRate());
+
 		System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@*@rider_sum_assured@/1000))*@relief@
