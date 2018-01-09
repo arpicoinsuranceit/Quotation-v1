@@ -1,5 +1,7 @@
 package org.arpicoinsurance.groupit.main.dao;
 
+import java.util.List;
+
 import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +15,5 @@ public interface CustChildDetailsDao extends CrudRepository<CustChildDetails,Str
 	@Modifying
 	@Query("DELETE FROM CustChildDetails where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
+	
 }

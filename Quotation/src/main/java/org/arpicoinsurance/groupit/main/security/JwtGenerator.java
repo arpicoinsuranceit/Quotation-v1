@@ -19,7 +19,7 @@ public class JwtGenerator {
 		claims.put("fullName", login.getUserFullName());
 				
 		return Jwts.builder().setClaims(claims)
-				.signWith(SignatureAlgorithm.HS512, "harindi")
+				.signWith(SignatureAlgorithm.HS512, "arpico")
 				.compact();
 		
 	}

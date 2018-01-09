@@ -1,6 +1,8 @@
 package org.arpicoinsurance.groupit.main.service;
 
 import java.util.List;
+
+import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 
 public interface Quo_Benef_DetailsService {
@@ -14,5 +16,5 @@ public interface Quo_Benef_DetailsService {
 	
 	List <Quo_Benef_Details> getAllQuo_Benef_Details() throws Exception;
 	
-	List <Quo_Benef_Details> getQuo_Benef_DetailsByUser(Integer id) throws Exception;
+	List <QuotationView> getQuo_Benef_DetailsByQuoDetailId(String quoNum) throws Exception;
 }

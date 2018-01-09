@@ -1,13 +1,30 @@
 package org.arpicoinsurance.groupit.main.service.rider.impl;
 
-import org.arpicoinsurance.groupit.main.service.rider.WPBService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
+import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
+import org.arpicoinsurance.groupit.main.service.rider.WPBService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 public class WPBServiceImpl implements WPBService{
 
 	@Override
-	public double calculateWPB() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public BigDecimal calculateWPB(QuoCalResp calResp) throws Exception {
+		BigDecimal premiumWPB = new BigDecimal(0);
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getBasicSumAssured() == null ? 0.0 : calResp.getBasicSumAssured()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getAtpb() == null ? 0.0 : calResp.getAtpb()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getFeb() == null ? 0.0 : calResp.getFeb()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getMifdb() == null ? 0.0 : calResp.getMifdb()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getMifdbt() == null ? 0.0 : calResp.getMifdbt()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getCib() == null ? 0.0 : calResp.getCib()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getCibc() == null ? 0.0 : calResp.getCibc()));
+		premiumWPB = premiumWPB.multiply(new BigDecimal(0.05)).setScale(0, RoundingMode.HALF_UP);
+		System.out.println("premiumWPB : "+premiumWPB.toString());
+		return premiumWPB;
 	}
 
 }

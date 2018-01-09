@@ -16,8 +16,29 @@ import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
+import org.arpicoinsurance.groupit.main.service.rider.CIBCService;
+import org.arpicoinsurance.groupit.main.service.rider.CIBService;
+import org.arpicoinsurance.groupit.main.service.rider.FEBService;
+import org.arpicoinsurance.groupit.main.service.rider.HBCService;
+import org.arpicoinsurance.groupit.main.service.rider.HBSService;
+import org.arpicoinsurance.groupit.main.service.rider.HBService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBService;
+import org.arpicoinsurance.groupit.main.service.rider.MFIBDService;
+import org.arpicoinsurance.groupit.main.service.rider.MFIBDTService;
+import org.arpicoinsurance.groupit.main.service.rider.MFIBTService;
+import org.arpicoinsurance.groupit.main.service.rider.PPDBSService;
+import org.arpicoinsurance.groupit.main.service.rider.PPDBService;
+import org.arpicoinsurance.groupit.main.service.rider.SCBService;
+import org.arpicoinsurance.groupit.main.service.rider.SCIBService;
+import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
+import org.arpicoinsurance.groupit.main.service.rider.SUHRBSService;
+import org.arpicoinsurance.groupit.main.service.rider.SUHRBService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBSService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDBSService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDBService;
+import org.arpicoinsurance.groupit.main.service.rider.WPBSService;
+import org.arpicoinsurance.groupit.main.service.rider.WPBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +49,8 @@ public class INVEPServiceImpl implements INVPService{
 	
 	private Double occupationValue=1.0;
 	
+	@Autowired
+	private SCBService scbService;
 	
 	@Autowired
 	private ATPBService atpbService;
@@ -44,7 +67,66 @@ public class INVEPServiceImpl implements INVPService{
 	@Autowired
 	private TPDASBSService tpdasbsbService;
 	
-
+	@Autowired
+	private TPDBService tpdbService;
+	
+	@Autowired
+	private TPDBSService tpdbsService;
+	
+	@Autowired
+	private PPDBService ppdbService;
+	
+	@Autowired
+	private PPDBSService ppdbsService;
+	
+	@Autowired
+	private CIBService cibService;
+	
+	@Autowired
+	private SCIBService scibService;
+	
+	@Autowired
+	private CIBCService cibcService;
+	
+	@Autowired
+	private FEBService febService;
+	
+	@Autowired
+	private MFIBDService mfibdService;
+	
+	@Autowired
+	private MFIBTService mfibtService;
+	
+	@Autowired
+	private MFIBDTService mfibdtService;  
+	
+	@Autowired
+	private HRBService hrbService;
+	
+	@Autowired
+	private SUHRBService suhrbService;
+	
+	@Autowired
+	private SUHRBSService suhrbsService;
+	
+	@Autowired
+	private SUHRBCService suhrbcService;
+	
+	@Autowired
+	private HBService hbService;
+	
+	@Autowired
+	private HBSService hbsService;
+	
+	@Autowired
+	private HBCService hbcService;
+	
+	@Autowired
+	private WPBService wpbService;
+	
+	@Autowired
+	private WPBSService wpbsService;
+	
 	@Autowired
 	private RateCardINVPDao rateCardINVPDao;
 	
@@ -85,7 +167,6 @@ public class INVEPServiceImpl implements INVPService{
 				}
 			}
 			
-			calResp.setTotPremium(calResp.getBasicSumAssured()+calResp.getExtraOE()+calResp.getAddBenif());
 			
 			
 			
@@ -142,33 +223,113 @@ public class INVEPServiceImpl implements INVPService{
 	
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
 			Integer term, Double occupationValue, QuoCalResp calResp) throws Exception{
-		Double bnf=calResp.getAddBenif();
-		
+			
 		switch (type) {
+		case "SCB":
+			BigDecimal scb=scbService.calculateSCB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setBsas(scb.doubleValue());
+		break;
 		case "ADB":
 				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 1.0);
 				calResp.setAdb(adb.doubleValue());
-				calResp.setAddBenif(bnf+=adb.doubleValue());
-			break;
+		break;
 		case "ADBS":
 				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 1.0);
 				calResp.setAdbs(adbs.doubleValue());
-				calResp.setAddBenif(bnf+=adbs.doubleValue());
 			break;
 		case "ATPB":
 				BigDecimal atpb= atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 				calResp.setAtpb(atpb.doubleValue());
-				calResp.setAddBenif(bnf+=atpb.doubleValue());
 		break;
 		case "TPDASB":
 				BigDecimal tpdasb= tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0);
 				calResp.setTpdasb(tpdasb.doubleValue());
-				calResp.setAddBenif(bnf+=tpdasb.doubleValue());
 		break;
 		case "TPDASBS":
-				BigDecimal tpdasbs= tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 0.0);
+				BigDecimal tpdasbs= tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0);
 				calResp.setTpdasbs(tpdasbs.doubleValue());
-				calResp.setAddBenif(bnf+=tpdasbs.doubleValue());
+		break;
+		case "TPDB":
+			BigDecimal tpdb= tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0);
+			calResp.setTpdb(tpdb.doubleValue());
+		break;
+		case "TPDBS":
+				BigDecimal tpdbs= tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0);
+				calResp.setTpdbs(tpdbs.doubleValue());
+		break;
+		case "PPDB":
+			BigDecimal ppdb= ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0);
+			calResp.setPpdb(ppdb.doubleValue());
+		break;
+		case "PPDBS":
+				BigDecimal ppdbs= ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0);
+				calResp.setPpdbs(ppdbs.doubleValue());
+		break;
+		case "CIB":
+			BigDecimal cib= cibService.calculateCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setCib(cib.doubleValue());
+		break;
+		case "SCIB":
+			BigDecimal scib= scibService.calculateSCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setCibs(scib.doubleValue());
+		break;
+		case "CIBC":
+			//** 21-age < term term = 21-age else term
+			BigDecimal cibc= cibcService.calculateCIBC(6, term > (21-6) ? (21-6) : term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setCibc(cibc.doubleValue());
+		break;
+		case "FEB":
+			BigDecimal feb= febService.calculateFEB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setFeb(feb.doubleValue());
+		break;
+		case "MFIBD":
+			BigDecimal mfibd= mfibdService.calculateMFIBD(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setMifdb(mfibd.doubleValue());
+		break;
+		case "MFIBT":
+			BigDecimal mfibt= mfibtService.calculateMFIBT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setMifdt(mfibt.doubleValue());
+		break;
+		case "MFIBDT":
+			BigDecimal mfibdt= mfibdtService.calculateMFIBDT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setMifdbt(mfibdt.doubleValue());
+		break;
+		case "HRB":
+			BigDecimal hrb= hrbService.calculateHRB(age, gender, ridsumasu, 2, 0, new Date(), payFrequency, 1.0);
+			calResp.setHrb(hrb.doubleValue());
+		break;
+		case "SUHRB":
+			BigDecimal suhrb= suhrbService.calculateSUHRB(age, gender, term, ridsumasu, new Date(), payFrequency, 1.0);
+			calResp.setSuhrb(suhrb.doubleValue());
+		break;
+		case "SUHRBS":
+			BigDecimal suhrbs= suhrbsService.calculateSUHRBS(28, "F", term, ridsumasu, new Date(), payFrequency, 1.0);
+			calResp.setSuhrbs(suhrbs.doubleValue());
+		break;
+		case "SUHRBC":
+			BigDecimal suhrbc= suhrbcService.calculateSUHRBC(6, gender, term, ridsumasu, new Date(), payFrequency, 1.0);
+			calResp.setSuhrbc(suhrbc.doubleValue());
+		break;
+		case "HB":
+			BigDecimal hb= hbService.calculateHB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setHb(hb.doubleValue());
+		break;
+		case "HBS":
+			BigDecimal hbs= hbsService.calculateHBS(28, term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setHbs(hbs.doubleValue());
+		break;
+		case "HBC":
+			//** 21-age < term term = 21-age else term
+			BigDecimal hbc= hbcService.calculateHBC(term > (21-6) ? (21-6) : term, new Date(), ridsumasu, payFrequency, 1.0);
+			calResp.setHbc(hbc.doubleValue());
+		break;
+		case "WPB":
+			BigDecimal wpb= wpbService.calculateWPB(calResp);
+			calResp.setWpb(wpb.doubleValue());
+		break;
+		case "WPBS":
+			BigDecimal wpbs= wpbsService.calculateWPBS(calResp);
+			calResp.setWpbs(wpbs.doubleValue());
 		break;
 
 		default:

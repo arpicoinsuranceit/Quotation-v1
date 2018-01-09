@@ -9,6 +9,6 @@ public interface Quo_Benef_DetailsDao{
 	
 	Integer deleteOne(Integer id) throws Exception;
 
-	List<Quo_Benef_Details> findByUserId(Integer id) throws Exception;
+	List<Quo_Benef_Details> findByQuoDetailId(Integer id) throws Exception;
 	
 }

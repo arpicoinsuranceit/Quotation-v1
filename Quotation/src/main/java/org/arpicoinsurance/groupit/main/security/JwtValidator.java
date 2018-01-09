@@ -9,7 +9,7 @@ import io.jsonwebtoken.Jwts;
 @Component
 public class JwtValidator {
 	
-	private String secret="harindi";
+	private String secret="arpico";
 
 	public HelperLogin validate(String token) {
 		HelperLogin jwtLogin=null;

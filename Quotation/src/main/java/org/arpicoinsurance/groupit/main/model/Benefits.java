@@ -16,6 +16,7 @@ public class Benefits implements Serializable{
 	private String benefitName;
 	private Integer benefitMinAge;
 	private Integer benefitMaxAge;
+	private String benefitType;
 	
 	private Date lockin_date;
 	private String benefitCreateBy;
@@ -57,6 +58,14 @@ public class Benefits implements Serializable{
 
 	public void setBenefitMaxAge(Integer benefitMaxAge) {
 		this.benefitMaxAge = benefitMaxAge;
+	}
+
+	public String getBenefitType() {
+		return benefitType;
+	}
+
+	public void setBenefitType(String benefitType) {
+		this.benefitType = benefitType;
 	}
 
 	public Date getLockin_date() {

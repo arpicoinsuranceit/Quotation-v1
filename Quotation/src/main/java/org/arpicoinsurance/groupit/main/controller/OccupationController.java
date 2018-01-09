@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
-
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.service.OccupationServce;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,8 @@
 package org.arpicoinsurance.groupit.main.service.rider;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 public interface SUHRBSService {
-	Double calculateSUHRBS() throws Exception;
+	BigDecimal calculateSUHRBS(Integer age, String sex, Integer term, Double ridsumasu, Date chedat, String payFrequency, Double relief) throws Exception;
 }
