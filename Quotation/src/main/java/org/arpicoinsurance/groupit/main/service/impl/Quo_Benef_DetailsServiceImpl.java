@@ -156,13 +156,13 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				if(!qbcd.isEmpty()) {
 					QuoBenf qb=new QuoBenf();
 					qb.setBenfName(benf.getBenefitName());
-					qb.setPremium(quo_Benef_Details.getRiderPremium());
 					qb.setRiderSum(quo_Benef_Details.getRiderSum());
 					
 					for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
 						Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
 						if(!childMap.containsKey(child.getChildName())) {
 							ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benfs.add(qb);
 							
 							QuoChildBenef benef=new QuoChildBenef();//create QuoChildBenef object
@@ -173,6 +173,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 						}else {
 							QuoChildBenef childBenefit=childMap.get(child.getChildName());
 							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benflist.add(qb);
 							
 							childMap.get(child.getChildName()).setBenfs(benflist);
