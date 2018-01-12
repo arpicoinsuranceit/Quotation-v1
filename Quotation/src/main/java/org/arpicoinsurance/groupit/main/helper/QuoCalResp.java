@@ -39,7 +39,8 @@ public class QuoCalResp {
 	private Double hbc= 0.00;
 	private Double hrbc= 0.00;
 	private Double suhrbc= 0.00;
-	
+	private boolean isErrorExist = false;
+	private String error = null;
 	
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
@@ -256,6 +257,18 @@ public class QuoCalResp {
 	}
 	public void setSuhrbc(Double suhrbc) {
 		this.suhrbc = suhrbc;
+	}
+	public boolean isErrorExist() {
+		return isErrorExist;
+	}
+	public void setErrorExist(boolean isErrorExist) {
+		this.isErrorExist = isErrorExist;
+	}
+	public String getError() {
+		return error;
+	}
+	public void setError(String error) {
+		this.error = error;
 	}
 	
 	

@@ -26,7 +26,7 @@ public class OccupationController {
 				occupation.setOcupationModifyBy(null);
 				occupation.setOcupationModifyDate(null);
 			}
-			return occList;
+			return occList; 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

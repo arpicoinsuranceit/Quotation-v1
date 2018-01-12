@@ -13,6 +13,7 @@ import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBService;
+import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,9 +35,22 @@ public class QuotationCalculationController {
 	@RequestMapping(value="/quoCal",method=RequestMethod.POST)
 	public QuoCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		//System.out.println(calculation);
-		
-		try {		
-			QuoCalResp calResp=invpService.getCalcutatedInvp(calculation);
+		////******************do post validations before send response
+		try {
+			QuoCalResp calResp = new QuoCalResp();
+			ValidationInvp validationInvp=new ValidationInvp(calculation);
+			if(validationInvp.validateInvpProd()==1) {
+				String error= validationInvp.validateBenifict();
+				if(error.equals("No")) {
+					calResp=invpService.getCalcutatedInvp(calculation);
+				}else {
+					calResp.setErrorExist(true);
+					calResp.setError(error);
+				}
+			} else {
+				calResp.setErrorExist(true);
+				calResp.setError("Product");
+			}
 			return calResp;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
