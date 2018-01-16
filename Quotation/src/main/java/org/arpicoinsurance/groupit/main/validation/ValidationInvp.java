@@ -21,7 +21,7 @@ public class ValidationInvp {
 	public String validateBenifict() {
 		if (calculation.get_riderDetails() != null) {
 			if (calculation.get_riderDetails().get_mRiders() != null
-					|| calculation.get_riderDetails().get_mRiders().size() > 0) {
+					&& calculation.get_riderDetails().get_mRiders().size() > 0) {
 				ArrayList<Benifict> mRiders = calculation.get_riderDetails().get_mRiders();
 
 				for (Benifict benifict : mRiders) {
@@ -90,7 +90,7 @@ public class ValidationInvp {
 						break;
 					case "HB":
 						if (validateInvpHB().equals(0)) {
-							return "SUHRB";
+							return "HB";
 						}
 						break;
 
@@ -99,6 +99,75 @@ public class ValidationInvp {
 					}
 				}
 			}
+			if (calculation.get_riderDetails().get_sRiders() != null
+					&& calculation.get_riderDetails().get_sRiders().size() > 0) {
+				ArrayList<Benifict> sRiders = calculation.get_riderDetails().get_sRiders();
+
+				for (Benifict benifict : sRiders) {
+					String type = benifict.getType();
+					switch (type) {
+					case "BSAS":
+						if (validateInvpSCB().equals(0)) {
+							return "SCB";
+						}
+						break;
+					case "ADBS":
+						if (validateInvpADBS().equals(0)) {
+							return "ADBS";
+						}
+						break;
+					case "CIBS":
+						if (validateInvpSCIB().equals(0)) {
+							return "CIBS";
+						}
+						break;
+					case "FEBS":
+						if (validateInvpFEBS().equals(0)) {
+							return "FEBS";
+						}
+						break;
+					case "HBS":
+						if (validateInvpHBS().equals(0)) {
+							return "HBS";
+						}
+						break;
+					case "HRBS":
+						if (validateInvpHRBS().equals(0)) {
+							return "HRBS";
+						}
+						break;
+					case "PPDBS":
+						if (validateInvpPPDBS().equals(0)) {
+							return "PPDBS";
+						}
+						break;
+					case "SUHRBS":
+						if (validateInvpSUHRBS().equals(0)) {
+							return "SUHRBS";
+						}
+						break;
+					case "TPDASBS":
+						if (validateInvpTPDASBS().equals(0)) {
+							return "TPDASBS";
+						}
+
+						break;
+					case "TPDBS":
+						if (validateInvpTPDBS().equals(0)) {
+							return "TPDBS";
+						}
+
+						break;
+					case "WPBS":
+
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+
 		}
 
 		return "No";
@@ -153,6 +222,8 @@ public class ValidationInvp {
 		return 0;
 	}
 
+	// ----------------------- Mainlife Validations before Calculation
+	// -----------------
 	public Integer validateInvpABD() {
 		if (benefitMap.containsKey("ADB")) {
 			Benifict benifict = benefitMap.get("ADB");
@@ -318,11 +389,10 @@ public class ValidationInvp {
 		return 0;
 
 	}
-	
+
 	public Integer validateInvpSUHRB() {
 		if (benefitMap.containsKey("SUHRB")) {
-			if (benefitMap.containsKey("HRB") && !benefitMap.get("HRB").isActive()
-					|| !benefitMap.containsKey("HRB")) {
+			if (benefitMap.containsKey("HRB") && !benefitMap.get("HRB").isActive() || !benefitMap.containsKey("HRB")) {
 				Double rbsa = benefitMap.get("SUHRB").getSumAssured();
 				if (rbsa == 600000 || rbsa == 800000 || rbsa == 1000000) {
 					return 1;
@@ -335,17 +405,168 @@ public class ValidationInvp {
 		return 0;
 
 	}
-	
+
 	public Integer validateInvpHB() {
 		if (benefitMap.containsKey("HB")) {
 			Benifict benifict = benefitMap.get("HB");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 500 && rbsa <= 10000 && rbsa%100==0) {
+			if (rbsa >= 500 && rbsa <= 10000 && rbsa % 100 == 0) {
 				return 1;
 			}
 		}
 		return 0;
 
+	}
+
+	// ----------------------- End of Mainlife Validations before Calculation
+	// -----------------
+	// ----------------------- Spouse Validations Before Calculate
+	// ----------------------------
+	public Integer validateInvpSCB() {
+		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("BSAS")) {
+			Benifict bsas = benefitMap.get("BSAS");
+			Benifict atpb = benefitMap.get("ATPB");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double scbBsa = bsas.getSumAssured();
+			Double atpbBsa = atpb.getSumAssured();
+
+			if (scbBsa >= 250000 && scbBsa <= (bsa + atpbBsa)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	public Integer validateInvpADBS() {
+		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS")) {
+			Benifict bsas = benefitMap.get("BSAS");
+			Benifict benifict = benefitMap.get("ADBS");
+			Double scb = bsas.getSumAssured();
+			Double rbsa = benifict.getSumAssured();
+
+			if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % scb == 0 && rbsa <= 2500000)
+					|| (scb >= 2500000 && rbsa <= 2500000)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	public Integer validateInvpTPDASBS() {
+		if (benefitMap.containsKey("TPDASBS") && benefitMap.containsKey("ADBS")) {
+			Benifict tpdasbs = benefitMap.get("TPDASBS");
+			Benifict adbs = benefitMap.get("ADBS");
+			if (benefitMap.containsKey("TPDBS") && !benefitMap.get("TPDBS").isActive()
+					|| !benefitMap.containsKey("TPDBS")) {
+				if (adbs.isActive() && tpdasbs.getSumAssured().equals(adbs.getSumAssured())) {
+					return 1;
+				}
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+
+	public Integer validateInvpTPDBS() {
+		if (benefitMap.containsKey("TPDBS") && benefitMap.containsKey("ADBS")) {
+			Benifict tpdbs = benefitMap.get("TPDBS");
+			Benifict adbs = benefitMap.get("ADBS");
+			if (benefitMap.containsKey("TPDASBS") && !benefitMap.get("TPDASBS").isActive()
+					|| !benefitMap.containsKey("TPDASBS")) {
+				if (adbs.isActive() && tpdbs.getSumAssured().equals(adbs.getSumAssured())) {
+					return 1;
+				}
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+
+	public Integer validateInvpPPDBS() {
+		if (benefitMap.containsKey("PPDBS") && benefitMap.containsKey("ADBS")) {
+			Benifict ppdbs = benefitMap.get("PPDBS");
+			Benifict adbs = benefitMap.get("ADBS");
+			if (adbs.isActive() && ppdbs.getSumAssured().equals(adbs.getSumAssured())) {
+				return 1;
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+
+	public Integer validateInvpSCIB() {
+		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
+			Double scb = benefitMap.get("BSAS").getSumAssured();
+			Double cib = benefitMap.get("CIBS").getSumAssured();
+
+			if (cib <= scb && cib <= 6000000 && cib >= 250000) {
+				return 1;
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+
+	public Integer validateInvpFEBS() {
+		if (benefitMap.containsKey("FEBS")) {
+			Benifict benifict = benefitMap.get("FEBS");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1)) {
+				return 1;
+			}
+		}
+		return 0;
+
+	}
+
+	public Integer validateInvpHRBS() {
+		if (benefitMap.containsKey("HRBS") && benefitMap.containsKey("HRB")) {
+			Double hrb = benefitMap.get("HRB").getSumAssured();
+			Double hrbs = benefitMap.get("HRBS").getSumAssured();
+			if (hrb.equals(hrbs)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
+
+	public Integer validateInvpSUHRBS() {
+		if (benefitMap.containsKey("SUHRBS") && benefitMap.containsKey("SUHRB")) {
+			Double suhrb = benefitMap.get("SUHRB").getSumAssured();
+			Double suhrbs = benefitMap.get("SUHRBS").getSumAssured();
+			if (suhrb.equals(suhrbs)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
+
+	public Integer validateInvpHBS() {
+		if (benefitMap.containsKey("HBS") && benefitMap.containsKey("HB")) {
+			Double hb = benefitMap.get("HB").getSumAssured();
+			Double hbs = benefitMap.get("HBS").getSumAssured();
+			
+			if (hbs >= 500 && hbs <= 10000 && hbs.equals(hb) && hbs % 100 == 0) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
 	}
 
 }
