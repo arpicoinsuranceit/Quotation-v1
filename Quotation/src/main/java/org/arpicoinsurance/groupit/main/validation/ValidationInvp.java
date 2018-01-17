@@ -99,8 +99,11 @@ public class ValidationInvp {
 					}
 				}
 			}
-			if (calculation.get_riderDetails().get_sRiders() != null
+			if (calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSgenger() != null
+					&& calculation.get_personalInfo().getSocu() != null
+					&& calculation.get_riderDetails().get_sRiders() != null
 					&& calculation.get_riderDetails().get_sRiders().size() > 0) {
+
 				ArrayList<Benifict> sRiders = calculation.get_riderDetails().get_sRiders();
 
 				for (Benifict benifict : sRiders) {
@@ -162,6 +165,42 @@ public class ValidationInvp {
 
 						break;
 
+					default:
+						break;
+					}
+				}
+			}
+
+			if (calculation.get_personalInfo().getChildrens() != null
+					&& calculation.get_personalInfo().getChildrens().size() > 0
+					&& calculation.get_riderDetails().get_cRiders() != null
+					&& calculation.get_riderDetails().get_cRiders().size() > 0) {
+				ArrayList<Benifict> cRiders = calculation.get_riderDetails().get_cRiders();
+
+				for (Benifict benifict : cRiders) {
+					String type = benifict.getType();
+					switch (type) {
+					case "CIBC":
+						if (validateInvpCIBC().equals(0)) {
+							System.out.println("Error CIBC");
+							return "CIBC";
+						}
+						break;
+					case "HRBC":
+						if (validateInvpHRBC().equals(0)) {
+							return "HRBC";
+						}
+						break;
+					case "SUHRBC":
+						if (validateInvpSUHRBC().equals(0)) {
+							return "SUHRBC";
+						}
+						break;
+					case "HBC":
+						if (validateInvpHBC().equals(0)) {
+							return "HBC";
+						}
+						break;
 					default:
 						break;
 					}
@@ -560,7 +599,7 @@ public class ValidationInvp {
 		if (benefitMap.containsKey("HBS") && benefitMap.containsKey("HB")) {
 			Double hb = benefitMap.get("HB").getSumAssured();
 			Double hbs = benefitMap.get("HBS").getSumAssured();
-			
+
 			if (hbs >= 500 && hbs <= 10000 && hbs.equals(hb) && hbs % 100 == 0) {
 				return 1;
 			}
@@ -569,4 +608,62 @@ public class ValidationInvp {
 		return 0;
 	}
 
+	// ----------------------- End of Spouse Validations before Calculation
+	// -----------------
+
+	// ----------------------- Children Validations Before Calculate
+	// ----------------------------
+
+	public Integer validateInvpCIBC() {
+		System.out.println("Calle CIBC");
+		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
+			Benifict cibc = benefitMap.get("CIBC");
+			Benifict atpb = benefitMap.get("ATPB");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double cibcBsa = cibc.getSumAssured();
+			Double atpbBsa = atpb.getSumAssured();
+
+			if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa <= (bsa + atpbBsa)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	public Integer validateInvpHRBC() {
+		if (benefitMap.containsKey("HRBC") && benefitMap.containsKey("HRB")) {
+			Double hrb = benefitMap.get("HRB").getSumAssured();
+			Double hrbc = benefitMap.get("HRBC").getSumAssured();
+			if (hrb.equals(hrbc)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
+
+	public Integer validateInvpSUHRBC() {
+		if (benefitMap.containsKey("SUHRBC") && benefitMap.containsKey("SUHRB")) {
+			Double suhrb = benefitMap.get("SUHRB").getSumAssured();
+			Double suhrbc = benefitMap.get("SUHRBC").getSumAssured();
+			if (suhrb.equals(suhrbc)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
+
+	public Integer validateInvpHBC() {
+		if (benefitMap.containsKey("HBC") && benefitMap.containsKey("HB")) {
+			Double hb = benefitMap.get("HB").getSumAssured();
+			Double hbc = benefitMap.get("HBC").getSumAssured();
+
+			if (hbc >= 500 && hbc <= 10000 && hbc.equals(hb) && hbc % 100 == 0) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
 }
