@@ -242,11 +242,9 @@ public class ValidationInvp {
 	}
 
 	public Integer validateInvpProd() {
-		System.out.println(calculation.get_personalInfo().getTerm());
-		System.out.println(calculation.get_personalInfo().getMage());
-		System.out.println(calculation.get_personalInfo().getBsa());
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
-				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
+				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65 &&
+				calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm() <=65
 				&& calculation.get_personalInfo().getBsa() >= 250000) {
 			return 1;
 		}

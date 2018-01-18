@@ -16,5 +16,5 @@ public interface Quo_Benef_DetailsService {
 	
 	List <Quo_Benef_Details> getAllQuo_Benef_Details() throws Exception;
 	
-	List <QuotationView> getQuo_Benef_DetailsByQuoDetailId(String quoNum) throws Exception;
+	List <QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception;
 }

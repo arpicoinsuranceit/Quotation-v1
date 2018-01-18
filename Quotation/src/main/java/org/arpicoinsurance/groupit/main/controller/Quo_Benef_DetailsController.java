@@ -18,8 +18,10 @@ public class Quo_Benef_DetailsController {
 	private Quo_Benef_DetailsService quoBenefDetailService;
 	
 	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
-	public ArrayList<QuotationView> getQuotationByUserId(@RequestBody String quoNum) {
+	public ArrayList<QuotationView> getQuotationByUserId(@RequestBody String id) {
 		try {
+			System.out.println(id);
+			Integer quoNum=Integer.parseInt(id);
 			ArrayList<QuotationView> detailList=(ArrayList<QuotationView>) quoBenefDetailService.getQuo_Benef_DetailsByQuoDetailId(quoNum);
 			return detailList;
 			

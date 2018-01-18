@@ -9,11 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.TableGenerator;
 
 @Entity
 public class Quotation implements Serializable{
 	private Integer id;
-	private String quotationNum;
 	private String status;
 	private Products products;
 	private CustomerDetails customerDetails;
@@ -22,22 +22,15 @@ public class Quotation implements Serializable{
 	
 	public Quotation(){}
 
+	@TableGenerator(name="tbl", initialValue= 20000)
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="tbl")
 	public Integer getId() {
 		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getQuotationNum() {
-		return quotationNum;
-	}
-
-	public void setQuotationNum(String quotationNum) {
-		this.quotationNum = quotationNum;
 	}
 	
 	public String getStatus() {

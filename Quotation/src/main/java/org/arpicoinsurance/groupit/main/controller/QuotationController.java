@@ -42,7 +42,7 @@ public class QuotationController {
 			if(detailList!=null) {
 				for (Quotation quotation : detailList) {
 					QuoDetails details=new QuoDetails();
-					details.setQuotationNum(quotation.getQuotationNum());
+					details.setQuotationNum(quotation.getId());
 					details.setProductCode(quotation.getProducts().getProductCode());
 					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
 					details.setCustomerName(quotation.getCustomerDetails().getCustName());

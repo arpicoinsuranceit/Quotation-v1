@@ -2,7 +2,7 @@ package org.arpicoinsurance.groupit.main.helper;
 
 public class QuoDetails {
 	
-	private String quotationNum;
+	private Integer quotationNum;
 	private String branchCode;
 	private String productCode;
 	private String customerName;
@@ -12,11 +12,11 @@ public class QuoDetails {
 		
 	}
 
-	public String getQuotationNum() {
+	public Integer getQuotationNum() {
 		return quotationNum;
 	}
 
-	public void setQuotationNum(String quotationNum) {
+	public void setQuotationNum(Integer quotationNum) {
 		this.quotationNum = quotationNum;
 	}
 

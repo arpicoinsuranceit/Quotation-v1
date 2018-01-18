@@ -4,15 +4,35 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
+import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
+import org.arpicoinsurance.groupit.main.dao.CustomerDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationDao;
+import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
+import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
+import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
+import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
+import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.RiderDetails;
+import org.arpicoinsurance.groupit.main.model.Child;
+import org.arpicoinsurance.groupit.main.model.Customer;
+import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
+import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardINVP;
+import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
@@ -142,6 +162,21 @@ public class INVEPServiceImpl implements INVPService {
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
 
+	@Autowired
+	private ProductDao productDao;
+
+	@Autowired
+	private UsersDao userDao;
+
+	@Autowired
+	private OccupationDao occupationDao;
+
+	@Autowired
+	private BenefitsDao benefitsDao;
+
+	@Autowired
+	private CustomerDao customerDao;
+
 	@Override
 	public QuoCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
 
@@ -182,9 +217,9 @@ public class INVEPServiceImpl implements INVPService {
 				for (Benifict benifict : _mRiders) {
 					adultCount = 1;
 					if (benifict.getType().equals("HRB")) {
-						if(quotationCalculation.get_personalInfo().getSage()!=null &&
-								quotationCalculation.get_personalInfo().getSgenger() != null && 
-								quotationCalculation.get_personalInfo().getSocu() != null) {
+						if (quotationCalculation.get_personalInfo().getSage() != null
+								&& quotationCalculation.get_personalInfo().getSgenger() != null
+								&& quotationCalculation.get_personalInfo().getSocu() != null) {
 							if (_sRiders != null) {
 								for (Benifict benifict2 : _sRiders) {
 									if (benifict2.getType().equals("HRBS")) {
@@ -193,7 +228,7 @@ public class INVEPServiceImpl implements INVPService {
 								}
 							}
 						}
-						
+
 						if (quotationCalculation.get_personalInfo().getChildrens() != null
 								&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
 							if (_cRiders != null) {
@@ -362,61 +397,73 @@ public class INVEPServiceImpl implements INVPService {
 			BigDecimal scb = scbService.calculateSCB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setBsas(scb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scb.doubleValue());
+			calResp.setBsasTerm(term);
 			break;
 		case "ADB":
 			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, 1.0);
 			calResp.setAdb(adb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adb.doubleValue());
+			calResp.setAdbTerm(term);
 			break;
 		case "ADBS":
 			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, 1.0);
 			calResp.setAdbs(adbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adbs.doubleValue());
+			calResp.setAdbsTerm(term);
 			break;
 		case "ATPB":
 			BigDecimal atpb = atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setAtpb(atpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + atpb.doubleValue());
+			calResp.setAtpbTerm(term);
 			break;
 		case "TPDASB":
 			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setTpdasb(tpdasb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasb.doubleValue());
+			calResp.setTpdasbTerm(term);
 			break;
 		case "TPDASBS":
 			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setTpdasbs(tpdasbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasbs.doubleValue());
+			calResp.setTpdasbsTerm(term);
 			break;
 		case "TPDB":
 			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0);
 			calResp.setTpdb(tpdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdb.doubleValue());
+			calResp.setTpdbTerm(term);
 			break;
 		case "TPDBS":
 			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0);
 			calResp.setTpdbs(tpdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdbs.doubleValue());
+			calResp.setTpdbsTerm(term);
 			break;
 		case "PPDB":
 			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0);
 			calResp.setPpdb(ppdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdb.doubleValue());
+			calResp.setPpdbTerm(term);
 			break;
 		case "PPDBS":
 			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0);
 			calResp.setPpdbs(ppdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdbs.doubleValue());
+			calResp.setPpdbsTerm(term);
 			break;
 		case "CIB":
 			BigDecimal cib = cibService.calculateCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setCib(cib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cib.doubleValue());
+			calResp.setCibTerm(term);
 			break;
 		case "CIBS":
 			BigDecimal scib = scibService.calculateSCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setCibs(scib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scib.doubleValue());
+			calResp.setCibsTerm(term);
 			break;
 		case "CIBC":
 			// ** 21-age < term term = 21-age else term
@@ -424,32 +471,38 @@ public class INVEPServiceImpl implements INVPService {
 					payFrequency, 1.0);
 			calResp.setCibc(calResp.getCibc() + cibc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cibc.doubleValue());
+			calResp.setCibcTerm(term);
 			break;
 		case "FEB":
 			BigDecimal feb = febService.calculateFEB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setFeb(feb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + feb.doubleValue());
+			calResp.setFebTerm(term);
 			break;
 		case "FEBS":
 			BigDecimal febs = febsService.calculateFEBS(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setFebs(febs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + febs.doubleValue());
+			calResp.setFebsTerm(term);
 			break;
 
 		case "MFIBD":
 			BigDecimal mfibd = mfibdService.calculateMFIBD(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setMifdb(mfibd.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibd.doubleValue());
+			calResp.setMifdbTerm(term);
 			break;
 		case "MFIBT":
 			BigDecimal mfibt = mfibtService.calculateMFIBT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setMifdt(mfibt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibt.doubleValue());
+			calResp.setMifdtTerm(term);
 			break;
 		case "MFIBDT":
 			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setMifdbt(mfibdt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibdt.doubleValue());
+			calResp.setMifdbtTerm(term);
 			break;
 		case "HRB":
 			System.out.println(age + "******************************************** " + gender + " " + ridsumasu + " "
@@ -458,32 +511,38 @@ public class INVEPServiceImpl implements INVPService {
 					payFrequency, 1.0);
 			calResp.setHrb(hrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrb.doubleValue());
+			calResp.setHrbTerm(term);
 			break;
 		case "SUHRB":
 			BigDecimal suhrb = suhrbService.calculateSUHRB(age, gender, term, ridsumasu, new Date(), payFrequency, 1.0);
 			calResp.setSuhrb(suhrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
+			calResp.setSuhrbTerm(term);
 			break;
 		case "SUHRBS":
 			BigDecimal suhrbs = suhrbsService.calculateSUHRBS(28, "F", term, ridsumasu, new Date(), payFrequency, 1.0);
 			calResp.setSuhrbs(suhrbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
+			calResp.setSuhrbsTerm(term);
 			break;
 		case "SUHRBC":
 			BigDecimal suhrbc = suhrbcService.calculateSUHRBC(6, gender, term, ridsumasu, new Date(), payFrequency,
 					1.0);
 			calResp.setSuhrbc(calResp.getSuhrbc() + suhrbc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbc.doubleValue());
+			calResp.setSuhrbcTerm(term);
 			break;
 		case "HB":
 			BigDecimal hb = hbService.calculateHB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setHb(hb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hb.doubleValue());
+			calResp.setHbTerm(term);
 			break;
 		case "HBS":
 			BigDecimal hbs = hbsService.calculateHBS(28, term, new Date(), ridsumasu, payFrequency, 1.0);
 			calResp.setHbs(hbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbs.doubleValue());
+			calResp.setHbsTerm(term);
 			break;
 		case "HBC":
 			// ** 21-age < term term = 21-age else term
@@ -491,16 +550,19 @@ public class INVEPServiceImpl implements INVPService {
 					payFrequency, 1.0);
 			calResp.setHbc(calResp.getHbc() + hbc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbc.doubleValue());
+			calResp.setHbcTerm(term);
 			break;
 		case "WPB":
 			BigDecimal wpb = wpbService.calculateWPB(calResp);
 			calResp.setWpb(wpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpb.doubleValue());
+			calResp.setWpbTerm(term);
 			break;
 		case "WPBS":
 			BigDecimal wpbs = wpbsService.calculateWPBS(calResp);
 			calResp.setWpbs(wpbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpbs.doubleValue());
+			calResp.setWpbsTerm(term);
 			break;
 
 		default:
@@ -508,6 +570,373 @@ public class INVEPServiceImpl implements INVPService {
 		}
 
 		return 0.0;
+	}
+
+	@Override
+	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation)
+			throws Exception {
+
+		QuoCalResp calResp = getCalcutatedInvp(calculation);
+		Products products = productDao.findByProductCode("INVP");
+		Users user = userDao.findOne(1339);
+		Occupation occupationMainlife = occupationDao.findOne(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findOne(calculation.get_personalInfo().getSocu());
+
+		CustomerDetails mainLifeDetail = getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
+				user);
+
+		CustomerDetails spouseDetail = getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+
+		Customer mainlife = new Customer();
+		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
+		mainlife.setCustCreateDate(new Date());
+		mainlife.setCustCreateBy(user.getUser_Name());
+		mainLifeDetail.setCustomer(mainlife);
+
+		Customer spouse = new Customer();
+		if (_invpSaveQuotation.get_personalInfo().get_spouse() != null
+				&& _invpSaveQuotation.get_personalInfo().get_spouse().is_sActive()) {
+			spouse.setCustName(spouseDetail.getCustName());
+			spouseDetail.setCustomer(spouse);
+		}
+
+		ArrayList<Child> childList = getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+
+		QuotationDetails quotationDetails = getQuotationDetail(calResp, calculation);
+
+		Quotation quotation = new Quotation();
+		quotation.setCustomerDetails(mainLifeDetail);
+		quotation.setSpouseDetails(spouseDetail);
+		quotation.setStatus("active");
+		quotation.setUser(user);
+		quotation.setProducts(products);
+
+		quotationDetails.setQuotation(quotation);
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
+				quotationDetails);
+
+		//////////////////////////// save//////////////////////////////////
+		Customer life = (Customer) customerDao.save(mainlife);
+		if (life != null) {
+			System.out.println(life.getCustName());
+			return life.getCustName() + "Pass";
+		}
+
+		return "Error";
+
+	}
+
+	/////////////////////////////////////// Additional Methods
+	/////////////////////////////////////// ////////////////////////////
+
+	private CustomerDetails getSpouseDetail(Occupation occupationSpouse, InvpSavePersonalInfo get_personalInfo,
+			Users user) {
+		CustomerDetails spouseDetail = null;
+		if (get_personalInfo.get_spouse() != null && get_personalInfo.get_spouse().is_sActive() == true) {
+			try {
+
+				spouseDetail = new CustomerDetails();
+				spouseDetail.setCustCivilStatus("Married");
+				spouseDetail.setCustCreateBy(user.getUser_Name());
+				spouseDetail.setCustCreateDate(new Date());
+				spouseDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_spouse().get_sDob()));
+				spouseDetail.setCustGender(get_personalInfo.get_spouse().get_sGender());
+				spouseDetail.setCustNic(get_personalInfo.get_spouse().get_sNic());
+				spouseDetail.setCustTitle(get_personalInfo.get_spouse().get_sTitle());
+				spouseDetail.setOccupation(occupationSpouse);
+
+				return spouseDetail;
+			} finally {
+				if (spouseDetail != null) {
+					spouseDetail = null;
+				}
+			}
+		}
+		return null;
+	}
+
+	private CustomerDetails getCustomerDetail(Occupation occupationMainlife, InvpSavePersonalInfo get_personalInfo,
+			Users user) {
+		CustomerDetails mainLifeDetail = null;
+		try {
+			mainLifeDetail = new CustomerDetails();
+			mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
+			mainLifeDetail.setCustCivilStatus(get_personalInfo.get_spouse().is_sActive() ? "Married" : "Single");
+			mainLifeDetail.setCustCreateBy(user.getUser_Name());
+			mainLifeDetail.setCustCreateDate(new Date());
+			mainLifeDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
+			mainLifeDetail.setCustEmail(get_personalInfo.get_mainlife().get_mEmail());
+			mainLifeDetail.setCustGender(get_personalInfo.get_mainlife().get_mGender());
+			mainLifeDetail.setCustNic(get_personalInfo.get_mainlife().get_mNic());
+			mainLifeDetail.setCustTel(get_personalInfo.get_mainlife().get_mMobile());
+			mainLifeDetail.setCustTitle(get_personalInfo.get_mainlife().get_mTitle());
+			mainLifeDetail.setOccupation(occupationMainlife);
+
+			return mainLifeDetail;
+		} finally {
+			if (mainLifeDetail != null) {
+				mainLifeDetail = null;
+			}
+		}
+	}
+
+	private ArrayList<Child> getChilds(ArrayList<Children> get_childrenList) {
+		ArrayList<Child> childList = null;
+		if (get_childrenList != null && get_childrenList.size() > 0) {
+			try {
+				childList = new ArrayList();
+				for (Children children : get_childrenList) {
+					Child child = new Child();
+					child.setChildName(children.get_cName());
+					child.setChildGender(children.get_cTitle());
+					child.setChildDob(new DateConverter().stringToDate(children.get_cDob()));
+					child.setChildNic(children.get_cNic());
+					child.setChildRelation(children.get_cTitle() == "G" ? "Daughter" : "Son");
+
+					childList.add(child);
+				}
+
+				return childList;
+			} finally {
+				if (childList != null) {
+					childList = null;
+				}
+			}
+		}
+		return null;
+
+	}
+
+	private QuotationDetails getQuotationDetail(QuoCalResp calResp, QuotationCalculation calculation) {
+		QuotationDetails quotationDetails = null;
+		try {
+			quotationDetails = new QuotationDetails();
+			quotationDetails.setBaseSum(calculation.get_personalInfo().getBsa());
+			quotationDetails.setInterestRate(8.5);
+			quotationDetails.setAdminFee(-1.00);
+			quotationDetails.setInvestmentPos(-1.00);
+			quotationDetails.setLifePos(-1.00);
+			quotationDetails.setPayMode(calculation.get_personalInfo().getFrequance());
+			quotationDetails.setPayTerm(calculation.get_personalInfo().getTerm());
+			quotationDetails.setPolicyFee(-1.00);
+			switch (calculation.get_personalInfo().getFrequance()) {
+			case "M":
+				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());
+				quotationDetails.setPremiumMonthT(calResp.getTotPremium());
+				break;
+			case "Q":
+				quotationDetails.setPremiumQuater(calResp.getBasicSumAssured());
+				quotationDetails.setPremiumQuaterT(calResp.getTotPremium());
+				break;
+			case "H":
+				quotationDetails.setPremiumHalf(calResp.getBasicSumAssured());
+				quotationDetails.setPremiumHalfT(calResp.getTotPremium());
+				break;
+			case "Y":
+				quotationDetails.setPremiumYear(calResp.getBasicSumAssured());
+				quotationDetails.setPremiumYearT(calResp.getTotPremium());
+				break;
+			default:
+				break;
+			}
+			return quotationDetails;
+		} finally {
+			if (quotationDetails != null) {
+				quotationDetails = null;
+			}
+		}
+
+	}
+
+	private ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuoCalResp calResp,
+			QuotationDetails quotationDetails) throws Exception {
+		ArrayList<Quo_Benef_Details> benef_DetailList = null;
+		try {
+			benef_DetailList = new ArrayList<>();
+			ArrayList<Benifict> benifictListM = get_riderDetails.get_mRiders();
+			if (benifictListM != null && benifictListM.size() > 0) {
+				for (Benifict benifict : benifictListM) {
+					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+					benef_Details.setBenefit(benefitsDao.findByRiderCode(benifict.getType()));
+					benef_Details.setQuotationDetails(quotationDetails);
+					benef_Details.setRiderSum(benifict.getSumAssured());
+
+					String type = benifict.getType();
+
+					switch (type) {
+
+					case "ADB":
+						benef_Details.setRiderPremium(calResp.getAdb());
+						benef_Details.setRiderTerm(calResp.getAdbTerm());
+						break;
+					case "ATPB":
+						benef_Details.setRiderPremium(calResp.getAtpb());
+						benef_Details.setRiderTerm(calResp.getAtpbTerm());
+						break;
+					case "TPDASB":
+						benef_Details.setRiderPremium(calResp.getTpdasb());
+						benef_Details.setRiderTerm(calResp.getTpdasbTerm());
+						break;
+					case "TPDB":
+						benef_Details.setRiderPremium(calResp.getTpdb());
+						benef_Details.setRiderTerm(calResp.getTpdbTerm());
+						break;
+					case "PPDB":
+						benef_Details.setRiderPremium(calResp.getPpdb());
+						benef_Details.setRiderTerm(calResp.getPpdbTerm());
+						break;
+					case "CIB":
+						benef_Details.setRiderPremium(calResp.getCib());
+						benef_Details.setRiderTerm(calResp.getCibTerm());
+						break;
+					case "FEB":
+						benef_Details.setRiderPremium(calResp.getFeb());
+						benef_Details.setRiderTerm(calResp.getFebTerm());
+						break;
+					case "MFIBD":
+						benef_Details.setRiderPremium(calResp.getMifdb());
+						benef_Details.setRiderTerm(calResp.getMifdbTerm());
+						break;
+					case "MFIBT":
+						benef_Details.setRiderPremium(calResp.getMifdt());
+						benef_Details.setRiderTerm(calResp.getMifdtTerm());
+						break;
+					case "MFIBDT":
+						benef_Details.setRiderPremium(calResp.getMifdbt());
+						benef_Details.setRiderTerm(calResp.getMifdbtTerm());
+						break;
+					case "HRB":
+						benef_Details.setRiderPremium(calResp.getHrb());
+						benef_Details.setRiderTerm(calResp.getHrbTerm());
+						break;
+					case "SUHRB":
+						benef_Details.setRiderPremium(calResp.getSuhrb());
+						benef_Details.setRiderTerm(calResp.getSuhrbTerm());
+						break;
+					case "HB":
+						benef_Details.setRiderPremium(calResp.getHb());
+						benef_Details.setRiderTerm(calResp.getHbTerm());
+						break;
+					case "WPB":
+						benef_Details.setRiderPremium(calResp.getWpb());
+						benef_Details.setRiderTerm(calResp.getWpbTerm());
+						break;
+
+					default:
+						break;
+					}
+
+					benef_DetailList.add(benef_Details);
+
+				}
+			}
+
+			ArrayList<Benifict> benifictListS = get_riderDetails.get_sRiders();
+
+			if (benifictListS != null && benifictListS.size() > 0) {
+				for (Benifict benifict : benifictListS) {
+					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+					benef_Details.setBenefit(benefitsDao.findByRiderCode(benifict.getType()));
+					benef_Details.setQuotationDetails(quotationDetails);
+					benef_Details.setRiderSum(benifict.getSumAssured());
+
+					String type = benifict.getType();
+
+					switch (type) {
+
+					case "BSAS":
+						benef_Details.setRiderPremium(calResp.getBsas());
+						benef_Details.setRiderTerm(calResp.getBsasTerm());
+						break;
+					case "ADBS":
+						benef_Details.setRiderPremium(calResp.getAdbs());
+						benef_Details.setRiderTerm(calResp.getAdbsTerm());
+						break;
+					case "TPDASBS":
+						benef_Details.setRiderPremium(calResp.getTpdasbs());
+						benef_Details.setRiderTerm(calResp.getTpdasbsTerm());
+						break;
+					case "TPDBS":
+						benef_Details.setRiderPremium(calResp.getTpdbs());
+						benef_Details.setRiderTerm(calResp.getTpdbsTerm());
+						break;
+					case "PPDBS":
+						benef_Details.setRiderPremium(calResp.getPpdbs());
+						benef_Details.setRiderTerm(calResp.getPpdbsTerm());
+						break;
+					case "CIBS":
+						benef_Details.setRiderPremium(calResp.getCibs());
+						benef_Details.setRiderTerm(calResp.getCibsTerm());
+						break;
+					case "FEBS":
+						benef_Details.setRiderPremium(calResp.getFebs());
+						benef_Details.setRiderTerm(calResp.getFebsTerm());
+						break;
+					case "HRBS":
+						benef_Details.setRiderPremium(calResp.getHrbs());
+						benef_Details.setRiderTerm(calResp.getHrbsTerm());
+						break;
+					case "SUHRBS":
+						benef_Details.setRiderPremium(calResp.getSuhrbs());
+						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
+						break;
+					case "HBS":
+						benef_Details.setRiderPremium(calResp.getHbs());
+						benef_Details.setRiderTerm(calResp.getHbsTerm());
+						break;
+					case "WPBS":
+						benef_Details.setRiderPremium(calResp.getWpbs());
+						benef_Details.setRiderTerm(calResp.getWpbsTerm());
+						break;
+
+					default:
+						break;
+					}
+
+					benef_DetailList.add(benef_Details);
+
+				}
+			}
+
+			ArrayList<Benifict> benifictListC = get_riderDetails.get_cRiders();
+
+			if (benifictListC != null && benifictListC.size() > 0) {
+				for (Benifict benifict : benifictListC) {
+					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+					benef_Details.setBenefit(benefitsDao.findByRiderCode(benifict.getType()));
+					benef_Details.setQuotationDetails(quotationDetails);
+					benef_Details.setRiderSum(benifict.getSumAssured());
+
+					String type = benifict.getType();
+
+					switch (type) {
+
+					case "CIBC":
+						benef_Details.setRiderPremium(calResp.getCibc());
+						break;
+					case "SUHRBC":
+						benef_Details.setRiderPremium(calResp.getSuhrbc());
+						break;
+					case "HBC":
+						benef_Details.setRiderPremium(calResp.getHbc());
+						break;
+
+					default:
+						break;
+					}
+
+					benef_DetailList.add(benef_Details);
+
+				}
+			}
+
+			return benef_DetailList;
+		} finally {
+			if (benef_DetailList != null) {
+				benef_DetailList = null;
+			}
+		}
 	}
 
 }

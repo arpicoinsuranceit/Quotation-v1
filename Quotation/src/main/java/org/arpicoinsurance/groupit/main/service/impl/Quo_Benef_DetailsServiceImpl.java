@@ -64,10 +64,10 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	}
 
 	@Override
-	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(String quoNum) throws Exception {
+	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
 		
 		List<QuotationDetails> quotationDetails=new ArrayList<>();
-		quotationDetailsDao.findByQuoNum(quoNum).forEach(quotationDetails::add);
+		quotationDetailsDao.findByQuoNum(id).forEach(quotationDetails::add);
 		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
 		
 		if(!quotationDetails.isEmpty()) {
