@@ -1,5 +1,7 @@
 package org.arpicoinsurance.groupit.main.common;
 
+import java.math.BigDecimal;
+
 public class CalculationUtils {
 	
 	public int getPayterm(String payFrequency) {
@@ -61,5 +63,28 @@ public class CalculationUtils {
 	        	return 0;
 		}
 	}
+	
+	public double getAdminFee(String payFrequency) {
+		switch(payFrequency) {
+	        case "M" :
+	        	return 10.0;
+	        case "Q" :
+	        	return 20.0;
+	        case "H" :
+	        	return 32.0;
+	        case "Y" :
+	        	return 50.0;
+	        case "S" :
+	        	return 450.0;	        	
+	        default :
+	        	return 0;
+		}
+	}
+	
+	public double getTaxAmount(double bassum) {
+		return new BigDecimal(0.002).multiply(new BigDecimal(bassum)).setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+	
+	
 	
 }

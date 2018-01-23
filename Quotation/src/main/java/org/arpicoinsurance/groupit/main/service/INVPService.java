@@ -15,6 +15,10 @@ public interface INVPService {
 	Double addRebatetoBSAPremium(double rebate, BigDecimal premium) throws Exception;
 	
 	BigDecimal calculateMaturity(int age, int term, double intrat, Date chedat, double bassum, int paytrm)throws Exception;
+	
+	BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm)throws Exception;
+	
+	
 
 	
 }

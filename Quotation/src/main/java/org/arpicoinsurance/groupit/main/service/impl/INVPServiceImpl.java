@@ -7,11 +7,13 @@ import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
+import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.model.RateCardATFESC;
 import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.INVPService;
@@ -48,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class INVEPServiceImpl implements INVPService {
+public class INVPServiceImpl implements INVPService {
 
 	private Double occupationValue = 1.0;
 
@@ -140,6 +142,9 @@ public class INVEPServiceImpl implements INVPService {
 	private RateCardINVPDao rateCardINVPDao;
 
 	@Autowired
+	private RateCardATFESCDao rateCardATFESCDao;
+	
+	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
 
 	@Override
@@ -155,6 +160,8 @@ public class INVEPServiceImpl implements INVPService {
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
+			/// Calculate Admin Fee Premium ///
+			Double admfee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
@@ -277,7 +284,7 @@ public class INVEPServiceImpl implements INVPService {
 				}
 			}
 
-			calResp.setBasicSumAssured(addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(addRebatetoBSAPremium(rebate, bsaPremium));			
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
@@ -290,7 +297,13 @@ public class INVEPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setExtraOE(2.5);
+			/// Calculate Tax Amount Premium ///
+			Double taxamt = calculationUtils.getTaxAmount((calResp.getBasicSumAssured()+calResp.getAddBenif()));
+			/// get Invest Life Premium ///
+			getInvestLifePremium(quotationCalculation.get_personalInfo().getMage(), quotationCalculation.get_personalInfo().getTerm(), 
+					new Date(), quotationCalculation.get_personalInfo().getBsa(), calResp.getBasicSumAssured(), 
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+			calResp.setExtraOE(admfee+taxamt);
 			calResp.setTotPremium(calResp.getBasicSumAssured()+calResp.getAddBenif()+ calResp.getExtraOE());
 			return calResp;
 
@@ -507,5 +520,16 @@ public class INVEPServiceImpl implements INVPService {
 
 		return 0.0;
 	}
+
+	@Override
+	public BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm) throws Exception {
+		BigDecimal lifpos = new BigDecimal(0);
+		RateCardATFESC rateCardATFESC = rateCardATFESCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
+		System.out.println("age : "+age+" term : "+term+" BSA premium : "+premium+" paytrm : "+paytrm+" Rate : "+rateCardATFESC.getRate());
+		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate()))).divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
+		System.out.println("lifpos : "+lifpos.doubleValue()+" invpos : "+(premium-lifpos.doubleValue()));
+		return lifpos;
+	}
+
 
 }
