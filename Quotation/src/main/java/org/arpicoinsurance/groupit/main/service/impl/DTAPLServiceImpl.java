@@ -6,14 +6,14 @@ import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.dao.RateCardDTADao;
 import org.arpicoinsurance.groupit.main.model.RateCardDTA;
-import org.arpicoinsurance.groupit.main.service.DTAService;
+import org.arpicoinsurance.groupit.main.service.DTAPLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class DTAServiceImpl implements DTAService {
+public class DTAPLServiceImpl implements DTAPLService {
 
 	@Autowired
 	private RateCardDTADao rateCardDTADao;
@@ -45,9 +45,9 @@ public class DTAServiceImpl implements DTAService {
 
             BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
 
-            // @loan_reduction@*@rate@/1000
-            BigDecimal premium = (reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000), 0, BigDecimal.ROUND_HALF_UP);
-
+            // (@loan_reduction@*@rate@/1000)+((@loan_reduction@*@rate@/1000)*0.2)
+            BigDecimal premium = ((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).add((((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.2)))).setScale(0, RoundingMode.HALF_UP);
+            
             total_premium = total_premium.add(premium);
 
             System.out.println("polyer : "+ String.valueOf(i));

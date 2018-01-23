@@ -13,10 +13,17 @@ import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
+import org.arpicoinsurance.groupit.main.service.DTAPLService;
 import org.arpicoinsurance.groupit.main.service.DTAService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
+import org.arpicoinsurance.groupit.main.service.rider.JLBService;
 import org.arpicoinsurance.groupit.main.service.rider.SFPOService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTAPLService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTASPLService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTASService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +65,26 @@ public class QuotationCalculationController {
 	@Autowired
 	private DTAService dtaService;
 	
+	@Autowired
+	private TPDDTAService tpddtaService;
+	
+	@Autowired
+	private JLBService jlbService;
+	
+	@Autowired
+	private TPDDTASService tpddtasService;
+	
+	@Autowired
+	private DTAPLService dtaplService;
+	
+	@Autowired
+	private TPDDTAPLService tpddtaplService;
+	
+	@Autowired
+	private JLBPLService jlbplService;
+	
+	@Autowired
+	private TPDDTASPLService tpddtasplService;
 	
 	@RequestMapping(value="/quoCal",method=RequestMethod.POST)
 	public QuoCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
@@ -184,7 +211,25 @@ public class QuotationCalculationController {
 	@RequestMapping(value="/dtaCal",method=RequestMethod.POST)
 	public String calculateDTA() {
 		try {		
-			dtaService.calculateL2(29, 10, 18.0, "M", new Date(), 15000000.0);
+			dtaService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
+			tpddtaService.calculateTPDDTA(29, 10, 22.0, "M", new Date(), 15000000.0);
+			jlbService.calculateJLB(27, 10, 22.0, "F", new Date(), 15000000.0);
+			tpddtasService.calculateTPDDTAS(27, 10, 22.0, "F", new Date(), 15000000.0);
+			return "ok";
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/dtaplCal",method=RequestMethod.POST)
+	public String calculateDTAPL() {
+		try {		
+			dtaplService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
+			tpddtaplService.calculateTPDDTAPL(29, 10, 22.0, "M", new Date(), 15000000.0);
+			jlbplService.calculateJLBPL(27, 10, 22.0, "F", new Date(), 15000000.0);
+			tpddtasplService.calculateTPDDTASPL(27, 10, 22.0, "F", new Date(), 15000000.0);
 			return "ok";
 		
 		} catch (Exception e) {
