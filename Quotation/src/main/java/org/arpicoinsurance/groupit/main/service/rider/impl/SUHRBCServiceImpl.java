@@ -23,6 +23,12 @@ public class SUHRBCServiceImpl implements SUHRBCService{
 	public BigDecimal calculateSUHRBC(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
 			String payFrequency, Double relief) throws Exception {
 		BigDecimal premiumSUHRBC = new BigDecimal(0);
+		System.out.println(age);
+		System.out.println(sex);
+		System.out.println(term);
+		System.out.println(ridsumasu);
+		System.out.println(payFrequency);
+		
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(age, age, age, age, sex, term, ridsumasu, chedat, chedat);
 		System.out.println("SUHRBC age : "+age+" sex : "+sex+" ridsumasu : "+ridsumasu+" term : "+term+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardSUHRB.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){

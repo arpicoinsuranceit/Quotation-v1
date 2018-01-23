@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+
+import org.arpicoinsurance.groupit.main.dao.custom.QuotationDaoCustom;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class QuotationDaoImpl implements QuotationDao{
+public class QuotationDaoImpl implements QuotationDaoCustom{
 	
 	@PersistenceContext
     EntityManager entityManager;

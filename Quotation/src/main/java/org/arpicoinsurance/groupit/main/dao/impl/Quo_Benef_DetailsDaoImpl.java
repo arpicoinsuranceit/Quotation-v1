@@ -5,12 +5,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
+
+import org.arpicoinsurance.groupit.main.dao.custom.Quo_Benef_DetailsDaoCustom;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class Quo_Benef_DetailsDaoImpl implements Quo_Benef_DetailsDao {
+public class Quo_Benef_DetailsDaoImpl implements Quo_Benef_DetailsDaoCustom {
 	
 	@PersistenceContext
     EntityManager entityManager;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +15,6 @@ import javax.persistence.ManyToOne;
 public class Quo_Benef_Child_Details implements Serializable{
 	private Integer quo_Benef_ChildId;
 	private CustChildDetails child;
-	private Quo_Benef_Details quoBenefDetails;
 	private Integer term;
 	private Double premium;
 	
@@ -36,15 +36,7 @@ public class Quo_Benef_Child_Details implements Serializable{
 	public void setCustChildDetails(CustChildDetails child) {
 		this.child = child;
 	}
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "quoBenfDetails_id", nullable = false)
-	public Quo_Benef_Details getQuoBenefDetails() {
-		return quoBenefDetails;
-	}
-	public void setQuoBenefDetails(Quo_Benef_Details quoBenefDetails) {
-		this.quoBenefDetails = quoBenefDetails;
-	}
+
 	public Integer getTerm() {
 		return term;
 	}

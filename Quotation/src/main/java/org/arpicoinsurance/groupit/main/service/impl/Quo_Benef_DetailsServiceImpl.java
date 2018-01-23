@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
+
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.custom.Quo_Benef_DetailsDaoCustom;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Autowired
-	private Quo_Benef_DetailsDao quoBenefDao;
+	private Quo_Benef_DetailsDaoCustom quoBenefDao;
 	
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;

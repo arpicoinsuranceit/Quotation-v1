@@ -2,7 +2,8 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.util.List;
 import javax.transaction.Transactional;
-import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+
+import org.arpicoinsurance.groupit.main.dao.custom.QuotationDaoCustom;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class QuotationServiceImpl implements QuotationService{
 	
 	@Autowired
-	private QuotationDao quotationDao;
+	private QuotationDaoCustom quotationDaoCustom;
 
 	@Override
 	public boolean saveQuotation(Quo_Benef_Details qbd) throws Exception {
@@ -31,7 +32,7 @@ public class QuotationServiceImpl implements QuotationService{
 
 	@Override
 	public boolean deleteQuotation(Integer id) throws Exception {
-		if(quotationDao.deleteOne(id) != null ) {
+		if(quotationDaoCustom.deleteOne(id) != null ) {
 			return true;
 		}else {
 			return false;
@@ -40,7 +41,7 @@ public class QuotationServiceImpl implements QuotationService{
 
 	@Override
 	public Quotation getQuotation(Integer id) throws Exception {
-		return quotationDao.findOne(id);
+		return quotationDaoCustom.findOne(id);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class QuotationServiceImpl implements QuotationService{
 
 	@Override
 	public List<Quotation> getQuotationByUserId(Integer id) throws Exception {
-		return quotationDao.findByUserId(id);
+		return quotationDaoCustom.findByUserId(id);
 	}
 
 }

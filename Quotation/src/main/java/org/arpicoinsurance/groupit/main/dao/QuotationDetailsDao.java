@@ -9,12 +9,10 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface QuotationDetailsDao extends CrudRepository<QuotationDetails,String> {
 
-	@Query("from QuotationDetails where id=?1")
-	QuotationDetails findOne(Integer id) throws Exception;
+	QuotationDetails findOneByQdId(Integer id) throws Exception;
 	
 	@Modifying
-	@Query("DELETE FROM QuotationDetails where id=?1")
-	Integer deleteOne(Integer id) throws Exception;
+	Integer deleteOneByQdId(Integer id) throws Exception;
 	
 	@Query("Select qd from QuotationDetails qd INNER JOIN qd.quotation q where q.id=qd.quotation and q.id=?1 order by qd.qdId desc")
 	List<QuotationDetails> findByQuoNum(Integer id) throws Exception;
