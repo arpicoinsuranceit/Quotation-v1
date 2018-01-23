@@ -214,6 +214,7 @@ public class INVEPServiceImpl implements INVPService {
 	@Override
 	public QuoCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
 
+		adultCount = 1;
 		System.out.println(quotationCalculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
@@ -642,16 +643,17 @@ public class INVEPServiceImpl implements INVPService {
 		ArrayList<Child> childList = getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
-		for (Child child : childList) {
-			CustChildDetails custChildDetails = new CustChildDetails();
-			custChildDetails.setChild(child);
-			custChildDetails.setCustomer(mainLifeDetail);
-			custChildDetailsList.add(custChildDetails);
-			if (spouse != null) {
-				custChildDetails.setCustomer(spouseDetail);
+		if (childList != null && !childList.isEmpty())
+			for (Child child : childList) {
+				CustChildDetails custChildDetails = new CustChildDetails();
+				custChildDetails.setChild(child);
+				custChildDetails.setCustomer(mainLifeDetail);
 				custChildDetailsList.add(custChildDetails);
+				if (spouse != null) {
+					custChildDetails.setCustomer(spouseDetail);
+					custChildDetailsList.add(custChildDetails);
+				}
 			}
-		}
 
 		QuotationDetails quotationDetails = getQuotationDetail(calResp, calculation);
 
@@ -705,9 +707,9 @@ public class INVEPServiceImpl implements INVPService {
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
 
-					//if (quoBenifChildDetailsDao.save(childBenifList) == null) {
-						//return "Error at Child Benifict Saving";
-					//}
+					// if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+					// return "Error at Child Benifict Saving";
+					// }
 
 				} else {
 					return "Error at Benifict Saving";
@@ -1068,14 +1070,15 @@ public class INVEPServiceImpl implements INVPService {
 		Double suhrb = null;
 		Double hb = null;
 
-		for (Benifict benifict : benifictListC) {
-			if (benifict.getType().equals("CIBC"))
-				cib = benifict.getSumAssured();
-			if (benifict.getType().equals("SUHRBC"))
-				suhrb = benifict.getSumAssured();
-			if (benifict.getType().equals("HBC"))
-				hb = benifict.getSumAssured();
-		}
+		if (benifictListC != null && !benifictListC.isEmpty())
+			for (Benifict benifict : benifictListC) {
+				if (benifict.getType().equals("CIBC"))
+					cib = benifict.getSumAssured();
+				if (benifict.getType().equals("SUHRBC"))
+					suhrb = benifict.getSumAssured();
+				if (benifict.getType().equals("HBC"))
+					hb = benifict.getSumAssured();
+			}
 
 		ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 		for (Children children : get_childrenList) {
