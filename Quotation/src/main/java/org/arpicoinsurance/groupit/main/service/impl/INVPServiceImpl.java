@@ -80,7 +80,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class INVEPServiceImpl implements INVPService {
+public class INVPServiceImpl implements INVPService {
 
 	private Double occupationValue = 1.0;
 
