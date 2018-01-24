@@ -5,10 +5,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.AIBService;
-//import org.arpicoinsurance.groupit.main.service.AIPService;
+import org.arpicoinsurance.groupit.main.service.AIPService;
 import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
@@ -16,7 +14,6 @@ import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.service.DTAPLService;
 import org.arpicoinsurance.groupit.main.service.DTAService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
-import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBService;
 import org.arpicoinsurance.groupit.main.service.rider.SFPOService;
@@ -35,11 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QuotationCalculationController {
 	
-	@Autowired
-	private INVPService invpService;
 	
-	//@Autowired
-	//private AIPService aipService;
+	@Autowired
+	private AIPService aipService;
 	
 	@Autowired
 	private AIBService aibService;
@@ -86,19 +81,6 @@ public class QuotationCalculationController {
 	@Autowired
 	private TPDDTASPLService tpddtasplService;
 	
-	@RequestMapping(value="/quoCal",method=RequestMethod.POST)
-	public QuoCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		//System.out.println(calculation);
-		
-		try {		
-			QuoCalResp calResp=invpService.getCalcutatedInvp(calculation);
-			return calResp;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
 	
 	@RequestMapping(value="/ageCal",method=RequestMethod.POST)
 	public Long calculateAge(@RequestBody String dob) {
@@ -113,7 +95,7 @@ public class QuotationCalculationController {
 		}
 		return null;
 	}
-	/*
+	
 	@RequestMapping(value="/aipCal",method=RequestMethod.POST)
 	public String calculateAIP() {
 		try {		
@@ -126,7 +108,7 @@ public class QuotationCalculationController {
 			e.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 	@RequestMapping(value="/aibCal",method=RequestMethod.POST)
 	public String calculateAIB() {

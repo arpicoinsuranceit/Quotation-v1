@@ -52,19 +52,6 @@ public class QuotationInvpCalculationController {
 		return null;
 	}
 
-	@RequestMapping(value = "/ageCal", method = RequestMethod.POST)
-	public Long calculateAge(@RequestBody String dob) {
-		try {
-			LocalDate dateOfBirth = LocalDate.parse(dob);
-			LocalDate currentDate = LocalDate.now();
-			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
-			return diffInYears + 1;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
