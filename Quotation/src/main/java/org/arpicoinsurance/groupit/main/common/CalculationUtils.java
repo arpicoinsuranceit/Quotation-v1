@@ -84,6 +84,11 @@ public class CalculationUtils {
 	public double getTaxAmount(double bassum) {
 		return new BigDecimal(0.002).multiply(new BigDecimal(bassum)).setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
+
+	public Double getPolicyFee() {
+		// TODO Auto-generated method stub
+		return 300.00;
+	}
 	
 	
 	

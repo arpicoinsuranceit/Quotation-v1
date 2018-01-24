@@ -169,7 +169,6 @@ public class INVPServiceImpl implements INVPService {
 	@Autowired
 	private WPBSService wpbsService;
 
-
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
 
@@ -211,7 +210,7 @@ public class INVPServiceImpl implements INVPService {
 
 	@Autowired
 	private RateCardATFESCDao rateCardATFESCDao;
-	
+
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
@@ -371,8 +370,13 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setExtraOE(2.5);
-			calResp.setTotPremium(calResp.getBasicSumAssured() + calResp.getAddBenif() + calResp.getExtraOE());
+			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
+			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
+			Double extraOE=adminFee + tax;
+			calResp.setExtraOE(extraOE);
+			calResp.setTotPremium(tot + extraOE);
+			
 			return calResp;
 
 		} finally {
@@ -812,34 +816,44 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoCalResp calResp, QuotationCalculation calculation) {
+	private QuotationDetails getQuotationDetail(QuoCalResp calResp, QuotationCalculation calculation) throws Exception {
 		QuotationDetails quotationDetails = null;
+		CalculationUtils calculationUtils = null;
 		try {
+			calculationUtils = new CalculationUtils();
+			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
+			Double taxAmount = calculationUtils.getTaxAmount(adminFee + calResp.getTotPremium() - calResp.getExtraOE());
+
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setBaseSum(calculation.get_personalInfo().getBsa());
 			quotationDetails.setInterestRate(8.5);
-			quotationDetails.setAdminFee(-1.00);
-			quotationDetails.setInvestmentPos(-1.00);
-			quotationDetails.setLifePos(-1.00);
+			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setLifePos(getInvestLifePremium(calculation.get_personalInfo().getMage(),
+					calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
+					calResp.getBasicSumAssured(),
+					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue());
+			quotationDetails.setInvestmentPos(calResp.getBasicSumAssured() - quotationDetails.getLifePos());
+
 			quotationDetails.setPayMode(calculation.get_personalInfo().getFrequance());
 			quotationDetails.setPayTerm(calculation.get_personalInfo().getTerm());
-			quotationDetails.setPolicyFee(-1.00);
+			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+			quotationDetails.setTaxAmount(taxAmount);
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
 				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumMonthT(calResp.getTotPremium());
+				quotationDetails.setPremiumMonthT(calResp.getTotPremium() - calResp.getExtraOE());
 				break;
 			case "Q":
 				quotationDetails.setPremiumQuater(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumQuaterT(calResp.getTotPremium());
+				quotationDetails.setPremiumQuaterT(calResp.getTotPremium() - calResp.getExtraOE());
 				break;
 			case "H":
 				quotationDetails.setPremiumHalf(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumHalfT(calResp.getTotPremium());
+				quotationDetails.setPremiumHalfT(calResp.getTotPremium() - calResp.getExtraOE());
 				break;
 			case "Y":
 				quotationDetails.setPremiumYear(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumYearT(calResp.getTotPremium());
+				quotationDetails.setPremiumYearT(calResp.getTotPremium() - calResp.getExtraOE());
 				break;
 			default:
 				break;
@@ -1225,14 +1239,19 @@ public class INVPServiceImpl implements INVPService {
 		System.out.println(childBenifList.size() + "                            444444");
 		return childBenifList;
 	}
-	
+
 	@Override
-	public BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm) throws Exception {
+	public BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm)
+			throws Exception {
 		BigDecimal lifpos = new BigDecimal(0);
-		RateCardATFESC rateCardATFESC = rateCardATFESCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("age : "+age+" term : "+term+" BSA premium : "+premium+" paytrm : "+paytrm+" Rate : "+rateCardATFESC.getRate());
-		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate()))).divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
-		System.out.println("lifpos : "+lifpos.doubleValue()+" invpos : "+(premium-lifpos.doubleValue()));
+		RateCardATFESC rateCardATFESC = rateCardATFESCDao
+				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+						chedat, chedat);
+		System.out.println("age : " + age + " term : " + term + " BSA premium : " + premium + " paytrm : " + paytrm
+				+ " Rate : " + rateCardATFESC.getRate());
+		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
+				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
+		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
 		return lifpos;
 	}
 
