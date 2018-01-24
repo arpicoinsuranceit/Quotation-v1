@@ -84,9 +84,6 @@ public class INVEPServiceImpl implements INVPService {
 
 	private Double occupationValue = 1.0;
 
-	private Integer adultCount = 1;
-	private Integer childCount = 0;
-
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 
 	@Autowired
@@ -215,7 +212,8 @@ public class INVEPServiceImpl implements INVPService {
 	@Override
 	public QuoCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
 
-		adultCount = 1;
+		Integer adultCount = 1;
+		Integer childCount = 0;
 		System.out.println(quotationCalculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
@@ -284,7 +282,8 @@ public class INVEPServiceImpl implements INVPService {
 					calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 							quotationCalculation.get_personalInfo().getMgenger(),
 							quotationCalculation.get_personalInfo().getMage(),
-							quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp);
+							quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
+							adultCount, childCount);
 
 				}
 			}
@@ -302,7 +301,8 @@ public class INVEPServiceImpl implements INVPService {
 						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 								quotationCalculation.get_personalInfo().getMgenger(),
 								quotationCalculation.get_personalInfo().getSage(),
-								quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp);
+								quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
+								adultCount, childCount);
 					}
 				}
 			}
@@ -322,7 +322,7 @@ public class INVEPServiceImpl implements INVPService {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
 											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp);
+											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
 
@@ -331,7 +331,7 @@ public class INVEPServiceImpl implements INVPService {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
 											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp);
+											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
 
@@ -340,7 +340,7 @@ public class INVEPServiceImpl implements INVPService {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
 											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp);
+											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
 
@@ -428,7 +428,8 @@ public class INVEPServiceImpl implements INVPService {
 	}
 
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Double occupationValue, QuoCalResp calResp) throws Exception {
+			Integer term, Double occupationValue, QuoCalResp calResp, Integer adultCount, Integer childCount)
+			throws Exception {
 
 		System.out.println(gender + "         dsdsdsdsdsd");
 		switch (type) {
@@ -544,8 +545,8 @@ public class INVEPServiceImpl implements INVPService {
 			calResp.setMifdbtTerm(term);
 			break;
 		case "HRB":
-			System.out.println(age + "******************************************** " + gender + " " + ridsumasu + " "
-					+ adultCount + " " + childCount);
+			System.out.println(age + "**********************Watch********************** " + gender + " " + ridsumasu
+					+ " " + adultCount + " " + childCount);
 			BigDecimal hrb = hrbService.calculateHRB(age, gender, ridsumasu, adultCount, childCount, new Date(),
 					payFrequency, 1.0);
 			calResp.setHrb(hrb.doubleValue());
@@ -1144,7 +1145,7 @@ public class INVEPServiceImpl implements INVPService {
 					for (CustChildDetails childDetails : custChildDetailsList) {
 						if (childDetails.getChild().equals(child)) {
 							System.out.println("hit1*******************");
-							
+
 							if (children.is_cCibc()) {
 								System.out.println("addddddddddddddddddddddddddddddddddddddd1");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
@@ -1159,7 +1160,8 @@ public class INVEPServiceImpl implements INVPService {
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(cibc.doubleValue());
-								System.out.println(cibc_Benef_Details.getQuo_Benef_DetailsId()+"===============================================1");
+								System.out.println(cibc_Benef_Details.getQuo_Benef_DetailsId()
+										+ "===============================================1");
 								benef_Child_Details.setQuo_Benef_Details(cibc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
@@ -1202,7 +1204,7 @@ public class INVEPServiceImpl implements INVPService {
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"HBC", term);
 								benef_Child_Details.setTerm(valiedTerm);
-								
+
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(0.0);
