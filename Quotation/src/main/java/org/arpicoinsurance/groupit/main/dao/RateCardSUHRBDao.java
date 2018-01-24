@@ -1,8 +1,6 @@
 package org.arpicoinsurance.groupit.main.dao;
 
 import java.util.Date;
-import java.util.List;
-
 import org.arpicoinsurance.groupit.main.model.RateCardSUHRB;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

@@ -22,6 +22,7 @@ import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
@@ -43,6 +44,7 @@ import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.RateCardATFESC;
 import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
@@ -167,8 +169,6 @@ public class INVPServiceImpl implements INVPService {
 	@Autowired
 	private WPBSService wpbsService;
 
-	@Autowired
-	private RateCardINVPDao rateCardINVPDao;
 
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
@@ -206,6 +206,12 @@ public class INVPServiceImpl implements INVPService {
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
+	@Autowired
+	private RateCardINVPDao rateCardINVPDao;
+
+	@Autowired
+	private RateCardATFESCDao rateCardATFESCDao;
+	
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
@@ -1218,6 +1224,16 @@ public class INVPServiceImpl implements INVPService {
 		}
 		System.out.println(childBenifList.size() + "                            444444");
 		return childBenifList;
+	}
+	
+	@Override
+	public BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm) throws Exception {
+		BigDecimal lifpos = new BigDecimal(0);
+		RateCardATFESC rateCardATFESC = rateCardATFESCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
+		System.out.println("age : "+age+" term : "+term+" BSA premium : "+premium+" paytrm : "+paytrm+" Rate : "+rateCardATFESC.getRate());
+		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate()))).divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
+		System.out.println("lifpos : "+lifpos.doubleValue()+" invpos : "+(premium-lifpos.doubleValue()));
+		return lifpos;
 	}
 
 }
