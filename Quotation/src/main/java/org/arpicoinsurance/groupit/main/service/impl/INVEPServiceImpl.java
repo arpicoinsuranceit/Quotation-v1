@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -612,12 +613,12 @@ public class INVEPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation)
+	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
 		QuoCalResp calResp = getCalcutatedInvp(calculation);
 		Products products = productDao.findByProductCode("INVP");
-		Users user = userDao.findOne(1339);
+		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findOne(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findOne(calculation.get_personalInfo().getSocu());
 
@@ -649,10 +650,6 @@ public class INVEPServiceImpl implements INVPService {
 				custChildDetails.setChild(child);
 				custChildDetails.setCustomer(mainLifeDetail);
 				custChildDetailsList.add(custChildDetails);
-				if (spouse != null) {
-					custChildDetails.setCustomer(spouseDetail);
-					custChildDetailsList.add(custChildDetails);
-				}
 			}
 
 		QuotationDetails quotationDetails = getQuotationDetail(calResp, calculation);
@@ -707,9 +704,9 @@ public class INVEPServiceImpl implements INVPService {
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
 
-					// if (quoBenifChildDetailsDao.save(childBenifList) == null) {
-					// return "Error at Child Benifict Saving";
-					// }
+					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+						return "Error at Child Benifict Saving";
+					}
 
 				} else {
 					return "Error at Benifict Saving";
@@ -875,58 +872,72 @@ public class INVEPServiceImpl implements INVPService {
 					case "ADB":
 						benef_Details.setRiderPremium(calResp.getAdb());
 						benef_Details.setRiderTerm(calResp.getAdbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "ATPB":
 						benef_Details.setRiderPremium(calResp.getAtpb());
 						benef_Details.setRiderTerm(calResp.getAtpbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "TPDASB":
 						benef_Details.setRiderPremium(calResp.getTpdasb());
 						benef_Details.setRiderTerm(calResp.getTpdasbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "TPDB":
 						benef_Details.setRiderPremium(calResp.getTpdb());
 						benef_Details.setRiderTerm(calResp.getTpdbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "PPDB":
 						benef_Details.setRiderPremium(calResp.getPpdb());
 						benef_Details.setRiderTerm(calResp.getPpdbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "CIB":
 						benef_Details.setRiderPremium(calResp.getCib());
 						benef_Details.setRiderTerm(calResp.getCibTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "FEB":
 						benef_Details.setRiderPremium(calResp.getFeb());
 						benef_Details.setRiderTerm(calResp.getFebTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "MFIBD":
 						benef_Details.setRiderPremium(calResp.getMifdb());
 						benef_Details.setRiderTerm(calResp.getMifdbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "MFIBT":
 						benef_Details.setRiderPremium(calResp.getMifdt());
 						benef_Details.setRiderTerm(calResp.getMifdtTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "MFIBDT":
 						benef_Details.setRiderPremium(calResp.getMifdbt());
 						benef_Details.setRiderTerm(calResp.getMifdbtTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "HRB":
 						benef_Details.setRiderPremium(calResp.getHrb());
 						benef_Details.setRiderTerm(calResp.getHrbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "SUHRB":
 						benef_Details.setRiderPremium(calResp.getSuhrb());
 						benef_Details.setRiderTerm(calResp.getSuhrbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "HB":
 						benef_Details.setRiderPremium(calResp.getHb());
 						benef_Details.setRiderTerm(calResp.getHbTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "WPB":
 						benef_Details.setRiderPremium(calResp.getWpb());
 						benef_Details.setRiderTerm(calResp.getWpbTerm());
+						benef_Details.setRierCode(type);
 						break;
 
 					default:
@@ -965,46 +976,57 @@ public class INVEPServiceImpl implements INVPService {
 					case "SCB":
 						benef_Details.setRiderPremium(calResp.getBsas());
 						benef_Details.setRiderTerm(calResp.getBsasTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "ADBS":
 						benef_Details.setRiderPremium(calResp.getAdbs());
 						benef_Details.setRiderTerm(calResp.getAdbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "TPDASBS":
 						benef_Details.setRiderPremium(calResp.getTpdasbs());
 						benef_Details.setRiderTerm(calResp.getTpdasbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "TPDBS":
 						benef_Details.setRiderPremium(calResp.getTpdbs());
 						benef_Details.setRiderTerm(calResp.getTpdbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "PPDBS":
 						benef_Details.setRiderPremium(calResp.getPpdbs());
 						benef_Details.setRiderTerm(calResp.getPpdbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "SCIB":
 						benef_Details.setRiderPremium(calResp.getCibs());
 						benef_Details.setRiderTerm(calResp.getCibsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "FEBS":
 						benef_Details.setRiderPremium(calResp.getFebs());
 						benef_Details.setRiderTerm(calResp.getFebsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "HRBS":
 						benef_Details.setRiderPremium(calResp.getHrbs());
 						benef_Details.setRiderTerm(calResp.getHrbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "SUHRBS":
 						benef_Details.setRiderPremium(calResp.getSuhrbs());
 						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "HBS":
 						benef_Details.setRiderPremium(calResp.getHbs());
 						benef_Details.setRiderTerm(calResp.getHbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 					case "WPBS":
 						benef_Details.setRiderPremium(calResp.getWpbs());
 						benef_Details.setRiderTerm(calResp.getWpbsTerm());
+						benef_Details.setRierCode(type);
 						break;
 
 					default:
@@ -1037,12 +1059,19 @@ public class INVEPServiceImpl implements INVPService {
 
 					case "CIBC":
 						benef_Details.setRiderPremium(calResp.getCibc());
+						benef_Details.setRierCode(type);
 						break;
 					case "SUHRBC":
 						benef_Details.setRiderPremium(calResp.getSuhrbc());
+						benef_Details.setRierCode(type);
 						break;
 					case "HBC":
 						benef_Details.setRiderPremium(calResp.getHbc());
+						benef_Details.setRierCode(type);
+						break;
+					case "HRBC":
+						benef_Details.setRiderPremium(0.0);
+						benef_Details.setRierCode(type);
 						break;
 
 					default:
@@ -1070,6 +1099,33 @@ public class INVEPServiceImpl implements INVPService {
 		Double suhrb = null;
 		Double hb = null;
 
+		Quo_Benef_Details cibc_Benef_Details = null;
+		Quo_Benef_Details hrbc_Benef_Details = null;
+		Quo_Benef_Details suhrbc_Benef_Details = null;
+		Quo_Benef_Details hbc_Benef_Details = null;
+
+		if (benef_DetailsList != null && !benef_DetailsList.isEmpty()) {
+			for (Quo_Benef_Details benef_Details : benef_DetailsList) {
+				String type = benef_Details.getRierCode();
+				switch (type) {
+				case "CIBC":
+					cibc_Benef_Details = benef_Details;
+					break;
+				case "SUHRBC":
+					suhrbc_Benef_Details = benef_Details;
+					break;
+				case "HRBC":
+					hrbc_Benef_Details = benef_Details;
+					break;
+				case "HBC":
+					hbc_Benef_Details = benef_Details;
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
 		if (benifictListC != null && !benifictListC.isEmpty())
 			for (Benifict benifict : benifictListC) {
 				if (benifict.getType().equals("CIBC"))
@@ -1082,13 +1138,15 @@ public class INVEPServiceImpl implements INVPService {
 
 		ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 		for (Children children : get_childrenList) {
-			System.out.println(children.is_cSuhrbc() + "     s     " + children.is_cCibc());
 			for (Child child : childList) {
 				if (child.getChildName().equals(children.get_cName())) {
+					System.out.println("hit*******************");
 					for (CustChildDetails childDetails : custChildDetailsList) {
 						if (childDetails.getChild().equals(child)) {
-
+							System.out.println("hit1*******************");
+							
 							if (children.is_cCibc()) {
+								System.out.println("addddddddddddddddddddddddddddddddddddddd1");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
@@ -1101,9 +1159,12 @@ public class INVEPServiceImpl implements INVPService {
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(cibc.doubleValue());
+								System.out.println(cibc_Benef_Details.getQuo_Benef_DetailsId()+"===============================================1");
+								benef_Child_Details.setQuo_Benef_Details(cibc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
 							if (children.is_cSuhrbc()) {
+								System.out.println("addddddddddddddddddddddddddddddddddddddd2");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
@@ -1116,9 +1177,11 @@ public class INVEPServiceImpl implements INVPService {
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(cibc.doubleValue());
+								benef_Child_Details.setQuo_Benef_Details(suhrbc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
 							if (children.is_cHbc()) {
+								System.out.println("addddddddddddddddddddddddddddddddddddddd3");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
@@ -1129,6 +1192,21 @@ public class INVEPServiceImpl implements INVPService {
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(cibc.doubleValue());
+								benef_Child_Details.setQuo_Benef_Details(hbc_Benef_Details);
+								childBenifList.add(benef_Child_Details);
+							}
+							if (children.is_cHrbc()) {
+								System.out.println("addddddddddddddddddddddddddddddddddddddd4");
+								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
+
+								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+										"HBC", term);
+								benef_Child_Details.setTerm(valiedTerm);
+								
+								benef_Child_Details.setCustChildDetails(childDetails);
+								benef_Child_Details.setTerm(valiedTerm);
+								benef_Child_Details.setPremium(0.0);
+								benef_Child_Details.setQuo_Benef_Details(hrbc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
 						}

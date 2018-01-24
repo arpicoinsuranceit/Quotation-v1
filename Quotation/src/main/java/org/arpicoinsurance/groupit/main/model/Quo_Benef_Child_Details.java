@@ -17,7 +17,7 @@ public class Quo_Benef_Child_Details implements Serializable{
 	private CustChildDetails child;
 	private Integer term;
 	private Double premium;
-	
+	private Quo_Benef_Details quo_Benef_Details;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,6 +48,17 @@ public class Quo_Benef_Child_Details implements Serializable{
 	}
 	public void setPremium(Double premium) {
 		this.premium = premium;
+	}
+	
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "quo_benf_details_id", nullable = false)
+	public Quo_Benef_Details getQuo_Benef_Details() {
+		return quo_Benef_Details;
+	}
+	
+	public void setQuo_Benef_Details(Quo_Benef_Details quo_Benef_Details) {
+		this.quo_Benef_Details = quo_Benef_Details;
 	}
 	
 	

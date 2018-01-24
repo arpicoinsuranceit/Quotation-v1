@@ -17,7 +17,7 @@ public interface INVPService {
 	
 	BigDecimal calculateMaturity(int age, int term, double intrat, Date chedat, double bassum, int paytrm)throws Exception;
 
-	String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation) throws Exception;
+	String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 
 	
 }

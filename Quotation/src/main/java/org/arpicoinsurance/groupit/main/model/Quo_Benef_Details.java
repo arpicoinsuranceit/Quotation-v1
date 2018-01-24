@@ -17,6 +17,7 @@ public class Quo_Benef_Details implements Serializable{
 	private Double riderPremium;
 	private Integer riderTerm;
 	private Double riderSum;
+	private String riderCode;
 	
 	private QuotationDetails quotationDetails;
 	private Benefits benefit;
@@ -100,6 +101,14 @@ public class Quo_Benef_Details implements Serializable{
 
 	public void setRiderSum(Double riderSum) {
 		this.riderSum = riderSum;
+	}
+
+	public String getRierCode() {
+		return riderCode;
+	}
+
+	public void setRierCode(String riderCode) {
+		this.riderCode = riderCode;
 	}
 	
 	

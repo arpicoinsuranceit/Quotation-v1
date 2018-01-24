@@ -37,7 +37,7 @@ public class QuotationController {
 		Integer userId=Integer.valueOf(id);
 		try {
 			ArrayList<Quotation> detailList=(ArrayList<Quotation>) quotationService.getQuotationByUserId(userId);
-			
+			System.out.println(detailList.size());
 			ArrayList<QuoDetails> quoDetails=new ArrayList<>();
 			if(detailList!=null) {
 				for (Quotation quotation : detailList) {
