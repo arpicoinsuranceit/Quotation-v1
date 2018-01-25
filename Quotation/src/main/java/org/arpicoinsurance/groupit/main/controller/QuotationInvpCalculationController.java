@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class QuotationInvpCalculationController {
 	private INVPService invpService;
 
 	@RequestMapping(value = "/quoInvpCal", method = RequestMethod.POST)
-	public QuoCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationInvpCalculation calculation) {
 		// System.out.println(calculation);
 		//// ******************do post validations before send response
 		try {
-			QuoCalResp calResp = new QuoCalResp();
+			QuoInvpCalResp calResp = new QuoInvpCalResp();
 			ValidationInvp validationInvp = new ValidationInvp(calculation);
 			if (validationInvp.validateInvpProd() == 1) {
 				String error = validationInvp.validateBenifict();
@@ -57,12 +57,12 @@ public class QuotationInvpCalculationController {
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
-		QuotationCalculation calculation = null;
+		QuotationInvpCalculation calculation = null;
 		ValidationInvp validationInvp = null;
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
-					calculation = new QuotationCalculation();
+					calculation = new QuotationInvpCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validationInvp = new ValidationInvp(calculation);

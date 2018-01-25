@@ -30,8 +30,8 @@ import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.MainLife;
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -215,52 +215,52 @@ public class INVPServiceImpl implements INVPService {
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
 	@Override
-	public QuoCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
+	public QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception {
 
 		Integer adultCount = 1;
 		Integer childCount = 0;
-		System.out.println(quotationCalculation.get_personalInfo().getMgenger());
+		System.out.println(quotationInvpCalculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
 		BenifictCalculation benifictCalculation = null;
 		try {
 
-			QuoCalResp calResp = new QuoCalResp();
+			QuoInvpCalResp calResp = new QuoInvpCalResp();
 			calculationUtils = new CalculationUtils();
 			benifictCalculation = new BenifictCalculation();
 			/// Calculate Rebate Premium ///
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationInvpCalculation.get_personalInfo().getTerm(),
+					quotationInvpCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
-			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+			BigDecimal bsaPremium = calculateL2(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()));
 
 			ArrayList<Benifict> _mRiders = null;
 			ArrayList<Benifict> _sRiders = null;
 			ArrayList<Benifict> _cRiders = null;
-			if (quotationCalculation.get_riderDetails() != null) {
-				if (quotationCalculation.get_riderDetails().get_mRiders() != null) {
-					_mRiders = quotationCalculation.get_riderDetails().get_mRiders();
+			if (quotationInvpCalculation.get_riderDetails() != null) {
+				if (quotationInvpCalculation.get_riderDetails().get_mRiders() != null) {
+					_mRiders = quotationInvpCalculation.get_riderDetails().get_mRiders();
 				}
-				if (quotationCalculation.get_riderDetails().get_sRiders() != null) {
-					_sRiders = quotationCalculation.get_riderDetails().get_sRiders();
+				if (quotationInvpCalculation.get_riderDetails().get_sRiders() != null) {
+					_sRiders = quotationInvpCalculation.get_riderDetails().get_sRiders();
 				}
-				if (quotationCalculation.get_riderDetails().get_cRiders() != null) {
-					_cRiders = quotationCalculation.get_riderDetails().get_cRiders();
+				if (quotationInvpCalculation.get_riderDetails().get_cRiders() != null) {
+					_cRiders = quotationInvpCalculation.get_riderDetails().get_cRiders();
 				}
 
 			}
-			/// SET VALUES TO QuoCalResp ///
+			/// SET VALUES TO QuoInvpCalResp ///
 
 			if (_mRiders != null) {
 				for (Benifict benifict : _mRiders) {
 					adultCount = 1;
 					if (benifict.getType().equals("HRB")) {
-						if (quotationCalculation.get_personalInfo().getSage() != null
-								&& quotationCalculation.get_personalInfo().getSgenger() != null
-								&& quotationCalculation.get_personalInfo().getSocu() != null) {
+						if (quotationInvpCalculation.get_personalInfo().getSage() != null
+								&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+								&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
 							if (_sRiders != null) {
 								for (Benifict benifict2 : _sRiders) {
 									if (benifict2.getType().equals("HRBS")) {
@@ -270,10 +270,10 @@ public class INVPServiceImpl implements INVPService {
 							}
 						}
 
-						if (quotationCalculation.get_personalInfo().getChildrens() != null
-								&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
+						if (quotationInvpCalculation.get_personalInfo().getChildrens() != null
+								&& quotationInvpCalculation.get_personalInfo().getChildrens().size() > 0) {
 							if (_cRiders != null) {
-								for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+								for (Children children : quotationInvpCalculation.get_personalInfo().getChildrens()) {
 									if (children.is_cHrbc()) {
 										childCount += 1;
 									}
@@ -282,51 +282,51 @@ public class INVPServiceImpl implements INVPService {
 						}
 					}
 					Integer term = calculateBenefictTerm.calculateBenifictTerm(
-							quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
-							quotationCalculation.get_personalInfo().getTerm());
+							quotationInvpCalculation.get_personalInfo().getMage(), benifict.getType(),
+							quotationInvpCalculation.get_personalInfo().getTerm());
 					calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-							quotationCalculation.get_personalInfo().getMgenger(),
-							quotationCalculation.get_personalInfo().getMage(),
-							quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
+							quotationInvpCalculation.get_personalInfo().getMgenger(),
+							quotationInvpCalculation.get_personalInfo().getMage(),
+							quotationInvpCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
 							adultCount, childCount);
 
 				}
 			}
 
-			if (quotationCalculation.get_personalInfo().getSage() != null
-					&& quotationCalculation.get_personalInfo().getSgenger() != null
-					&& quotationCalculation.get_personalInfo().getSocu() != null) {
+			if (quotationInvpCalculation.get_personalInfo().getSage() != null
+					&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+					&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
 
 				if (_sRiders != null) {
 
 					for (Benifict benifict : _sRiders) {
 						Integer term = calculateBenefictTerm.calculateBenifictTerm(
-								quotationCalculation.get_personalInfo().getSage(), benifict.getType(),
-								quotationCalculation.get_personalInfo().getTerm());
+								quotationInvpCalculation.get_personalInfo().getSage(), benifict.getType(),
+								quotationInvpCalculation.get_personalInfo().getTerm());
 						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-								quotationCalculation.get_personalInfo().getMgenger(),
-								quotationCalculation.get_personalInfo().getSage(),
-								quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
+								quotationInvpCalculation.get_personalInfo().getMgenger(),
+								quotationInvpCalculation.get_personalInfo().getSage(),
+								quotationInvpCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
 								adultCount, childCount);
 					}
 				}
 			}
 
-			if (quotationCalculation.get_personalInfo().getChildrens() != null
-					&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
-				for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+			if (quotationInvpCalculation.get_personalInfo().getChildrens() != null
+					&& quotationInvpCalculation.get_personalInfo().getChildrens().size() > 0) {
+				for (Children children : quotationInvpCalculation.get_personalInfo().getChildrens()) {
 					if (_cRiders != null) {
 						for (Benifict benifict : _cRiders) {
 							Integer term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
+									benifict.getType(), quotationInvpCalculation.get_personalInfo().getTerm());
 							String benfName = benifict.getType();
 
 							switch (benfName) {
 							case "CIBC":
 								if (children.is_cCibc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
+											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
@@ -334,8 +334,8 @@ public class INVPServiceImpl implements INVPService {
 							case "HBC":
 								if (children.is_cHbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
+											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
@@ -343,8 +343,8 @@ public class INVPServiceImpl implements INVPService {
 							case "SUHRBC":
 								if (children.is_cSuhrbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
+											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
 								break;
@@ -358,20 +358,20 @@ public class INVPServiceImpl implements INVPService {
 			}
 
 			calResp.setBasicSumAssured(addRebatetoBSAPremium(rebate, bsaPremium));
-			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setAt8(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 10.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setAt10(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
+			calResp.setAt6(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
+			calResp.setAt8(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 10.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
+			calResp.setAt10(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
 			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
-			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			Double adminFee = calculationUtils.getAdminFee(quotationInvpCalculation.get_personalInfo().getFrequance());
 			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE=adminFee + tax;
 			calResp.setExtraOE(extraOE);
@@ -438,7 +438,7 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Double occupationValue, QuoCalResp calResp, Integer adultCount, Integer childCount)
+			Integer term, Double occupationValue, QuoInvpCalResp calResp, Integer adultCount, Integer childCount)
 			throws Exception {
 
 		System.out.println(gender + "         dsdsdsdsdsd");
@@ -624,10 +624,10 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
+	public String saveQuotation(QuotationInvpCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
-		QuoCalResp calResp = getCalcutatedInvp(calculation);
+		QuoInvpCalResp calResp = getCalcutatedInvp(calculation);
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findOne(calculation.get_personalInfo().getMocu());
@@ -816,7 +816,7 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoCalResp calResp, QuotationCalculation calculation) throws Exception {
+	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationInvpCalculation calculation) throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;
 		try {
@@ -867,7 +867,7 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuoCalResp calResp,
+	private ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuoInvpCalResp calResp,
 			QuotationDetails quotationDetails, List<Children> childrenList, Integer integer) throws Exception {
 		ArrayList<Quo_Benef_Details> benef_DetailList = null;
 		try {

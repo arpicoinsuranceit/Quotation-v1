@@ -36,8 +36,7 @@ public class QuotationCalculationController {
 	@Autowired
 	private AIPService aipService;
 	
-	@Autowired
-	private AIBService aibService;
+	
 	
 	@Autowired
 	private ASIPService asipService;
@@ -110,17 +109,7 @@ public class QuotationCalculationController {
 		return null;
 	}
 	
-	@RequestMapping(value="/aibCal",method=RequestMethod.POST)
-	public String calculateAIB() {
-		try {		
-			aibService.calculateAIBMaturaty(2, 0.0, 0.0, 100.0, 500000.0, new Date(), "S");			
-			return "ok";
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	
 	@RequestMapping(value="/asipCal",method=RequestMethod.POST)
 	public String calculateASIP() {

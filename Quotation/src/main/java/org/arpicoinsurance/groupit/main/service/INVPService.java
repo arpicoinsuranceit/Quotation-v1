@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 
 public interface INVPService {
 	
-	QuoCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception; 
+	QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception; 
 	
 	BigDecimal calculateL2(int age, int term, double intrat, Date chedat, double bassum, int paytrm)throws Exception;
 	
@@ -21,7 +21,7 @@ public interface INVPService {
 	
 	
 
-	String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
+	String saveQuotation(QuotationInvpCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 
 	
 }

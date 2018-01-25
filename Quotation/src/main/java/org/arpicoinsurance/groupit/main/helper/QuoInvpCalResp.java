@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
-public class QuoCalResp {
+public class QuoInvpCalResp {
 	private Double basicSumAssured = 0.00;
 	private Double extraOE= 0.00;
 	private Double addBenif= 0.00;

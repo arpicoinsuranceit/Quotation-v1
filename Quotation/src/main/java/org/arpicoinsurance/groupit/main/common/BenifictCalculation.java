@@ -3,7 +3,7 @@ package org.arpicoinsurance.groupit.main.common;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
@@ -29,7 +29,7 @@ public class BenifictCalculation {
 	private TPDASBSService tpdasbsbService;
 	
 	public Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Double occupationValue, QuoCalResp calResp) throws Exception{
+			Integer term, Double occupationValue, QuoInvpCalResp calResp) throws Exception{
 		switch (type) {
 		case "ADB":
 				System.out.println(ridsumasu);

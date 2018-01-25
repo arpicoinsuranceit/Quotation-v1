@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIPDao;
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 import org.arpicoinsurance.groupit.main.model.RateCardAIP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
   
   public AIPServiceImpl() {}
   
-  public QuoCalResp getCalcutatedAip(QuotationCalculation quotationCalculation) throws Exception
+  public QuoInvpCalResp getCalcutatedAip(QuotationInvpCalculation quotationInvpCalculation) throws Exception
   {
     return null;
   }

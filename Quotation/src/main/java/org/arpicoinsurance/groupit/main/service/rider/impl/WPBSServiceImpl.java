@@ -3,7 +3,7 @@ package org.arpicoinsurance.groupit.main.service.rider.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.arpicoinsurance.groupit.main.helper.QuoCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.service.rider.WPBSService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WPBSServiceImpl implements WPBSService {
 
 	@Override
-	public BigDecimal calculateWPBS(QuoCalResp calResp) throws Exception {
+	public BigDecimal calculateWPBS(QuoInvpCalResp calResp) throws Exception {
 		BigDecimal premiumWPBS = new BigDecimal(0);
 		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getBsas() == null ? 0.0 : calResp.getBsas()));
 		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getFebs() == null ? 0.0 : calResp.getFebs()));
