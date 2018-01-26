@@ -32,11 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QuotationCalculationController {
 	
-	
-	@Autowired
-	private AIPService aipService;
-	
-	
+
 	
 	@Autowired
 	private ASIPService asipService;
@@ -95,19 +91,7 @@ public class QuotationCalculationController {
 		return null;
 	}
 	
-	@RequestMapping(value="/aipCal",method=RequestMethod.POST)
-	public String calculateAIP() {
-		try {		
-			aipService.calculateAIPMaturaty(30, 2.0, 0.02, 9.5, 3000.0, new Date(), "M",true);
-			aipService.calculateAIPMaturaty(30, 2.0, 0.02, 11.0, 3000.0, new Date(), "M",false);
-			aipService.calculateAIPMaturaty(30, 2.0, 0.02, 12.5, 3000.0, new Date(), "M",false);
-			return "ok";
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	
 	
 	
