@@ -52,8 +52,6 @@ public class QuotationAibCalculationController {
 	public String saveInvp(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
-		QuotationInvpCalculation calculation = null;
-		ValidationInvp validationInvp = null;
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
@@ -72,12 +70,7 @@ public class QuotationAibCalculationController {
 		} catch (Exception e) {
 			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
-			if (calculation != null) {
-				calculation = null;
-			}
-			if (validationInvp != null) {
-				validationInvp = null;
-			}
+			
 		}
 
 		return resp;
