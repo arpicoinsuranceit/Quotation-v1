@@ -5,7 +5,7 @@ import java.util.Date;
 
 public interface HBCService {
 	
-	BigDecimal calculateHBC(Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief)throws Exception;
+	BigDecimal calculateHBC(Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief, double occupation_loding)throws Exception;
 
 
 }

@@ -5,7 +5,7 @@ import java.util.Date;
 
 public interface TPDASBService { 
 	
-	BigDecimal calculateTPDASB(int age, Date chedat, double ridsumasu, String payFrequency, double relief)throws Exception;
+	BigDecimal calculateTPDASB(int age, Date chedat, double ridsumasu, String payFrequency, double relief, double occupation_loding)throws Exception;
 	
 
 

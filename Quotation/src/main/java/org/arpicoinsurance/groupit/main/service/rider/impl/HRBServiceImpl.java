@@ -3,8 +3,6 @@ package org.arpicoinsurance.groupit.main.service.rider.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
-import java.util.List;
-
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardHRBDao;
 import org.arpicoinsurance.groupit.main.model.RateCardHRB;
@@ -22,7 +20,7 @@ public class HRBServiceImpl implements HRBService{
 	
 	@Override
 	public BigDecimal calculateHRB(Integer age, String sex, Double ridsumasu, Integer adlcnt, Integer chlcnt,
-			Date chedat, String payFrequency, Double relief) throws Exception {
+			Date chedat, String payFrequency, Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumHRB = new BigDecimal(0);
 		RateCardHRB rateCardHRB = rateCardHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndSumasuAndAdlcntAndChlcntAndStrdatLessThanOrStrdat(age, age, age, age, sex, ridsumasu, adlcnt, chlcnt, chedat, chedat);
 		System.out.println("Rate : "+rateCardHRB.getRate());
@@ -34,6 +32,8 @@ public class HRBServiceImpl implements HRBService{
 			// ((@rate@/@payment_frequency@) *@relief@)
 			premiumHRB = (new BigDecimal(rateCardHRB.getRate()).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP); 
 		}
+		
+		premiumHRB = premiumHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumHRB : "+premiumHRB.toString());
 		return premiumHRB;
 	}

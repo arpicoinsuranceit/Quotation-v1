@@ -21,7 +21,7 @@ public class HBCServiceImpl implements HBCService{
 
 	@Override
 	public BigDecimal calculateHBC(Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief) throws Exception {
+			Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumHBC = new BigDecimal(0);
 		RateCardHBC rateCardHBC = rateCardHBCDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, chedat, chedat, chedat, chedat);
 		System.out.println("HBC ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardHBC.getRate());
@@ -32,6 +32,8 @@ public class HBCServiceImpl implements HBCService{
 			// ((@rate@*@rider_sum_assured@/100)/@payment_frequency@)*@relief@
 			premiumHBC = ((new BigDecimal(rateCardHBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
+		
+		premiumHBC = premiumHBC.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumHBC : "+premiumHBC.toString());
 		return premiumHBC;
 	}

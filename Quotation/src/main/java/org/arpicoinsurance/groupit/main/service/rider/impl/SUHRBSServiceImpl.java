@@ -21,7 +21,7 @@ public class SUHRBSServiceImpl implements SUHRBSService{
 	
 	@Override
 	public BigDecimal calculateSUHRBS(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
-			String payFrequency, Double relief) throws Exception {
+			String payFrequency, Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumSUHRBS = new BigDecimal(0);
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(age, age, age, age, sex, term, ridsumasu, chedat, chedat);
 		System.out.println("SUHRBS age : "+age);
@@ -39,6 +39,7 @@ public class SUHRBSServiceImpl implements SUHRBSService{
 			// ((@rate@/@payment_frequency@) *@relief@)
 			premiumSUHRBS = (new BigDecimal(rateCardSUHRB.getRate()).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP); 
 		}
+		premiumSUHRBS = premiumSUHRBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumSUHRBS : "+premiumSUHRBS.toString());
 		return premiumSUHRBS;
 	}

@@ -5,6 +5,6 @@ import java.util.Date;
 
 public interface JLBPLService {
 	
-	BigDecimal calculateJLBPL(int age, int term, double intrat, String sex, Date chedat, double loanamt)throws Exception;
+	BigDecimal calculateJLBPL(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)throws Exception;
 
 }
