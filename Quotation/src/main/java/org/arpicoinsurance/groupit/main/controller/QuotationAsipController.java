@@ -16,8 +16,6 @@ public class QuotationAsipController {
 	
 	@RequestMapping(value = "/quoAsipCal", method = RequestMethod.POST)
 	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationInvpCalculation calculation) {
-		// System.out.println(calculation);
-		//// ******************do post validations before send response
 		try {
 			QuoInvpCalResp calResp = new QuoInvpCalResp();
 			ValidationInvp validationInvp = new ValidationInvp(calculation);
