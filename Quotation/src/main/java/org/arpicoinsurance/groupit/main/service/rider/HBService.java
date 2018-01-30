@@ -5,6 +5,6 @@ import java.util.Date;
 
 public interface HBService {
 	
-	BigDecimal calculateHB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief)throws Exception;
+	BigDecimal calculateHB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief, double occupation_loding)throws Exception;
 
 }

@@ -129,7 +129,7 @@ public class QuotationCalculationController {
 		try {		
 			asfpService.calculateL10(29, 10, 6.0, new Date(), 100000.0, 1);
 			asfpService.calculateL2(10, 100000.00);
-			sfpoService.calculateSFPO(29, 10, new Date(), 1000000.0, "Y", 1.0);
+			//sfpoService.calculateSFPO(29, 10, new Date(), 1000000.0, "Y", 1.0);
 			return "ok";
 		
 		} catch (Exception e) {
@@ -167,9 +167,9 @@ public class QuotationCalculationController {
 	public String calculateDTA() {
 		try {		
 			dtaService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
-			tpddtaService.calculateTPDDTA(29, 10, 22.0, "M", new Date(), 15000000.0);
-			jlbService.calculateJLB(27, 10, 22.0, "F", new Date(), 15000000.0);
-			tpddtasService.calculateTPDDTAS(27, 10, 22.0, "F", new Date(), 15000000.0);
+			//tpddtaService.calculateTPDDTA(29, 10, 22.0, "M", new Date(), 15000000.0);
+			//jlbService.calculateJLB(27, 10, 22.0, "F", new Date(), 15000000.0);
+			//tpddtasService.calculateTPDDTAS(27, 10, 22.0, "F", new Date(), 15000000.0);
 			return "ok";
 		
 		} catch (Exception e) {
@@ -182,9 +182,9 @@ public class QuotationCalculationController {
 	public String calculateDTAPL() {
 		try {		
 			dtaplService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
-			tpddtaplService.calculateTPDDTAPL(29, 10, 22.0, "M", new Date(), 15000000.0);
-			jlbplService.calculateJLBPL(27, 10, 22.0, "F", new Date(), 15000000.0);
-			tpddtasplService.calculateTPDDTASPL(27, 10, 22.0, "F", new Date(), 15000000.0);
+			//tpddtaplService.calculateTPDDTAPL(29, 10, 22.0, "M", new Date(), 15000000.0);
+			//jlbplService.calculateJLBPL(27, 10, 22.0, "F", new Date(), 15000000.0);
+			//tpddtasplService.calculateTPDDTASPL(27, 10, 22.0, "F", new Date(), 15000000.0);
 			return "ok";
 		
 		} catch (Exception e) {

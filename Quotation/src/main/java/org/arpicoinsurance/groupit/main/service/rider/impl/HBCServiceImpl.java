@@ -32,6 +32,7 @@ public class HBCServiceImpl implements HBCService{
 			// ((@rate@*@rider_sum_assured@/100)/@payment_frequency@)*@relief@
 			premiumHBC = ((new BigDecimal(rateCardHBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
+		
 		System.out.println("premiumHBC : "+premiumHBC.toString());
 		return premiumHBC;
 	}

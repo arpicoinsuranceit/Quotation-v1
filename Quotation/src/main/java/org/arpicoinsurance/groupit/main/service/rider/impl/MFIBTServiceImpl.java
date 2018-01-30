@@ -23,7 +23,7 @@ public class MFIBTServiceImpl implements MFIBTService{
 	
 	@Override
 	public BigDecimal calculateMFIBT(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief) throws Exception {
+			Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumMFIBT = new BigDecimal(0);
 		RateCardMFIBT rateCardMFIBT = rateCardMFIBTDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("MFIBT ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardMFIBT.getRate());
@@ -34,6 +34,7 @@ public class MFIBTServiceImpl implements MFIBTService{
 			// ((@rate@*@rider_sum_assured@/1000)/@payment_frequency@)*@relief@
 			premiumMFIBT = ((new BigDecimal(rateCardMFIBT.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
+		premiumMFIBT = premiumMFIBT.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumMFIBT : "+premiumMFIBT.toString());
 		return premiumMFIBT;
 	}

@@ -12,8 +12,8 @@ public interface OccupationDao extends CrudRepository<Occupation,String> {
 	@Query("from Occupation")
 	ArrayList<Occupation> getAll() throws Exception;
 
-	@Query("from Occupation where id=?1")
-	Occupation findOne(Integer id) throws Exception;
+	//@Query("from Occupation where id=?1")
+	Occupation findByOcupationid(Integer id) throws Exception;
 	
 	@Modifying
 	@Query("DELETE FROM Occupation where id=?1")
