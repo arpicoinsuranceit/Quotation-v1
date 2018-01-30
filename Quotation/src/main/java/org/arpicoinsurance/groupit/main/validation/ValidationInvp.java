@@ -99,7 +99,7 @@ public class ValidationInvp {
 					}
 				}
 			}
-			if (calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSgenger() != null
+			if (calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSgender() != null
 					&& calculation.get_personalInfo().getSocu() != null
 					&& calculation.get_riderDetails().get_sRiders() != null
 					&& calculation.get_riderDetails().get_sRiders().size() > 0) {

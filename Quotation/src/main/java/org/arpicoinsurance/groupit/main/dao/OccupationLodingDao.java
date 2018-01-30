@@ -1,5 +1,8 @@
 package org.arpicoinsurance.groupit.main.dao;
 
+import java.util.List;
+
+import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +16,7 @@ public interface OccupationLodingDao extends CrudRepository<OcupationLoading,Str
 	@Modifying
 	@Query("DELETE FROM OcupationLoading where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
+	
+	//@Query("from OcupationLoading where ocupation_id=?1")
+	List<OcupationLoading> findByOccupation(Occupation occupation) throws Exception;
 }

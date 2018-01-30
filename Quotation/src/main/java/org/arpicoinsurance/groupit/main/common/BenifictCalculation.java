@@ -35,11 +35,11 @@ public class BenifictCalculation {
 				System.out.println(ridsumasu);
 				System.out.println(payFrequency);
 				
-				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 0.0);
+				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 0.0,0.0);
 				calResp.setAdb(adb.doubleValue());
 			break;
 		case "ADBS":
-				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 0.0);
+				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 0.0,0.0);
 				calResp.setAdbs(adbs.doubleValue());
 			break;
 		case "ATPB":
