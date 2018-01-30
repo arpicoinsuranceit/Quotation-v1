@@ -30,7 +30,7 @@ public class BenifictCalculation {
 	
 	public Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
 			Integer term, Double occupationValue, QuoCalResp calResp) throws Exception{
-		switch (type) {
+		/*switch (type) {
 		case "ADB":
 				System.out.println(ridsumasu);
 				System.out.println(payFrequency);
@@ -58,7 +58,7 @@ public class BenifictCalculation {
 		default:
 			break;
 		}
-		
+		*/
 		return 0.0;
 	}
 }
