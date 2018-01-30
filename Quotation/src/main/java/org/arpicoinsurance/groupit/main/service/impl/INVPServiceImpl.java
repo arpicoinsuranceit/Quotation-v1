@@ -3,10 +3,8 @@ package org.arpicoinsurance.groupit.main.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
@@ -29,7 +27,6 @@ import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
@@ -304,10 +301,10 @@ public class INVPServiceImpl implements INVPService {
 								quotationInvpCalculation.get_personalInfo().getSage(), benifict.getType(),
 								quotationInvpCalculation.get_personalInfo().getTerm());
 						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-								quotationInvpCalculation.get_personalInfo().getMgenger(),
+								quotationInvpCalculation.get_personalInfo().getSgenger(),
 								quotationInvpCalculation.get_personalInfo().getSage(),
-								quotationInvpCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
-								adultCount, childCount);
+								quotationInvpCalculation.get_personalInfo().getFrequance(), term, occupationValue,
+								calResp, adultCount, childCount);
 					}
 				}
 			}
@@ -325,7 +322,7 @@ public class INVPServiceImpl implements INVPService {
 							case "CIBC":
 								if (children.is_cCibc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											children.get_cTitle(), children.get_cAge(),
 											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
@@ -334,7 +331,7 @@ public class INVPServiceImpl implements INVPService {
 							case "HBC":
 								if (children.is_cHbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											children.get_cTitle(), children.get_cAge(),
 											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
@@ -343,7 +340,7 @@ public class INVPServiceImpl implements INVPService {
 							case "SUHRBC":
 								if (children.is_cSuhrbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationInvpCalculation.get_personalInfo().getMgenger(), children.get_cAge(),
+											children.get_cTitle(), children.get_cAge(),
 											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
 											occupationValue, calResp, adultCount, childCount);
 								}
@@ -361,22 +358,25 @@ public class INVPServiceImpl implements INVPService {
 			calResp.setAt6(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
 					quotationInvpCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationInvpCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
 			calResp.setAt8(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
 					quotationInvpCalculation.get_personalInfo().getTerm(), 10.0, new Date(),
 					quotationInvpCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
 			calResp.setAt10(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
 					quotationInvpCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
 					quotationInvpCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance())).doubleValue());
-			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
+			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationInvpCalculation.get_personalInfo().getFrequance());
-			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE=adminFee + tax;
+			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
+			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
-			
+
 			return calResp;
 
 		} finally {
@@ -555,8 +555,6 @@ public class INVPServiceImpl implements INVPService {
 			calResp.setMifdbtTerm(term);
 			break;
 		case "HRB":
-			System.out.println(age + "**********************Watch********************** " + gender + " " + ridsumasu
-					+ " " + adultCount + " " + childCount);
 			BigDecimal hrb = hrbService.calculateHRB(age, gender, ridsumasu, adultCount, childCount, new Date(),
 					payFrequency, 1.0);
 			calResp.setHrb(hrb.doubleValue());
@@ -793,7 +791,7 @@ public class INVPServiceImpl implements INVPService {
 		ArrayList<Child> childList = null;
 		if (get_childrenList != null && get_childrenList.size() > 0) {
 			try {
-				childList = new ArrayList();
+				childList = new ArrayList<Child>();
 				for (Children children : get_childrenList) {
 					Child child = new Child();
 					child.setChildName(children.get_cName());
@@ -816,7 +814,8 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationInvpCalculation calculation) throws Exception {
+	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationInvpCalculation calculation)
+			throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;
 		try {
