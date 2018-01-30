@@ -1,7 +1,5 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +34,10 @@ public class QuotationInvpCalculationController {
 				String error = validationInvp.validateBenifict();
 				if (error.equals("No")) {
 					calResp = invpService.getCalcutatedInvp(calculation);
+					if(!validationInvp.invpPostValidation(calResp)) {
+						calResp.setErrorExist(true);
+						calResp.setError("Product");
+					}
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);

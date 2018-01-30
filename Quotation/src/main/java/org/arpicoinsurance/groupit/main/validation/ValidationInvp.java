@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 
 public class ValidationInvp {
@@ -18,6 +19,14 @@ public class ValidationInvp {
 
 	}
 
+	public boolean invpPostValidation(QuoInvpCalResp calResp) {
+		if(calResp.getBasicSumAssured().doubleValue()<1250) {
+			return false;
+		}
+		return true;
+		
+	}
+	
 	public String validateBenifict() {
 		if (calculation.get_riderDetails() != null) {
 			if (calculation.get_riderDetails().get_mRiders() != null
@@ -251,6 +260,19 @@ public class ValidationInvp {
 
 		return 0;
 	}
+	
+	public Integer validateAsipProd() {
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
+				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65 &&
+				calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm() <=65
+				&& calculation.get_personalInfo().getBsa() >= 250000) {
+			return 1;
+		}
+
+		return 0;
+	}
+	
+	
 
 	public Integer validateInvpProdTotPremium(Double totPremium) {
 		if (totPremium >= 1250) {
