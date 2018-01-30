@@ -1,10 +1,8 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;

@@ -160,7 +160,7 @@ public class AIBServiceImpl implements AIBService {
 			if (CustomerDetailsDao.save(customerDetails) != null) {
 				if (quotationDao.save(quotation) != null) {
 					if (quotationDetailsDao.save(quotationDetails) != null) {
-						return "Successfully";
+						return "Success";
 					}else {
 						return "Error at Quotation Detail Saving";
 					}

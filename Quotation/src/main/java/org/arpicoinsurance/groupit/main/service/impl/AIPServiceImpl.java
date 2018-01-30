@@ -4,21 +4,59 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
+import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.dao.CustomerDao;
+import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationDao;
+import org.arpicoinsurance.groupit.main.dao.ProductDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIPDao;
+import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
+import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.model.Customer;
+import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardAIP;
+import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.service.AIPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.AIPService {
+public class AIPServiceImpl implements AIPService {
 	@Autowired
 	private RateCardAIPDao rateCardAIPDao;
+
+	@Autowired
+	private UsersDao userdao;
+
+	@Autowired
+	private CustomerDao customerDao;
+
+	@Autowired
+	private CustomerDetailsDao customerDetailsDao;
+
+	@Autowired
+	private QuotationDao quotationDao;
+
+	@Autowired
+	private QuotationDetailsDao quotationDetailsDao;
+
+	@Autowired
+	private OccupationDao occupationDao;
+
+	@Autowired
+	private ProductDao productDao;
 
 	public AIPServiceImpl() {
 	}
@@ -27,7 +65,7 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
 			Double contribution, Date chedat, String paymod, boolean schedule) throws Exception {
 
 		AIPCalResp aipCalResp = null;
-		ArrayList< AipCalShedule > aipCalShedules=null;
+		ArrayList<AipCalShedule> aipCalShedules = null;
 		try {
 			aipCalResp = new AIPCalResp();
 
@@ -75,7 +113,7 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
 				BigDecimal fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
 
 				for (int j = 1; j <= calculationUtils.getPayterm(paymod); j++) {
-					AipCalShedule aipCalShedule= new AipCalShedule();
+					AipCalShedule aipCalShedule = new AipCalShedule();
 					if (schedule) {
 						System.out.println("polyer : " + i + " polmth : " + j + " opnfun : " + open_fund.toString());
 						aipCalShedule.setPolicyYear(i);
@@ -106,7 +144,7 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
 					open_fund = new BigDecimal(close_bal.toPlainString()).setScale(6, 4);
 
 					if (schedule) {
-						
+
 						System.out.println("cumcon : " + cum_premium.toString() + " fndamt : " + fund_amount.toString()
 								+ " fndbfi : " + balance_bfi.toString() + " intanm : " + interest_annum.toString()
 								+ " fndbmf : " + balance_bmf.toString() + " mgtfee : " + mgt_fees.toString()
@@ -119,41 +157,38 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
 						aipCalShedule.setFndBmf(balance_bmf.doubleValue());
 						aipCalShedule.setMgtFee(mgt_fees.doubleValue());
 						aipCalShedule.setFndClo(close_bal.doubleValue());
-						
+
 						if (close_bal.compareTo(cum_premium) == -1) {
 							System.out.println(
 									"adbcov : " + cum_premium.multiply(adb_rate).setScale(2, 4).toPlainString());
-							
+
 							aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(2, 4).doubleValue());
 						} else {
 							System.out
 									.println("adbcov : " + close_bal.multiply(adb_rate).setScale(2, 4).toPlainString());
-							
+
 							aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(2, 4).doubleValue());
 						}
 						aipCalShedules.add(aipCalShedule);
 					}
 
 					total_amount = new BigDecimal(close_bal.toPlainString()).setScale(2, 4);
-					
+
 				}
-				
-				
+
 			}
 
 			System.out.println("maturity " + intrat + " : " + total_amount.toString());
-			
+
 			maturity = total_amount;
+
+			Double adminFee = calculationUtils.getAdminFee(paymod);
 			
-			Double adminFee=calculationUtils.getAdminFee(paymod);
-			Double tax = calculationUtils.getTaxAmount(adminFee+maturity.doubleValue());
-			
-			
-			
-			
+			Double tax = calculationUtils.getTaxAmount(adminFee +contribution);
+			System.out.println(tax);
 			aipCalResp.setMaturaty(maturity.doubleValue());
 			aipCalResp.setAipCalShedules(aipCalShedules);
-			aipCalResp.setExtraOe(adminFee+tax);
+			aipCalResp.setExtraOe(adminFee + tax);
 			return aipCalResp;
 		} finally {
 			if (aipCalResp != null) {
@@ -161,13 +196,155 @@ public class AIPServiceImpl implements org.arpicoinsurance.groupit.main.service.
 			}
 		}
 
-		/**/
 	}
+
 
 	@Override
-	public QuoInvpCalResp getCalcutatedAip(QuotationInvpCalculation quotationInvpCalculation) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public String saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception {
+		CalculationUtils calculationUtils = null;
+		Products products = null;
+		Customer customer = null;
+		Users user = null;
+		Occupation occupation = null;
+		CustomerDetails customerDetails = null;
+		Quotation quotation = null;
+		QuotationDetails quotationDetails = null;
+		try {
+			calculationUtils = new CalculationUtils();
+			products = productDao.findByProductCode("AIP");
+			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
+			occupation = occupationDao.findOne(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+
+			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
+			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
+			customer = new Customer();
+			user = userdao.findOne(id);
+
+			customer.setCustCreateBy(user.getUser_Code());
+			customer.setCustCreateDate(new Date());
+			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
+
+			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+			customerDetails.setCustomer(customer);
+			quotation = new Quotation();
+			quotation.setCustomerDetails(customerDetails);
+			quotation.setProducts(products);
+			quotation.setStatus("active");
+			quotation.setUser(user);
+
+			quotationDetails = new QuotationDetails();
+			quotationDetails.setQuotation(quotation);
+			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setBaseSum(aip.getMaturaty());
+			quotationDetails.setInterestRate(10.0);
+			String frequance = _invpSaveQuotation.get_plan().get_frequance();
+			quotationDetails.setPayMode(frequance);
+			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+			switch (frequance) {
+			case "M":
+				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+				
+				break;
+			case "Q":
+				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+				
+				break;
+			case "H":
+				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+				
+				break;
+			case "Y":
+				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+				
+				break;
+			case "S":
+				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+				
+				break;
+
+			default:
+				break;
+			}
+
+			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationquotationCreateDate(new Date());
+
+			if (customerDao.save(customer) != null) {
+				if (customerDetailsDao.save(customerDetails) != null) {
+					if (quotationDao.save(quotation) != null) {
+						if (quotationDetailsDao.save(quotationDetails) != null) {
+							return "Success";
+						} else {
+							return "Error at Quotation Details Saving";
+						}
+					} else {
+						return "Error at Quotation Saving";
+					}
+				} else {
+					return "Error at Customer Details Saving";
+				}
+			} else {
+				return "Error at Customer Saving";
+			}
+
+		} finally {
+			if (calculationUtils != null) {
+				calculationUtils = null;
+			}
+			if (products != null) {
+				products = null;
+			}
+			if (customer != null) {
+				customer = null;
+			}
+			if (user != null) {
+				user = null;
+			}
+			if (occupation != null) {
+				occupation = null;
+			}
+			if (customerDetails != null) {
+				customerDetails = null;
+			}
+			if (quotation != null) {
+				quotation = null;
+			}
+			if (quotationDetails != null) {
+				quotationDetails = null;
+			}
+		}
+
 	}
 
+	private CustomerDetails getCustomerDetail(Occupation occupation, InvpSavePersonalInfo get_personalInfo,
+			Users user) {
+		CustomerDetails mainLifeDetail = null;
+		try {
+			mainLifeDetail = new CustomerDetails();
+			mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
+			mainLifeDetail.setCustCivilStatus("");
+			mainLifeDetail.setCustCreateBy(user.getUser_Name());
+			mainLifeDetail.setCustCreateDate(new Date());
+			mainLifeDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
+			mainLifeDetail.setCustEmail(get_personalInfo.get_mainlife().get_mEmail());
+			mainLifeDetail.setCustGender(get_personalInfo.get_mainlife().get_mGender());
+			mainLifeDetail.setCustNic(get_personalInfo.get_mainlife().get_mNic());
+			mainLifeDetail.setCustTel(get_personalInfo.get_mainlife().get_mMobile());
+			mainLifeDetail.setCustTitle(get_personalInfo.get_mainlife().get_mTitle());
+			mainLifeDetail.setOccupation(occupation);
+
+			return mainLifeDetail;
+		} finally {
+			if (mainLifeDetail != null) {
+				mainLifeDetail = null;
+			}
+		}
+	}
 }
