@@ -133,7 +133,7 @@ public class AIBServiceImpl implements AIBService {
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
 		Occupation occupation = occupationDao
-				.findOne(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+				.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 		CustomerDetails customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 		customerDetails.setCustomer(customer);

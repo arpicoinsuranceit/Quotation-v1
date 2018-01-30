@@ -215,7 +215,7 @@ public class AIPServiceImpl implements AIPService {
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
-			occupation = occupationDao.findOne(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+			occupation = occupationDao.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
 			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);

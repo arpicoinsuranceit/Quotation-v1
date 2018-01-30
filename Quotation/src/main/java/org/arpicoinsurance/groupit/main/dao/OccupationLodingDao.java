@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.dao;
 
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,4 +20,6 @@ public interface OccupationLodingDao extends CrudRepository<OcupationLoading,Str
 	
 	//@Query("from OcupationLoading where ocupation_id=?1")
 	List<OcupationLoading> findByOccupation(Occupation occupation) throws Exception;
+	
+	OcupationLoading findByOccupationAndBenefits(Occupation occupation, Benefits benefits) throws Exception;
 }
