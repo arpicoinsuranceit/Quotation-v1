@@ -9,7 +9,7 @@ import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
-import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
+import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +30,10 @@ public class QuotationAsipCntroller {
 	public QuoInvpCalResp calculateASIP(@RequestBody QuotationCalculation calculation) {
 		try {	
 			QuoInvpCalResp calResp = new QuoInvpCalResp();
-			ValidationInvp validationInvp = new ValidationInvp(calculation);
+			Validation validation = new Validation(calculation);
 			
-			if (validationInvp.validateAsipProd() == 1) {
-				String error = validationInvp.validateBenifict();
+			if (validation.validateAsipProd() == 1) {
+				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = asipService.getCalcutatedASIP(calculation);
 						return calResp;
@@ -58,14 +58,14 @@ public class QuotationAsipCntroller {
 		System.out.println(id);
 		String resp = "Fail";
 		QuotationCalculation calculation = null;
-		ValidationInvp validationInvp = null;
+		Validation validationInvp = null;
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
-					validationInvp = new ValidationInvp(calculation);
+					validationInvp = new Validation(calculation);
 					if (validationInvp.validateAsipProd() == 1) {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {

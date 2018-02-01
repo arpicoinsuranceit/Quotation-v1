@@ -21,7 +21,6 @@ import org.arpicoinsurance.groupit.main.service.rider.TPDDTAPLService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTASPLService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTASService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTAService;
-import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -141,7 +140,7 @@ public class QuotationCalculationController {
 	@RequestMapping(value="/endCal",method=RequestMethod.POST)
 	public String calculateEND() {
 		try {		
-			endService.calculateL2(29, 10, 0.0, new Date(), 500000.0, 12);
+			endService.calculateL2(1,29, 10, 0.0, new Date(), 500000.0, 12);
 			endService.calculateMaturity(10, 500000.00);
 			return "ok";
 		

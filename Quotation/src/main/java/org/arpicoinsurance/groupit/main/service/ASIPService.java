@@ -13,6 +13,7 @@ public interface ASIPService {
 
 	BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm) throws Exception;
 
+
 	Double addRebatetoBSAPremium(double rebate, BigDecimal premium) throws Exception;
 
 	BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum,

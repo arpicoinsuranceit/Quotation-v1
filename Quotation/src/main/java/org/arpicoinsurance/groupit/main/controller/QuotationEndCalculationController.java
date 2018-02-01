@@ -2,10 +2,11 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,28 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class QuotationInvpCalculationController {
+public class QuotationEndCalculationController {
 
 	@Autowired
-	private INVPService invpService;
+	private ENDService endService;
 
-	@RequestMapping(value = "/quoInvpCal", method = RequestMethod.POST)
-	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		// System.out.println(calculation);
-		//// ******************do post validations before send response
+	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
+	public QuoEndCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
+		
 		try {
-			QuoInvpCalResp calResp = new QuoInvpCalResp();
+			QuoEndCalResp calResp = new QuoEndCalResp();
 			Validation validation = new Validation(calculation);
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
-					calResp = invpService.getCalcutatedInvp(calculation);
-					if(validation.InvpPostValidation(calResp)) {
-						return calResp;
-					}else {
-						calResp.setErrorExist(true);
-						calResp.setError("Product");
-					}
+					calResp = endService.getCalcutatedEnd(calculation);
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);
@@ -56,12 +50,11 @@ public class QuotationInvpCalculationController {
 	}
 
 
-	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
 		QuotationCalculation calculation = null;
-
 		Validation validation = null;
 		try {
 			if (id != null) {
@@ -74,7 +67,7 @@ public class QuotationInvpCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							String response = endService.saveQuotation(calculation, _invpSaveQuotation, id);
 							resp = response;
 						} else {
 							resp = "Error at benifict :" + error;
@@ -91,7 +84,7 @@ public class QuotationInvpCalculationController {
 			}
 
 		} catch (Exception e) {
-			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(QuotationEndCalculationController.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
