@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
@@ -18,6 +21,7 @@ import org.arpicoinsurance.groupit.main.service.rider.TPDDTAPLService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTASPLService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTASService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDDTAService;
+import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,20 +96,7 @@ public class QuotationCalculationController {
 	
 	
 	
-	@RequestMapping(value="/asipCal",method=RequestMethod.POST)
-	public String calculateASIP() {
-		try {		
-			BigDecimal premium =asipService.calculateL2(25, 1000000.00, 2);
-			asipService.calculateMaturity(29, 25, 0.01, 8.0, new Date(), 1000000.00, premium.intValue(), 2);
-			asipService.calculateMaturity(29, 25, 0.01, 9.5, new Date(), 1000000.00, premium.intValue(), 2);
-			asipService.calculateMaturity(29, 25, 0.01, 12.0, new Date(), 1000000.00, premium.intValue(), 2);
-			return "ok";
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	
 	@RequestMapping(value="/arpCal",method=RequestMethod.POST)
 	public String calculateARP() {

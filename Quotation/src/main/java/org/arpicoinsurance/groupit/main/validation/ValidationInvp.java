@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
+import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public class ValidationInvp {
@@ -16,6 +17,14 @@ public class ValidationInvp {
 		this.calculation = calculation;
 		loadBeneficts();
 
+	}
+
+	public boolean InvpPostValidation(QuoInvpCalResp calResp) {
+		if (calResp.getBasicSumAssured() < 1250) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public String validateBenifict() {
@@ -243,9 +252,28 @@ public class ValidationInvp {
 
 	public Integer validateInvpProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
+				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
+				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 65
+				&& calculation.get_personalInfo().getBsa() >= 250000) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public Integer validateAsipProd() {
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11 ||
+				calculation.get_personalInfo().getTerm() <= 15 ||
+				calculation.get_personalInfo().getTerm() <= 20 ||
+				calculation.get_personalInfo().getTerm() <= 25 ||
+				calculation.get_personalInfo().getTerm() <= 30 ||
+				calculation.get_personalInfo().getTerm() <= 35 ||
+				calculation.get_personalInfo().getTerm() <= 40 ||
+				calculation.get_personalInfo().getTerm() <= 45 ||
+				calculation.get_personalInfo().getTerm() <= 50 
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65 &&
 				calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm() <=65
-				&& calculation.get_personalInfo().getBsa() >= 250000) {
+				&& calculation.get_personalInfo().getBsa() >= 250000 && !calculation.get_personalInfo().getFrequance().equals("S")) {
 			return 1;
 		}
 

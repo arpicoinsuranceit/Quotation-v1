@@ -22,6 +22,13 @@ public class HRBServiceImpl implements HRBService{
 	public BigDecimal calculateHRB(Integer age, String sex, Double ridsumasu, Integer adlcnt, Integer chlcnt,
 			Date chedat, String payFrequency, Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumHRB = new BigDecimal(0);
+		System.out.println(age);
+		System.out.println(sex);
+		System.out.println(ridsumasu);
+		System.out.println(adlcnt);
+		System.out.println(chlcnt);
+		
+		
 		RateCardHRB rateCardHRB = rateCardHRBDao.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndSumasuAndAdlcntAndChlcntAndStrdatLessThanOrStrdat(age, age, age, age, sex, ridsumasu, adlcnt, chlcnt, chedat, chedat);
 		System.out.println("Rate : "+rateCardHRB.getRate());
 		System.out.println("HRB age : "+age+" sex : "+sex+" ridsumasu : "+ridsumasu+" adlcnt : "+adlcnt+" chlcnt : "+chlcnt+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardHRB.getRate());

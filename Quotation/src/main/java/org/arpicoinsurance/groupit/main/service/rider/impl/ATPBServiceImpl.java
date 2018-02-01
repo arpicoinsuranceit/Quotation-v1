@@ -32,7 +32,6 @@ public class ATPBServiceImpl implements ATPBService{
 			premiumATPB = ((new BigDecimal(rateCardATFESC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		
-		premiumATPB = premiumATPB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumATPB : "+premiumATPB.toString());
 		return premiumATPB;
 	}

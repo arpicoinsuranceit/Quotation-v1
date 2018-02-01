@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PersonalInfo {
 	private Integer mage;
-	private String mgender;
+	private String mgenger;
 	private Integer mocu;
 	private Integer sage;
 	private String sgenger;
@@ -24,12 +24,12 @@ public class PersonalInfo {
 		this.mage = mage;
 	}
 
-	public String getMgender() {
-		return mgender;
+	public String getMgenger() {
+		return mgenger;
 	}
 
-	public void setMgender(String mgender) {
-		this.mgender = mgender;
+	public void setMgenger(String mgenger) {
+		this.mgenger = mgenger;
 	}
 
 	public Integer getMocu() {

@@ -1,14 +1,14 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.ASIPService;
 import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,30 +18,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins ="*")
 @RestController
-public class QuotationInvpCalculationController {
-
+public class QuotationAsipCntroller {
+	
 	@Autowired
-	private INVPService invpService;
-
-	@RequestMapping(value = "/quoInvpCal", method = RequestMethod.POST)
-	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		// System.out.println(calculation);
-		//// ******************do post validations before send response
-		try {
+	private ASIPService asipService;
+	
+	@RequestMapping(value="/asipCal",method=RequestMethod.POST)
+	
+	public QuoInvpCalResp calculateASIP(@RequestBody QuotationCalculation calculation) {
+		try {	
 			QuoInvpCalResp calResp = new QuoInvpCalResp();
 			ValidationInvp validationInvp = new ValidationInvp(calculation);
-			if (validationInvp.validateInvpProd() == 1) {
+			
+			if (validationInvp.validateAsipProd() == 1) {
 				String error = validationInvp.validateBenifict();
 				if (error.equals("No")) {
-					calResp = invpService.getCalcutatedInvp(calculation);
-					if(validationInvp.InvpPostValidation(calResp)) {
+					calResp = asipService.getCalcutatedASIP(calculation);
 						return calResp;
-					}else {
-						calResp.setErrorExist(true);
-						calResp.setError("Product");
-					}
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);
@@ -51,15 +46,14 @@ public class QuotationInvpCalculationController {
 				calResp.setError("Product");
 			}
 			return calResp;
+		
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
-
-
-	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/quoAsipsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
@@ -72,11 +66,11 @@ public class QuotationInvpCalculationController {
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validationInvp = new ValidationInvp(calculation);
-					if (validationInvp.validateInvpProd() == 1) {
+					if (validationInvp.validateAsipProd() == 1) {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							String response = asipService.saveQuotation(calculation, _invpSaveQuotation, id);
 							resp = response;
 						} else {
 							resp = "Error at benifict :" + error;
@@ -105,5 +99,4 @@ public class QuotationInvpCalculationController {
 
 		return resp;
 	}
-
 }
