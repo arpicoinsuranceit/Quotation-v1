@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class PersonalInfo {
 	private Integer mage;
-	private String mgenger;
+	private String mgender;
 	private Integer mocu;
 	private Integer sage;
-	private String sgenger;
+	private String sgender;
 	private Integer socu;
 	private Integer term;
 	private String frequance;
@@ -24,12 +24,12 @@ public class PersonalInfo {
 		this.mage = mage;
 	}
 
-	public String getMgenger() {
-		return mgenger;
+	public String getMgender() {
+		return mgender;
 	}
 
-	public void setMgenger(String mgenger) {
-		this.mgenger = mgenger;
+	public void setMgenger(String mgender) {
+		this.mgender = mgender;
 	}
 
 	public Integer getMocu() {
@@ -48,12 +48,12 @@ public class PersonalInfo {
 		this.sage = sage;
 	}
 
-	public String getSgenger() {
-		return sgenger;
+	public String getSgender() {
+		return sgender;
 	}
 
-	public void setSgenger(String sgenger) {
-		this.sgenger = sgenger;
+	public void setSgenger(String sgender) {
+		this.sgender = sgender;
 	}
 
 	public Integer getSocu() {

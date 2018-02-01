@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
-public class ValidationInvp {
+public class Validation {
 
-	private QuotationInvpCalculation calculation;
+	private QuotationCalculation calculation;
 
 	HashMap<String, Benifict> benefitMap = new HashMap<>();
 
-	public ValidationInvp(QuotationInvpCalculation calculation) {
+	public Validation(QuotationCalculation calculation) {
 		this.calculation = calculation;
 		loadBeneficts();
 
@@ -28,68 +28,68 @@ public class ValidationInvp {
 					String type = benifict.getType();
 					switch (type) {
 					case "ATPB":
-						if (validateInvpATBP().equals(0)) {
+						if (validateATBP().equals(0)) {
 							return "ATPB";
 						}
 						break;
 					case "ADB":
-						if (validateInvpABD().equals(0)) {
+						if (validateABD().equals(0)) {
 							return "ADB";
 						}
 						break;
 					case "TPDASB":
-						if (validateInvpTPDASB().equals(0)) {
+						if (validateTPDASB().equals(0)) {
 							return "TPDASB";
 						}
 						break;
 					case "TPDB":
-						if (validateInvpTPDB().equals(0)) {
+						if (validateTPDB().equals(0)) {
 							return "TPDB";
 						}
 						break;
 
 					case "PPDB":
-						if (validateInvpPPDB().equals(0)) {
+						if (validatePPDB().equals(0)) {
 							return "PPDB";
 						}
 						break;
 					case "CIB":
-						if (validateInvpCIB().equals(0)) {
+						if (validateCIB().equals(0)) {
 							return "CIB";
 						}
 						break;
 					case "FEB":
-						if (validateInvpFEB().equals(0)) {
+						if (validateFEB().equals(0)) {
 							return "FEB";
 						}
 						break;
 					case "MFIBD":
-						if (validateInvpMIFBD().equals(0)) {
+						if (validateMIFBD().equals(0)) {
 							return "MIFBD";
 						}
 						break;
 					case "MFIBT":
-						if (validateInvpMIFBT().equals(0)) {
+						if (validateMIFBT().equals(0)) {
 							return "MIFBT";
 						}
 						break;
 					case "MFIBDT":
-						if (validateInvpMFIBDT().equals(0)) {
+						if (validateMFIBDT().equals(0)) {
 							return "MFIBDT";
 						}
 						break;
 					case "HRB":
-						if (validateInvpHRB().equals(0)) {
+						if (validateHRB().equals(0)) {
 							return "HRB";
 						}
 						break;
 					case "SUHRB":
-						if (validateInvpSUHRB().equals(0)) {
+						if (validateSUHRB().equals(0)) {
 							return "SUHRB";
 						}
 						break;
 					case "HB":
-						if (validateInvpHB().equals(0)) {
+						if (validateHB().equals(0)) {
 							return "HB";
 						}
 						break;
@@ -99,7 +99,7 @@ public class ValidationInvp {
 					}
 				}
 			}
-			if (calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSgenger() != null
+			if (calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSgender() != null
 					&& calculation.get_personalInfo().getSocu() != null
 					&& calculation.get_riderDetails().get_sRiders() != null
 					&& calculation.get_riderDetails().get_sRiders().size() > 0) {
@@ -110,53 +110,53 @@ public class ValidationInvp {
 					String type = benifict.getType();
 					switch (type) {
 					case "BSAS":
-						if (validateInvpSCB().equals(0)) {
+						if (validateSCB().equals(0)) {
 							return "SCB";
 						}
 						break;
 					case "ADBS":
-						if (validateInvpADBS().equals(0)) {
+						if (validateADBS().equals(0)) {
 							return "ADBS";
 						}
 						break;
 					case "CIBS":
-						if (validateInvpSCIB().equals(0)) {
+						if (validateSCIB().equals(0)) {
 							return "CIBS";
 						}
 						break;
 					case "FEBS":
-						if (validateInvpFEBS().equals(0)) {
+						if (validateFEBS().equals(0)) {
 							return "FEBS";
 						}
 						break;
 					case "HBS":
-						if (validateInvpHBS().equals(0)) {
+						if (validateHBS().equals(0)) {
 							return "HBS";
 						}
 						break;
 					case "HRBS":
-						if (validateInvpHRBS().equals(0)) {
+						if (validateHRBS().equals(0)) {
 							return "HRBS";
 						}
 						break;
 					case "PPDBS":
-						if (validateInvpPPDBS().equals(0)) {
+						if (validatePPDBS().equals(0)) {
 							return "PPDBS";
 						}
 						break;
 					case "SUHRBS":
-						if (validateInvpSUHRBS().equals(0)) {
+						if (validateSUHRBS().equals(0)) {
 							return "SUHRBS";
 						}
 						break;
 					case "TPDASBS":
-						if (validateInvpTPDASBS().equals(0)) {
+						if (validateTPDASBS().equals(0)) {
 							return "TPDASBS";
 						}
 
 						break;
 					case "TPDBS":
-						if (validateInvpTPDBS().equals(0)) {
+						if (validateTPDBS().equals(0)) {
 							return "TPDBS";
 						}
 
@@ -181,23 +181,23 @@ public class ValidationInvp {
 					String type = benifict.getType();
 					switch (type) {
 					case "CIBC":
-						if (validateInvpCIBC().equals(0)) {
+						if (validateCIBC().equals(0)) {
 							System.out.println("Error CIBC");
 							return "CIBC";
 						}
 						break;
 					case "HRBC":
-						if (validateInvpHRBC().equals(0)) {
+						if (validateHRBC().equals(0)) {
 							return "HRBC";
 						}
 						break;
 					case "SUHRBC":
-						if (validateInvpSUHRBC().equals(0)) {
+						if (validateSUHRBC().equals(0)) {
 							return "SUHRBC";
 						}
 						break;
 					case "HBC":
-						if (validateInvpHBC().equals(0)) {
+						if (validateHBC().equals(0)) {
 							return "HBC";
 						}
 						break;
@@ -241,7 +241,7 @@ public class ValidationInvp {
 		}
 	}
 
-	public Integer validateInvpProd() {
+	public Integer validateProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65 &&
 				calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm() <=65
@@ -252,7 +252,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpProdTotPremium(Double totPremium) {
+	public Integer validateProdTotPremium(Double totPremium) {
 		if (totPremium >= 1250) {
 			return 1;
 		}
@@ -261,7 +261,7 @@ public class ValidationInvp {
 
 	// ----------------------- Mainlife Validations before Calculation
 	// -----------------
-	public Integer validateInvpABD() {
+	public Integer validateABD() {
 		if (benefitMap.containsKey("ADB")) {
 			Benifict benifict = benefitMap.get("ADB");
 			Double bsa = calculation.get_personalInfo().getBsa();
@@ -275,7 +275,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpATBP() {
+	public Integer validateATBP() {
 		if (benefitMap.containsKey("ATPB")) {
 			Benifict benifict = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
@@ -290,7 +290,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpTPDASB() {
+	public Integer validateTPDASB() {
 		if (benefitMap.containsKey("TPDASB") && benefitMap.containsKey("ADB")) {
 			Benifict tpdasb = benefitMap.get("TPDASB");
 			Benifict adb = benefitMap.get("ADB");
@@ -308,7 +308,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpTPDB() {
+	public Integer validateTPDB() {
 		if (benefitMap.containsKey("TPDB") && benefitMap.containsKey("ADB")) {
 			Benifict tpdb = benefitMap.get("TPDB");
 			Benifict adb = benefitMap.get("ADB");
@@ -326,7 +326,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpPPDB() {
+	public Integer validatePPDB() {
 		if (benefitMap.containsKey("PPDB") && benefitMap.containsKey("ADB")) {
 			Benifict ppdb = benefitMap.get("PPDB");
 			Benifict adb = benefitMap.get("ADB");
@@ -341,7 +341,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpCIB() {
+	public Integer validateCIB() {
 		if (benefitMap.containsKey("CIB")) {
 			Double atpb = 0.0;
 			if (benefitMap.containsKey("ATPB")) {
@@ -361,7 +361,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpFEB() {
+	public Integer validateFEB() {
 		if (benefitMap.containsKey("FEB")) {
 			Benifict benifict = benefitMap.get("FEB");
 			Double bsa = calculation.get_personalInfo().getBsa();
@@ -374,7 +374,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpMIFBD() {
+	public Integer validateMIFBD() {
 		if (benefitMap.containsKey("MFIBD")) {
 			Benifict benifict = benefitMap.get("MFIBD");
 			Double rbsa = benifict.getSumAssured();
@@ -386,7 +386,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpMIFBT() {
+	public Integer validateMIFBT() {
 		if (benefitMap.containsKey("MFIBT")) {
 			Benifict benifict = benefitMap.get("MFIBT");
 			Double rbsa = benifict.getSumAssured();
@@ -398,7 +398,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpMFIBDT() {
+	public Integer validateMFIBDT() {
 		if (benefitMap.containsKey("MFIBDT")) {
 			Benifict benifict = benefitMap.get("MFIBDT");
 			Double rbsa = benifict.getSumAssured();
@@ -410,7 +410,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpHRB() {
+	public Integer validateHRB() {
 		if (benefitMap.containsKey("HRB")) {
 			if (benefitMap.containsKey("SUHRB") && !benefitMap.get("SUHRB").isActive()
 					|| !benefitMap.containsKey("SUHRB")) {
@@ -427,7 +427,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpSUHRB() {
+	public Integer validateSUHRB() {
 		if (benefitMap.containsKey("SUHRB")) {
 			if (benefitMap.containsKey("HRB") && !benefitMap.get("HRB").isActive() || !benefitMap.containsKey("HRB")) {
 				Double rbsa = benefitMap.get("SUHRB").getSumAssured();
@@ -443,7 +443,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpHB() {
+	public Integer validateHB() {
 		if (benefitMap.containsKey("HB")) {
 			Benifict benifict = benefitMap.get("HB");
 			Double rbsa = benifict.getSumAssured();
@@ -459,7 +459,7 @@ public class ValidationInvp {
 	// -----------------
 	// ----------------------- Spouse Validations Before Calculate
 	// ----------------------------
-	public Integer validateInvpSCB() {
+	public Integer validateSCB() {
 		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("BSAS")) {
 			Benifict bsas = benefitMap.get("BSAS");
 			Benifict atpb = benefitMap.get("ATPB");
@@ -474,7 +474,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpADBS() {
+	public Integer validateADBS() {
 		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS")) {
 			Benifict bsas = benefitMap.get("BSAS");
 			Benifict benifict = benefitMap.get("ADBS");
@@ -489,7 +489,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpTPDASBS() {
+	public Integer validateTPDASBS() {
 		if (benefitMap.containsKey("TPDASBS") && benefitMap.containsKey("ADBS")) {
 			Benifict tpdasbs = benefitMap.get("TPDASBS");
 			Benifict adbs = benefitMap.get("ADBS");
@@ -507,7 +507,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpTPDBS() {
+	public Integer validateTPDBS() {
 		if (benefitMap.containsKey("TPDBS") && benefitMap.containsKey("ADBS")) {
 			Benifict tpdbs = benefitMap.get("TPDBS");
 			Benifict adbs = benefitMap.get("ADBS");
@@ -525,7 +525,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpPPDBS() {
+	public Integer validatePPDBS() {
 		if (benefitMap.containsKey("PPDBS") && benefitMap.containsKey("ADBS")) {
 			Benifict ppdbs = benefitMap.get("PPDBS");
 			Benifict adbs = benefitMap.get("ADBS");
@@ -540,7 +540,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpSCIB() {
+	public Integer validateSCIB() {
 		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
 			Double scb = benefitMap.get("BSAS").getSumAssured();
 			Double cib = benefitMap.get("CIBS").getSumAssured();
@@ -556,7 +556,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpFEBS() {
+	public Integer validateFEBS() {
 		if (benefitMap.containsKey("FEBS")) {
 			Benifict benifict = benefitMap.get("FEBS");
 			Double bsa = calculation.get_personalInfo().getBsa();
@@ -569,7 +569,7 @@ public class ValidationInvp {
 
 	}
 
-	public Integer validateInvpHRBS() {
+	public Integer validateHRBS() {
 		if (benefitMap.containsKey("HRBS") && benefitMap.containsKey("HRB")) {
 			Double hrb = benefitMap.get("HRB").getSumAssured();
 			Double hrbs = benefitMap.get("HRBS").getSumAssured();
@@ -581,7 +581,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpSUHRBS() {
+	public Integer validateSUHRBS() {
 		if (benefitMap.containsKey("SUHRBS") && benefitMap.containsKey("SUHRB")) {
 			Double suhrb = benefitMap.get("SUHRB").getSumAssured();
 			Double suhrbs = benefitMap.get("SUHRBS").getSumAssured();
@@ -593,7 +593,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpHBS() {
+	public Integer validateHBS() {
 		if (benefitMap.containsKey("HBS") && benefitMap.containsKey("HB")) {
 			Double hb = benefitMap.get("HB").getSumAssured();
 			Double hbs = benefitMap.get("HBS").getSumAssured();
@@ -612,7 +612,7 @@ public class ValidationInvp {
 	// ----------------------- Children Validations Before Calculate
 	// ----------------------------
 
-	public Integer validateInvpCIBC() {
+	public Integer validateCIBC() {
 		System.out.println("Calle CIBC");
 		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
 			Benifict cibc = benefitMap.get("CIBC");
@@ -628,7 +628,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpHRBC() {
+	public Integer validateHRBC() {
 		if (benefitMap.containsKey("HRBC") && benefitMap.containsKey("HRB")) {
 			Double hrb = benefitMap.get("HRB").getSumAssured();
 			Double hrbc = benefitMap.get("HRBC").getSumAssured();
@@ -640,7 +640,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpSUHRBC() {
+	public Integer validateSUHRBC() {
 		if (benefitMap.containsKey("SUHRBC") && benefitMap.containsKey("SUHRB")) {
 			Double suhrb = benefitMap.get("SUHRB").getSumAssured();
 			Double suhrbc = benefitMap.get("SUHRBC").getSumAssured();
@@ -652,7 +652,7 @@ public class ValidationInvp {
 		return 0;
 	}
 
-	public Integer validateInvpHBC() {
+	public Integer validateHBC() {
 		if (benefitMap.containsKey("HBC") && benefitMap.containsKey("HB")) {
 			Double hb = benefitMap.get("HB").getSumAssured();
 			Double hbc = benefitMap.get("HBC").getSumAssured();
