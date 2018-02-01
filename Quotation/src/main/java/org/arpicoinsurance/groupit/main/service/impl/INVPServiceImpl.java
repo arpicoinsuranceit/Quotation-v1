@@ -30,7 +30,7 @@ import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -221,7 +221,7 @@ public class INVPServiceImpl implements INVPService {
 	private OccupationLodingDao occupationLodingDao;
 
 	@Override
-	public QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception {
+	public QuoInvpCalResp getCalcutatedInvp(QuotationCalculation quotationInvpCalculation) throws Exception {
 
 		Integer adultCount = 1;
 		Integer childCount = 0;
@@ -265,7 +265,7 @@ public class INVPServiceImpl implements INVPService {
 					adultCount = 1;
 					if (benifict.getType().equals("HRB")) {
 						if (quotationInvpCalculation.get_personalInfo().getSage() != null
-								&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+								&& quotationInvpCalculation.get_personalInfo().getSgender() != null
 								&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
 							if (_sRiders != null) {
 								for (Benifict benifict2 : _sRiders) {
@@ -300,11 +300,11 @@ public class INVPServiceImpl implements INVPService {
 			}
 			
 			System.out.println(quotationInvpCalculation.get_personalInfo().getSage());
-			System.out.println(quotationInvpCalculation.get_personalInfo().getSgenger());
+			System.out.println(quotationInvpCalculation.get_personalInfo().getSgender());
 			System.out.println(quotationInvpCalculation.get_personalInfo().getSocu());
 			
 			if (quotationInvpCalculation.get_personalInfo().getSage() != null
-					&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+					&& quotationInvpCalculation.get_personalInfo().getSgender() != null
 					&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
 				
 				if (_sRiders != null) {
@@ -314,7 +314,7 @@ public class INVPServiceImpl implements INVPService {
 								quotationInvpCalculation.get_personalInfo().getSage(), benifict.getType(),
 								quotationInvpCalculation.get_personalInfo().getTerm());
 						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-								quotationInvpCalculation.get_personalInfo().getSgenger(),
+								quotationInvpCalculation.get_personalInfo().getSgender(),
 								quotationInvpCalculation.get_personalInfo().getSage(),
 								quotationInvpCalculation.get_personalInfo().getFrequance(), term, quotationInvpCalculation.get_personalInfo().getSocu(),
 								calResp, adultCount, childCount);
@@ -644,7 +644,7 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationInvpCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
+	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
 		QuoInvpCalResp calResp = getCalcutatedInvp(calculation);
@@ -836,7 +836,7 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationInvpCalculation calculation)
+	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationCalculation calculation)
 			throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;

@@ -150,7 +150,7 @@ public class QuotationCalculationController {
 	@RequestMapping(value="/endCal",method=RequestMethod.POST)
 	public String calculateEND() {
 		try {		
-			endService.calculateL2(29, 10, 0.0, new Date(), 500000.0, 12);
+			endService.calculateL2(1,29, 10, 0.0, new Date(), 500000.0, 12);
 			endService.calculateMaturity(10, 500000.00);
 			return "ok";
 		

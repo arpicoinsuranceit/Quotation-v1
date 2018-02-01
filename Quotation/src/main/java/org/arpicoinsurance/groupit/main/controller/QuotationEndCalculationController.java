@@ -1,11 +1,16 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +32,6 @@ public class QuotationEndCalculationController {
 			if (validation.validateProd() == 1) {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
-					System.out.println("okkkkkkkkk.....");
 					calResp = endService.getCalcutatedEnd(calculation);
 				} else {
 					calResp.setErrorExist(true);
@@ -46,24 +50,24 @@ public class QuotationEndCalculationController {
 	}
 
 
-	/*@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
-		QuotationInvpCalculation calculation = null;
-		ValidationInvp validationInvp = null;
+		QuotationCalculation calculation = null;
+		Validation validation = null;
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
-					calculation = new QuotationInvpCalculation();
+					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
-					validationInvp = new ValidationInvp(calculation);
-					if (validationInvp.validateInvpProd() == 1) {
-						String error = validationInvp.validateBenifict();
+					validation = new Validation(calculation);
+					if (validation.validateProd() == 1) {
+						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							String response = endService.saveQuotation(calculation, _invpSaveQuotation, id);
 							resp = response;
 						} else {
 							resp = "Error at benifict :" + error;
@@ -85,12 +89,12 @@ public class QuotationEndCalculationController {
 			if (calculation != null) {
 				calculation = null;
 			}
-			if (validationInvp != null) {
-				validationInvp = null;
+			if (validation != null) {
+				validation = null;
 			}
 		}
 
 		return resp;
-	}*/
+	}
 
 }

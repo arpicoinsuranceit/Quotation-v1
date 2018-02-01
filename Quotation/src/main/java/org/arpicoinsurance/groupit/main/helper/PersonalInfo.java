@@ -7,7 +7,7 @@ public class PersonalInfo {
 	private String mgender;
 	private Integer mocu;
 	private Integer sage;
-	private String sgenger;
+	private String sgender;
 	private Integer socu;
 	private Integer term;
 	private String frequance;
@@ -48,12 +48,12 @@ public class PersonalInfo {
 		this.sage = sage;
 	}
 
-	public String getSgenger() {
-		return sgenger;
+	public String getSgender() {
+		return sgender;
 	}
 
-	public void setSgenger(String sgenger) {
-		this.sgenger = sgenger;
+	public void setSgender(String sgenger) {
+		this.sgender = sgenger;
 	}
 
 	public Integer getSocu() {
