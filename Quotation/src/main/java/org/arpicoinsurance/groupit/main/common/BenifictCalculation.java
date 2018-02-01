@@ -30,16 +30,16 @@ public class BenifictCalculation {
 	
 	public Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
 			Integer term, Double occupationValue, QuoInvpCalResp calResp) throws Exception{
-		switch (type) {
+		/*switch (type) {
 		case "ADB":
 				System.out.println(ridsumasu);
 				System.out.println(payFrequency);
 				
-				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 0.0);
+				BigDecimal adb=adbService.calculateADB(ridsumasu, payFrequency, 0.0,0.0);
 				calResp.setAdb(adb.doubleValue());
 			break;
 		case "ADBS":
-				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 0.0);
+				BigDecimal adbs= adbsService.calculateADBS(ridsumasu, payFrequency, 0.0,0.0);
 				calResp.setAdbs(adbs.doubleValue());
 			break;
 		case "ATPB":
@@ -58,7 +58,7 @@ public class BenifictCalculation {
 		default:
 			break;
 		}
-		
+		*/
 		return 0.0;
 	}
 }

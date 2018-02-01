@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
@@ -14,6 +16,7 @@ import org.arpicoinsurance.groupit.main.dao.CustChildDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -27,7 +30,7 @@ import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -35,6 +38,7 @@ import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -45,6 +49,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.OccupationLodingServce;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
@@ -80,7 +85,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class INVPServiceImpl implements INVPService {
 
-	private Double occupationValue = 1.0;
 
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 
@@ -209,13 +213,18 @@ public class INVPServiceImpl implements INVPService {
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
+	
+	@Autowired
+	private OccupationLodingServce occupationLoding;
+	
+	@Autowired
+	private OccupationLodingDao occupationLodingDao;
 
 	@Override
-	public QuoInvpCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
+	public QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception {
 
 		Integer adultCount = 1;
 		Integer childCount = 0;
-		System.out.println(quotationCalculation.get_personalInfo().getMgender());
 
 		CalculationUtils calculationUtils = null;
 		BenifictCalculation benifictCalculation = null;
@@ -225,26 +234,27 @@ public class INVPServiceImpl implements INVPService {
 			calculationUtils = new CalculationUtils();
 			benifictCalculation = new BenifictCalculation();
 			/// Calculate Rebate Premium ///
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationInvpCalculation.get_personalInfo().getTerm(),
+					quotationInvpCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
-			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+			BigDecimal bsaPremium = calculateL2(quotationInvpCalculation.get_personalInfo().getMocu(),quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 8.0 , new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()));
 
 			ArrayList<Benifict> _mRiders = null;
 			ArrayList<Benifict> _sRiders = null;
 			ArrayList<Benifict> _cRiders = null;
-			if (quotationCalculation.get_riderDetails() != null) {
-				if (quotationCalculation.get_riderDetails().get_mRiders() != null) {
-					_mRiders = quotationCalculation.get_riderDetails().get_mRiders();
+			if (quotationInvpCalculation.get_riderDetails() != null) {
+				if (quotationInvpCalculation.get_riderDetails().get_mRiders() != null) {
+					_mRiders = quotationInvpCalculation.get_riderDetails().get_mRiders();
 				}
-				if (quotationCalculation.get_riderDetails().get_sRiders() != null) {
-					_sRiders = quotationCalculation.get_riderDetails().get_sRiders();
+				if (quotationInvpCalculation.get_riderDetails().get_sRiders() != null) {
+					_sRiders = quotationInvpCalculation.get_riderDetails().get_sRiders();
+					System.out.println(_sRiders.size()+"aaaaaaaaaaaaaaaaaaaaaaaa");
 				}
-				if (quotationCalculation.get_riderDetails().get_cRiders() != null) {
-					_cRiders = quotationCalculation.get_riderDetails().get_cRiders();
+				if (quotationInvpCalculation.get_riderDetails().get_cRiders() != null) {
+					_cRiders = quotationInvpCalculation.get_riderDetails().get_cRiders();
 				}
 
 			}
@@ -254,9 +264,9 @@ public class INVPServiceImpl implements INVPService {
 				for (Benifict benifict : _mRiders) {
 					adultCount = 1;
 					if (benifict.getType().equals("HRB")) {
-						if (quotationCalculation.get_personalInfo().getSage() != null
-								&& quotationCalculation.get_personalInfo().getSgender() != null
-								&& quotationCalculation.get_personalInfo().getSocu() != null) {
+						if (quotationInvpCalculation.get_personalInfo().getSage() != null
+								&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+								&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
 							if (_sRiders != null) {
 								for (Benifict benifict2 : _sRiders) {
 									if (benifict2.getType().equals("HRBS")) {
@@ -266,10 +276,10 @@ public class INVPServiceImpl implements INVPService {
 							}
 						}
 
-						if (quotationCalculation.get_personalInfo().getChildrens() != null
-								&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
+						if (quotationInvpCalculation.get_personalInfo().getChildrens() != null
+								&& quotationInvpCalculation.get_personalInfo().getChildrens().size() > 0) {
 							if (_cRiders != null) {
-								for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+								for (Children children : quotationInvpCalculation.get_personalInfo().getChildrens()) {
 									if (children.is_cHrbc()) {
 										childCount += 1;
 									}
@@ -278,70 +288,74 @@ public class INVPServiceImpl implements INVPService {
 						}
 					}
 					Integer term = calculateBenefictTerm.calculateBenifictTerm(
-							quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
-							quotationCalculation.get_personalInfo().getTerm());
+							quotationInvpCalculation.get_personalInfo().getMage(), benifict.getType(),
+							quotationInvpCalculation.get_personalInfo().getTerm());
 					calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-							quotationCalculation.get_personalInfo().getMgender(),
-							quotationCalculation.get_personalInfo().getMage(),
-							quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
+							quotationInvpCalculation.get_personalInfo().getMgender(),
+							quotationInvpCalculation.get_personalInfo().getMage(),
+							quotationInvpCalculation.get_personalInfo().getFrequance(), term, quotationInvpCalculation.get_personalInfo().getMocu(), calResp,
 							adultCount, childCount);
 
 				}
 			}
-
-			if (quotationCalculation.get_personalInfo().getSage() != null
-					&& quotationCalculation.get_personalInfo().getSgender() != null
-					&& quotationCalculation.get_personalInfo().getSocu() != null) {
-
+			
+			System.out.println(quotationInvpCalculation.get_personalInfo().getSage());
+			System.out.println(quotationInvpCalculation.get_personalInfo().getSgenger());
+			System.out.println(quotationInvpCalculation.get_personalInfo().getSocu());
+			
+			if (quotationInvpCalculation.get_personalInfo().getSage() != null
+					&& quotationInvpCalculation.get_personalInfo().getSgenger() != null
+					&& quotationInvpCalculation.get_personalInfo().getSocu() != null) {
+				
 				if (_sRiders != null) {
 
 					for (Benifict benifict : _sRiders) {
 						Integer term = calculateBenefictTerm.calculateBenifictTerm(
-								quotationCalculation.get_personalInfo().getSage(), benifict.getType(),
-								quotationCalculation.get_personalInfo().getTerm());
+								quotationInvpCalculation.get_personalInfo().getSage(), benifict.getType(),
+								quotationInvpCalculation.get_personalInfo().getTerm());
 						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-								quotationCalculation.get_personalInfo().getSgender(),
-								quotationCalculation.get_personalInfo().getSage(),
-								quotationCalculation.get_personalInfo().getFrequance(), term, occupationValue, calResp,
-								adultCount, childCount);
+								quotationInvpCalculation.get_personalInfo().getSgenger(),
+								quotationInvpCalculation.get_personalInfo().getSage(),
+								quotationInvpCalculation.get_personalInfo().getFrequance(), term, quotationInvpCalculation.get_personalInfo().getSocu(),
+								calResp, adultCount, childCount);
 					}
 				}
 			}
 
-			if (quotationCalculation.get_personalInfo().getChildrens() != null
-					&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
-				for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+			if (quotationInvpCalculation.get_personalInfo().getChildrens() != null
+					&& quotationInvpCalculation.get_personalInfo().getChildrens().size() > 0) {
+				for (Children children : quotationInvpCalculation.get_personalInfo().getChildrens()) {
 					if (_cRiders != null) {
 						for (Benifict benifict : _cRiders) {
 							Integer term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
+									benifict.getType(), quotationInvpCalculation.get_personalInfo().getTerm());
 							String benfName = benifict.getType();
 
 							switch (benfName) {
 							case "CIBC":
 								if (children.is_cCibc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgender(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp, adultCount, childCount);
+											children.get_cTitle(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
+											0, calResp, adultCount, childCount);
 								}
 								break;
 
 							case "HBC":
 								if (children.is_cHbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgender(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp, adultCount, childCount);
+											children.get_cTitle(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
+											0, calResp, adultCount, childCount);
 								}
 								break;
 
 							case "SUHRBC":
 								if (children.is_cSuhrbc()) {
 									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											quotationCalculation.get_personalInfo().getMgender(), children.get_cAge(),
-											quotationCalculation.get_personalInfo().getFrequance(), term,
-											occupationValue, calResp, adultCount, childCount);
+											children.get_cTitle(), children.get_cAge(),
+											quotationInvpCalculation.get_personalInfo().getFrequance(), term,
+											0, calResp, adultCount, childCount);
 								}
 								break;
 
@@ -354,25 +368,28 @@ public class INVPServiceImpl implements INVPService {
 			}
 
 			calResp.setBasicSumAssured(addRebatetoBSAPremium(rebate, bsaPremium));
-			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setAt8(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 10.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			calResp.setAt10(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
-			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
-			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE=adminFee + tax;
+			calResp.setAt6(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
+			calResp.setAt8(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 10.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
+			calResp.setAt10(calculateMaturity(quotationInvpCalculation.get_personalInfo().getMage(),
+					quotationInvpCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
+					quotationInvpCalculation.get_personalInfo().getBsa(),
+					calculationUtils.getPayterm(quotationInvpCalculation.get_personalInfo().getFrequance()))
+							.doubleValue());
+			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
+			Double adminFee = calculationUtils.getAdminFee(quotationInvpCalculation.get_personalInfo().getFrequance());
+			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
+			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
-			
+
 			return calResp;
 
 		} finally {
@@ -387,18 +404,23 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int age, int term, double intrat, Date chedat, double bassum, int paytrm)
+	public BigDecimal calculateL2(int ocu,int age, int term, double intrat, Date chedat, double bassum, int paytrm)
 			throws Exception {
+		
+		Occupation occupation = occupationDao.findByOcupationid(ocu);
+		Benefits benefits= benefitsDao.findByRiderCode("L2");
+		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
+		
+		Double rate=ocupationLoading.getValue();
+		
 		BigDecimal premium = new BigDecimal(0);
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println(
-				"age : " + age + " term : " + term + " intrat : " + intrat + " paytrm : " + paytrm + " Sumasu : "
-						+ bassum + " SumRate : " + rateCardINVP.getSumasu() + " Rate : " + rateCardINVP.getRate());
+		System.out.println( rateCardINVP.getSumasu());
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
-		return premium;
+		return premium.multiply(new BigDecimal(rate));
 	}
 
 	@Override
@@ -434,79 +456,83 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Double occupationValue, QuoInvpCalResp calResp, Integer adultCount, Integer childCount)
+			Integer term, Integer occupation_id, QuoInvpCalResp calResp, Integer adultCount, Integer childCount)
 			throws Exception {
 
-		System.out.println(gender + "         dsdsdsdsdsd");
+		
+		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
+		
 		switch (type) {
 		case "BSAS":
-			BigDecimal scb = scbService.calculateSCB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			
+			System.out.println("callesssssssssssssssssssssssssssssssss");
+			BigDecimal scb = scbService.calculateSCB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setBsas(scb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scb.doubleValue());
 			calResp.setBsasTerm(term);
 			break;
 		case "ADB":
-			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, 1.0);
+			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setAdb(adb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adb.doubleValue());
 			calResp.setAdbTerm(term);
 			break;
 		case "ADBS":
-			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, 1.0);
+			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setAdbs(adbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adbs.doubleValue());
 			calResp.setAdbsTerm(term);
 			break;
 		case "ATPB":
-			BigDecimal atpb = atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal atpb = atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setAtpb(atpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + atpb.doubleValue());
 			calResp.setAtpbTerm(term);
 			break;
 		case "TPDASB":
-			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setTpdasb(tpdasb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasb.doubleValue());
 			calResp.setTpdasbTerm(term);
 			break;
 		case "TPDASBS":
-			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setTpdasbs(tpdasbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasbs.doubleValue());
 			calResp.setTpdasbsTerm(term);
 			break;
 		case "TPDB":
-			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0);
+			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setTpdb(tpdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdb.doubleValue());
 			calResp.setTpdbTerm(term);
 			break;
 		case "TPDBS":
-			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0);
+			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setTpdbs(tpdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdbs.doubleValue());
 			calResp.setTpdbsTerm(term);
 			break;
 		case "PPDB":
-			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0);
+			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setPpdb(ppdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdb.doubleValue());
 			calResp.setPpdbTerm(term);
 			break;
 		case "PPDBS":
-			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0);
+			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setPpdbs(ppdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdbs.doubleValue());
 			calResp.setPpdbsTerm(term);
 			break;
 		case "CIB":
-			BigDecimal cib = cibService.calculateCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal cib = cibService.calculateCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setCib(cib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cib.doubleValue());
 			calResp.setCibTerm(term);
 			break;
 		case "CIBS":
-			BigDecimal scib = scibService.calculateSCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal scib = scibService.calculateSCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setCibs(scib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scib.doubleValue());
 			calResp.setCibsTerm(term);
@@ -520,54 +546,52 @@ public class INVPServiceImpl implements INVPService {
 			calResp.setCibcTerm(term);
 			break;
 		case "FEB":
-			BigDecimal feb = febService.calculateFEB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal feb = febService.calculateFEB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setFeb(feb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + feb.doubleValue());
 			calResp.setFebTerm(term);
 			break;
 		case "FEBS":
-			BigDecimal febs = febsService.calculateFEBS(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal febs = febsService.calculateFEBS(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setFebs(febs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + febs.doubleValue());
 			calResp.setFebsTerm(term);
 			break;
 
 		case "MFIBD":
-			BigDecimal mfibd = mfibdService.calculateMFIBD(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal mfibd = mfibdService.calculateMFIBD(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setMifdb(mfibd.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibd.doubleValue());
 			calResp.setMifdbTerm(term);
 			break;
 		case "MFIBT":
-			BigDecimal mfibt = mfibtService.calculateMFIBT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal mfibt = mfibtService.calculateMFIBT(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setMifdt(mfibt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibt.doubleValue());
 			calResp.setMifdtTerm(term);
 			break;
 		case "MFIBDT":
-			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setMifdbt(mfibdt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibdt.doubleValue());
 			calResp.setMifdbtTerm(term);
 			break;
 		case "HRB":
-			System.out.println(age + "**********************Watch********************** " + gender + " " + ridsumasu
-					+ " " + adultCount + " " + childCount);
 			BigDecimal hrb = hrbService.calculateHRB(age, gender, ridsumasu, adultCount, childCount, new Date(),
-					payFrequency, 1.0);
+					payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setHrb(hrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrb.doubleValue());
 			calResp.setHrbTerm(term);
 			break;
 		case "SUHRB":
-			BigDecimal suhrb = suhrbService.calculateSUHRB(age, gender, term, ridsumasu, new Date(), payFrequency, 1.0);
+			BigDecimal suhrb = suhrbService.calculateSUHRB(age, gender, term, ridsumasu, new Date(), payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setSuhrb(suhrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
 			calResp.setSuhrbTerm(term);
 			break;
 		case "SUHRBS":
 			BigDecimal suhrbs = suhrbsService.calculateSUHRBS(age, gender, term, ridsumasu, new Date(), payFrequency,
-					1.0);
+					1.0, oculoding.get("SCB"));
 			calResp.setSuhrbs(suhrbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
 			calResp.setSuhrbsTerm(term);
@@ -580,13 +604,13 @@ public class INVPServiceImpl implements INVPService {
 			calResp.setSuhrbcTerm(term);
 			break;
 		case "HB":
-			BigDecimal hb = hbService.calculateHB(age, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal hb = hbService.calculateHB(age, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setHb(hb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hb.doubleValue());
 			calResp.setHbTerm(term);
 			break;
 		case "HBS":
-			BigDecimal hbs = hbsService.calculateHBS(28, term, new Date(), ridsumasu, payFrequency, 1.0);
+			BigDecimal hbs = hbsService.calculateHBS(28, term, new Date(), ridsumasu, payFrequency, 1.0, oculoding.get("SCB"));
 			calResp.setHbs(hbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbs.doubleValue());
 			calResp.setHbsTerm(term);
@@ -620,14 +644,14 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
+	public String saveQuotation(QuotationInvpCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
 		QuoInvpCalResp calResp = getCalcutatedInvp(calculation);
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(id);
-		Occupation occupationMainlife = occupationDao.findOne(calculation.get_personalInfo().getMocu());
-		Occupation occupationSpouse = occupationDao.findOne(calculation.get_personalInfo().getSocu());
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
 		CustomerDetails mainLifeDetail = getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
 				user);
@@ -789,7 +813,7 @@ public class INVPServiceImpl implements INVPService {
 		ArrayList<Child> childList = null;
 		if (get_childrenList != null && get_childrenList.size() > 0) {
 			try {
-				childList = new ArrayList();
+				childList = new ArrayList<Child>();
 				for (Children children : get_childrenList) {
 					Child child = new Child();
 					child.setChildName(children.get_cName());
@@ -812,7 +836,8 @@ public class INVPServiceImpl implements INVPService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationCalculation calculation) throws Exception {
+	private QuotationDetails getQuotationDetail(QuoInvpCalResp calResp, QuotationInvpCalculation calculation)
+			throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;
 		try {
@@ -1143,7 +1168,7 @@ public class INVPServiceImpl implements INVPService {
 				}
 			}
 		}
-		if (benifictListC != null && !benifictListC.isEmpty()) {
+		if (benifictListC != null && !benifictListC.isEmpty())
 			for (Benifict benifict : benifictListC) {
 				if (benifict.getType().equals("CIBC"))
 					cib = benifict.getSumAssured();
@@ -1152,7 +1177,6 @@ public class INVPServiceImpl implements INVPService {
 				if (benifict.getType().equals("HBC"))
 					hb = benifict.getSumAssured();
 			}
-		}
 
 		ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 		for (Children children : get_childrenList) {
@@ -1251,5 +1275,4 @@ public class INVPServiceImpl implements INVPService {
 		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
 		return lifpos;
 	}
-
 }

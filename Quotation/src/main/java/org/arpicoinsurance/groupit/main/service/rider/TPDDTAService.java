@@ -5,6 +5,6 @@ import java.util.Date;
 
 public interface TPDDTAService {
 	
-	BigDecimal calculateTPDDTA(int age, int term, double intrat, String sex, Date chedat, double loanamt)throws Exception;
+	BigDecimal calculateTPDDTA(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)throws Exception;
 
 }
