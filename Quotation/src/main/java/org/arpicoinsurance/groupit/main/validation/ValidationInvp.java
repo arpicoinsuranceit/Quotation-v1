@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public class ValidationInvp {
 
-	private QuotationInvpCalculation calculation;
+	private QuotationCalculation calculation;
 
 	HashMap<String, Benifict> benefitMap = new HashMap<>();
 
-	public ValidationInvp(QuotationInvpCalculation calculation) {
+	public ValidationInvp(QuotationCalculation calculation) {
 		this.calculation = calculation;
 		loadBeneficts();
 

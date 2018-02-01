@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class QuotationInvpCalculationController {
 	private INVPService invpService;
 
 	@RequestMapping(value = "/quoInvpCal", method = RequestMethod.POST)
-	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationInvpCalculation calculation) {
+	public QuoInvpCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		// System.out.println(calculation);
 		//// ******************do post validations before send response
 		try {
@@ -57,12 +57,12 @@ public class QuotationInvpCalculationController {
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
-		QuotationInvpCalculation calculation = null;
+		QuotationCalculation calculation = null;
 		ValidationInvp validationInvp = null;
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
-					calculation = new QuotationInvpCalculation();
+					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validationInvp = new ValidationInvp(calculation);

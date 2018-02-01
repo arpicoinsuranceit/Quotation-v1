@@ -10,7 +10,7 @@ import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.PersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.QuoAibCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.ResponceString;
 import org.arpicoinsurance.groupit.main.service.AIBService;
 import org.arpicoinsurance.groupit.main.validation.ValidationInvp;

@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
-public class QuotationInvpCalculation{
+public class QuotationCalculation{
 	private PersonalInfo _personalInfo;
 	private RiderDetails _riderDetails = null;
 	

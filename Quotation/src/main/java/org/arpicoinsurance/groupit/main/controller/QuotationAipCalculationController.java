@@ -7,7 +7,7 @@ import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.Plan;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.AIPService;
 import org.arpicoinsurance.groupit.main.validation.ValidationInvp;
 import org.springframework.beans.factory.annotation.Autowired;

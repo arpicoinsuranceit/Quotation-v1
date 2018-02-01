@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface ASIPService {
 	
-QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception; 
+QuoInvpCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception; 
 	
 	BigDecimal calculateL2(int term, double bassum, int paytrm)throws Exception;
 	

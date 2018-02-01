@@ -8,7 +8,7 @@ import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardASIPDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardASIPFundDao;
 import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationInvpCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.model.RateCardASIP;
 import org.arpicoinsurance.groupit.main.model.RateCardASIPFund;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
@@ -144,7 +144,7 @@ public class ASIPServiceImpl implements ASIPService {
 	private CalculateBenifictTermService calculateBenefictTerm;
 	
 	@Override
-	public QuoInvpCalResp getCalcutatedInvp(QuotationInvpCalculation quotationInvpCalculation) throws Exception {
+	public QuoInvpCalResp getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
