@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
@@ -22,16 +21,13 @@ import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
@@ -47,7 +43,6 @@ import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
-import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
@@ -89,8 +84,6 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
-	
-	private Double occupationValue = 1.0;
 
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 
@@ -216,12 +209,6 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
-
-	@Autowired
-	private RateCardINVPDao rateCardINVPDao;
-
-	@Autowired
-	private RateCardATFESCDao rateCardATFESCDao;
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;

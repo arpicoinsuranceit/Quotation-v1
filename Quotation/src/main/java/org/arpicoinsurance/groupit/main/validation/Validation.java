@@ -260,7 +260,7 @@ public class Validation {
 
 		return 0;
 	}
-
+	
 	public Integer validateAsipProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11 ||
 				calculation.get_personalInfo().getTerm() <= 15 ||

@@ -1,12 +1,8 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
@@ -128,7 +124,7 @@ public class QuotationCalculationController {
 	@RequestMapping(value="/atrmCal",method=RequestMethod.POST)
 	public String calculateATRM() {
 		try {		
-			atrmService.calculateL2(29, 30, 0.0, new Date(), 2500000.0, 12);
+			atrmService.calculateL2(1,29, 30, 0.0, new Date(), 2500000.0, 12);
 			return "ok";
 		
 		} catch (Exception e) {
