@@ -1,7 +1,5 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

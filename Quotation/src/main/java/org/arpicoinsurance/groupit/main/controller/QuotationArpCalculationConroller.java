@@ -1,6 +1,5 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

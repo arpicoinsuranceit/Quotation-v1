@@ -5,9 +5,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
-import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardMFIBDDao;
-import org.arpicoinsurance.groupit.main.model.RateCardATFESC;
 import org.arpicoinsurance.groupit.main.model.RateCardMFIBD;
 import org.arpicoinsurance.groupit.main.service.rider.MFIBDService;
 import org.springframework.beans.factory.annotation.Autowired;

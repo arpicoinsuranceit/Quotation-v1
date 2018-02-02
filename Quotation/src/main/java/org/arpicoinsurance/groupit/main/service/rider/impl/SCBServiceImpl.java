@@ -6,9 +6,7 @@ import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardATFESC;
-import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.service.rider.SCBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

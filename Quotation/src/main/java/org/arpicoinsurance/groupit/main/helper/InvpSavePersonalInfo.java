@@ -1,9 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 
 public class InvpSavePersonalInfo {
 	private MainLife _mainlife;

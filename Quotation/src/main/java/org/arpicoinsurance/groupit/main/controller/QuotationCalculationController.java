@@ -3,20 +3,8 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import org.arpicoinsurance.groupit.main.service.ARPService;
-import org.arpicoinsurance.groupit.main.service.ASFPService;
-import org.arpicoinsurance.groupit.main.service.ASIPService;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
-import org.arpicoinsurance.groupit.main.service.DTAPLService;
-import org.arpicoinsurance.groupit.main.service.DTAService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
-import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
-import org.arpicoinsurance.groupit.main.service.rider.JLBService;
-import org.arpicoinsurance.groupit.main.service.rider.SFPOService;
-import org.arpicoinsurance.groupit.main.service.rider.TPDDTAPLService;
-import org.arpicoinsurance.groupit.main.service.rider.TPDDTASPLService;
-import org.arpicoinsurance.groupit.main.service.rider.TPDDTASService;
-import org.arpicoinsurance.groupit.main.service.rider.TPDDTAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,51 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin (origins="*")
 @RestController
 public class QuotationCalculationController {
-	
 
-	
-	@Autowired
-	private ASIPService asipService;
-	
-	@Autowired
-	private ARPService arpService;
-	
-	@Autowired
-	private ASFPService asfpService;
-	
-	@Autowired
-	private SFPOService sfpoService;
-	
 	@Autowired
 	private ATRMService atrmService;
 	
 	@Autowired
 	private ENDService endService;
-	
-	@Autowired
-	private DTAService dtaService;
-	
-	@Autowired
-	private TPDDTAService tpddtaService;
-	
-	@Autowired
-	private JLBService jlbService;
-	
-	@Autowired
-	private TPDDTASService tpddtasService;
-	
-	@Autowired
-	private DTAPLService dtaplService;
-	
-	@Autowired
-	private TPDDTAPLService tpddtaplService;
-	
-	@Autowired
-	private JLBPLService jlbplService;
-	
-	@Autowired
-	private TPDDTASPLService tpddtasplService;
-	
 	
 	@RequestMapping(value="/ageCal",method=RequestMethod.POST)
 	public Long calculateAge(@RequestBody String dob) {
