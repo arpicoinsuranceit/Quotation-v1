@@ -370,7 +370,7 @@ public class ASIPServiceImpl implements ASIPService {
 				}
 			}
 
-			calResp.setBasicSumAssured(addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					0.01, 
@@ -437,15 +437,7 @@ public class ASIPServiceImpl implements ASIPService {
 		return premium.multiply(new BigDecimal(rate));
 	}
 
-	@Override
-	public Double addRebatetoBSAPremium(double rebate, BigDecimal premium) throws Exception {
-		System.out.println("rebate : " + rebate);
-		BigDecimal rebateRate = new BigDecimal(1)
-				.subtract((new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)));
-		System.out.println("rebateRate : " + rebateRate.doubleValue());
-		premium = premium.multiply(rebateRate).setScale(0, RoundingMode.HALF_UP);
-		return premium.doubleValue();
-	}
+	
 
 	@Override
 	public BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum, double bsapremium, int paytrm)

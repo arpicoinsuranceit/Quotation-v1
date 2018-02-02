@@ -250,6 +250,7 @@ public class Validation {
 		}
 	}
 
+	////////////// Invp Product Validation
 	public Integer validateInvpEndProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
@@ -261,19 +262,37 @@ public class Validation {
 		return 0;
 	}
 
+	////////////// Asip Product Validation
 	public Integer validateAsipProd() {
-		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11 ||
-				calculation.get_personalInfo().getTerm() <= 15 ||
-				calculation.get_personalInfo().getTerm() <= 20 ||
-				calculation.get_personalInfo().getTerm() <= 25 ||
-				calculation.get_personalInfo().getTerm() <= 30 ||
-				calculation.get_personalInfo().getTerm() <= 35 ||
-				calculation.get_personalInfo().getTerm() <= 40 ||
-				calculation.get_personalInfo().getTerm() <= 45 ||
-				calculation.get_personalInfo().getTerm() <= 50 
-				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65 &&
-				calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm() <=65
-				&& calculation.get_personalInfo().getBsa() >= 250000 && !calculation.get_personalInfo().getFrequance().equals("S")) {
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11
+				|| calculation.get_personalInfo().getTerm() == 15 || calculation.get_personalInfo().getTerm() == 20
+				|| calculation.get_personalInfo().getTerm() == 25 || calculation.get_personalInfo().getTerm() == 30
+				|| calculation.get_personalInfo().getTerm() == 35 || calculation.get_personalInfo().getTerm() == 40
+				|| calculation.get_personalInfo().getTerm() == 45
+				|| calculation.get_personalInfo().getTerm() == 50 && calculation.get_personalInfo().getMage() >= 18
+						&& calculation.get_personalInfo().getMage() <= 65
+						&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 65) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	////////////// Arp Product Validation
+	public Integer validateArpProd() {
+
+		if (calculation.get_personalInfo().getPayingterm().equals("5")
+				&& !calculation.get_personalInfo().getFrequance().equals("S")
+				|| calculation.get_personalInfo().getPayingterm().equals("10")
+						&& !calculation.get_personalInfo().getFrequance().equals("S")
+				|| calculation.get_personalInfo().getPayingterm().equals("S")
+						&& calculation.get_personalInfo().getFrequance().equals("S")
+
+						&& calculation.get_personalInfo().getMage() >= 18
+						&& calculation.get_personalInfo().getMage() <= 65
+						&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 65
+						&& calculation.get_personalInfo().getBsa() >= 250000
+						) {
 			return 1;
 		}
 

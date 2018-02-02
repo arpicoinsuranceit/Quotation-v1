@@ -92,25 +92,6 @@ public class QuotationCalculationController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	@RequestMapping(value="/arpCal",method=RequestMethod.POST)
-	public String calculateARP() {
-		try {		
-			arpService.calculateL2(29, 15, "S", 6.0, new Date(), 500000.00, "S");
-			arpService.calculateMaturity(15, 500000.00);
-			
-			return "ok";
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	@RequestMapping(value="/asfpCal",method=RequestMethod.POST)
 	public String calculateASFP() {
 		/*try {		

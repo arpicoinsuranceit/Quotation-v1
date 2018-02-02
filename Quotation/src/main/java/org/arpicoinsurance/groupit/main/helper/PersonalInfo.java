@@ -10,6 +10,7 @@ public class PersonalInfo {
 	private String sgenger;
 	private Integer socu;
 	private Integer term;
+	private String payingterm;
 	private String frequance;
 	private Double bsa;
 	
@@ -70,6 +71,14 @@ public class PersonalInfo {
 
 	public void setTerm(Integer term) {
 		this.term = term;
+	}
+
+	public String getPayingterm() {
+		return payingterm;
+	}
+
+	public void setPayingterm(String payingterm) {
+		this.payingterm = payingterm;
 	}
 
 	public String getFrequance() {
