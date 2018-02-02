@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public class Validation {
@@ -19,7 +19,7 @@ public class Validation {
 
 	}
 
-	public boolean InvpPostValidation(QuoInvpCalResp calResp) {
+	public boolean InvpPostValidation(QuotationQuickCalResponse calResp) {
 		if (calResp.getBasicSumAssured() < 1250) {
 			return false;
 		} else {

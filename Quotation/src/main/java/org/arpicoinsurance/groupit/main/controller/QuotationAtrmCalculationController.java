@@ -3,7 +3,7 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoAtrmCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
@@ -25,10 +25,10 @@ public class QuotationAtrmCalculationController {
 	private double totPre=0.0;
 
 	@RequestMapping(value = "/quoAtrmCal", method = RequestMethod.POST)
-	public QuoAtrmCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		System.out.println(calculation.get_personalInfo().getMgenger());
 		try {
-			QuoAtrmCalResp calResp = new QuoAtrmCalResp();
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();

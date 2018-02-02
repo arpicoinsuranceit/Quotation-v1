@@ -16,7 +16,7 @@ import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;

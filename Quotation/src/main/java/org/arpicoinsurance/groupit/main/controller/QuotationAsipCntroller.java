@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
@@ -27,9 +27,9 @@ public class QuotationAsipCntroller {
 	
 	@RequestMapping(value="/asipCal",method=RequestMethod.POST)
 	
-	public QuoInvpCalResp calculateASIP(@RequestBody QuotationCalculation calculation) {
+	public QuotationQuickCalResponse calculateASIP(@RequestBody QuotationCalculation calculation) {
 		try {	
-			QuoInvpCalResp calResp = new QuoInvpCalResp();
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
 			
 			if (validation.validateAsipProd() == 1) {

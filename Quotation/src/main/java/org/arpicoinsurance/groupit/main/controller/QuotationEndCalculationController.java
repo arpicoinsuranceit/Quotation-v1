@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
@@ -24,10 +24,10 @@ public class QuotationEndCalculationController {
 	private ENDService endService;
 
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
-	public QuoEndCalResp calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		
 		try {
-			QuoEndCalResp calResp = new QuoEndCalResp();
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();

@@ -1,6 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
-public class QuoInvpCalResp {
+public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
 	private Double extraOE= 0.00;
 	private Double addBenif= 0.00;
@@ -9,6 +9,8 @@ public class QuoInvpCalResp {
 	private Double at6= 0.00;
 	private Double at8= 0.00;
 	private Double at10= 0.00;
+	
+	private Double guaranteed= 0.00;
 	
 	private Double adb= 0.00;
 	private int adbTerm = 0;
@@ -472,6 +474,12 @@ public class QuoInvpCalResp {
 	}
 	public void setSuhrbcTerm(int suhrbcTerm) {
 		this.suhrbcTerm = suhrbcTerm;
+	}
+	public Double getGuaranteed() {
+		return guaranteed;
+	}
+	public void setGuaranteed(Double guaranteed) {
+		this.guaranteed = guaranteed;
 	}
 	
 	

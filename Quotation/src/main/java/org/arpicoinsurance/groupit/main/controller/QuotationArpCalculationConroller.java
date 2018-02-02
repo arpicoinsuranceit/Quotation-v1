@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoInvpCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
@@ -25,9 +25,9 @@ public class QuotationArpCalculationConroller {
 	private ARPService arpServie;
 
 	@RequestMapping(value = "/arpCal", method = RequestMethod.POST)
-	public QuoInvpCalResp calculateARP(@RequestBody QuotationCalculation calculation) {
+	public QuotationQuickCalResponse calculateARP(@RequestBody QuotationCalculation calculation) {
 		try {
-			QuoInvpCalResp calResp = new QuoInvpCalResp();
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
 			if (validation.validateArpProd() == 1) {
 				String error = validation.validateBenifict();

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface ENDService {
@@ -13,7 +13,7 @@ public interface ENDService {
 	
 	BigDecimal calculateMaturity(int term, double bassum)throws Exception;
 
-	QuoEndCalResp getCalcutatedEnd(QuotationCalculation calculation)throws Exception;
+	QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation calculation)throws Exception;
 	
 	String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 

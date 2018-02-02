@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.arpicoinsurance.groupit.main.common.BenifictCalculation;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
@@ -27,8 +26,7 @@ import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.QuoAtrmCalResp;
-import org.arpicoinsurance.groupit.main.helper.QuoEndCalResp;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
@@ -48,6 +46,7 @@ import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.OccupationLodingServce;
+import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
@@ -214,6 +213,9 @@ public class ATRMServiceImpl implements ATRMService {
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 	
+	@Autowired
+	private CalculateRiders calculateriders;
+	
 	@Override
 	public BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum,
 			int paytrm) throws Exception {
@@ -237,18 +239,16 @@ public class ATRMServiceImpl implements ATRMService {
 	}
 
 	@Override
-	public QuoAtrmCalResp getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
+	public QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
 		Integer adultCount = 1;
 		Integer childCount = 0;
 		System.out.println(calculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
-		BenifictCalculation benifictCalculation = null;
 		try {
 
-			QuoAtrmCalResp calResp = new QuoAtrmCalResp();
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			benifictCalculation = new BenifictCalculation();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
@@ -257,131 +257,9 @@ public class ATRMServiceImpl implements ATRMService {
 					calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()));
 
-			ArrayList<Benifict> _mRiders = null;
-			ArrayList<Benifict> _sRiders = null;
-			ArrayList<Benifict> _cRiders = null;
-			if (calculation.get_riderDetails() != null) {
-				if (calculation.get_riderDetails().get_mRiders() != null) {
-					_mRiders = calculation.get_riderDetails().get_mRiders();
-				}
-				if (calculation.get_riderDetails().get_sRiders() != null) {
-					_sRiders = calculation.get_riderDetails().get_sRiders();
-				}
-				if (calculation.get_riderDetails().get_cRiders() != null) {
-					_cRiders = calculation.get_riderDetails().get_cRiders();
-				}
-
-			}
-			/// SET VALUES TO QuoInvpCalResp ///
-
-			if (_mRiders != null) {
-				for (Benifict benifict : _mRiders) {
-					adultCount = 1;
-					if (benifict.getType().equals("HRB")) {
-						if (calculation.get_personalInfo().getSage() != null
-								&& calculation.get_personalInfo().getSgenger() != null
-								&& calculation.get_personalInfo().getSocu() != null) {
-							if (_sRiders != null) {
-								for (Benifict benifict2 : _sRiders) {
-									if (benifict2.getType().equals("HRBS")) {
-										adultCount += 1;
-									}
-								}
-							}
-						}
-
-						if (calculation.get_personalInfo().getChildrens() != null
-								&& calculation.get_personalInfo().getChildrens().size() > 0) {
-							if (_cRiders != null) {
-								for (Children children : calculation.get_personalInfo().getChildrens()) {
-									if (children.is_cHrbc()) {
-										childCount += 1;
-									}
-								}
-							}
-						}
-					}
-					
-					Integer term = calculateBenefictTerm.calculateBenifictTerm(
-							calculation.get_personalInfo().getMage(), benifict.getType(),
-							calculation.get_personalInfo().getTerm());
-					
-					calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-							calculation.get_personalInfo().getMgenger(),
-							calculation.get_personalInfo().getMage(),
-							calculation.get_personalInfo().getFrequance(), term, calculation.get_personalInfo().getMocu(), calResp,
-							adultCount, childCount);
-					
 			
-				}
-			}
-
-			//calculate spouse riders premium
-			if (calculation.get_personalInfo().getSage() != null
-					&& calculation.get_personalInfo().getSgenger() != null
-					&& calculation.get_personalInfo().getSocu() != null) {
-
-				if (_sRiders != null) {
-
-					for (Benifict benifict : _sRiders) {
-						Integer term = calculateBenefictTerm.calculateBenifictTerm(
-								calculation.get_personalInfo().getSage(), benifict.getType(),
-								calculation.get_personalInfo().getTerm());
-						calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-								calculation.get_personalInfo().getSgenger(),
-								calculation.get_personalInfo().getSage(),
-								calculation.get_personalInfo().getFrequance(), term, calculation.get_personalInfo().getSocu(), calResp,
-								adultCount, childCount);
-					}
-				}
-			}
-
-			//calculate children riders premium
-			if (calculation.get_personalInfo().getChildrens() != null
-					&& calculation.get_personalInfo().getChildrens().size() > 0) {
-				for (Children children : calculation.get_personalInfo().getChildrens()) {
-					if (_cRiders != null) {
-						for (Benifict benifict : _cRiders) {
-							Integer term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-									benifict.getType(), calculation.get_personalInfo().getTerm());
-							String benfName = benifict.getType();
-
-							switch (benfName) {
-							case "CIBC":
-								if (children.is_cCibc()) {
-									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											children.get_cTitle(), children.get_cAge(),
-											calculation.get_personalInfo().getFrequance(), term,
-											0, calResp, adultCount, childCount);
-								}
-								break;
-
-							case "HBC":
-								if (children.is_cHbc()) {
-									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											children.get_cTitle(), children.get_cAge(),
-											calculation.get_personalInfo().getFrequance(), term,
-											0, calResp, adultCount, childCount);
-								}
-								break;
-
-							case "SUHRBC":
-								if (children.is_cSuhrbc()) {
-									calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-											children.get_cTitle(), children.get_cAge(),
-											calculation.get_personalInfo().getFrequance(), term,
-											0, calResp, adultCount, childCount);
-								}
-								break;
-
-							default:
-								break;
-							}
-						}
-					}
-				}
-			}
-
+			calResp = calculateriders.getRiders(calculation, calResp);
+			
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			
 			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
@@ -397,15 +275,12 @@ public class ATRMServiceImpl implements ATRMService {
 			if (calculationUtils != null) {
 				calculationUtils = null;
 			}
-			if (benifictCalculation != null) {
-				benifictCalculation = null;
-			}
 		}
 	}
 
 
 	Double calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Integer occupation_id, QuoAtrmCalResp calResp, Integer adultCount, Integer childCount)
+			Integer term, Integer occupation_id, QuotationQuickCalResponse calResp, Integer adultCount, Integer childCount)
 			throws Exception {
 		
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
@@ -597,7 +472,7 @@ public class ATRMServiceImpl implements ATRMService {
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
-		QuoAtrmCalResp calResp = getCalcutatedAtrm(calculation);
+		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -786,7 +661,7 @@ public class ATRMServiceImpl implements ATRMService {
 
 	}
 
-	private QuotationDetails getQuotationDetail(QuoAtrmCalResp calResp, QuotationCalculation calculation)
+	private QuotationDetails getQuotationDetail(QuotationQuickCalResponse calResp, QuotationCalculation calculation)
 			throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;
@@ -835,7 +710,7 @@ public class ATRMServiceImpl implements ATRMService {
 
 	}
 
-	private ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuoAtrmCalResp calResp,
+	private ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuotationQuickCalResponse calResp,
 			QuotationDetails quotationDetails, List<Children> childrenList, Integer integer) throws Exception {
 		ArrayList<Quo_Benef_Details> benef_DetailList = null;
 		try {
