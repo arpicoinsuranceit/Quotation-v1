@@ -263,7 +263,18 @@ public class Validation {
 
 		return 0;
 	}
-
+	
+	//////////////Asfp Product Validation
+	public Integer validateAsfpProd() {
+	if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 40
+			&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 60
+			&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 60) {
+		return 1;
+	}
+	
+	return 0;
+	}
+	
 	////////////// Asip Product Validation
 
 	public Integer validateAsipProd() {
@@ -304,6 +315,13 @@ public class Validation {
 
 	public Integer validateInvpProdTotPremium(Double totPremium) {
 		if (totPremium >= 1250) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	public Integer validateAsfpProdTotPremium(Double totPremium,int frequency) {
+		if ((totPremium*frequency) > (1250*frequency)) {
 			return 1;
 		}
 		return 0;

@@ -13,6 +13,7 @@ public class PersonalInfo {
 	private String payingterm;
 	private String frequance;
 	private Double bsa;
+	private Double msfb;
 	
 	private ArrayList<Children> childrens;
 
@@ -103,6 +104,14 @@ public class PersonalInfo {
 
 	public void setBsa(Double bsa) {
 		this.bsa = bsa;
+	}
+
+	public Double getMsfb() {
+		return msfb;
+	}
+
+	public void setMsfb(Double msfb) {
+		this.msfb = msfb;
 	}
 
 		
