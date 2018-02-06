@@ -22,6 +22,16 @@ public class SCBServiceImpl implements SCBService{
 	@Override
 	public BigDecimal calculateSCB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
+		
+		System.out.println(age);
+		System.out.println(term);
+		System.out.println(chedat);
+		System.out.println(ridsumasu);
+		System.out.println(payFrequency);
+		System.out.println(relief);
+		System.out.println(occupation_loding);
+		
+		
 		BigDecimal premiumSCB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("SCB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());

@@ -1,5 +1,7 @@
 package org.arpicoinsurance.groupit.main.helper;
 
+import java.util.ArrayList;
+
 public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
 	private Double extraOE= 0.00;
@@ -70,6 +72,21 @@ public class QuotationQuickCalResponse {
 	private int hrbcTerm = 0;
 	private Double suhrbc= 0.00;
 	private int suhrbcTerm = 0;
+	private Double jlb= 0.00;
+	private int jlbTerm = 0;
+	private Double jlbpl= 0.00;
+	private int jlbplTerm = 0;
+	private Double tpddta= 0.00;
+	private int tpddtaTerm = 0;
+	private Double tpddtas= 0.00;
+	private int tpddtasTerm = 0;
+	private Double tpddtapl= 0.00;
+	private int tpddtaplTerm = 0;
+	private Double tpddtaspl= 0.00;
+	private int tpddtasplTerm = 0;
+	
+	private ArrayList<DTAShedule> dtaShedules=null;
+	
 	private boolean isErrorExist = false;
 	private String error = null;
 	
@@ -480,6 +497,84 @@ public class QuotationQuickCalResponse {
 	}
 	public void setGuaranteed(Double guaranteed) {
 		this.guaranteed = guaranteed;
+	}
+	public Double getJlb() {
+		return jlb;
+	}
+	public void setJlb(Double jlb) {
+		this.jlb = jlb;
+	}
+	public int getJlbTerm() {
+		return jlbTerm;
+	}
+	public void setJlbTerm(int jlbTerm) {
+		this.jlbTerm = jlbTerm;
+	}
+	public Double getJlbpl() {
+		return jlbpl;
+	}
+	public void setJlbpl(Double jlbpl) {
+		this.jlbpl = jlbpl;
+	}
+	public int getJlbplTerm() {
+		return jlbplTerm;
+	}
+	public void setJlbplTerm(int jlbplTerm) {
+		this.jlbplTerm = jlbplTerm;
+	}
+	public Double getTpddta() {
+		return tpddta;
+	}
+	public void setTpddta(Double tpddta) {
+		this.tpddta = tpddta;
+	}
+	public int getTpddtaTerm() {
+		return tpddtaTerm;
+	}
+	public void setTpddtaTerm(int tpddtaTerm) {
+		this.tpddtaTerm = tpddtaTerm;
+	}
+	public Double getTpddtas() {
+		return tpddtas;
+	}
+	public void setTpddtas(Double tpddtas) {
+		this.tpddtas = tpddtas;
+	}
+	public int getTpddtasTerm() {
+		return tpddtasTerm;
+	}
+	public void setTpddtasTerm(int tpddtasTerm) {
+		this.tpddtasTerm = tpddtasTerm;
+	}
+	public Double getTpddtapl() {
+		return tpddtapl;
+	}
+	public void setTpddtapl(Double tpddtapl) {
+		this.tpddtapl = tpddtapl;
+	}
+	public int getTpddtaplTerm() {
+		return tpddtaplTerm;
+	}
+	public void setTpddtaplTerm(int tpddtaplTerm) {
+		this.tpddtaplTerm = tpddtaplTerm;
+	}
+	public Double getTpddtaspl() {
+		return tpddtaspl;
+	}
+	public void setTpddtaspl(Double tpddtaspl) {
+		this.tpddtaspl = tpddtaspl;
+	}
+	public int getTpddtasplTerm() {
+		return tpddtasplTerm;
+	}
+	public void setTpddtasplTerm(int tpddtasplTerm) {
+		this.tpddtasplTerm = tpddtasplTerm;
+	}
+	public ArrayList<DTAShedule> getDtaShedules() {
+		return dtaShedules;
+	}
+	public void setDtaShedules(ArrayList<DTAShedule> dtaShedules) {
+		this.dtaShedules = dtaShedules;
 	}
 	
 	

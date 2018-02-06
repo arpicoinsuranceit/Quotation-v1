@@ -13,6 +13,7 @@ public class PersonalInfo {
 	private String payingterm;
 	private String frequance;
 	private Double bsa;
+	private Double intrate;
 	
 	private ArrayList<Children> childrens;
 
@@ -103,6 +104,14 @@ public class PersonalInfo {
 
 	public void setBsa(Double bsa) {
 		this.bsa = bsa;
+	}
+
+	public Double getIntrate() {
+		return intrate;
+	}
+
+	public void setIntrate(Double intrate) {
+		this.intrate = intrate;
 	}
 
 		
