@@ -32,74 +32,77 @@ public class Validation {
 			if (calculation.get_riderDetails().get_mRiders() != null
 					&& calculation.get_riderDetails().get_mRiders().size() > 0) {
 				ArrayList<Benifict> mRiders = calculation.get_riderDetails().get_mRiders();
-
+				System.out.println("mriders :"+ mRiders);
 				for (Benifict benifict : mRiders) {
 					String type = benifict.getType();
+					System.out.println(type);
 					switch (type) {
+					
 					case "ATPB":
+						System.out.println("call ATPB");
 						if (validateInvpATBP().equals(0)) {
-							return "ATPB";
+							return "ATPB must equals to BSA or ATPB must be multi value of BSA till 10 times";
 						}
 						break;
 					case "ADB":
 						if (validateInvpABD().equals(0)) {
-							return "ADB";
+							return "ADB must equals to BSA or ADB must be multi value of BSA till 6 times and Maximum of 2,500,000";
 						}
 						break;
 					case "TPDASB":
 						if (validateInvpTPDASB().equals(0)) {
-							return "TPDASB";
+							return "TPDASB must equals to ADB";
 						}
 						break;
 					case "TPDB":
 						if (validateInvpTPDB().equals(0)) {
-							return "TPDB";
+							return "TPDB must equals to ADB";
 						}
 						break;
 
 					case "PPDB":
 						if (validateInvpPPDB().equals(0)) {
-							return "PPDB";
+							return "PPDB must equals to ADB";
 						}
 						break;
 					case "CIB":
 						if (validateInvpCIB().equals(0)) {
-							return "CIB";
+							return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 						}
 						break;
 					case "FEB":
 						if (validateInvpFEB().equals(0)) {
-							return "FEB";
+							return "FEB must be greater than 25,000 and less than 75,000 and less than 0.1% of BSA";
 						}
 						break;
 					case "MFIBD":
 						if (validateInvpMIFBD().equals(0)) {
-							return "MIFBD";
+							return "MIFBD must be greater than 10,000 and less than 100,000";
 						}
 						break;
 					case "MFIBT":
 						if (validateInvpMIFBT().equals(0)) {
-							return "MIFBT";
+							return "MIFBT must be greater than 10,000 and less than 100,000";
 						}
 						break;
 					case "MFIBDT":
 						if (validateInvpMFIBDT().equals(0)) {
-							return "MFIBDT";
+							return "MFIBDT must be greater than 10,000 and less than 100,000";
 						}
 						break;
 					case "HRB":
 						if (validateInvpHRB().equals(0)) {
-							return "HRB";
+							return "HRB must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
 						}
 						break;
 					case "SUHRB":
 						if (validateInvpSUHRB().equals(0)) {
-							return "SUHRB";
+							return "SUHRB must be equal to 600,000 , 800,000 or 1,000,000";
 						}
 						break;
 					case "HB":
 						if (validateInvpHB().equals(0)) {
-							return "HB";
+							return "HB must be greater than 500 and less than 10,000 and multi value of 100";
 						}
 						break;
 
@@ -120,53 +123,53 @@ public class Validation {
 					switch (type) {
 					case "BSAS":
 						if (validateInvpSCB().equals(0)) {
-							return "SCB";
+							return "SCB must be greater than 250,000 and less than sum of BSA and ATPB";
 						}
 						break;
 					case "ADBS":
 						if (validateInvpADBS().equals(0)) {
-							return "ADBS";
+							return "ADBS must equals to BSA or ADBS must be multi value of BSA till 6 times and Maximum of 2,500,000";
 						}
 						break;
 					case "CIBS":
 						if (validateInvpSCIB().equals(0)) {
-							return "CIBS";
+							return "SCIB must be greater than 250,000 and less than 6,000,000 and less than or equal SCB";
 						}
 						break;
 					case "FEBS":
 						if (validateInvpFEBS().equals(0)) {
-							return "FEBS";
+							return "FEBS must be greater than 25,000 and less than 75,000 and less than 0.1% of BSA";
 						}
 						break;
 					case "HBS":
 						if (validateInvpHBS().equals(0)) {
-							return "HBS";
+							return "HBS must be equal to HB";
 						}
 						break;
 					case "HRBS":
 						if (validateInvpHRBS().equals(0)) {
-							return "HRBS";
+							return "HRBS must be equal to HRB";
 						}
 						break;
 					case "PPDBS":
 						if (validateInvpPPDBS().equals(0)) {
-							return "PPDBS";
+							return "PPDBS must be equals to ADBS";
 						}
 						break;
 					case "SUHRBS":
 						if (validateInvpSUHRBS().equals(0)) {
-							return "SUHRBS";
+							return "SUHRBS must be equal to SUHRB";
 						}
 						break;
 					case "TPDASBS":
 						if (validateInvpTPDASBS().equals(0)) {
-							return "TPDASBS";
+							return "TPDASBS must be equals to ADBS";
 						}
 
 						break;
 					case "TPDBS":
 						if (validateInvpTPDBS().equals(0)) {
-							return "TPDBS";
+							return "TPDBS must be equals to ADBS";
 						}
 
 						break;
@@ -191,23 +194,22 @@ public class Validation {
 					switch (type) {
 					case "CIBC":
 						if (validateInvpCIBC().equals(0)) {
-							System.out.println("Error CIBC");
-							return "CIBC";
+							return "CIBC must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 						}
 						break;
 					case "HRBC":
 						if (validateInvpHRBC().equals(0)) {
-							return "HRBC";
+							return "HRBC must be equal to HRB";
 						}
 						break;
 					case "SUHRBC":
 						if (validateInvpSUHRBC().equals(0)) {
-							return "SUHRBC";
+							return "SUHRBC must be equal to SUHRB";
 						}
 						break;
 					case "HBC":
 						if (validateInvpHBC().equals(0)) {
-							return "HBC";
+							return "HBC must be equal to HB";
 						}
 						break;
 					default:
@@ -325,9 +327,11 @@ public class Validation {
 
 	public Integer validateInvpATBP() {
 		if (benefitMap.containsKey("ATPB")) {
+			System.out.println("call atpb val method");
 			Benifict benifict = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
+			System.out.println(bsa + " " + rbsa);
 			if (rbsa >= bsa && rbsa <= bsa * 10 && rbsa % bsa == 0) {
 				return 1;
 			}
