@@ -87,7 +87,7 @@ public class DTAServiceImpl implements DTAService {
 
 		System.out.println(
 				"age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex + " loanamt : " + loanamt);
-		// TODO Auto-generated method stub
+		
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal total_premium = new BigDecimal(0);
 		ArrayList<DTAShedule> dtaSheduleList = new ArrayList<>();

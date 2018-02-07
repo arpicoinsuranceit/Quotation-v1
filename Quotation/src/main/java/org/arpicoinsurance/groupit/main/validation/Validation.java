@@ -110,6 +110,11 @@ public class Validation {
 							return "TPDDTA must be equals to Loan";
 						}
 						break;
+					case "TPDDTAPL":
+						if (validateInvpTPDDTAPL().equals(0)) {
+							return "TPDDTAPL must be equals to Loan";
+						}
+						break;
 
 					default:
 						break;
@@ -187,9 +192,22 @@ public class Validation {
 							return "JLB must be equals to Loan";
 						}
 						break;
+						
 					case "TPDDTAS":
 						if (validateInvpTPDDTAS().equals(0)) {
 							return "TPDDTAS must be equals to Loan";
+						}
+						break;
+						
+					case "JLBPL":
+						if (validateInvpJLBPL().equals(0)) {
+							return "JLBPL must be equals to Loan";
+						}
+						break;
+						
+					case "TPDDTASPL":
+						if (validateInvpTPDDTASPL().equals(0)) {
+							return "TPDDTASPL must be equals to Loan";
 						}
 						break;
 					default:
@@ -777,6 +795,40 @@ public class Validation {
 	public Integer validateInvpTPDDTAS() {
 		if (benefitMap.containsKey("TPDDTAS")) {
 			Benifict benifict = benefitMap.get("TPDDTAS");
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa.equals(calculation.get_personalInfo().getBsa())) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+public Integer validateInvpTPDDTAPL() {
+		
+		System.out.println(benefitMap.containsKey("TPDDTAPL"));
+		
+		if (benefitMap.containsKey("TPDDTAPL")) {
+			Benifict benifict = benefitMap.get("TPDDTAPL");
+			Double rbsa = benifict.getSumAssured();
+			if  (rbsa.equals(calculation.get_personalInfo().getBsa())) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	public Integer validateInvpJLBPL() {
+		if (benefitMap.containsKey("JLBPL")) {
+			Benifict benifict = benefitMap.get("JLBPL");
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa.equals(calculation.get_personalInfo().getBsa())){
+				return 1;
+			}
+		}
+		return 0;
+	}
+	public Integer validateInvpTPDDTASPL() {
+		if (benefitMap.containsKey("TPDDTASPL")) {
+			Benifict benifict = benefitMap.get("TPDDTASPL");
 			Double rbsa = benifict.getSumAssured();
 			if (rbsa.equals(calculation.get_personalInfo().getBsa())) {
 				return 1;
