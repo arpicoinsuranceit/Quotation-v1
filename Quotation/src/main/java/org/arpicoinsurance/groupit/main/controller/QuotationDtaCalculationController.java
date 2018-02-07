@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @CrossOrigin(origins = "*")
 public class QuotationDtaCalculationController {
@@ -25,14 +26,37 @@ public class QuotationDtaCalculationController {
 
 	@RequestMapping(value = "/quoDtaCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-
+		Validation validation = null;
+		QuotationQuickCalResponse calResp = null;
 		try {
-			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
-			calResp = dtaService.getCalcutatedDta(calculation);
+			calResp = new QuotationQuickCalResponse();
+			validation = new Validation(calculation);
+			String error = validation.validateBenifict();
+
+			if (error.equals("No")) {
+				calResp = dtaService.getCalcutatedDta(calculation);
+			}
+			
+			else {
+				calResp.setError(error);
+				calResp.setErrorExist(true);
+			}
+			
 			return calResp;
+			
 		} catch (Exception e) {
+			
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		} finally {
+			if (validation != null) {
+				validation = null;
+			}
+			if (calResp != null) {
+				calResp = null;
+			}
+			
 		}
 		return null;
 	}
