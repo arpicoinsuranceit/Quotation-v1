@@ -16,6 +16,7 @@ import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 
 public interface QuotationSaveUtilService {
@@ -38,4 +39,6 @@ public interface QuotationSaveUtilService {
 				ArrayList<CustChildDetails> custChildDetailsList, ArrayList<Child> childList,
 				ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC)
 				throws Exception;
+	 
+	 ArrayList<Shedule> getSheduleDtaDtapl(QuotationQuickCalResponse calResp, QuotationDetails quotationDetails) throws Exception;
 }

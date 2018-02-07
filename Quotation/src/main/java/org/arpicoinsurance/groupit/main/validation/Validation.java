@@ -105,6 +105,11 @@ public class Validation {
 							return "HB must be greater than 500 and less than 10,000 and multi value of 100";
 						}
 						break;
+					case "TPDDTA":
+						if (validateInvpTPDDTA().equals(0)) {
+							return "TPDDTA must be equals to Loan";
+						}
+						break;
 
 					default:
 						break;
@@ -177,6 +182,16 @@ public class Validation {
 
 						break;
 
+					case "JLB":
+						if (validateInvpJLB().equals(0)) {
+							return "JLB must be equals to Loan";
+						}
+						break;
+					case "TPDDTAS":
+						if (validateInvpTPDDTAS().equals(0)) {
+							return "TPDDTAS must be equals to Loan";
+						}
+						break;
 					default:
 						break;
 					}
@@ -713,6 +728,41 @@ public class Validation {
 				return 1;
 			}
 			return 0;
+		}
+		return 0;
+	}
+	
+	public Integer validateInvpTPDDTA() {
+		
+		System.out.println(benefitMap.containsKey("TPDDTA"));
+		
+		if (benefitMap.containsKey("TPDDTA")) {
+			Benifict benifict = benefitMap.get("TPDDTA");
+			Double rbsa = benifict.getSumAssured();
+			System.out.println(rbsa + "TPDDTA" + calculation.get_personalInfo().getBsa());
+			if  (rbsa.equals(calculation.get_personalInfo().getBsa())) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	public Integer validateInvpJLB() {
+		if (benefitMap.containsKey("JLB")) {
+			Benifict benifict = benefitMap.get("JLB");
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa.equals(calculation.get_personalInfo().getBsa())){
+				return 1;
+			}
+		}
+		return 0;
+	}
+	public Integer validateInvpTPDDTAS() {
+		if (benefitMap.containsKey("TPDDTAS")) {
+			Benifict benifict = benefitMap.get("TPDDTAS");
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa.equals(calculation.get_personalInfo().getBsa())) {
+				return 1;
+			}
 		}
 		return 0;
 	}

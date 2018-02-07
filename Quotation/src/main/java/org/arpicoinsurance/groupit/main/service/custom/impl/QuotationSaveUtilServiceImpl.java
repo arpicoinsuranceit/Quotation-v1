@@ -10,6 +10,7 @@ import org.arpicoinsurance.groupit.main.common.DateConverter;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
+import org.arpicoinsurance.groupit.main.helper.DTAShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -22,6 +23,7 @@ import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
@@ -168,6 +170,10 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			case "Y":
 				quotationDetails.setPremiumYear(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumYearT(calResp.getTotPremium() - calResp.getExtraOE());
+				break;
+			case "S":
+				quotationDetails.setPremiumSingle(calResp.getBasicSumAssured());
+				quotationDetails.setPremiumSingleT(calResp.getTotPremium() - calResp.getExtraOE());
 				break;
 			default:
 				break;
@@ -551,6 +557,29 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			}
 		}
 		return childBenifList;
+	}
+
+	@Override
+	public ArrayList<Shedule> getSheduleDtaDtapl(QuotationQuickCalResponse calResp, QuotationDetails quotationDetails)
+			throws Exception {
+		ArrayList<Shedule> sheduleList = new ArrayList<>();
+		
+		ArrayList < DTAShedule > dtaList = calResp.getDtaShedules();
+		if(dtaList !=null) {
+			for (DTAShedule dtaShedule : dtaList) {
+				Shedule shedule=new Shedule();
+				shedule.setLorned(dtaShedule.getLonred());
+				shedule.setOutSum(dtaShedule.getOutsum());
+				shedule.setOutYear(dtaShedule.getOutyer());
+				shedule.setPolicyYear(dtaShedule.getPolYear());
+				shedule.setPremium(dtaShedule.getPremum());
+				shedule.setPremiumRate(dtaShedule.getPrmrat());
+				shedule.setQuotationDetails(quotationDetails);
+				sheduleList.add(shedule);
+			}
+		}
+		
+		return sheduleList;
 	}
 
 }

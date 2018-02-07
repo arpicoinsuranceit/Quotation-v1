@@ -78,7 +78,7 @@ public class QuotationAtrmCalculationController {
 
 							
 						} else {
-							resp = "Error at benifict :" + error;
+							resp = error;
 						}
 					} else {
 						resp = "Error at product";

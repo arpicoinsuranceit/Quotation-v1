@@ -71,7 +71,7 @@ public class QuotationAsipCntroller {
 							String response = asipService.saveQuotation(calculation, _invpSaveQuotation, id);
 							resp = response;
 						} else {
-							resp = "Error at benifict :" + error;
+							resp = error;
 						}
 					} else {
 						resp = "Error at product";

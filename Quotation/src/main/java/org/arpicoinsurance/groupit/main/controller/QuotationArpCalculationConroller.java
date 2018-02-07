@@ -69,7 +69,7 @@ public class QuotationArpCalculationConroller {
 							String response = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
 							resp = response;
 						} else {
-							resp = "Error at benifict :" + error;
+							resp = error;
 						}
 					} else {
 						resp = "Error at product";
