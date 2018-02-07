@@ -1,9 +1,12 @@
 package org.arpicoinsurance.groupit.main.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.helper.QuoDetails;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.Users;
 
 public interface QuotationService {
 	
@@ -17,6 +20,8 @@ public interface QuotationService {
 	
 	List <Quotation> getAllQuotation() throws Exception;
 	
-	List <Quotation> getQuotationByUserId(Integer id) throws Exception;
+	List <Quotation> getQuotationByUserId(Users users,String status) throws Exception;
+
+	ArrayList<QuoDetails> getQuotationDetails(Integer id) throws Exception;
 
 }

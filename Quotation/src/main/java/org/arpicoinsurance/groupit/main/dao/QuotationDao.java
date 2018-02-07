@@ -9,7 +9,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface QuotationDao extends CrudRepository<Quotation, Integer>{
 	
 	Quotation findById(Integer id) throws Exception;
+
+	List<Quotation> findByUserAndStatusOrderByIdDesc(Users user, String status)throws Exception;
 	
-	List<Quotation> findByUserWhereStatusOrderByIdDesc(Users user,String status)throws Exception;
 
 }

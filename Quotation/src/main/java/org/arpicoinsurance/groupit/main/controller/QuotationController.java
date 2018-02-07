@@ -36,27 +36,11 @@ public class QuotationController {
 	public ArrayList<QuoDetails> getQuotationByUserId(@RequestBody String id) {
 		Integer userId=Integer.valueOf(id);
 		try {
-			ArrayList<Quotation> detailList=(ArrayList<Quotation>) quotationService.getQuotationByUserId(userId);
-			System.out.println(detailList.size());
-			ArrayList<QuoDetails> quoDetails=new ArrayList<>();
-			if(detailList!=null) {
-				for (Quotation quotation : detailList) {
-					QuoDetails details=new QuoDetails();
-					details.setQuotationNum(quotation.getId());
-					details.setProductCode(quotation.getProducts().getProductCode());
-					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
-					details.setCustomerName(quotation.getCustomerDetails().getCustName());
-					details.setCustomerNic(quotation.getCustomerDetails().getCustNic());
-					
-					quoDetails.add(details);
-				}
-			
-				return quoDetails;
-			}
+			return quotationService.getQuotationDetails(userId);
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return null;
 	}
 	

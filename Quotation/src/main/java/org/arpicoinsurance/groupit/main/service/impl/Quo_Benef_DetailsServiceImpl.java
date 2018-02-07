@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.custom.Quo_Benef_DetailsDaoCustom;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
@@ -16,6 +17,7 @@ import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
+import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_Child_DetailsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
@@ -29,6 +31,9 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Autowired
 	private Quo_Benef_DetailsDaoCustom quoBenefDao;
+	
+	@Autowired
+	private QuotationDao quotationDao;
 	
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
@@ -65,27 +70,10 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	}
 
 	@Override
-	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
+	public List<QuotationDetails> getQuo_Benef_DetailsByQuoDetailId(Quotation quotation) throws Exception {
 		
-		List<QuotationDetails> quotationDetails=new ArrayList<>();
-		quotationDetailsDao.findByQuoNum(id).forEach(quotationDetails::add);
-		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
+		return quotationDetailsDao.findByQuotationOrderByQdIdDesc(quotation);
 		
-		if(!quotationDetails.isEmpty()) {
-			for (QuotationDetails quoDetails : quotationDetails) {
-				QuoCustomer customer=setCustomerDetails(quoDetails);
-				List<Quo_Benef_Details> benef_Details=new ArrayList<>();
-				quoBenefDao.findByQuoDetailId(quoDetails.getQdId()).forEach(benef_Details::add);
-				
-				if(!benef_Details.isEmpty()) {
-					QuotationView quotationView=getQuotationBenfList(benef_Details, customer, quoDetails.getQdId());
-					viewQuotationDetailsList.add(quotationView);
-				}
-				
-			}
-		}
-		
-		return viewQuotationDetailsList;
 	}
 
 	//set customer and spouse details according to quotationdetail object
@@ -203,6 +191,30 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		
 		
 		return quotationView;
+	}
+
+	@Override
+	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
+		Quotation quotation=quotationDao.findById(id);
+		ArrayList<QuotationDetails> quotationDetails=(ArrayList<QuotationDetails>) getQuo_Benef_DetailsByQuoDetailId(quotation);
+		
+		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
+		
+		if(!quotationDetails.isEmpty() || quotationDetails != null) {
+			for (QuotationDetails quoDetails : quotationDetails) {
+				QuoCustomer customer=setCustomerDetails(quoDetails);
+				List<Quo_Benef_Details> benef_Details=new ArrayList<>();
+				quoBenefDao.findByQuoDetailId(quoDetails.getQdId()).forEach(benef_Details::add);
+				
+				if(!benef_Details.isEmpty()) {
+					QuotationView quotationView=getQuotationBenfList(benef_Details, customer, quoDetails.getQdId());
+					viewQuotationDetailsList.add(quotationView);
+				}
+				
+			}
+		}
+		
+		return viewQuotationDetailsList;
 	}
 
 	
