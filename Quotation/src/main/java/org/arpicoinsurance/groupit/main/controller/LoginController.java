@@ -26,6 +26,8 @@ public class LoginController {
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public List<Login> getAllLogin() {
+		System.out.println("Called.................");
+		
 		try {
 			List<Login> loginList=loginService.getAllLogin();
 			

@@ -23,6 +23,8 @@ import org.arpicoinsurance.groupit.main.service.rider.HBCService;
 import org.arpicoinsurance.groupit.main.service.rider.HBSService;
 import org.arpicoinsurance.groupit.main.service.rider.HBService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBService;
+import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
+import org.arpicoinsurance.groupit.main.service.rider.JLBService;
 import org.arpicoinsurance.groupit.main.service.rider.MFIBDService;
 import org.arpicoinsurance.groupit.main.service.rider.MFIBDTService;
 import org.arpicoinsurance.groupit.main.service.rider.MFIBTService;
@@ -37,6 +39,10 @@ import org.arpicoinsurance.groupit.main.service.rider.TPDASBSService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDBSService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDBService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTAPLService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTASPLService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTASService;
+import org.arpicoinsurance.groupit.main.service.rider.TPDDTAService;
 import org.arpicoinsurance.groupit.main.service.rider.WPBSService;
 import org.arpicoinsurance.groupit.main.service.rider.WPBService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CalculateRidersImpl implements CalculateRiders{
+public class CalculateRidersImpl implements CalculateRiders {
 
 	@Autowired
 	private SCBService scbService;
@@ -127,24 +133,42 @@ public class CalculateRidersImpl implements CalculateRiders{
 
 	@Autowired
 	private WPBSService wpbsService;
-
+	
+	@Autowired
+	private JLBService jlbService;
+	
+	@Autowired
+	private JLBPLService jlbplService;
+	
+	@Autowired
+	private TPDDTAService tpddtaService;
+	
+	@Autowired
+	private TPDDTAPLService tpddtaplService;
+	
+	@Autowired
+	private TPDDTASService tpddtasService;
+	
+	@Autowired
+	private TPDDTASPLService tpddtasplService;
+	
+	
 	@Autowired
 	private OccupationLodingServce occupationLoding;
 
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
-	
-
-	
-
-
-
-
 
 	@Override
-	public QuotationQuickCalResponse getRiders(QuotationCalculation quotationCalculation,QuotationQuickCalResponse calResp) throws Exception {
+	public QuotationQuickCalResponse getRiders(QuotationCalculation quotationCalculation,
+			QuotationQuickCalResponse calResp) throws Exception {
 		Integer adultCount = 1;
 		Integer childCount = 0;
+
+		Double inrate=0.0;
+		if(quotationCalculation.get_personalInfo().getIntrate()!=null && quotationCalculation.get_personalInfo().getIntrate()>0 ) {
+			inrate = quotationCalculation.get_personalInfo().getIntrate();
+		}
 		
 		ArrayList<Benifict> _mRiders = null;
 		ArrayList<Benifict> _sRiders = null;
@@ -189,19 +213,15 @@ public class CalculateRidersImpl implements CalculateRiders{
 						}
 					}
 				}
-				
-				calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(),
-						 benifict.getType(), quotationCalculation.get_personalInfo().getTerm(), 
-						 benifict.getSumAssured(), quotationCalculation.get_personalInfo().getMgenger(),
-						 quotationCalculation.get_personalInfo().getFrequance(), quotationCalculation.get_personalInfo().getMocu(), 
-						 calResp, adultCount, childCount);
-				
+
+				calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
+						quotationCalculation.get_personalInfo().getTerm(), benifict.getSumAssured(),
+						quotationCalculation.get_personalInfo().getMgenger(),
+						quotationCalculation.get_personalInfo().getFrequance(),
+						quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate);
+
 			}
 		}
-
-		System.out.println(quotationCalculation.get_personalInfo().getSage());
-		System.out.println(quotationCalculation.get_personalInfo().getSgenger());
-		System.out.println(quotationCalculation.get_personalInfo().getSocu());
 
 		if (quotationCalculation.get_personalInfo().getSage() != null
 				&& quotationCalculation.get_personalInfo().getSgenger() != null
@@ -210,41 +230,79 @@ public class CalculateRidersImpl implements CalculateRiders{
 			if (_sRiders != null) {
 
 				for (Benifict benifict : _sRiders) {
-					
+
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
-							 benifict.getType(), quotationCalculation.get_personalInfo().getTerm(), 
-							 benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
-							 quotationCalculation.get_personalInfo().getFrequance(), quotationCalculation.get_personalInfo().getSocu(), 
-							 calResp, adultCount, childCount);
-			
+							benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
+							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
+							quotationCalculation.get_personalInfo().getFrequance(),
+							quotationCalculation.get_personalInfo().getSocu(), calResp, adultCount, childCount, inrate);
+
 				}
 			}
 		}
-		
+		if (quotationCalculation.get_personalInfo().getChildrens() != null
+				&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
+			for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+				if (_cRiders != null) {
+					for (Benifict benifict : _cRiders) {
+						Integer term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+								benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
+						String benfName = benifict.getType();
+
+						switch (benfName) {
+						case "CIBC":
+							if (children.is_cCibc()) {
+								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
+										children.get_cTitle(), children.get_cAge(),
+										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
+										adultCount, childCount, -1.0, -1.0);
+							}
+							break;
+
+						case "HBC":
+							if (children.is_cHbc()) {
+								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
+										children.get_cTitle(), children.get_cAge(),
+										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
+										adultCount, childCount, -1.0, -1.0);
+							}
+							break;
+
+						case "SUHRBC":
+							if (children.is_cSuhrbc()) {
+								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
+										children.get_cTitle(), children.get_cAge(),
+										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
+										adultCount, childCount, -1.0, -1.0);
+							}
+							break;
+
+						default:
+							break;
+						}
+					}
+				}
+			}
+		}
 		return calResp;
 	}
-
-
-
-	
 
 	@Override
-	public QuotationQuickCalResponse calculateMainlifeRiders(Integer age, String type, Integer payTerm, Double bsa, String gender,
-			String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount, Integer childCount)
-			throws Exception {
-		
-		Integer term = calculateBenefictTerm.calculateBenifictTerm(age,type , payTerm);
-		
-		calculateBenifPremium(type, bsa,gender,age,frequance, term,ocu, calResp, adultCount, childCount);
-		
+	public QuotationQuickCalResponse calculateMainlifeRiders(Integer age, String type, Integer payTerm, Double bsa,
+			String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount,
+			Integer childCount, Double inrate) throws Exception {
+
+		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
+
+		calculateBenifPremium(type, bsa, gender, age, frequance, term, ocu, calResp, adultCount, childCount, bsa, inrate);
+
 		return calResp;
 	}
 
-	
 	@Override
 	public QuotationQuickCalResponse calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age,
-			String payFrequency, Integer term, Integer occupation_id, QuotationQuickCalResponse calResp, Integer adultCount,
-			Integer childCount) throws Exception {
+			String payFrequency, Integer term, Integer occupation_id, QuotationQuickCalResponse calResp,
+			Integer adultCount, Integer childCount, Double loan, Double inRate) throws Exception {
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
 		switch (type) {
@@ -431,15 +489,55 @@ public class CalculateRidersImpl implements CalculateRiders{
 			calResp.setAddBenif(calResp.getAddBenif() + wpbs.doubleValue());
 			calResp.setWpbsTerm(term);
 			return calResp;
-
+			
+		case "JLB":
+			BigDecimal jlb = jlbService.calculateJLB(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setJlb(jlb.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + jlb.doubleValue());
+			calResp.setJlbTerm(term);
+			return calResp;
+			
+		case "JLBPL":
+			BigDecimal jlbpl = jlbplService.calculateJLBPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setJlbpl(jlbpl.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + jlbpl.doubleValue());
+			calResp.setJlbplTerm(term);
+			return calResp;
+			
+		case "TPDDTA":
+			BigDecimal tpddta = tpddtaService.calculateTPDDTA(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setTpddta(tpddta.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + tpddta.doubleValue());
+			calResp.setTpddtaTerm(term);
+			return calResp;
+			
+		case "TPDDTAS":
+			BigDecimal tpddtas = tpddtasService.calculateTPDDTAS(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setTpddtas(tpddtas.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + tpddtas.doubleValue());
+			calResp.setTpddtasTerm(term);
+			return calResp;
+			
+		case "TPDDTAPL":
+			BigDecimal tpddtapl = tpddtaplService.calculateTPDDTAPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setTpddtapl(tpddtapl.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + tpddtapl.doubleValue());
+			calResp.setTpddtaplTerm(term);
+			return calResp;
+			
+		case "TPDDTASPL":
+			BigDecimal tpddtaspl = tpddtasplService.calculateTPDDTASPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			calResp.setTpddtaspl(tpddtaspl.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + tpddtaspl.doubleValue());
+			calResp.setTpddtasplTerm(term);
+			return calResp;
+			
+			
+/////////////////////////////////////////////////////////////////////////
 		default:
 			return calResp;
 		}
 
 	}
 
-
-	
-
-	
 }

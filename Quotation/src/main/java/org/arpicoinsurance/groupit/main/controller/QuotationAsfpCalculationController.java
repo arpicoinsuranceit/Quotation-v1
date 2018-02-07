@@ -2,10 +2,13 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.ASFPService;
+import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,31 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class QuotationInvpCalculationController {
+public class QuotationAsfpCalculationController {
 
 	@Autowired
-	private INVPService invpService;
+	private ASFPService asfpService;
+	
+	private Double totPre=0.0;
+	
 
-	@RequestMapping(value = "/quoInvpCal", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		// System.out.println(calculation);
-		//// ******************do post validations before send response
+		System.out.println(calculation.get_personalInfo().getMgenger());
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
-			if (validation.validateInvpEndProd() == 1) {
+			if (validation.validateAsfpProd() == 1) {
 				String error = validation.validateBenifict();
-				
-				System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-				
 				if (error.equals("No")) {
-					calResp = invpService.getCalcutatedInvp(calculation);
-					if(validation.InvpPostValidation(calResp)) {
-						return calResp;
-					}else {
-						calResp.setErrorExist(true);
-						calResp.setError("Product");
-					}
+					calResp = asfpService.getCalcutatedAsfp(calculation);
+					totPre=calResp.getTotPremium();
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);
@@ -50,6 +47,11 @@ public class QuotationInvpCalculationController {
 				calResp.setErrorExist(true);
 				calResp.setError("Product");
 			}
+
+			if(calResp.getL2()==0) {
+				calResp.setL2(calculation.get_personalInfo().getBsa());
+			}
+			
 			return calResp;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -59,13 +61,13 @@ public class QuotationInvpCalculationController {
 	}
 
 
-	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
-	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
+	public String saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
 		QuotationCalculation calculation = null;
-
 		Validation validation = null;
+		CalculationUtils utils=new CalculationUtils();
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
@@ -73,17 +75,20 @@ public class QuotationInvpCalculationController {
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
-					if (validation.validateInvpEndProd() == 1) {
+					if (validation.validateAsfpProd() == 1) {
 						String error = validation.validateBenifict();
-						
-						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-						
 						if (error.equals("No")) {
+							
+							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
+								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
+								resp = response;
+							}else {
+								resp = "Total Premium times frequency must be greater than 1250 times frequency";
+							}
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							
 						} else {
-							resp = error;
+							resp = "Error at benifict :" + error;
 						}
 					} else {
 						resp = "Error at product";
@@ -97,7 +102,7 @@ public class QuotationInvpCalculationController {
 			}
 
 		} catch (Exception e) {
-			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(QuotationAsfpCalculationController.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
 			if (calculation != null) {
 				calculation = null;

@@ -8,6 +8,7 @@ public class QuotationQuickCalResponse {
 	private Double addBenif= 0.00;
 	private Double totPremium= 0.00;
 	
+	private Double l2=0.00;
 	private Double at6= 0.00;
 	private Double at8= 0.00;
 	private Double at10= 0.00;
@@ -498,6 +499,7 @@ public class QuotationQuickCalResponse {
 	public void setGuaranteed(Double guaranteed) {
 		this.guaranteed = guaranteed;
 	}
+
 	public Double getJlb() {
 		return jlb;
 	}
@@ -575,6 +577,13 @@ public class QuotationQuickCalResponse {
 	}
 	public void setDtaShedules(ArrayList<DTAShedule> dtaShedules) {
 		this.dtaShedules = dtaShedules;
+	}
+
+	public Double getL2() {
+		return l2;
+	}
+	public void setL2(Double l2) {
+		this.l2 = l2;
 	}
 	
 	

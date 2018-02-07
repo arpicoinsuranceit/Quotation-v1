@@ -229,6 +229,8 @@ public class INVPServiceImpl implements INVPService {
 				&& _invpSaveQuotation.get_personalInfo().get_spouse().is_sActive()) {
 			spouse = new Customer();
 			spouse.setCustName(spouseDetail.getCustName());
+			spouse.setCustCreateDate(new Date());
+			spouse.setCustCreateBy(user.getUser_Name());
 			spouseDetail.setCustomer(spouse);
 		}
 
