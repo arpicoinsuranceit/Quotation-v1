@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-@Entity
+
 public class Shedule implements Serializable{
 	private Integer sheduleId;
 	private Quotation quotation;

@@ -21,8 +21,8 @@ public class Quo_Benef_DetailsController {
 	public ArrayList<QuotationView> getQuotationByUserId(@RequestBody String id) {
 		try {
 			System.out.println(id);
-			Integer quoNum=Integer.parseInt(id);
-			ArrayList<QuotationView> detailList=(ArrayList<QuotationView>) quoBenefDetailService.getQuo_Benef_DetailsByQuoDetailId(quoNum);
+			Integer quoId=Integer.valueOf(id);
+			ArrayList<QuotationView> detailList=(ArrayList<QuotationView>) quoBenefDetailService.getQuo_Benef_DetailsByQuoDetailId(quoId);
 			return detailList;
 			
 		} catch (Exception e) {

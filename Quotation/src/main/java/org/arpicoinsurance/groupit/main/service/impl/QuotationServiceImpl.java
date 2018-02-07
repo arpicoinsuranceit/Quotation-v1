@@ -1,11 +1,14 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-
-import org.arpicoinsurance.groupit.main.dao.custom.QuotationDaoCustom;
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.QuoDetails;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +19,10 @@ import org.springframework.stereotype.Service;
 public class QuotationServiceImpl implements QuotationService{
 	
 	@Autowired
-	private QuotationDaoCustom quotationDaoCustom;
+	private QuotationDao quotationDao;
+	
+	@Autowired
+	private UsersDao usersDao;
 
 	@Override
 	public boolean saveQuotation(Quo_Benef_Details qbd) throws Exception {
@@ -32,16 +38,13 @@ public class QuotationServiceImpl implements QuotationService{
 
 	@Override
 	public boolean deleteQuotation(Integer id) throws Exception {
-		if(quotationDaoCustom.deleteOne(id) != null ) {
-			return true;
-		}else {
-			return false;
-		}
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public Quotation getQuotation(Integer id) throws Exception {
-		return quotationDaoCustom.findOne(id);
+		return quotationDao.findById(id);
 	}
 
 	@Override
@@ -51,8 +54,37 @@ public class QuotationServiceImpl implements QuotationService{
 	}
 
 	@Override
-	public List<Quotation> getQuotationByUserId(Integer id) throws Exception {
-		return quotationDaoCustom.findByUserId(id);
+	public List<Quotation> getQuotationByUserId(Users user,String status) throws Exception {
+		return quotationDao.findByUserAndStatusOrderByIdDesc(user, status);
+	}
+	
+	@Override
+	public ArrayList<QuoDetails> getQuotationDetails(Integer id) throws Exception{
+		
+		Users users=usersDao.findOne(id);
+		
+		if(users!=null) {
+			ArrayList<Quotation> quoList=(ArrayList<Quotation>) getQuotationByUserId(users, "active");
+			if(quoList!=null) {
+				ArrayList<QuoDetails> quoDetailsList = new ArrayList<>();
+				for (Quotation quotation : quoList) {
+					QuoDetails details=new QuoDetails();
+					details.setQuotationNum(quotation.getId());
+					details.setCustomerName(quotation.getCustomerDetails().getCustName());
+					details.setCustomerNic(quotation.getCustomerDetails().getCustNic());
+					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
+					details.setProductCode(quotation.getProducts().getProductCode());
+					
+					quoDetailsList.add(details);
+				}
+				
+				return quoDetailsList;
+				
+			}
+		}
+		
+		return null;
+		
 	}
 
 }
