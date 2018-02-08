@@ -56,12 +56,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ENDServiceImpl implements ENDService {
-	
+
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
-	
+
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-	
+
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
 
@@ -103,10 +103,10 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
-	
+
 	@Autowired
 	private CalculateRiders calculateriders;
-	
+
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
 
@@ -120,23 +120,24 @@ public class ENDServiceImpl implements ENDService {
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
-			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),quotationCalculation.get_personalInfo().getMage(),
+			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
-			
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setGuaranteed(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
-			
-			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
+
+			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
-			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE=adminFee + tax;
+			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
+			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
-			
+
 			return calResp;
 
 		} finally {
@@ -145,29 +146,37 @@ public class ENDServiceImpl implements ENDService {
 			}
 		}
 	}
-	
+
 	@Override
-	public BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum, int paytrm)
+	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm)
 			throws Exception {
-		
+
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
-		Benefits benefits= benefitsDao.findByRiderCode("L2");
+		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		
-		
-		Double rate=ocupationLoading.getValue();
-		
+		Double rate = 1.0;
+		if (ocupationLoading != null) {
+			rate = ocupationLoading.getValue();
+			if (rate == null) {
+				rate = 1.0;
+			}
+		}
 		// TODO Auto-generated method stub
-		System.out.println("END bassum : "+bassum+" age : "+age+" term : "+term+" paytrm : "+paytrm);
+		System.out.println("END bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
-		
-		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("rateCardEND : "+rateCardEND.getRate());
-		
+
+		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
+				age, term, chedat, chedat, chedat, chedat);
+		System.out.println("rateCardEND : " + rateCardEND.getRate());
+
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
-		premium = ((((new BigDecimal(rateCardEND.getRate()).subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate))).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-					
-		System.out.println("premium : "+premium.toString());
+		premium = ((((new BigDecimal(rateCardEND.getRate())
+				.subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate)))
+						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
+										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
+
+		System.out.println("premium : " + premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
 
@@ -175,15 +184,15 @@ public class ENDServiceImpl implements ENDService {
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 		// @sum_assured@ + ((@sum_assured@*0.025)*@term@)
 		BigDecimal maturity = new BigDecimal(0);
-		System.out.println("term : "+term+" bassum : "+bassum);
-		maturity = (new BigDecimal(bassum).add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term))))).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("maturity : "+maturity.toString());
+		System.out.println("term : " + term + " bassum : " + bassum);
+		maturity = (new BigDecimal(bassum)
+				.add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term)))))
+						.setScale(0, RoundingMode.HALF_UP);
+		System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
-
-
-	//save quotation
+	// save quotation
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
@@ -194,10 +203,11 @@ public class ENDServiceImpl implements ENDService {
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
-				user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
 
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -213,7 +223,8 @@ public class ENDServiceImpl implements ENDService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -224,7 +235,6 @@ public class ENDServiceImpl implements ENDService {
 				custChildDetailsList.add(custChildDetails);
 			}
 
-
 		Quotation quotation = new Quotation();
 		quotation.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null)
@@ -233,13 +243,13 @@ public class ENDServiceImpl implements ENDService {
 		quotation.setUser(user);
 		quotation.setProducts(products);
 
-		
-		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation,0.0);
-		
+		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+
 		quotationDetails.setQuotation(quotation);
 
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
 		//////////////////////////// save//////////////////////////////////
@@ -272,8 +282,8 @@ public class ENDServiceImpl implements ENDService {
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());

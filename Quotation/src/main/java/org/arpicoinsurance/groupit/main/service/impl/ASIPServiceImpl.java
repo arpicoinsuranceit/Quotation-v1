@@ -178,8 +178,13 @@ public class ASIPServiceImpl implements ASIPService {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits= benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate=ocupationLoading.getValue();
-		
+		Double rate = 1.0;
+		if (ocupationLoading != null) {
+			rate = ocupationLoading.getValue();
+			if (rate == null) {
+				rate = 1.0;
+			}
+		}
 		BigDecimal premium = new BigDecimal(0);
 		System.out.println("term : "+term+" bassum : "+bassum+" paytrm : "+paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)

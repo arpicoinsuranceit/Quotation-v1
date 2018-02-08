@@ -305,85 +305,125 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer adultCount, Integer childCount, Double loan, Double inRate) throws Exception {
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
+		Double ocuLoading=1.0;
 		switch (type) {
 		case "BSAS":
+			ocuLoading=oculoding.get("SCB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal scb = scbService.calculateSCB(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("SCB"));
+					ocuLoading);
 			calResp.setBsas(scb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scb.doubleValue());
 			calResp.setBsasTerm(term);
 			return calResp;
 		case "ADB":
-			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, 1.0, oculoding.get("ADB"));
+			ocuLoading=oculoding.get("ADB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setAdb(adb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adb.doubleValue());
 			calResp.setAdbTerm(term);
 			return calResp;
 		case "ADBS":
-			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, 1.0, 1.0);
+			ocuLoading=oculoding.get("ADBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setAdbs(adbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adbs.doubleValue());
 			calResp.setAdbsTerm(term);
 			return calResp;
 		case "ATPB":
-			BigDecimal atpb = atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0, 1.0);
+			ocuLoading=oculoding.get("ATPB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal atpb = atpbService.calculateATPB(age, term, new Date(), ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setAtpb(atpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + atpb.doubleValue());
 			calResp.setAtpbTerm(term);
 			return calResp;
 		case "TPDASB":
+			ocuLoading=oculoding.get("TPDASB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("TPDASB"));
+					ocuLoading);
 			calResp.setTpdasb(tpdasb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasb.doubleValue());
 			calResp.setTpdasbTerm(term);
 			return calResp;
 		case "TPDASBS":
+			ocuLoading=oculoding.get("TPDASBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("TPDASBS"));
+					ocuLoading);
 			calResp.setTpdasbs(tpdasbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasbs.doubleValue());
 			calResp.setTpdasbsTerm(term);
 			return calResp;
 		case "TPDB":
-			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0, oculoding.get("TPDB"));
+			ocuLoading=oculoding.get("TPDB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setTpdb(tpdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdb.doubleValue());
 			calResp.setTpdbTerm(term);
 			return calResp;
 		case "TPDBS":
-			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0, oculoding.get("TPDBS"));
+			ocuLoading=oculoding.get("TPDBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setTpdbs(tpdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdbs.doubleValue());
 			calResp.setTpdbsTerm(term);
 			return calResp;
 		case "PPDB":
-			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0, oculoding.get("PPDB"));
+			ocuLoading=oculoding.get("PPDB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setPpdb(ppdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdb.doubleValue());
 			calResp.setPpdbTerm(term);
 			return calResp;
 		case "PPDBS":
-			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0, oculoding.get("PPDBS"));
+			ocuLoading=oculoding.get("PPDBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, 1.0, ocuLoading);
 			calResp.setPpdbs(ppdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdbs.doubleValue());
 			calResp.setPpdbsTerm(term);
 			return calResp;
 		case "CIB":
+			ocuLoading=oculoding.get("CIB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal cib = cibService.calculateCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("CIB"));
+					ocuLoading);
 			calResp.setCib(cib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cib.doubleValue());
 			calResp.setCibTerm(term);
 			return calResp;
 		case "CIBS":
+			ocuLoading=oculoding.get("SCIB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal scib = scibService.calculateSCIB(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("SCIB"));
+					ocuLoading);
 			calResp.setCibs(scib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scib.doubleValue());
 			calResp.setCibsTerm(term);
 			return calResp;
 		case "CIBC":
+			ocuLoading=oculoding.get("CIBC");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			// ** 21-age < term term = 21-age else term
 			BigDecimal cibc = cibcService.calculateCIBC(age, term > (21 - 6) ? (21 - 6) : term, new Date(), ridsumasu,
 					payFrequency, 1.0);
@@ -392,63 +432,90 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setCibcTerm(term);
 			return calResp;
 		case "FEB":
+			ocuLoading=oculoding.get("FEB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal feb = febService.calculateFEB(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("FEB"));
+					ocuLoading);
 			calResp.setFeb(feb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + feb.doubleValue());
 			calResp.setFebTerm(term);
 			return calResp;
 		case "FEBS":
+			ocuLoading=oculoding.get("FEBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal febs = febsService.calculateFEBS(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("FEBS"));
+					ocuLoading);
 			calResp.setFebs(febs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + febs.doubleValue());
 			calResp.setFebsTerm(term);
 			return calResp;
 
 		case "MFIBD":
+			ocuLoading=oculoding.get("MFIBD");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal mfibd = mfibdService.calculateMFIBD(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("MFIBD"));
+					ocuLoading);
 			calResp.setMifdb(mfibd.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibd.doubleValue());
 			calResp.setMifdbTerm(term);
 			return calResp;
 		case "MFIBT":
+			ocuLoading=oculoding.get("MFIBT");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal mfibt = mfibtService.calculateMFIBT(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("MFIBT"));
+					ocuLoading);
 			calResp.setMifdt(mfibt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibt.doubleValue());
 			calResp.setMifdtTerm(term);
 			return calResp;
 		case "MFIBDT":
+			ocuLoading=oculoding.get("MFIBDT");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("MFIBDT"));
+					ocuLoading);
 			calResp.setMifdbt(mfibdt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibdt.doubleValue());
 			calResp.setMifdbtTerm(term);
 			return calResp;
 		case "HRB":
+			ocuLoading=oculoding.get("HRB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal hrb = hrbService.calculateHRB(age, gender, ridsumasu, adultCount, childCount, new Date(),
-					payFrequency, 1.0, oculoding.get("HRB"));
+					payFrequency, 1.0, ocuLoading);
 			calResp.setHrb(hrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrb.doubleValue());
 			calResp.setHrbTerm(term);
 			return calResp;
 		case "SUHRB":
+			ocuLoading=oculoding.get("SUHRB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal suhrb = suhrbService.calculateSUHRB(age, gender, term, ridsumasu, new Date(), payFrequency, 1.0,
-					oculoding.get("SUHRB"));
+					ocuLoading);
 			calResp.setSuhrb(suhrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
 			calResp.setSuhrbTerm(term);
 			return calResp;
 		case "SUHRBS":
+			ocuLoading=oculoding.get("SUHRBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal suhrbs = suhrbsService.calculateSUHRBS(age, gender, term, ridsumasu, new Date(), payFrequency,
-					1.0, oculoding.get("SUHRBS"));
+					1.0, ocuLoading);
 			calResp.setSuhrbs(suhrbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
 			calResp.setSuhrbsTerm(term);
 			return calResp;
 		case "SUHRBC":
+			ocuLoading=oculoding.get("SUHRBC");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal suhrbc = suhrbcService.calculateSUHRBC(age, gender, term, ridsumasu, new Date(), payFrequency,
 					1.0);
 			calResp.setSuhrbc(calResp.getSuhrbc() + suhrbc.doubleValue());
@@ -456,20 +523,29 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setSuhrbcTerm(term);
 			return calResp;
 		case "HB":
+			ocuLoading=oculoding.get("HB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal hb = hbService.calculateHB(age, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("HB"));
+					ocuLoading);
 			calResp.setHb(hb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hb.doubleValue());
 			calResp.setHbTerm(term);
 			return calResp;
 		case "HBS":
+			ocuLoading=oculoding.get("HBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal hbs = hbsService.calculateHBS(28, term, new Date(), ridsumasu, payFrequency, 1.0,
-					oculoding.get("HBS"));
+					ocuLoading);
 			calResp.setHbs(hbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbs.doubleValue());
 			calResp.setHbsTerm(term);
 			return calResp;
 		case "HBC":
+			ocuLoading=oculoding.get("HBC");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			// ** 21-age < term term = 21-age else term
 			BigDecimal hbc = hbcService.calculateHBC(term > (21 - 6) ? (21 - 6) : term, new Date(), ridsumasu,
 					payFrequency, 1.0);
@@ -478,12 +554,18 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setHbcTerm(term);
 			return calResp;
 		case "WPB":
+			ocuLoading=oculoding.get("WPB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal wpb = wpbService.calculateWPB(calResp);
 			calResp.setWpb(wpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpb.doubleValue());
 			calResp.setWpbTerm(term);
 			return calResp;
 		case "WPBS":
+			ocuLoading=oculoding.get("WPBS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
 			BigDecimal wpbs = wpbsService.calculateWPBS(calResp);
 			calResp.setWpbs(wpbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpbs.doubleValue());
@@ -491,42 +573,60 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 			
 		case "JLB":
-			BigDecimal jlb = jlbService.calculateJLB(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("JLB");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal jlb = jlbService.calculateJLB(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setJlb(jlb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + jlb.doubleValue());
 			calResp.setJlbTerm(term);
 			return calResp;
 			
 		case "JLBPL":
-			BigDecimal jlbpl = jlbplService.calculateJLBPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("JLBPL");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal jlbpl = jlbplService.calculateJLBPL(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setJlbpl(jlbpl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + jlbpl.doubleValue());
 			calResp.setJlbplTerm(term);
 			return calResp;
 			
 		case "TPDDTA":
-			BigDecimal tpddta = tpddtaService.calculateTPDDTA(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("TPDDTA");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpddta = tpddtaService.calculateTPDDTA(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setTpddta(tpddta.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddta.doubleValue());
 			calResp.setTpddtaTerm(term);
 			return calResp;
 			
 		case "TPDDTAS":
-			BigDecimal tpddtas = tpddtasService.calculateTPDDTAS(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("TPDDTAS");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpddtas = tpddtasService.calculateTPDDTAS(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setTpddtas(tpddtas.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtas.doubleValue());
 			calResp.setTpddtasTerm(term);
 			return calResp;
 			
 		case "TPDDTAPL":
-			BigDecimal tpddtapl = tpddtaplService.calculateTPDDTAPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("TPDDTAPL");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpddtapl = tpddtaplService.calculateTPDDTAPL(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setTpddtapl(tpddtapl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtapl.doubleValue());
 			calResp.setTpddtaplTerm(term);
 			return calResp;
 			
 		case "TPDDTASPL":
-			BigDecimal tpddtaspl = tpddtasplService.calculateTPDDTASPL(age, term, inRate, gender, new Date(), loan, oculoding.get("JLB"));
+			ocuLoading=oculoding.get("TPDDTASPL");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal tpddtaspl = tpddtasplService.calculateTPDDTASPL(age, term, inRate, gender, new Date(), loan, ocuLoading);
 			calResp.setTpddtaspl(tpddtaspl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtaspl.doubleValue());
 			calResp.setTpddtasplTerm(term);

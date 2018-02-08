@@ -162,8 +162,13 @@ public class INVPServiceImpl implements INVPService {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-
-		Double rate = ocupationLoading.getValue();
+		Double rate = 1.0;
+		if (ocupationLoading != null) {
+			rate = ocupationLoading.getValue();
+			if (rate == null) {
+				rate = 1.0;
+			}
+		}
 
 		BigDecimal premium = new BigDecimal(0);
 		RateCardINVP rateCardINVP = rateCardINVPDao
