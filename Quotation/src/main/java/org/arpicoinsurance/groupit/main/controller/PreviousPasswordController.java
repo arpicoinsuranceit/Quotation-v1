@@ -84,7 +84,7 @@ public class PreviousPasswordController {
 
 	//check password pattern
 	private boolean isPasswordMatchToPattern(Login login) {
-		String regex="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+		String regex="^(?=.*\\d)(?=.*[A-Za-z]).{8,}$";
 		
 		Pattern pattern=Pattern.compile(regex);
 		
