@@ -4,13 +4,13 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
-import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.helper.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.security.JwtGenerator;
 import org.arpicoinsurance.groupit.main.service.LoginService;
+import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +26,7 @@ public class TokenController {
 	private LoginService loginService;
 
 	@Autowired
-	private UsersDao userDao;
+	private UsersService userService;
 
 	@Autowired
 	private LoginDao loginDao;
@@ -55,51 +55,47 @@ public class TokenController {
 	private String loginToSystem(Login logins) {
 		try {
 
-			if (isPasswordMatchToPattern(logins)) {
-				Login login = loginService.checkLogin(logins.getUserName(), EncryptData.encrypt(logins.getPassword()));
-				Users users = null;
-				HelperLogin helperLogin = new HelperLogin();
+			Login login = loginService.checkLogin(logins.getUserName(), EncryptData.encrypt(logins.getPassword()));
+			Users users = null;
+			HelperLogin helperLogin = new HelperLogin();
 
-				if (login != null) {
-					if (login.getLocks().equals(0)) {
-						Integer dayCount = getNewPwDayCount(login.getLoginId());
+			if (login != null) {
+				if (login.getLocks().equals(0)) {
+					Integer dayCount = getNewPwDayCount(login.getLoginId());
 
-						if (dayCount <= 0) {
-							return "Pw Change";
-						} else {
-
-							users = userDao.findByLoginId(login.getLoginId());
-
-							if (users != null) {
-								helperLogin.setUserCode(users.getUser_Code());
-								helperLogin.setUserFullName(users.getUser_Name());
-								helperLogin.setUserId(users.getUserId());
-								loginDao.updateOne(new Date(), login.getLoginId());
-
-								loginService.updateFailCount(0, users.getLogin().getLoginId());
-
-								return generator.generate(helperLogin);
-							}
-						}
+					if (dayCount <= 0) {
+						return "Pw Change";
 					} else {
-						return "Lock";
-					}
 
-				} else {
-					Login login2 = loginService.checkLogin(logins.getUserName());
-					if (login2 != null) {
-						if (login2.getFailCount() == 3) {
-							loginService.updateLock(1, login2.getLoginId());
-							return "Lock";
-						} else {
-							loginService.updateFailCount(login2.getFailCount() + 1, login2.getLoginId());
+						users = userService.getUserByLoginId(login.getLoginId());
+
+						if (users != null) {
+							helperLogin.setUserCode(users.getUser_Code());
+							helperLogin.setUserFullName(users.getUser_Name());
+							helperLogin.setUserId(users.getUserId());
+							loginDao.updateOne(new Date(), login.getLoginId());
+
+							loginService.updateFailCount(0, users.getLogin().getLoginId());
+
+							return generator.generate(helperLogin);
 						}
 					}
-
-					return "Not Found";
+				} else {
+					return "Lock";
 				}
+
 			} else {
-				return "Pw Not Match";
+				Login login2 = loginService.checkLogin(logins.getUserName());
+				if (login2 != null) {
+					if (login2.getFailCount() == 3) {
+						loginService.updateLock(1, login2.getLoginId());
+						return "Lock";
+					} else {
+						loginService.updateFailCount(login2.getFailCount() + 1, login2.getLoginId());
+					}
+				}
+
+				return "Not Found";
 			}
 
 		} catch (Exception e) {
@@ -111,29 +107,25 @@ public class TokenController {
 
 	private String checkPwAndUserName(Login logins) {
 		try {
-			if (isPasswordMatchToPattern(logins)) {
-				Login login = loginService.checkLogin(logins.getUserName(), EncryptData.encrypt(logins.getPassword()));
-				Users users = null;
-				HelperLogin helperLogin = new HelperLogin();
+			Login login = loginService.checkLogin(logins.getUserName(), EncryptData.encrypt(logins.getPassword()));
+			Users users = null;
+			HelperLogin helperLogin = new HelperLogin();
 
-				if (login != null) {
-					users = userDao.findByLoginId(login.getLoginId());
+			if (login != null) {
+				users = userService.getUserByLoginId(login.getLoginId());
 
-					if (users != null) {
-						helperLogin.setUserCode(users.getUser_Code());
-						helperLogin.setUserFullName(users.getUser_Name());
-						helperLogin.setUserId(users.getUserId());
+				if (users != null) {
+					helperLogin.setUserCode(users.getUser_Code());
+					helperLogin.setUserFullName(users.getUser_Name());
+					helperLogin.setUserId(users.getUserId());
 
-						return generator.generate(helperLogin);
-					}
-
-				} else {
-					return "Not Found";
+					return generator.generate(helperLogin);
 				}
-			} else {
-				return "Pw Not Match";
-			}
 
+			} else {
+				return "Not Found";
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -143,7 +135,9 @@ public class TokenController {
 
 	// check password pattern
 	private boolean isPasswordMatchToPattern(Login login) {
-		String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+		String regex = "(?=.*\\d)(?=.*[A-Za-z]).{8,}";
+		
+		//^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
 
 		Pattern pattern = Pattern.compile(regex);
 
