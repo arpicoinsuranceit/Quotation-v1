@@ -2,8 +2,11 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.LoginService;
+import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +26,15 @@ public class LoginController {
 	@Autowired
 	HttpServletResponse response;
 	
+	@Autowired
+	private LoginDao loginDao;
+	
+	@Autowired
+	private UsersService usersService;
+	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public List<Login> getAllLogin() {
-		System.out.println("Called.................");
-		
 		try {
 			List<Login> loginList=loginService.getAllLogin();
 			
@@ -53,7 +60,6 @@ public class LoginController {
 	
 	@RequestMapping(value="/login/{id}",method=RequestMethod.GET)
 	public Login getLogin(@PathVariable Integer id) {
-		System.out.println("Called get id");
 		try {
 			Login login=loginService.getLogin(id);
 			
@@ -79,6 +85,42 @@ public class LoginController {
 		}
 		
 		return "409";
+	}
+	
+	@RequestMapping(value="/pwreset",method=RequestMethod.POST)
+	public Integer getPasswordResetDate(@RequestBody String id) {
+		try {
+			Users users=usersService.getUserByLoginId(Integer.valueOf(id));
+			Integer day=getNewPwDayCount(users.getLogin().getLoginId());
+			return day;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private Integer getNewPwDayCount(Integer loginId) {
+		Integer dayCount = 0;
+		Integer count = 0;
+
+		try {
+			dayCount = loginDao.findDaysToNextPsw(loginId);
+
+			if (dayCount != null) {
+				if (dayCount <= 45) {
+					count = 45 - dayCount;
+				} else {
+					count = -1;
+				}
+			} else {
+				count = -1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return count;
 	}
 	
 	/*public void saveData() {

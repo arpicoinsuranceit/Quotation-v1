@@ -53,4 +53,9 @@ public class UsersServiceImpl implements UsersService{
 		return users;
 	}
 
+	@Override
+	public Users getUserByLoginId(Integer id) throws Exception {
+		return usersDao.findByLoginId(id);
+	}
+
 }

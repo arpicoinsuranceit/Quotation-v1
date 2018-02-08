@@ -17,4 +17,6 @@ public interface UsersService {
 	
 	List <Users> getAllUsers() throws Exception;
 	
+	Users getUserByLoginId(Integer id) throws Exception;
+	
 }
