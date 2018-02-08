@@ -3,6 +3,8 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.ArrayList;
 import org.arpicoinsurance.groupit.main.helper.QuoDetails;
 import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +21,9 @@ public class QuotationController {
 	
 	@Autowired
 	private QuotationService quotationService;
+	
+	@Autowired
+	private QuotationDetailsService quoDetailsService;
 	
 	@RequestMapping(value="/quotation/{id}",method=RequestMethod.GET)
 	public Quotation getQuotation(@PathVariable Integer id) {
@@ -37,6 +42,19 @@ public class QuotationController {
 		Integer userId=Integer.valueOf(id);
 		try {
 			return quotationService.getQuotationDetails(userId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/quotationDetails",method=RequestMethod.POST)
+	public QuotationDetails getQuotationDetailsById(@RequestBody String id) {
+		Integer qdId=Integer.valueOf(id);
+		try {
+			QuotationDetails quoDetails= quoDetailsService.editQuotationDetails(qdId);
+			return quoDetails;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

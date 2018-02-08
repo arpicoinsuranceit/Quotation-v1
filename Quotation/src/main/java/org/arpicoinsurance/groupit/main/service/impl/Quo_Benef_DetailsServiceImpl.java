@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.custom.Quo_Benef_DetailsDaoCustom;
@@ -31,6 +32,9 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Autowired
 	private Quo_Benef_DetailsDaoCustom quoBenefDao;
+	
+	@Autowired
+	private Quo_Benef_DetailsDao quoBenefDetailsDao;
 	
 	@Autowired
 	private QuotationDao quotationDao;
@@ -217,6 +221,12 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		}
 		
 		return viewQuotationDetailsList;
+	}
+
+	@Override
+	public List<Quo_Benef_Details> findByQuotationDetails(QuotationDetails quotation) throws Exception {
+		
+		return quoBenefDetailsDao.findByQuotationDetails(quotation);
 	}
 
 	
