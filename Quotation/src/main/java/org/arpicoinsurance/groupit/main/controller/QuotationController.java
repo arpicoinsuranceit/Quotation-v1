@@ -1,6 +1,8 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
+
+import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoDetails;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
@@ -50,10 +52,10 @@ public class QuotationController {
 	}
 	
 	@RequestMapping(value="/quotationDetails",method=RequestMethod.POST)
-	public QuotationDetails getQuotationDetailsById(@RequestBody String id) {
+	public EditQuotation getQuotationDetailsById(@RequestBody String id) {
 		Integer qdId=Integer.valueOf(id);
 		try {
-			QuotationDetails quoDetails= quoDetailsService.editQuotationDetails(qdId);
+			EditQuotation quoDetails= quoDetailsService.editQuotationDetails(qdId);
 			return quoDetails;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
