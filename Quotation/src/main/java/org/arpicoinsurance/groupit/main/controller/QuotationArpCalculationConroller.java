@@ -25,6 +25,7 @@ public class QuotationArpCalculationConroller {
 
 	@RequestMapping(value = "/arpCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateARP(@RequestBody QuotationCalculation calculation) {
+		System.out.println("Arp Called");
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);

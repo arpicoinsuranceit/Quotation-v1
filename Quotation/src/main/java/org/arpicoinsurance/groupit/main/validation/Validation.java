@@ -563,7 +563,8 @@ public class Validation {
 	// ----------------------- Spouse Validations Before Calculate
 	// ----------------------------
 	public Integer validateInvpSCB() {
-		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("BSAS")) {
+		if (benefitMap.containsKey("ATPB")) {
+			System.out.println("============================================================================");
 			Benifict bsas = benefitMap.get("BSAS");
 			Benifict atpb = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
@@ -571,6 +572,7 @@ public class Validation {
 			Double atpbBsa = atpb.getSumAssured();
 
 			if (scbBsa >= 250000 && scbBsa <= (bsa + atpbBsa)) {
+				System.out.println(scbBsa <= (bsa + atpbBsa));
 				return 1;
 			}
 		}

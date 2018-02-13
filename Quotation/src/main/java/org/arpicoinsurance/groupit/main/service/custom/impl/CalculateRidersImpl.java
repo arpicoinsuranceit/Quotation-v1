@@ -179,6 +179,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 			if (quotationCalculation.get_riderDetails().get_sRiders() != null) {
 				_sRiders = quotationCalculation.get_riderDetails().get_sRiders();
+				
 			}
 			if (quotationCalculation.get_riderDetails().get_cRiders() != null) {
 				_cRiders = quotationCalculation.get_riderDetails().get_cRiders();
@@ -226,9 +227,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 		if (quotationCalculation.get_personalInfo().getSage() != null
 				&& quotationCalculation.get_personalInfo().getSgenger() != null
 				&& quotationCalculation.get_personalInfo().getSocu() != null) {
-
+			System.out.println("*******************************************call1");
 			if (_sRiders != null) {
 
+				System.out.println("*******************************************call2");
 				for (Benifict benifict : _sRiders) {
 
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
@@ -308,6 +310,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 		Double ocuLoading=1.0;
 		switch (type) {
 		case "BSAS":
+			System.out.println("hit bsas .................................................................");
 			ocuLoading=oculoding.get("SCB");
 			if(ocuLoading==null)
 				ocuLoading=1.0;
