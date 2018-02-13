@@ -563,17 +563,29 @@ public class Validation {
 	// ----------------------- Spouse Validations Before Calculate
 	// ----------------------------
 	public Integer validateInvpSCB() {
-		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("BSAS")) {
+		if(calculation.get_product().equals("atrm")) {
 			Benifict bsas = benefitMap.get("BSAS");
-			Benifict atpb = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double scbBsa = bsas.getSumAssured();
-			Double atpbBsa = atpb.getSumAssured();
+			Double atpbBsa = 0.0;
 
 			if (scbBsa >= 250000 && scbBsa <= (bsa + atpbBsa)) {
 				return 1;
 			}
+		}else {
+			if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("BSAS")) {
+				Benifict bsas = benefitMap.get("BSAS");
+				Benifict atpb = benefitMap.get("ATPB");
+				Double bsa = calculation.get_personalInfo().getBsa();
+				Double scbBsa = bsas.getSumAssured();
+				Double atpbBsa = atpb.getSumAssured();
+
+				if (scbBsa >= 250000 && scbBsa <= (bsa + atpbBsa)) {
+					return 1;
+				}
+			}
 		}
+		
 		return 0;
 	}
 
@@ -716,18 +728,29 @@ public class Validation {
 	// ----------------------------
 
 	public Integer validateInvpCIBC() {
-		System.out.println("Calle CIBC");
-		if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
+		if(calculation.get_product().equals("atrm")) {
 			Benifict cibc = benefitMap.get("CIBC");
-			Benifict atpb = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double cibcBsa = cibc.getSumAssured();
-			Double atpbBsa = atpb.getSumAssured();
+			Double atpbBsa = 0.0;
 
 			if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa <= (bsa + atpbBsa)) {
 				return 1;
 			}
+		}else {
+			if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
+				Benifict cibc = benefitMap.get("CIBC");
+				Benifict atpb = benefitMap.get("ATPB");
+				Double bsa = calculation.get_personalInfo().getBsa();
+				Double cibcBsa = cibc.getSumAssured();
+				Double atpbBsa = atpb.getSumAssured();
+
+				if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa <= (bsa + atpbBsa)) {
+					return 1;
+				}
+			}
 		}
+		
 		return 0;
 	}
 

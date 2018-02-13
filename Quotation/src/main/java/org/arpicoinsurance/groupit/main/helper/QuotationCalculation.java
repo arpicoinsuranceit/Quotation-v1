@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 public class QuotationCalculation{
+	private String _product;
 	private PersonalInfo _personalInfo;
 	private RiderDetails _riderDetails = null;
 	
@@ -15,6 +16,12 @@ public class QuotationCalculation{
 	}
 	public void set_riderDetails(RiderDetails _riderDetails) {
 		this._riderDetails = _riderDetails;
+	}
+	public String get_product() {
+		return _product;
+	}
+	public void set_product(String _product) {
+		this._product = _product;
 	}
 	
 }
