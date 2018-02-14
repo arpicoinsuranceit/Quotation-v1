@@ -240,6 +240,8 @@ public class AIPServiceImpl implements AIPService {
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationquotationCreateDate(new Date());
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());

@@ -71,7 +71,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		    mainLife.set_mGender(customerDetails.getCustGender());
 		    mainLife.set_mMobile(customerDetails.getCustTel());
 		    mainLife.set_mNic(customerDetails.getCustNic());
-		    mainLife.set_mOccupation(customerDetails.getOccupation().getOcupationCode());
+		    mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
 		    mainLife.set_mSmoking("No");
 		    mainLife.set_mTitle(customerDetails.getCustTitle());
 		    
@@ -88,10 +88,10 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			    
 				spouse.set_sActive(true);
 			    spouse.set_sAge(sage);
-			    spouse.set_sDob(spouseDetails.getCustDob().toString());
+			    spouse.set_sDob(dateFormat.format(spouseDetails.getCustDob()));
 			    spouse.set_sGender(spouseDetails.getCustGender());
 			    spouse.set_sNic(spouseDetails.getCustNic());
-			    spouse.set_sOccupation(spouseDetails.getOccupation().getOcupationName());
+			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 			    spouse.set_sTitle(spouseDetails.getCustTitle());
 			    
 			    
@@ -105,13 +105,9 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
-		/*ArrayList<Quo_Benef_Details> benef=(ArrayList<Quo_Benef_Details>) quo_Benef_DetailsService.findByQuotationDetails(details);
 		
-		for (Quo_Benef_Details quo_Benef_Details : benef) {
-			System.out.println(quo_Benef_Details.getBenefit().getRiderCode());
-		}*/
-		return editQuotation;
-		//return getBenefitsAndChildDetails(details,editQuotation);
+		//return editQuotation;
+		return getBenefitsAndChildDetails(details,editQuotation);
 	}
 
 	private EditQuotation getBenefitsAndChildDetails(QuotationDetails details,EditQuotation editQuotation) throws Exception {
@@ -124,75 +120,100 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		
 		ArrayList<Children> childrenList=new ArrayList<>();
 		
-		
-		for (Quo_Benef_Details quo_Benef_Details : benef_Details) {
-			Benefits benf=quo_Benef_Details.getBenefit();
-			if(benf.getBenefitType().equals("s")) {//check benf_type is spouse
-				QuoBenf qb=new QuoBenf();
-				qb.setBenfName(benf.getBenefitName());
-				qb.setPremium(quo_Benef_Details.getRiderPremium());
-				qb.setRiderSum(quo_Benef_Details.getRiderSum());
-				spouseBenef.add(qb);
-			}else if(benf.getBenefitType().equals("m")) {//check benf_type is mainLife
-				QuoBenf qb=new QuoBenf();
-				qb.setBenfName(benf.getBenefitName());
-				qb.setPremium(quo_Benef_Details.getRiderPremium());
-				qb.setRiderSum(quo_Benef_Details.getRiderSum());
-				mainLifeBenef.add(qb);
-			}else if(benf.getBenefitType().equals("c")) {//check benf_type is child
-				
-				List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
-				if(!qbcd.isEmpty()) {
+		if(benef_Details != null) {
+			for (Quo_Benef_Details quo_Benef_Details : benef_Details) {
+				Benefits benf=quo_Benef_Details.getBenefit();
+				if(benf.getBenefitType().equals("s")) {//check benf_type is spouse
 					QuoBenf qb=new QuoBenf();
-					qb.setBenfName(benf.getBenefitName());
+					qb.setBenfName(benf.getRiderCode());
+					qb.setPremium(quo_Benef_Details.getRiderPremium());
 					qb.setRiderSum(quo_Benef_Details.getRiderSum());
+					spouseBenef.add(qb);
+				}else if(benf.getBenefitType().equals("m")) {//check benf_type is mainLife
+					QuoBenf qb=new QuoBenf();
+					qb.setBenfName(benf.getRiderCode());
+					qb.setPremium(quo_Benef_Details.getRiderPremium());
+					qb.setRiderSum(quo_Benef_Details.getRiderSum());
+					mainLifeBenef.add(qb);
+				}else if(benf.getBenefitType().equals("c")) {//check benf_type is child
 					
-					for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
-						Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
-						if(!childMap.containsKey(child.getChildName())) {
-							ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
-							qb.setPremium(quo_Benef_Child_Details.getPremium());
-							benfs.add(qb);
-							
-							QuoChildBenef benef=new QuoChildBenef();//create QuoChildBenef object
-							benef.setChild(child);
-							benef.setBenfs(benfs);//set list of benefits
-							
-							Children children=new Children();
-							children.set_cActive(true);
-							children.set_cAge(child.getChildId());
-							children.set_cDob(child.getChildDob().toString());
-							children.set_cName(child.getChildName());
-							children.set_cNic(child.getChildNic());
-							children.set_cTitle(child.getChildRelation());
-							
-							childrenList.add(children);
-							
-							childMap.put(child.getChildName(), benef);
-						}else {
-							QuoChildBenef childBenefit=childMap.get(child.getChildName());
-							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
-							qb.setPremium(quo_Benef_Child_Details.getPremium());
-							benflist.add(qb);
-							
-							childMap.get(child.getChildName()).setBenfs(benflist);
+					List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
+					if(!qbcd.isEmpty()) {
+						QuoBenf qb=new QuoBenf();
+						qb.setBenfName(benf.getRiderCode());
+						qb.setRiderSum(quo_Benef_Details.getRiderSum());
+						
+						SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+						
+						for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
+							Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
+							if(!childMap.containsKey(child.getChildName())) {
+								ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+								qb.setPremium(quo_Benef_Child_Details.getPremium());
+								benfs.add(qb);
+								
+								QuoChildBenef benef=new QuoChildBenef();//create QuoChildBenef object
+								benef.setChild(child);
+								benef.setBenfs(benfs);//set list of benefits
+								
+								Children children=new Children();
+								children.set_cActive(true);
+								children.set_cAge(child.getChildId());
+								children.set_cDob(dateFormat.format(child.getChildDob()));
+								children.set_cName(child.getChildName());
+								children.set_cNic(child.getChildNic());
+								children.set_cTitle(child.getChildRelation());
+								
+								childrenList.add(children);
+								
+								childMap.put(child.getChildName(), benef);
+							}else {
+								QuoChildBenef childBenefit=childMap.get(child.getChildName());
+								ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+								qb.setPremium(quo_Benef_Child_Details.getPremium());
+								benflist.add(qb);
+								
+								childMap.get(child.getChildName()).setBenfs(benflist);
+							}
 						}
+						
 					}
 					
+					
+				}else {
+					
 				}
-				
-				
-			}else {
-				
 			}
 		}
+		
 		
 		Set<Entry<String, QuoChildBenef>> benefs=childMap.entrySet();
 		ArrayList<QuoChildBenef> childBenefList=new ArrayList<>();
 		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
 			QuoChildBenef cb=entry.getValue();
 			childBenefList.add(cb);
+			
+			for(Children children:childrenList) {
+				if(children.get_cName().equals(entry.getKey())) {
+					for (QuoBenf bnf : cb.getBenfs()) {
+						if(bnf.getBenfName().equals("CIBC")) {
+							children.set_cCibc(true);
+						}
+						if(bnf.getBenfName().equals("HRBC")) {
+							children.set_cHrbc(true);
+						}
+						if(bnf.getBenfName().equals("SUHRBC")) {
+							children.set_cSuhrbc(true);
+						}
+						if(bnf.getBenfName().equals("HBC")) {
+							children.set_cHbc(true);
+						}
+					}
+				}
+			}
 		}
+		
+		
 		
 		editQuotation.set_children(childrenList);
 		editQuotation.set_mainLifeBenefits(mainLifeBenef);

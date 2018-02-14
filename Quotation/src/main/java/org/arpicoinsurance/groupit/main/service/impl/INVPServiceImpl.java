@@ -266,6 +266,7 @@ public class INVPServiceImpl implements INVPService {
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
 		
 		quotationDetails.setQuotation(quotation);
+		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
 				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),

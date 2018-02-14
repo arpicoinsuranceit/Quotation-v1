@@ -69,7 +69,6 @@ public class QuotationController {
 		Integer qdId=Integer.valueOf(id);
 		try {
 			QuotationDetails quoDetails= quoDetailsService.findQuotationDetails(qdId);
-			System.out.println(quoDetails.getQuotation().getProducts().getProductCode());
 			return quoDetails.getQuotation().getProducts().getProductCode();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
