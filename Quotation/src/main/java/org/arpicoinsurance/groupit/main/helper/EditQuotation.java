@@ -9,7 +9,7 @@ public class EditQuotation {
 	private Plan _plan;
 	private ArrayList<QuoBenf> _mainLifeBenefits;
 	private ArrayList<QuoBenf> _spouseBenefits;
-	private ArrayList<QuoChildBenef> _childrenBenefits;
+	private ArrayList<QuoBenf> _childrenBenefits;
 	
 	public MainLife get_mainlife() {
 		return _mainlife;
@@ -47,10 +47,10 @@ public class EditQuotation {
 	public void set_spouseBenefits(ArrayList<QuoBenf> _spouseBenefits) {
 		this._spouseBenefits = _spouseBenefits;
 	}
-	public ArrayList<QuoChildBenef> get_childrenBenefits() {
+	public ArrayList<QuoBenf> get_childrenBenefits() {
 		return _childrenBenefits;
 	}
-	public void set_childrenBenefits(ArrayList<QuoChildBenef> _childrenBenefits) {
+	public void set_childrenBenefits(ArrayList<QuoBenf> _childrenBenefits) {
 		this._childrenBenefits = _childrenBenefits;
 	}
 	

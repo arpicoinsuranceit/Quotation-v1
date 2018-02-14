@@ -115,6 +115,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		
 		ArrayList<QuoBenf> mainLifeBenef=new ArrayList<>();
 		ArrayList<QuoBenf> spouseBenef=new ArrayList<>();
+		ArrayList<QuoBenf> childBenef=new ArrayList<>();
 		
 		TreeMap< String, QuoChildBenef> childMap=new TreeMap<>();
 		
@@ -136,6 +137,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 					qb.setRiderSum(quo_Benef_Details.getRiderSum());
 					mainLifeBenef.add(qb);
 				}else if(benf.getBenefitType().equals("c")) {//check benf_type is child
+					QuoBenf qb1=new QuoBenf();
+					qb1.setBenfName(benf.getRiderCode());
+					qb1.setPremium(quo_Benef_Details.getRiderPremium());
+					qb1.setRiderSum(quo_Benef_Details.getRiderSum());
+					childBenef.add(qb1);
 					
 					List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
 					if(!qbcd.isEmpty()) {
@@ -218,7 +224,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		editQuotation.set_children(childrenList);
 		editQuotation.set_mainLifeBenefits(mainLifeBenef);
 		editQuotation.set_spouseBenefits(spouseBenef);
-		editQuotation.set_childrenBenefits(childBenefList);
+		editQuotation.set_childrenBenefits(childBenef);
 		
 		return editQuotation;
 		
