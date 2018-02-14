@@ -563,7 +563,8 @@ public class Validation {
 	// ----------------------- Spouse Validations Before Calculate
 	// ----------------------------
 	public Integer validateInvpSCB() {
-		if(calculation.get_product().equals("atrm")) {
+		System.out.println(calculation.get_product() +"]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
+		if(calculation.get_product() != null) {
 			Benifict bsas = benefitMap.get("BSAS");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double scbBsa = bsas.getSumAssured();
@@ -728,7 +729,8 @@ public class Validation {
 	// ----------------------------
 
 	public Integer validateInvpCIBC() {
-		if(calculation.get_product().equals("atrm")) {
+		System.out.println(calculation.get_product() +"]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
+		if(calculation.get_product() != null) {
 			Benifict cibc = benefitMap.get("CIBC");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double cibcBsa = cibc.getSumAssured();

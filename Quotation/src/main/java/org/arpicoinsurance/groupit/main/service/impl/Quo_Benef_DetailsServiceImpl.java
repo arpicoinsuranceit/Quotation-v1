@@ -45,6 +45,8 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
 	
+	
+	
 	@Override
 	public boolean saveQuo_Benef_Details(Quo_Benef_Details qbd) throws Exception {
 		return false;
