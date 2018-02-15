@@ -112,6 +112,7 @@ public class INVPServiceImpl implements INVPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 			
+			System.out.println("Invp Frequency : "+ quotationCalculation.get_personalInfo().getFrequance());
 			
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
@@ -174,7 +175,7 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		
+		System.out.println("Pay Trm :"+ paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
 		return premium.multiply(new BigDecimal(rate));

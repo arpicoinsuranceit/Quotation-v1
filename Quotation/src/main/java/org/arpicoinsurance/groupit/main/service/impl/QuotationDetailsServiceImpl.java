@@ -242,7 +242,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			plan.set_frequance("Monthly");
 			break;
 		case "Q":
-			plan.set_frequance("Quartly");
+			plan.set_frequance("Quartaly");
 			break;
 		case "H":
 			plan.set_frequance("Half Yearly");
