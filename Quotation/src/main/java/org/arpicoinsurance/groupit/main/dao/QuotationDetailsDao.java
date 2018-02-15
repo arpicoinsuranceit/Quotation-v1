@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface QuotationDetailsDao extends CrudRepository<QuotationDetails,String> {
 
-	QuotationDetails findOneByQdId(Integer id) throws Exception;
+	//QuotationDetails findOneByQdId(Integer id) throws Exception;
 	
 	@Modifying
 	Integer deleteOneByQdId(Integer id) throws Exception;

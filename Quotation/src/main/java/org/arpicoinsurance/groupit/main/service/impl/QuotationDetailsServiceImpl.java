@@ -164,7 +164,15 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 								
 								Children children=new Children();
 								children.set_cActive(true);
-								children.set_cAge(child.getChildId());
+								
+								
+								LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(child.getChildDob()));
+							    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+							    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+							    sdiffInYears+=1;
+							    String sage=Long.toString(sdiffInYears);
+							    
+							    children.set_cAge(Integer.parseInt(sage));
 								children.set_cDob(dateFormat.format(child.getChildDob()));
 								children.set_cName(child.getChildName());
 								children.set_cNic(child.getChildNic());

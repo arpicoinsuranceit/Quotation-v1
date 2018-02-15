@@ -123,8 +123,8 @@ public class QuotationInvpCalculationController {
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
-		/*try {
-			if (id != null) {
+		try {
+			if (userId != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
@@ -137,7 +137,7 @@ public class QuotationInvpCalculationController {
 						
 						if (error.equals("No")) {
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							String response = invpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 							resp = response;
 						} else {
 							resp = error;
@@ -162,7 +162,7 @@ public class QuotationInvpCalculationController {
 			if (validation != null) {
 				validation = null;
 			}
-		}*/
+		}
 
 		return resp;
 	}

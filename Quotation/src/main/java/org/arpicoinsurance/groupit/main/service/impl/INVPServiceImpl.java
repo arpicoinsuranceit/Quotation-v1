@@ -40,6 +40,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardATFESC;
 import org.arpicoinsurance.groupit.main.model.RateCardINVP;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.INVPService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,13 +98,15 @@ public class INVPServiceImpl implements INVPService {
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
-
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private CalculateRiders calculateriders;
-	
+
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
+
 	@Override
 	public QuotationQuickCalResponse getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
 		CalculationUtils calculationUtils = null;
@@ -111,9 +114,9 @@ public class INVPServiceImpl implements INVPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			
-			System.out.println("Invp Frequency : "+ quotationCalculation.get_personalInfo().getFrequance());
-			
+
+			System.out.println("Invp Frequency : " + quotationCalculation.get_personalInfo().getFrequance());
+
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
@@ -121,8 +124,7 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
-			
-			
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
@@ -137,12 +139,12 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getTerm(), 12.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-			
+
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE = adminFee + tax;
-			
+
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
 
@@ -175,12 +177,11 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println("Pay Trm :"+ paytrm);
+		System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
 		return premium.multiply(new BigDecimal(rate));
 	}
-
 
 	@Override
 	public BigDecimal calculateMaturity(int age, int term, double intrat, Date chedat, double bassum, int paytrm)
@@ -209,20 +210,19 @@ public class INVPServiceImpl implements INVPService {
 			throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
-		
+
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(id);
-		
-		
+
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		
-		
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),user);
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -240,7 +240,8 @@ public class INVPServiceImpl implements INVPService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -250,7 +251,7 @@ public class INVPServiceImpl implements INVPService {
 				custChildDetails.setCustomer(mainLifeDetail);
 				custChildDetailsList.add(custChildDetails);
 			}
-		
+
 		Quotation quotation = new Quotation();
 		quotation.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null)
@@ -258,19 +259,20 @@ public class INVPServiceImpl implements INVPService {
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
-		
-		Double lifePos =getInvestLifePremium(calculation.get_personalInfo().getMage(),
+
+		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
 				calResp.getBasicSumAssured(),
 				calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
-	
+
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
-		
+
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
-		
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
 		//////////////////////////// save//////////////////////////////////
@@ -303,8 +305,8 @@ public class INVPServiceImpl implements INVPService {
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
@@ -331,7 +333,6 @@ public class INVPServiceImpl implements INVPService {
 	/////////////////////////////////////// Additional Methods
 	/////////////////////////////////////// ////////////////////////////
 
-	
 	@Override
 	public BigDecimal getInvestLifePremium(int age, int term, Date chedat, double bassum, double premium, int paytrm)
 			throws Exception {
@@ -345,5 +346,147 @@ public class INVPServiceImpl implements INVPService {
 				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
 		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
 		return lifpos;
+	}
+
+	@Override
+	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+			Integer qdId) throws Exception {
+			
+			CalculationUtils calculationUtils = new CalculationUtils();
+
+			QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
+
+			Products products = productDao.findByProductCode("INVP");
+			Users user = userDao.findOne(userId);
+
+			Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+			Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+
+			CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+					_invpSaveQuotation.get_personalInfo(), user);
+			CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+					_invpSaveQuotation.get_personalInfo(), user);
+
+			QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+
+			Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+			Customer spouse =null;
+			if(spouseDetail != null) {
+				try {
+					spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+				}catch(NullPointerException ex) {
+					spouse=null;
+				}
+				
+				if (spouse != null) {
+					spouseDetail.setCustomer(spouse);
+				} else {
+					spouse = new Customer();
+					spouse.setCustName(spouseDetail.getCustName());
+					spouse.setCustCreateDate(new Date());
+					spouse.setCustCreateBy(user.getUser_Name());
+					spouseDetail.setCustomer(spouse);
+				}
+				
+			}else {
+				
+			}
+			
+			
+			
+
+			mainLifeDetail.setCustomer(mainlife);
+
+			
+
+			ArrayList<Child> childList = quotationSaveUtilService
+					.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+
+			ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
+			if (childList != null && !childList.isEmpty()) {
+				for (Child child : childList) {
+					CustChildDetails custChildDetails = new CustChildDetails();
+					custChildDetails.setChild(child);
+					custChildDetails.setCustomer(mainLifeDetail);
+					custChildDetailsList.add(custChildDetails);
+				}
+			}
+
+			Quotation quotation = quotationDetails.getQuotation();
+			quotation.setCustomerDetails(mainLifeDetail);
+			if (spouseDetail != null) {
+				quotation.setSpouseDetails(spouseDetail);
+			}
+
+			Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
+					calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
+					calResp.getBasicSumAssured(),
+					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
+
+			QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
+
+			quotationDetails1.setQuotation(quotation);
+			quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+
+			ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+					_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+					_invpSaveQuotation.get_personalInfo().get_childrenList(),
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+			//////////////////////////// save edit//////////////////////////////////
+			
+			Customer life = (Customer) customerDao.save(mainlife);
+			CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+			ArrayList<CustChildDetails> custChildDList = null;
+			if (life != null && mainLifeDetails != null) {
+
+				if (spouse != null) {
+					Customer sp = customerDao.save(spouse);
+					CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+					if (sp == null && spDetsils != null) {
+						return "Error at Spouse Saving";
+					}
+				}
+
+				ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+				custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+				if (childList != null && childList.size() > 0) {
+					if (cList == null && custChildDList == null) {
+						return "Error at Child Updating";
+					}
+				}
+
+				Quotation quo = quotationDao.save(quotation);
+				QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+				if (quo != null && quoDetails != null) {
+					ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+							.save(benef_DetailsList);
+					if (bnfdList != null) {
+
+						ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+								custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+								_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
+								calculation.get_personalInfo().getFrequance(),
+								calculation.get_riderDetails().get_cRiders());
+
+						if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+							return "Error at Child Benifict Updating";
+						}
+
+					} else {
+						return "Error at Benifict Updating";
+					}
+				} else {
+					return "Error at Quotation Updating";
+				}
+
+			} else {
+				return "Error at MainLife Updating";
+			}
+
+			
+		return "Success";
+
 	}
 }
