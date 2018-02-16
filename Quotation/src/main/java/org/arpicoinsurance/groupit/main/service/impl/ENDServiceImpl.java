@@ -319,7 +319,7 @@ public class ENDServiceImpl implements ENDService {
 
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 
-		Products products = productDao.findByProductCode("INVP");
+		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

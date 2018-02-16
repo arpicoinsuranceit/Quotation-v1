@@ -118,7 +118,7 @@ public class QuotationAsipCntroller {
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
-					if (validation.validateInvpEndProd() == 1) {
+					if (validation.validateAsipProd() == 1) {
 						String error = validation.validateBenifict();
 						
 						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");

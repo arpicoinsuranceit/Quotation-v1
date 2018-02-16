@@ -40,6 +40,7 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardASFP;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +108,9 @@ public class ASFPServiceImpl implements ASFPService {
 	@Autowired
 	private CalculateRiders calculateriders;
 	
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
+	
 	@Override
 	public BigDecimal calculateL10(int ocu,int age, int term, double rebate, Date chedat, double msfb, int paytrm)
 			throws Exception {
@@ -154,7 +158,7 @@ public class ASFPServiceImpl implements ASFPService {
 			
 			
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			
+			System.out.println(quotationCalculation.get_personalInfo().getMsfb()+" quotationCalculation.get_personalInfo().getTerm()");
 			BigDecimal bsa=calculateL2(quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getMsfb());
 			
 			BigDecimal bsaPremium = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
@@ -300,6 +304,139 @@ public class ASFPServiceImpl implements ASFPService {
 
 		return "Success";
 
+	}
+
+	@Override
+	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+			Integer qdId) throws Exception {
+		CalculationUtils calculationUtils = new CalculationUtils();
+
+		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
+
+		Products products = productDao.findByProductCode("ASFP");
+		Users user = userDao.findOne(userId);
+
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
+
+		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+
+		Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+		Customer spouse =null;
+		if(spouseDetail != null) {
+			try {
+				spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+			}catch(NullPointerException ex) {
+				spouse=null;
+			}
+			
+			if (spouse != null) {
+				spouseDetail.setCustomer(spouse);
+			} else {
+				spouse = new Customer();
+				spouse.setCustName(spouseDetail.getCustName());
+				spouse.setCustCreateDate(new Date());
+				spouse.setCustCreateBy(user.getUser_Name());
+				spouseDetail.setCustomer(spouse);
+			}
+			
+		}else {
+			
+		}
+		
+		
+		mainLifeDetail.setCustomer(mainlife);
+
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+
+		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
+		if (childList != null && !childList.isEmpty()) {
+			for (Child child : childList) {
+				CustChildDetails custChildDetails = new CustChildDetails();
+				custChildDetails.setChild(child);
+				custChildDetails.setCustomer(mainLifeDetail);
+				custChildDetailsList.add(custChildDetails);
+			}
+		}
+
+		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotation.setSpouseDetails(spouseDetail);
+		}else {
+			quotation.setSpouseDetails(null);
+		}
+
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+
+		quotationDetails1.setQuotation(quotation);
+		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
+				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		//////////////////////////// save edit//////////////////////////////////
+		
+		Customer life = (Customer) customerDao.save(mainlife);
+		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+		ArrayList<CustChildDetails> custChildDList = null;
+		if (life != null && mainLifeDetails != null) {
+
+			if (spouseDetail != null) {
+				Customer sp = customerDao.save(spouse);
+				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+				if (sp == null && spDetsils != null) {
+					return "Error at Spouse Saving";
+				}
+			}
+
+			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+			if (childList != null && childList.size() > 0) {
+				if (cList == null && custChildDList == null) {
+					return "Error at Child Updating";
+				}
+			}
+
+			Quotation quo = quotationDao.save(quotation);
+			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			if (quo != null && quoDetails != null) {
+				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+						.save(benef_DetailsList);
+				if (bnfdList != null) {
+
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
+							calculation.get_personalInfo().getFrequance(),
+							calculation.get_riderDetails().get_cRiders());
+
+					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+						return "Error at Child Benifict Updating";
+					}
+
+				} else {
+					return "Error at Benifict Updating";
+				}
+			} else {
+				return "Error at Quotation Updating";
+			}
+
+		} else {
+			return "Error at MainLife Updating";
+		}
+
+		
+	return "Success";
 	}
 
 }
