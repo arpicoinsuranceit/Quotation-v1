@@ -393,11 +393,7 @@ public class INVPServiceImpl implements INVPService {
 			}
 			
 			
-			
-
 			mainLifeDetail.setCustomer(mainlife);
-
-			
 
 			ArrayList<Child> childList = quotationSaveUtilService
 					.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
@@ -416,6 +412,8 @@ public class INVPServiceImpl implements INVPService {
 			quotation.setCustomerDetails(mainLifeDetail);
 			if (spouseDetail != null) {
 				quotation.setSpouseDetails(spouseDetail);
+			}else {
+				quotation.setSpouseDetails(null);
 			}
 
 			Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
@@ -440,7 +438,7 @@ public class INVPServiceImpl implements INVPService {
 			ArrayList<CustChildDetails> custChildDList = null;
 			if (life != null && mainLifeDetails != null) {
 
-				if (spouse != null) {
+				if (spouseDetail != null) {
 					Customer sp = customerDao.save(spouse);
 					CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 					if (sp == null && spDetsils != null) {
