@@ -17,6 +17,7 @@ public class JwtGenerator {
 		
 		claims.put("userId", login.getUserId());
 		claims.put("fullName", login.getUserFullName());
+		claims.put("userCode", login.getUserCode());
 				
 		return Jwts.builder().setClaims(claims)
 				.signWith(SignatureAlgorithm.HS512, "arpico")
