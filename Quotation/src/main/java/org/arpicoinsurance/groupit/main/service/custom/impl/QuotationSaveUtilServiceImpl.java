@@ -116,9 +116,10 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 					Child child = new Child();
 					child.setChildName(children.get_cName());
 					child.setChildGender(children.get_cTitle());
+					System.out.println("children.get_cTitle()" + children.get_cTitle());
 					child.setChildDob(new DateConverter().stringToDate(children.get_cDob()));
 					child.setChildNic(children.get_cNic());
-					child.setChildRelation(children.get_cTitle() == "F" ? "Daughter" : "Son");
+					child.setChildRelation(children.get_cTitle().equals("F") ? "Daughter" : "Son");
 
 					childList.add(child);
 				}

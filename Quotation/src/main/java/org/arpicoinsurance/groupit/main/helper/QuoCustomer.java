@@ -10,6 +10,7 @@ public class QuoCustomer {
 	private Integer term;
 	private String mode;
 	private Double modePremium;
+	private Double totPremium;
 	
 	public String getMainLifeName() {
 		return mainLifeName;
@@ -64,6 +65,12 @@ public class QuoCustomer {
 	}
 	public void setModePremium(Double modePremium) {
 		this.modePremium = modePremium;
+	}
+	public Double getTotPremium() {
+		return totPremium;
+	}
+	public void setTotPremium(Double totPremium) {
+		this.totPremium = totPremium;
 	}
 	
 	

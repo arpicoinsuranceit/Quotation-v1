@@ -96,5 +96,62 @@ public class QuotationEndCalculationController {
 
 		return resp;
 	}
+	
+	@RequestMapping(value = "/quoEndEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	public String editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+			, @PathVariable("qdId") Integer qdId) {
+		
+		System.out.println(userId);
+		System.out.println(qdId);
+		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
+
+		String resp = "Fail";
+		QuotationCalculation calculation = null;
+
+		Validation validation = null;
+		try {
+			if (userId != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					validation = new Validation(calculation);
+					if (validation.validateInvpEndProd() == 1) {
+						String error = validation.validateBenifict();
+						
+						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+						
+						if (error.equals("No")) {
+
+							String response = endService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
+							resp = response;
+						} else {
+							resp = error;
+						}
+					} else {
+						resp = "Error at product";
+					}
+				} else {
+					resp = "Incomplete";
+				}
+			} else {
+				resp = "User can't be identify";
+
+			}
+
+		} catch (Exception e) {
+			Logger.getLogger(QuotationEndCalculationController.class.getName()).log(Level.SEVERE, null, e);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
+
+		return resp;
+	}
 
 }
