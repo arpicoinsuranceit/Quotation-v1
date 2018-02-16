@@ -336,6 +336,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setAdbsTerm(term);
 			return calResp;
 		case "ATPB":
+			System.out.println("called/////////////////////////////////////////////////////");
+			System.out.println(ridsumasu);
 			ocuLoading=oculoding.get("ATPB");
 			if(ocuLoading==null)
 				ocuLoading=1.0;

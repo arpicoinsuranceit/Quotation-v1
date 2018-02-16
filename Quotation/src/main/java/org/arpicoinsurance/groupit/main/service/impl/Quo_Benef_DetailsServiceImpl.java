@@ -1,5 +1,8 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -45,6 +48,8 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
 	
+	
+	
 	@Override
 	public boolean saveQuo_Benef_Details(Quo_Benef_Details qbd) throws Exception {
 		return false;
@@ -83,7 +88,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	//set customer and spouse details according to quotationdetail object
 	private QuoCustomer setCustomerDetails(QuotationDetails quoDetails) {
 		QuoCustomer customer=new QuoCustomer();
-		customer.setTerm(quoDetails.getTopTerm());
+		customer.setTerm(quoDetails.getPayTerm());
 		customer.setMode(quoDetails.getPayMode());
 		
 		if(quoDetails.getPayMode()!=null) {
@@ -102,15 +107,28 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			}
 		}
 		
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 		
+		LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getQuotation().getCustomerDetails().getCustDob()));
+	    LocalDate currentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
+	    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+	    diffInYears+=1;
+	    String age=Long.toString(diffInYears);
+	    
 		customer.setMainLifeName(quoDetails.getQuotation().getCustomerDetails().getCustName());
 		customer.setMainLifeOccupation(quoDetails.getQuotation().getCustomerDetails().getOccupation().getOcupationName());
-		customer.setMainLifeAge(quoDetails.getQuotation().getCustomerDetails().getCustDetailId());
+		customer.setMainLifeAge(Integer.parseInt(age));
+		
+		LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getQuotation().getCustomerDetails().getCustDob()));
+	    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
+	    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+	    sdiffInYears+=1;
+	    String sage=Long.toString(sdiffInYears);
 		
 		if(quoDetails.getQuotation().getSpouseDetails()!=null) {
 			customer.setSpouseName(quoDetails.getQuotation().getSpouseDetails().getCustName());
 			customer.setSpouseOccupation(quoDetails.getQuotation().getSpouseDetails().getOccupation().getOcupationName());
-			customer.setSpouseAge(quoDetails.getQuotation().getSpouseDetails().getCustDetailId());
+			customer.setSpouseAge(Integer.parseInt(sage));
 		}else {
 			customer.setSpouseName(null);
 			customer.setSpouseOccupation(null);

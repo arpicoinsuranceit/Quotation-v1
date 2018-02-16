@@ -64,4 +64,17 @@ public class QuotationController {
 		return null;
 	}
 	
+	@RequestMapping(value="/product",method=RequestMethod.POST)
+	public String getProduct(@RequestBody String id) {
+		Integer qdId=Integer.valueOf(id);
+		try {
+			QuotationDetails quoDetails= quoDetailsService.findQuotationDetails(qdId);
+			return quoDetails.getQuotation().getProducts().getProductCode();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

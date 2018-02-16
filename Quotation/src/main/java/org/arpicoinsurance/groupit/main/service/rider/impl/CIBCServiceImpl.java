@@ -24,7 +24,7 @@ public class CIBCServiceImpl implements CIBCService{
 			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		BigDecimal premiumCIBC = new BigDecimal(0);
-		System.out.println(age + " " +term + " "+ chedat);
+		System.out.println(age + " $ " +term + " $ "+ chedat);
 		RateCardCIBC rateCardCIBC = rateCardCIBCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		
 		System.out.println(" Rate : "+rateCardCIBC.getRate());

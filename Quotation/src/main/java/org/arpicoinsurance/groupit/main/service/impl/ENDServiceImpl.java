@@ -246,6 +246,7 @@ public class ENDServiceImpl implements ENDService {
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails.setQuotation(quotation);
+		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
