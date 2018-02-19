@@ -95,4 +95,58 @@ public class QuotationArpCalculationConroller {
 
 		return resp;
 	}
+	
+	@RequestMapping(value = "/quoArpEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	public String editArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+			, @PathVariable("qdId") Integer qdId) {
+		
+		System.out.println(userId);
+		System.out.println(qdId);
+		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
+
+		String resp = "Fail";
+		QuotationCalculation calculation = null;
+
+		Validation validation = null;
+		try {
+			if (userId != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					validation = new Validation(calculation);
+					if (validation.validateAsipProd() == 1) {
+						String error = validation.validateBenifict();
+						if (error.equals("No")) {
+
+							String response = arpServie.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
+							resp = response;
+						} else {
+							resp = error;
+						}
+					} else {
+						resp = "Error at product";
+					}
+				} else {
+					resp = "Incomplete";
+				}
+			} else {
+				resp = "User can't be identify";
+
+			}
+
+		} catch (Exception e) {
+			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
+
+		return resp;
+	}
 }
