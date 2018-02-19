@@ -62,7 +62,7 @@ public class QuotationAsfpCalculationController {
 
 
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
-	public String saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public String saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
 		QuotationCalculation calculation = null;
@@ -114,5 +114,63 @@ public class QuotationAsfpCalculationController {
 
 		return resp;
 	}
+	
+	
+	@RequestMapping(value = "/quoAsfpEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	public String editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+			, @PathVariable("qdId") Integer qdId) {
+		System.out.println(qdId);
+		String resp = "Fail";
+		QuotationCalculation calculation = null;
+		Validation validation = null;
+		CalculationUtils utils=new CalculationUtils();
+		try {
+			if (userId != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					validation = new Validation(calculation);
+					if (validation.validateAsfpProd() == 1) {
+						String error = validation.validateBenifict();
+						if (error.equals("No")) {
+							
+							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
+								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, qdId);
+								resp = response;
+							}else {
+								resp = "Total Premium times frequency must be greater than 1250 times frequency";
+							}
+
+							
+						} else {
+							resp = "Error at benifict :" + error;
+						}
+					} else {
+						resp = "Error at product";
+					}
+				} else {
+					resp = "Incomplete";
+				}
+			} else {
+				resp = "User can't be identify";
+
+			}
+
+		} catch (Exception e) {
+			Logger.getLogger(QuotationAsfpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
+
+		return resp;
+	}
+	
+	
 
 }

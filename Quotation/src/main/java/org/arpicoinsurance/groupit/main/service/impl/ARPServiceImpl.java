@@ -188,7 +188,7 @@ public class ARPServiceImpl implements ARPService {
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
-		Products products = productDao.findByProductCode("INVP");
+		Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());

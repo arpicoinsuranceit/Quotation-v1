@@ -93,15 +93,20 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		
 		if(quoDetails.getPayMode()!=null) {
 			if(quoDetails.getPayMode().equals("M")) {
-				customer.setModePremium(quoDetails.getPremiumMonthT());
+				customer.setModePremium(quoDetails.getPremiumMonth());
+				customer.setTotPremium(quoDetails.getPremiumMonthT());
 			}else if(quoDetails.getPayMode().equals("Y")) {
-				customer.setModePremium(quoDetails.getPremiumYearT());
+				customer.setModePremium(quoDetails.getPremiumYear());
+				customer.setTotPremium(quoDetails.getPremiumYearT());
 			}else if(quoDetails.getPayMode().equals("Q")) {
-				customer.setModePremium(quoDetails.getPremiumQuaterT());
+				customer.setModePremium(quoDetails.getPremiumQuater());
+				customer.setTotPremium(quoDetails.getPremiumQuaterT());
 			}else if(quoDetails.getPayMode().equals("H")) {
-				customer.setModePremium(quoDetails.getPremiumHalfT());
+				customer.setModePremium(quoDetails.getPremiumHalf());
+				customer.setTotPremium(quoDetails.getPremiumHalfT());
 			}else if(quoDetails.getPayMode().equals("S")) {
-				customer.setModePremium(quoDetails.getPremiumSingleT());
+				customer.setModePremium(quoDetails.getPremiumSingle());
+				customer.setTotPremium(quoDetails.getPremiumSingleT());
 			}else {
 				
 			}

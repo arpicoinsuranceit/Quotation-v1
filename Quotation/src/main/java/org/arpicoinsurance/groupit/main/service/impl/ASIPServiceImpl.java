@@ -42,6 +42,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardASIP;
 import org.arpicoinsurance.groupit.main.model.RateCardASIPFund;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.ASIPService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +54,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ASIPServiceImpl implements ASIPService {
 
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
-	
+
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-	
+
 	@Autowired
 	private ProductDao productDao;
 
@@ -65,19 +66,19 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private RateCardASIPDao rateCardASIPDao;
-	
+
 	@Autowired
 	private RateCardASIPFundDao rateCardASIPFundDao;
-	
+
 	@Autowired
 	private OccupationDao occupationDao;
 
 	@Autowired
 	private BenefitsDao benefitsDao;
-	
+
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
-	
+
 	@Autowired
 	private CustomerDao customerDao;
 
@@ -101,13 +102,16 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
-	
+
 	@Autowired
 	private CalculateRiders calculateriders;
-	@Override
 
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
+
+	@Override
 	public QuotationQuickCalResponse getCalcutatedASIP(QuotationCalculation quotationCalculation) throws Exception {
-	
+
 		CalculationUtils calculationUtils = null;
 		try {
 
@@ -118,42 +122,27 @@ public class ASIPServiceImpl implements ASIPService {
 					quotationCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getBsa(),
+					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
-			
-			
-			
+
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					0.01, 
-					8.0, 
-					new Date(), 
-					quotationCalculation.get_personalInfo().getBsa(),
-					bsaPremium.doubleValue(), 
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.0, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-					
+
 			calResp.setAt8(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					0.01,
-					9.5, 
-					new Date(), 
-					quotationCalculation.get_personalInfo().getBsa(),
-					bsaPremium.doubleValue(), 
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 9.5, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-					
+
 			calResp.setAt10(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					0.01, 
-					12.0, 
-					new Date(), 
-					quotationCalculation.get_personalInfo().getBsa(),
-					bsaPremium.doubleValue(), 
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 12.0, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
-					
-			System.out.println( calResp.getBasicSumAssured());
+
+			System.out.println(calResp.getBasicSumAssured());
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -170,13 +159,10 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 	}
 
-
-
 	@Override
-	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm)
-			throws Exception {
+	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
-		Benefits benefits= benefitsDao.findByRiderCode("L2");
+		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
 		Double rate = 1.0;
 		if (ocupationLoading != null) {
@@ -186,109 +172,121 @@ public class ASIPServiceImpl implements ASIPService {
 			}
 		}
 		BigDecimal premium = new BigDecimal(0);
-		System.out.println("term : "+term+" bassum : "+bassum+" paytrm : "+paytrm);
+		System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " + paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)
-		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(paytrm), 4, RoundingMode.HALF_UP);
-		System.out.println("premium : "+premium.toString());
-		
+		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP))
+				.divide(new BigDecimal(paytrm), 4, RoundingMode.HALF_UP);
+		System.out.println("premium : " + premium.toString());
+
 		return premium.multiply(new BigDecimal(rate));
 	}
 
-	
-
 	@Override
-	public BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum, double bsapremium, int paytrm)
-			throws Exception {
-		BigDecimal maturity  = new BigDecimal(0);
+	public BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum,
+			double bsapremium, int paytrm) throws Exception {
+		BigDecimal maturity = new BigDecimal(0);
 		BigDecimal open_fund = new BigDecimal("0");
-        BigDecimal fund_amount = new BigDecimal("0");
-        BigDecimal dividend_income = new BigDecimal("0");
-        BigDecimal mortality_charges = new BigDecimal("0");
-        BigDecimal fund_managment_charge = new BigDecimal("0");
-        BigDecimal close_bal = new BigDecimal("0");
-        
-        BigDecimal premium = new BigDecimal(bsapremium);
-        BigDecimal basicsumasu = new BigDecimal(bassum);
-        BigDecimal total_amount = new BigDecimal("0");
-        
-        BigDecimal fund_charge = new BigDecimal(fundcharat).setScale(2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal interest_rate = new BigDecimal(intrat).setScale(2, BigDecimal.ROUND_HALF_UP);
-        
-		System.out.println("term : "+term+" fundcharat : "+fundcharat+" intrat : "+intrat+" paytrm : "+paytrm+" bassum : "+bassum+" bsapremium : "+bsapremium);
+		BigDecimal fund_amount = new BigDecimal("0");
+		BigDecimal dividend_income = new BigDecimal("0");
+		BigDecimal mortality_charges = new BigDecimal("0");
+		BigDecimal fund_managment_charge = new BigDecimal("0");
+		BigDecimal close_bal = new BigDecimal("0");
+
+		BigDecimal premium = new BigDecimal(bsapremium);
+		BigDecimal basicsumasu = new BigDecimal(bassum);
+		BigDecimal total_amount = new BigDecimal("0");
+
+		BigDecimal fund_charge = new BigDecimal(fundcharat).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal interest_rate = new BigDecimal(intrat).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+		System.out.println("term : " + term + " fundcharat : " + fundcharat + " intrat : " + intrat + " paytrm : "
+				+ paytrm + " bassum : " + bassum + " bsapremium : " + bsapremium);
 		for (int i = 1; i <= term; ++i) {
 
-            //overidepara.put("current_year", String.valueOf(i));
+			// overidepara.put("current_year", String.valueOf(i));
 			int polyear;
-			if(i > 3){
+			if (i > 3) {
 				polyear = 3;
 			} else {
 				polyear = i;
 			}
-			
-			
-			RateCardASIPFund rateCardASIPFund = rateCardASIPFundDao.findByTermAndPolyearAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, polyear, chedat, chedat, chedat, chedat);
-            BigDecimal fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
-            
-            RateCardASIP rateCardASIP = rateCardASIPDao.findByAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, chedat, chedat, chedat, chedat);
-            BigDecimal rate = new BigDecimal(rateCardASIP.getRate()).divide(new BigDecimal(10000), 8, BigDecimal.ROUND_HALF_UP);
-            //System.out.println("age : "+age+" polyear : "+polyear+" fund_allo_rate : "+fund_allo_rate+ " rate : "+rate);
 
-            fund_amount = premium.multiply(fund_allo_rate).setScale(6, BigDecimal.ROUND_HALF_UP);
-            //System.out.println("fund_allo_rate : " + fund_allo_rate + " fund_charge : " + fund_charge + " rate : " + rate + " interest_rate : " + interest_rate + " fund_amount : " + fund_amount);
+			RateCardASIPFund rateCardASIPFund = rateCardASIPFundDao
+					.findByTermAndPolyearAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, polyear, chedat,
+							chedat, chedat, chedat);
+			BigDecimal fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2,
+					BigDecimal.ROUND_HALF_UP);
 
-            for (int j = 1; j <= paytrm; ++j) {
+			RateCardASIP rateCardASIP = rateCardASIPDao.findByAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
+					age, chedat, chedat, chedat, chedat);
+			BigDecimal rate = new BigDecimal(rateCardASIP.getRate()).divide(new BigDecimal(10000), 8,
+					BigDecimal.ROUND_HALF_UP);
+			// System.out.println("age : "+age+" polyear : "+polyear+" fund_allo_rate :
+			// "+fund_allo_rate+ " rate : "+rate);
 
-                open_fund = open_fund.add(fund_amount).setScale(8, BigDecimal.ROUND_HALF_UP);
-                //System.out.println("open_fund : " + open_fund);
+			fund_amount = premium.multiply(fund_allo_rate).setScale(6, BigDecimal.ROUND_HALF_UP);
+			// System.out.println("fund_allo_rate : " + fund_allo_rate + " fund_charge : " +
+			// fund_charge + " rate : " + rate + " interest_rate : " + interest_rate + "
+			// fund_amount : " + fund_amount);
 
-                dividend_income = open_fund.multiply(interest_rate).divide(new BigDecimal(100)).divide(new BigDecimal(paytrm), 4, BigDecimal.ROUND_HALF_UP);
-                mortality_charges = basicsumasu.add(open_fund).multiply(rate).divide(new BigDecimal(paytrm), 4, BigDecimal.ROUND_HALF_UP);
-                fund_managment_charge = open_fund.add(dividend_income).add(mortality_charges.negate()).multiply(fund_charge).divide(new BigDecimal(paytrm), 4, BigDecimal.ROUND_HALF_UP);
-                close_bal = open_fund.add(dividend_income).add(mortality_charges.negate()).add(fund_managment_charge.negate()).setScale(4, BigDecimal.ROUND_HALF_UP);
-                open_fund = close_bal;
-                //System.out.println("dividend_income : " + dividend_income + " mortality_charges : " + mortality_charges + " fund_managment_charge : " + fund_managment_charge + " close_bal: " + close_bal);
-                fund_amount = new BigDecimal(0);
+			for (int j = 1; j <= paytrm; ++j) {
 
-                fund_amount = premium.multiply(fund_allo_rate);
-                
+				open_fund = open_fund.add(fund_amount).setScale(8, BigDecimal.ROUND_HALF_UP);
+				// System.out.println("open_fund : " + open_fund);
 
-                //System.out.println("fund_amount : " + fund_amount);
-                total_amount = close_bal;
+				dividend_income = open_fund.multiply(interest_rate).divide(new BigDecimal(100))
+						.divide(new BigDecimal(paytrm), 4, BigDecimal.ROUND_HALF_UP);
+				mortality_charges = basicsumasu.add(open_fund).multiply(rate).divide(new BigDecimal(paytrm), 4,
+						BigDecimal.ROUND_HALF_UP);
+				fund_managment_charge = open_fund.add(dividend_income).add(mortality_charges.negate())
+						.multiply(fund_charge).divide(new BigDecimal(paytrm), 4, BigDecimal.ROUND_HALF_UP);
+				close_bal = open_fund.add(dividend_income).add(mortality_charges.negate())
+						.add(fund_managment_charge.negate()).setScale(4, BigDecimal.ROUND_HALF_UP);
+				open_fund = close_bal;
+				// System.out.println("dividend_income : " + dividend_income + "
+				// mortality_charges : " + mortality_charges + " fund_managment_charge : " +
+				// fund_managment_charge + " close_bal: " + close_bal);
+				fund_amount = new BigDecimal(0);
 
-                /*
-                System.out.println(" dividend_income : +" + dividend_income
-                        + " mortality_charges : " + mortality_charges + " fund_managment_charge : " + fund_managment_charge
-                        + " close_bal : " + close_bal + " fund_allo_rate : " + fund_allo_rate + " fund_charge : " + fund_charge
-                        + " rate : " + rate + " interest_rate : " + interest_rate);
-                        */
-                
-                 
-            }
-            
-            age++;
+				fund_amount = premium.multiply(fund_allo_rate);
 
-        }
-		
-		System.out.println("maturity "+intrat+" : "+total_amount.setScale(0, BigDecimal.ROUND_HALF_UP)+" ---- "+total_amount.toString());
+				// System.out.println("fund_amount : " + fund_amount);
+				total_amount = close_bal;
+
+				/*
+				 * System.out.println(" dividend_income : +" + dividend_income +
+				 * " mortality_charges : " + mortality_charges + " fund_managment_charge : " +
+				 * fund_managment_charge + " close_bal : " + close_bal + " fund_allo_rate : " +
+				 * fund_allo_rate + " fund_charge : " + fund_charge + " rate : " + rate +
+				 * " interest_rate : " + interest_rate);
+				 */
+
+			}
+
+			age++;
+
+		}
+
+		System.out.println("maturity " + intrat + " : " + total_amount.setScale(0, BigDecimal.ROUND_HALF_UP) + " ---- "
+				+ total_amount.toString());
 		maturity = total_amount;
 		return maturity.setScale(2, RoundingMode.HALF_UP);
 	}
-
-	
 
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
-		Products products = productDao.findByProductCode("INVP");
+		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
-				user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
 
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -304,7 +302,8 @@ public class ASIPServiceImpl implements ASIPService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -315,7 +314,7 @@ public class ASIPServiceImpl implements ASIPService {
 				custChildDetailsList.add(custChildDetails);
 			}
 
-		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation,0.0);
+		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		Quotation quotation = new Quotation();
 		quotation.setCustomerDetails(mainLifeDetail);
@@ -328,8 +327,9 @@ public class ASIPServiceImpl implements ASIPService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
 		//////////////////////////// save//////////////////////////////////
@@ -362,8 +362,8 @@ public class ASIPServiceImpl implements ASIPService {
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
@@ -384,6 +384,139 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		return "Success";
+	}
+
+	@Override
+	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+			Integer qdId) throws Exception {
+
+		CalculationUtils calculationUtils = new CalculationUtils();
+
+		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
+
+		Products products = productDao.findByProductCode("INVP");
+		Users user = userDao.findOne(userId);
+
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
+
+		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+
+		Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+		Customer spouse = null;
+		if (spouseDetail != null) {
+			try {
+				spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+			} catch (NullPointerException ex) {
+				spouse = null;
+			}
+
+			if (spouse != null) {
+				spouseDetail.setCustomer(spouse);
+			} else {
+				spouse = new Customer();
+				spouse.setCustName(spouseDetail.getCustName());
+				spouse.setCustCreateDate(new Date());
+				spouse.setCustCreateBy(user.getUser_Name());
+				spouseDetail.setCustomer(spouse);
+			}
+
+		} else {
+
+		}
+
+		mainLifeDetail.setCustomer(mainlife);
+
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+
+		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
+		if (childList != null && !childList.isEmpty()) {
+			for (Child child : childList) {
+				CustChildDetails custChildDetails = new CustChildDetails();
+				custChildDetails.setChild(child);
+				custChildDetails.setCustomer(mainLifeDetail);
+				custChildDetailsList.add(custChildDetails);
+			}
+		}
+
+		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotation.setSpouseDetails(spouseDetail);
+		} else {
+			quotation.setSpouseDetails(null);
+		}
+
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+
+		quotationDetails1.setQuotation(quotation);
+		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
+				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		//////////////////////////// save edit//////////////////////////////////
+
+		Customer life = (Customer) customerDao.save(mainlife);
+		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+		ArrayList<CustChildDetails> custChildDList = null;
+		if (life != null && mainLifeDetails != null) {
+
+			if (spouseDetail != null) {
+				Customer sp = customerDao.save(spouse);
+				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+				if (sp == null && spDetsils != null) {
+					return "Error at Spouse Saving";
+				}
+			}
+
+			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+			if (childList != null && childList.size() > 0) {
+				if (cList == null && custChildDList == null) {
+					return "Error at Child Updating";
+				}
+			}
+
+			Quotation quo = quotationDao.save(quotation);
+			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			if (quo != null && quoDetails != null) {
+				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+						.save(benef_DetailsList);
+				if (bnfdList != null) {
+
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
+							calculation.get_personalInfo().getFrequance(),
+							calculation.get_riderDetails().get_cRiders());
+
+					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+						return "Error at Child Benifict Updating";
+					}
+
+				} else {
+					return "Error at Benifict Updating";
+				}
+			} else {
+				return "Error at Quotation Updating";
+			}
+
+		} else {
+			return "Error at MainLife Updating";
+		}
+
+		return "Success";
+
 	}
 
 }

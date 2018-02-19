@@ -167,7 +167,7 @@ public class ATRMServiceImpl implements ATRMService {
 			throws Exception {
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
-		Products products = productDao.findByProductCode("END1");
+		Products products = productDao.findByProductCode("ATRM");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
