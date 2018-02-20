@@ -136,7 +136,7 @@ public class QuotationAsfpCalculationController {
 						if (error.equals("No")) {
 							
 							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
-								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, qdId);
+								String response = asfpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 								resp = response;
 							}else {
 								resp = "Total Premium times frequency must be greater than 1250 times frequency";
