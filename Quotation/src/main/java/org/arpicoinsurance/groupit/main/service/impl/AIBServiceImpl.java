@@ -13,6 +13,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIBDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
+import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
@@ -146,13 +147,14 @@ public class AIBServiceImpl implements AIBService {
 
 		QuotationDetails quotationDetails = new QuotationDetails();
 		quotationDetails.setQuotation(quotation);
+		quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
 		quotationDetails.setAdminFee(adminFee);
-		quotationDetails.setBaseSum(bsa.doubleValue());
+		quotationDetails.setBaseSum(0.0);
 		quotationDetails.setInterestRate(10.0);
 		quotationDetails.setPayMode("S");
 		quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-		quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
-		quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+		quotationDetails.setPremiumSingle(contribution);
+		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
 
@@ -199,6 +201,74 @@ public class AIBServiceImpl implements AIBService {
 				mainLifeDetail = null;
 			}
 		}
+	}
+
+	@Override
+	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
+		CalculationUtils calculationUtils = new CalculationUtils();
+		Users user = userDao.findOne(userId);
+		
+		QuotationDetails details=quotationDetailsDao.findByQdId(qdId);
+		
+		
+		
+		
+		Products products = productDao.findByProductCode("AIB");
+		System.out.println(_invpSaveQuotation.get_plan().get_bsa()+"*********************");
+		Double contribution=_invpSaveQuotation.get_plan().get_bsa();
+		BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new Date(),
+				"S");
+		Double adminFee = calculationUtils.getAdminFee("S");
+		Double tax = calculationUtils.getTaxAmount(bsa.doubleValue() + adminFee);
+
+		Customer customer = details.getQuotation().getCustomerDetails().getCustomer();
+		customer.setCustModifyBy(user.getUser_Code());
+		customer.setCustModifyDate(new Date());
+		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
+
+		Occupation occupation = occupationDao
+				.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+
+		CustomerDetails customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+		customerDetails.setCustomer(customer);
+		
+		Quotation quotation=details.getQuotation();
+		quotation.setCustomerDetails(customerDetails);
+		quotation.setProducts(products);
+		quotation.setStatus("active");
+		quotation.setUser(user);
+
+		QuotationDetails quotationDetails = new QuotationDetails();
+		quotationDetails.setQuotation(quotation);
+		quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
+		quotationDetails.setAdminFee(adminFee);
+		quotationDetails.setBaseSum(0.0);
+		quotationDetails.setInterestRate(10.0);
+		quotationDetails.setPayMode("S");
+		quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+		quotationDetails.setPremiumSingle(contribution);
+		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
+		quotationDetails.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails.setQuotationquotationCreateDate(new Date());
+
+		if (customerDao.save(customer) != null) {
+			if (CustomerDetailsDao.save(customerDetails) != null) {
+				if (quotationDao.save(quotation) != null) {
+					if (quotationDetailsDao.save(quotationDetails) != null) {
+						return "Success";
+					}else {
+						return "Error at Quotation Detail Saving";
+					}
+				} else {
+					return "Error at Quotation Saving";
+				}
+			} else {
+				return "Error at Customer Detail Saving";
+			}
+		} else {
+			return "Error at Customer Saving";
+		}
+
 	}
 
 }

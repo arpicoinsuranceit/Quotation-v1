@@ -4,6 +4,7 @@ public class Plan {
 	private Integer _term;
 	private String _frequance;
 	private Double _bsa;
+	private Double contribution;
 	
 	
 	public Integer get_term() {
@@ -23,5 +24,11 @@ public class Plan {
 	}
 	public void set_bsa(Double _bsa) {
 		this._bsa = _bsa;
+	}
+	public Double getContribution() {
+		return contribution;
+	}
+	public void setContribution(Double contribution) {
+		this.contribution = contribution;
 	}
 }

@@ -225,20 +225,21 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	@Override
 	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
 		Quotation quotation=quotationDao.findById(id);
+		System.out.println(quotation.getProducts().getProductCode());
 		ArrayList<QuotationDetails> quotationDetails=(ArrayList<QuotationDetails>) getQuo_Benef_DetailsByQuoDetailId(quotation);
 		
 		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
-		
+		System.out.println(quotationDetails.size());
 		if(!quotationDetails.isEmpty() || quotationDetails != null) {
 			for (QuotationDetails quoDetails : quotationDetails) {
 				QuoCustomer customer=setCustomerDetails(quoDetails);
 				List<Quo_Benef_Details> benef_Details=new ArrayList<>();
 				quoBenefDao.findByQuoDetailId(quoDetails.getQdId()).forEach(benef_Details::add);
 				
-				if(!benef_Details.isEmpty()) {
+				//if(!benef_Details.isEmpty()) {
 					QuotationView quotationView=getQuotationBenfList(benef_Details, customer, quoDetails.getQdId());
 					viewQuotationDetailsList.add(quotationView);
-				}
+				//}
 				
 			}
 		}
