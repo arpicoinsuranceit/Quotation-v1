@@ -248,18 +248,23 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		switch (details.getPayMode()) {
 		case "M":
 			plan.set_frequance("Monthly");
+			plan.setContribution(details.getPremiumMonth());
 			break;
 		case "Q":
 			plan.set_frequance("Quartaly");
+			plan.setContribution(details.getPremiumQuater());
 			break;
 		case "H":
 			plan.set_frequance("Half Yearly");
+			plan.setContribution(details.getPremiumHalf());
 			break;
 		case "Y":
 			plan.set_frequance("Yearly");
+			plan.setContribution(details.getPremiumYear());
 			break;
 		case "S":
 			plan.set_frequance("Single Premium");
+			plan.setContribution(details.getPremiumSingle());
 			break;
 
 		default:
