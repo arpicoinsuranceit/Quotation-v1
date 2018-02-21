@@ -158,7 +158,7 @@ public class ASFPServiceImpl implements ASFPService {
 			
 			
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			System.out.println(quotationCalculation.get_personalInfo().getMsfb()+" quotationCalculation.get_personalInfo().getTerm()");
+			System.out.println(quotationCalculation.get_personalInfo().getMsfb()+" quotationCalculation.get_personalInfo().getMsfb()");
 			BigDecimal bsa=calculateL2(quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getMsfb());
 			
 			BigDecimal bsaPremium = calculateL10(quotationCalculation.get_personalInfo().getMocu(),

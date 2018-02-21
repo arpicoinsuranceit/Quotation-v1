@@ -244,6 +244,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		Plan plan=new Plan();
 		plan.set_bsa(details.getBaseSum());
 		plan.set_term(details.getPayTerm());
+		plan.set_interestRate(details.getInterestRate());
 		
 		switch (details.getPayMode()) {
 		case "M":

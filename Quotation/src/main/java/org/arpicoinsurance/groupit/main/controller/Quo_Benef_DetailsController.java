@@ -2,7 +2,6 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
 
-import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.springframework.beans.factory.annotation.Autowired;

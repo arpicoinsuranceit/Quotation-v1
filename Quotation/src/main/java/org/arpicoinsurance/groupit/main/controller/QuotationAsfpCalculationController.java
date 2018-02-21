@@ -8,7 +8,6 @@ import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
-import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -136,7 +135,7 @@ public class QuotationAsfpCalculationController {
 						if (error.equals("No")) {
 							
 							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
-								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, qdId);
+								String response = asfpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 								resp = response;
 							}else {
 								resp = "Total Premium times frequency must be greater than 1250 times frequency";
