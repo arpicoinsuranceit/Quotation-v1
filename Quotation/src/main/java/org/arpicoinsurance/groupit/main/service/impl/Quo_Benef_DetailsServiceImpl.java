@@ -224,10 +224,11 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Override
 	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
+		System.out.println("calledddddddddddddddddddddddddddddddddddddddddddddddd");
 		Quotation quotation=quotationDao.findById(id);
 		System.out.println(quotation.getProducts().getProductCode());
 		ArrayList<QuotationDetails> quotationDetails=(ArrayList<QuotationDetails>) getQuo_Benef_DetailsByQuoDetailId(quotation);
-		
+		System.out.println("calledddddddddddddddddddddddddddddddddddddddddddddddd"+quotationDetails.size());
 		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
 		System.out.println(quotationDetails.size());
 		if(!quotationDetails.isEmpty() || quotationDetails != null) {

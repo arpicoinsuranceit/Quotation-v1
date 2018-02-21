@@ -181,8 +181,8 @@ public class AIPServiceImpl implements AIPService {
 			maturity = total_amount;
 
 			Double adminFee = calculationUtils.getAdminFee(paymod);
-			
-			Double tax = calculationUtils.getTaxAmount(adminFee +contribution);
+
+			Double tax = calculationUtils.getTaxAmount(adminFee + contribution);
 			System.out.println(tax);
 			aipCalResp.setMaturaty(maturity.doubleValue());
 			aipCalResp.setAipCalShedules(aipCalShedules);
@@ -195,7 +195,6 @@ public class AIPServiceImpl implements AIPService {
 		}
 
 	}
-
 
 	@Override
 	public String saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception {
@@ -213,17 +212,19 @@ public class AIPServiceImpl implements AIPService {
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
-			occupation = occupationDao.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+			occupation = occupationDao
+					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
 			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
 			customer = new Customer();
 			user = userdao.findOne(id);
 
-			customer.setCustCreateBy(user.getUser_Code());
-			customer.setCustCreateDate(new Date());
+			customer.setCustModifyBy(user.getUser_Code());
+			customer.setCustModifyDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
+			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
@@ -235,10 +236,14 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setQuotationModifyBy(user.getUser_Code());
+			quotationDetails.setQuotationModifyDate(new Date());
 			quotationDetails.setBaseSum(aip.getMaturaty());
 			quotationDetails.setInterestRate(10.0);
+			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
+			quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
@@ -246,27 +251,27 @@ public class AIPServiceImpl implements AIPService {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
-				
+
 				break;
 			case "Q":
 				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
-				
+
 				break;
 			case "H":
 				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
-				
+
 				break;
 			case "Y":
 				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
-				
+
 				break;
 			case "S":
 				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
-				
+
 				break;
 
 			default:
@@ -346,5 +351,138 @@ public class AIPServiceImpl implements AIPService {
 				mainLifeDetail = null;
 			}
 		}
+	}
+
+	@Override
+	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
+		CalculationUtils calculationUtils = null;
+		Products products = null;
+		Customer customer = null;
+		Users user = null;
+		Occupation occupation = null;
+		CustomerDetails customerDetails = null;
+		Quotation quotation = null;
+		QuotationDetails quotationDetails = null;
+		try {
+			calculationUtils = new CalculationUtils();
+			products = productDao.findByProductCode("AIP");
+			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
+			occupation = occupationDao
+					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
+
+			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
+			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
+			
+			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
+			
+			customer = details.getQuotation().getCustomerDetails().getCustomer();
+			user = userdao.findOne(userId);
+			
+
+			customer.setCustCreateBy(user.getUser_Code());
+			customer.setCustCreateDate(new Date());
+			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
+
+			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+			customerDetails.setCustomer(customer);
+			quotation = details.getQuotation();
+			quotation.setCustomerDetails(customerDetails);
+			quotation.setProducts(products);
+			quotation.setStatus("active");
+			quotation.setUser(user);
+
+			quotationDetails = new QuotationDetails();
+			quotationDetails.setQuotation(quotation);
+			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setBaseSum(aip.getMaturaty());
+			quotationDetails.setInterestRate(10.0);
+			quotationDetails.setTaxAmount(tax);
+			String frequance = _invpSaveQuotation.get_plan().get_frequance();
+			quotationDetails.setPayMode(frequance);
+			quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
+			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationquotationCreateDate(new Date());
+			switch (frequance) {
+			case "M":
+				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+
+				break;
+			case "Q":
+				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+
+				break;
+			case "H":
+				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+
+				break;
+			case "Y":
+				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+
+				break;
+			case "S":
+				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
+				quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
+
+				break;
+
+			default:
+				break;
+			}
+
+			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationquotationCreateDate(new Date());
+
+			if (customerDao.save(customer) != null) {
+				if (customerDetailsDao.save(customerDetails) != null) {
+					if (quotationDao.save(quotation) != null) {
+						if (quotationDetailsDao.save(quotationDetails) != null) {
+							return "Success";
+						} else {
+							return "Error at Quotation Details Saving";
+						}
+					} else {
+						return "Error at Quotation Saving";
+					}
+				} else {
+					return "Error at Customer Details Saving";
+				}
+			} else {
+				return "Error at Customer Saving";
+			}
+
+		} finally {
+			if (calculationUtils != null) {
+				calculationUtils = null;
+			}
+			if (products != null) {
+				products = null;
+			}
+			if (customer != null) {
+				customer = null;
+			}
+			if (user != null) {
+				user = null;
+			}
+			if (occupation != null) {
+				occupation = null;
+			}
+			if (customerDetails != null) {
+				customerDetails = null;
+			}
+			if (quotation != null) {
+				quotation = null;
+			}
+			if (quotationDetails != null) {
+				quotationDetails = null;
+			}
+		}
+
 	}
 }

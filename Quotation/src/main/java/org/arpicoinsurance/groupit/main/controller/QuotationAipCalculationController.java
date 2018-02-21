@@ -87,7 +87,30 @@ public class QuotationAipCalculationController {
 				}
 			}
 
-		} catch (Exception e) { 
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return resp;
+	}
+
+	@RequestMapping(value = "/quoAipEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	public String editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,@PathVariable("userId") Integer userId,
+			@PathVariable("qdId") Integer qdId) {
+		String resp = "Fail";
+
+		try {
+			if (userId != null) {
+				if (qdId != null) {
+					if (_invpSaveQuotation != null) {
+						resp = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
+
+					}
+				}
+			}
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 

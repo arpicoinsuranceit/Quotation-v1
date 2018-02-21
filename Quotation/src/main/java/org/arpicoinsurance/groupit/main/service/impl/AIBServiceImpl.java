@@ -151,6 +151,7 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setAdminFee(adminFee);
 		quotationDetails.setBaseSum(0.0);
 		quotationDetails.setInterestRate(10.0);
+		quotationDetails.setTaxAmount(tax);
 		quotationDetails.setPayMode("S");
 		quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 		quotationDetails.setPremiumSingle(contribution);
@@ -242,8 +243,11 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
 		quotationDetails.setAdminFee(adminFee);
+		quotationDetails.setQuotationModifyBy(user.getUser_Code());
+		quotationDetails.setQuotationModifyDate(new Date());
 		quotationDetails.setBaseSum(0.0);
 		quotationDetails.setInterestRate(10.0);
+		quotationDetails.setTaxAmount(tax);
 		quotationDetails.setPayMode("S");
 		quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 		quotationDetails.setPremiumSingle(contribution);
