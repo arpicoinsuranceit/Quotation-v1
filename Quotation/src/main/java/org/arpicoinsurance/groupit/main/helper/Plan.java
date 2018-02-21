@@ -6,7 +6,8 @@ public class Plan {
 	private Double _bsa;
 	private Double contribution;
 	private Double _interestRate;
-	
+	private Integer _payingterm;
+	private Double _msfb;
 	
 	public Integer get_term() {
 		return _term;
@@ -37,6 +38,18 @@ public class Plan {
 	}
 	public void set_interestRate(Double _intrate) {
 		this._interestRate = _intrate;
+	}
+	public Integer get_payingterm() {
+		return _payingterm;
+	}
+	public void set_payingterm(Integer _payingterm) {
+		this._payingterm = _payingterm;
+	}
+	public Double get_msfb() {
+		return _msfb;
+	}
+	public void set_msfb(Double _msfb) {
+		this._msfb = _msfb;
 	}
 	
 }

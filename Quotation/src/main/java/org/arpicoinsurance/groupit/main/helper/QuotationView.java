@@ -1,9 +1,11 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class QuotationView {
 	private Integer quoDetailId;
+	private Date quotationDate;
 	private QuoCustomer custDetails;
 	private ArrayList<QuoBenf> mainLifeBenf;
 	private ArrayList<QuoBenf> spouseBenf;
@@ -37,6 +39,12 @@ public class QuotationView {
 	}
 	public void setChildBenf(ArrayList<QuoChildBenef> childBenf) {
 		this.childBenf = childBenf;
+	}
+	public Date getQuotationDate() {
+		return quotationDate;
+	}
+	public void setQuotationDate(Date quotationDate) {
+		this.quotationDate = quotationDate;
 	}
 	
 	

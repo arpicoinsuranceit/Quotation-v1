@@ -228,7 +228,7 @@ public class ARPServiceImpl implements ARPService {
 			}
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		//quotationDetails.setTopTerm(Integer.parseInt(calculation.get_personalInfo().getPayingterm()));
 		Quotation quotation = new Quotation();
 		quotation.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null)

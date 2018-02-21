@@ -245,6 +245,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				
 				//if(!benef_Details.isEmpty()) {
 					QuotationView quotationView=getQuotationBenfList(benef_Details, customer, quoDetails.getQdId());
+					quotationView.setQuotationDate(quoDetails.getQuotationquotationCreateDate());
 					viewQuotationDetailsList.add(quotationView);
 				//}
 				
@@ -272,13 +273,18 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			
 			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
 			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
+			viewQuotation.setQuotationDate(quotationView.getQuotationDate());
 			viewQuotation.set_children(editQuotation.get_children());
 			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
+			editQuotation.get_mainlife().set_mOccupation(quotationView.getCustDetails().getMainLifeOccupation());
 			viewQuotation.set_mainlife(editQuotation.get_mainlife());
-			viewQuotation.set_mainLifeBenefits(editQuotation.get_mainLifeBenefits());
+			viewQuotation.set_mainLifeBenefits(quotationView.getMainLifeBenf());
+			editQuotation.get_spouse().set_sOccupation(quotationView.getCustDetails().getSpouseOccupation());
 			viewQuotation.set_spouse(editQuotation.get_spouse());
-			viewQuotation.set_spouseBenefits(editQuotation.get_spouseBenefits());
+			viewQuotation.set_spouseBenefits(quotationView.getSpouseBenf());
+			editQuotation.get_plan().set_msfb(editQuotation.get_plan().get_bsa()/(editQuotation.get_plan().get_term()*12));
 			viewQuotation.set_plan(editQuotation.get_plan());
+			System.out.println(quotationView.getQuotationDate());
 			
 			allQuotationList.add(viewQuotation);
 		}
