@@ -146,7 +146,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setBaseSum(calculation.get_personalInfo().getBsa());
-			quotationDetails.setInterestRate(8.5);
+			//quotationDetails.setInterestRate(8.5);
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setLifePos(lifePos);
 			quotationDetails.setInvestmentPos(calResp.getBasicSumAssured() - lifePos);
@@ -282,6 +282,18 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getWpbTerm());
 						benef_Details.setRierCode(type);
 						break;
+						
+					case "TPDDTA":
+						benef_Details.setRiderPremium(calResp.getTpddta());
+						benef_Details.setRiderTerm(calResp.getTpddtaTerm());
+						benef_Details.setRierCode(type);
+						break;
+						
+					case "TPDDTAPL":
+						benef_Details.setRiderPremium(calResp.getTpddtapl());
+						benef_Details.setRiderTerm(calResp.getTpddtaplTerm());
+						benef_Details.setRierCode(type);
+						break;
 
 					default:
 						break;
@@ -369,6 +381,30 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 					case "WPBS":
 						benef_Details.setRiderPremium(calResp.getWpbs());
 						benef_Details.setRiderTerm(calResp.getWpbsTerm());
+						benef_Details.setRierCode(type);
+						break;
+						
+					case "TPDDTAS":
+						benef_Details.setRiderPremium(calResp.getTpddtas());
+						benef_Details.setRiderTerm(calResp.getTpddtasTerm());
+						benef_Details.setRierCode(type);
+						break;
+						
+					case "JLB":
+						benef_Details.setRiderPremium(calResp.getJlb());
+						benef_Details.setRiderTerm(calResp.getJlbTerm());
+						benef_Details.setRierCode(type);
+						break;
+						
+					case "TPDDTASPL":
+						benef_Details.setRiderPremium(calResp.getTpddtaspl());
+						benef_Details.setRiderTerm(calResp.getTpddtasplTerm());
+						benef_Details.setRierCode(type);
+						break;
+						
+					case "JLBPL":
+						benef_Details.setRiderPremium(calResp.getJlbpl());
+						benef_Details.setRiderTerm(calResp.getJlbplTerm());
 						benef_Details.setRierCode(type);
 						break;
 

@@ -21,10 +21,13 @@ import org.arpicoinsurance.groupit.main.helper.DTAShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Child;
+import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
@@ -32,6 +35,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardDTA;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.DTAService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +83,9 @@ public class DTAServiceImpl implements DTAService {
 
 	@Autowired
 	private SheduleDao sheduleDao;
+	
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
 
 	@Override
 	public DTAHelper calculateL2(int age, int term, double intrat, String sex, Date chedat, double loanamt)
@@ -233,6 +240,7 @@ public class DTAServiceImpl implements DTAService {
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
@@ -277,6 +285,111 @@ public class DTAServiceImpl implements DTAService {
 
 		return "Success";
 
+	}
+
+	@Override
+	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+			Integer qdId) throws Exception {
+		
+		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+
+		Products products = productDao.findByProductCode("DTA");
+		Users user = userDao.findOne(userId);
+
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
+
+		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+
+		Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+		Customer spouse = null;
+		if (spouseDetail != null) {
+			try {
+				spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+			} catch (NullPointerException ex) {
+				spouse = null;
+			}
+
+			if (spouse != null) {
+				spouseDetail.setCustomer(spouse);
+			} else {
+				spouse = new Customer();
+				spouse.setCustName(spouseDetail.getCustName());
+				spouse.setCustCreateDate(new Date());
+				spouse.setCustCreateBy(user.getUser_Name());
+				spouseDetail.setCustomer(spouse);
+			}
+
+		} else {
+
+		}
+
+		mainLifeDetail.setCustomer(mainlife);
+
+
+		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotation.setSpouseDetails(spouseDetail);
+		} else {
+			quotation.setSpouseDetails(null);
+		}
+
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+
+		quotationDetails1.setQuotation(quotation);
+		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
+				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		//////////////////////////// save edit//////////////////////////////////
+
+		Customer life = (Customer) customerDao.save(mainlife);
+		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+		
+		if (life != null && mainLifeDetails != null) {
+
+			if (spouseDetail != null) {
+				Customer sp = customerDao.save(spouse);
+				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+				if (sp == null && spDetsils != null) {
+					return "Error at Spouse Saving";
+				}
+			}
+
+			Quotation quo = quotationDao.save(quotation);
+			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			ArrayList<Shedule> sheduleList = quotationSaveUtilService.getSheduleDtaDtapl(calResp, quoDetails);
+
+			if (quo != null && quoDetails != null) {
+				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+						.save(benef_DetailsList);
+				if (sheduleDao.save(sheduleList) != null) {
+					if (bnfdList == null) {
+						return "Error at Benifict Saving";
+					}
+				} else {
+					return "Error at Shedule Saving";
+				}
+			} else {
+				return "Error at Quotation Saving";
+			}
+
+		} else {
+			return "Error at MainLife Saving";
+		}
+
+		return "Success";
 	}
 
 }

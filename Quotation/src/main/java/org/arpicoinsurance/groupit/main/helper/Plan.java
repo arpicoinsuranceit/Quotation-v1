@@ -5,6 +5,7 @@ public class Plan {
 	private String _frequance;
 	private Double _bsa;
 	private Double contribution;
+	private Double _interestRate;
 	
 	
 	public Integer get_term() {
@@ -31,4 +32,11 @@ public class Plan {
 	public void setContribution(Double contribution) {
 		this.contribution = contribution;
 	}
+	public Double get_interestRate() {
+		return _interestRate;
+	}
+	public void set_interestRate(Double _intrate) {
+		this._interestRate = _intrate;
+	}
+	
 }
