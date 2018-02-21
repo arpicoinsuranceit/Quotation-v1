@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.ArrayList;
 
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
+import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,12 +19,27 @@ public class Quo_Benef_DetailsController {
 	@Autowired
 	private Quo_Benef_DetailsService quoBenefDetailService;
 	
-	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
+	/*@RequestMapping(value="/quodetails",method=RequestMethod.POST)
 	public ArrayList<QuotationView> getQuotationByUserId(@RequestBody String id) {
 		try {
 			System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<QuotationView> detailList=(ArrayList<QuotationView>) quoBenefDetailService.getQuo_Benef_DetailsByQuoDetailId(quoId);
+			return detailList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}*/
+	
+	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
+	public ArrayList<ViewQuotation> viewQuotationDetails(@RequestBody String id) {
+		try {
+			System.out.println(id);
+			Integer quoId=Integer.valueOf(id);
+			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetails(quoId);
 			return detailList;
 			
 		} catch (Exception e) {

@@ -13,10 +13,12 @@ import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.custom.Quo_Benef_DetailsDaoCustom;
+import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
+import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
@@ -25,6 +27,7 @@ import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_Child_DetailsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +50,9 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
+	
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
 	
 	
 	
@@ -224,11 +230,11 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 
 	@Override
 	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
-		System.out.println("calledddddddddddddddddddddddddddddddddddddddddddddddd");
+		
 		Quotation quotation=quotationDao.findById(id);
 		System.out.println(quotation.getProducts().getProductCode());
 		ArrayList<QuotationDetails> quotationDetails=(ArrayList<QuotationDetails>) getQuo_Benef_DetailsByQuoDetailId(quotation);
-		System.out.println("calledddddddddddddddddddddddddddddddddddddddddddddddd"+quotationDetails.size());
+		
 		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
 		System.out.println(quotationDetails.size());
 		if(!quotationDetails.isEmpty() || quotationDetails != null) {
@@ -252,6 +258,32 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	public List<Quo_Benef_Details> findByQuotationDetails(QuotationDetails quotation) throws Exception {
 		
 		return quoBenefDetailsDao.findByQuotationDetails(quotation);
+	}
+
+	@Override
+	public List<ViewQuotation> getQuotationDetails(Integer quoId) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		ArrayList<QuotationView> viewQuotationDetailsList=(ArrayList<QuotationView>) getQuo_Benef_DetailsByQuoDetailId(quoId);
+		ArrayList<ViewQuotation> allQuotationList=new ArrayList<>();
+		
+		for (QuotationView quotationView : viewQuotationDetailsList) {
+			EditQuotation editQuotation=quotationDetailsService.editQuotationDetails(quotationView.getQuoDetailId());
+			ViewQuotation viewQuotation=new ViewQuotation();
+			
+			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
+			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
+			viewQuotation.set_children(editQuotation.get_children());
+			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
+			viewQuotation.set_mainlife(editQuotation.get_mainlife());
+			viewQuotation.set_mainLifeBenefits(editQuotation.get_mainLifeBenefits());
+			viewQuotation.set_spouse(editQuotation.get_spouse());
+			viewQuotation.set_spouseBenefits(editQuotation.get_spouseBenefits());
+			viewQuotation.set_plan(editQuotation.get_plan());
+			
+			allQuotationList.add(viewQuotation);
+		}
+		
+		return allQuotationList;
 	}
 
 	
