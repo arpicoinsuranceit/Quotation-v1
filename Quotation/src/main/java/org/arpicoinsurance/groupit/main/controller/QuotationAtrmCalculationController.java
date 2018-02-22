@@ -54,7 +54,7 @@ public class QuotationAtrmCalculationController {
 
 	@RequestMapping(value = "/quoAtrmsave/{id}", method = RequestMethod.POST)
 	public String saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
-		System.out.println(id);
+		System.out.print(_invpSaveQuotation.get_product()+" pppppppppppppppppppppppppppppppppppppp");
 		String resp = "Fail";
 		QuotationCalculation calculation = null;
 		Validation validation = null;
@@ -64,6 +64,7 @@ public class QuotationAtrmCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
@@ -71,6 +72,67 @@ public class QuotationAtrmCalculationController {
 							
 							if(validation.validateInvpProdTotPremium(totPre).equals(1)) {
 								String response = atrmService.saveQuotation(calculation, _invpSaveQuotation, id);
+								resp = response;
+							}else {
+								resp = "Total Premium must be greater than 1250";
+							}
+
+							
+						} else {
+							resp = error;
+						}
+					} else {
+						resp = "Error at product";
+					}
+				} else {
+					resp = "Incomplete";
+				}
+			} else {
+				resp = "User can't be identify";
+
+			}
+
+		} catch (Exception e) {
+			Logger.getLogger(QuotationAtrmCalculationController.class.getName()).log(Level.SEVERE, null, e);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
+
+		return resp;
+	}
+	
+	@RequestMapping(value = "/quoAtrmEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	public String editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+			, @PathVariable("qdId") Integer qdId) {
+		
+		System.out.println(userId);
+		System.out.println(qdId);
+		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
+
+		String resp = "Fail";
+		QuotationCalculation calculation = null;
+
+		Validation validation = null;
+		try {
+			if (userId != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
+					validation = new Validation(calculation);
+					if (validation.validateInvpEndProd() == 1) {
+						String error = validation.validateBenifict();
+						if (error.equals("No")) {
+							
+							if(validation.validateInvpProdTotPremium(totPre).equals(1)) {
+								String response = atrmService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 								resp = response;
 							}else {
 								resp = "Total Premium must be greater than 1250";

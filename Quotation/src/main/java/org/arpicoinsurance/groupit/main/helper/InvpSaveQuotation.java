@@ -4,6 +4,7 @@ package org.arpicoinsurance.groupit.main.helper;
 public class InvpSaveQuotation {
 	
 	private InvpSavePersonalInfo _personalInfo = null;
+	private String _product;
 	private RiderDetails _riderDetails = null;
 	private PersonalInfo _calPersonalInfo = null;
 	
@@ -25,6 +26,12 @@ public class InvpSaveQuotation {
 	}
 	public void set_calPersonalInfo(PersonalInfo _calPersonalInfo) {
 		this._calPersonalInfo = _calPersonalInfo;
+	}
+	public String get_product() {
+		return _product;
+	}
+	public void set_product(String _product) {
+		this._product = _product;
 	}
 	
 	
