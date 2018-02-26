@@ -13,6 +13,8 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 
 	@Autowired
 	private BenefitsDao beneficeDao;
+	
+	
 	@Override
 	public Integer calculateBenifictTerm(Integer age, String riderCode, Integer term) throws Exception {
 		if(riderCode.equals("BSAS"))
