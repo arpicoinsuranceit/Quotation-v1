@@ -120,25 +120,26 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		
 		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 		
-		LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getQuotation().getCustomerDetails().getCustDob()));
+		LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getCustomerDetails().getCustDob()));
 	    LocalDate currentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
 	    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 	    diffInYears+=1;
 	    String age=Long.toString(diffInYears);
-	    //System.out.println(" 2222222 "+quoDetails.getQuotation().getCustomerDetails().getCustName());
-		customer.setMainLifeName(quoDetails.getQuotation().getCustomerDetails().getCustName());
-		customer.setMainLifeOccupation(quoDetails.getQuotation().getCustomerDetails().getOccupation().getOcupationName());
+	    
+		customer.setMainLifeName(quoDetails.getCustomerDetails().getCustName());
+		customer.setMainLifeOccupation(quoDetails.getCustomerDetails().getOccupation().getOcupationName());
+
 		customer.setMainLifeAge(Integer.parseInt(age));
 		
-		LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getQuotation().getCustomerDetails().getCustDob()));
+		LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getCustomerDetails().getCustDob()));
 	    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
 	    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
 	    sdiffInYears+=1;
 	    String sage=Long.toString(sdiffInYears);
 		
-		if(quoDetails.getQuotation().getSpouseDetails()!=null) {
-			customer.setSpouseName(quoDetails.getQuotation().getSpouseDetails().getCustName());
-			customer.setSpouseOccupation(quoDetails.getQuotation().getSpouseDetails().getOccupation().getOcupationName());
+		if(quoDetails.getSpouseDetails()!=null) {
+			customer.setSpouseName(quoDetails.getSpouseDetails().getCustName());
+			customer.setSpouseOccupation(quoDetails.getSpouseDetails().getOccupation().getOcupationName());
 			customer.setSpouseAge(Integer.parseInt(sage));
 		}else {
 			customer.setSpouseName(null);

@@ -54,7 +54,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		MainLife mainLife=new MainLife();
 		Spouse spouse=new Spouse();
 		if(details != null) {
-			CustomerDetails customerDetails=details.getQuotation().getCustomerDetails();
+			CustomerDetails customerDetails=details.getCustomerDetails();
 			mainLife.set_mName(customerDetails.getCustName());
 			
 			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
@@ -76,8 +76,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		    mainLife.set_mTitle(customerDetails.getCustTitle());
 		    
 		    
-		    if(details.getQuotation().getSpouseDetails() != null) {
-		    	CustomerDetails spouseDetails=details.getQuotation().getSpouseDetails();
+		    if(details.getSpouseDetails() != null) {
+		    	CustomerDetails spouseDetails=details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
 				
 				LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(spouseDetails.getCustDob()));

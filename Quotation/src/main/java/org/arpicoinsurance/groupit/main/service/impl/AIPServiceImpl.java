@@ -116,7 +116,7 @@ public class AIPServiceImpl implements AIPService {
 						System.out.println("polyer : " + i + " polmth : " + j + " opnfun : " + open_fund.toString());
 						aipCalShedule.setPolicyYear(i);
 						aipCalShedule.setPolicyMonth(j);
-						aipCalShedule.setOpeningFee(open_fund.doubleValue());
+						aipCalShedule.setOpeningFee(open_fund.setScale(0,BigDecimal.ROUND_UP).doubleValue());
 					}
 
 					if ((paymod.equalsIgnoreCase("S")) && (i > 1)) {
@@ -147,25 +147,26 @@ public class AIPServiceImpl implements AIPService {
 								+ " fndbfi : " + balance_bfi.toString() + " intanm : " + interest_annum.toString()
 								+ " fndbmf : " + balance_bmf.toString() + " mgtfee : " + mgt_fees.toString()
 								+ " fndclo : " + close_bal.toString() + " fndclo : " + close_bal.toString());
-
-						aipCalShedule.setComCon(cum_premium.doubleValue());
-						aipCalShedule.setFundAmt(fund_amount.doubleValue());
-						aipCalShedule.setFndBfi(balance_bfi.doubleValue());
-						aipCalShedule.setIntAmt(interest_annum.doubleValue());
-						aipCalShedule.setFndBmf(balance_bmf.doubleValue());
-						aipCalShedule.setMgtFee(mgt_fees.doubleValue());
-						aipCalShedule.setFndClo(close_bal.doubleValue());
+						
+						
+						aipCalShedule.setComCon(cum_premium.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFundAmt(fund_amount.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndBfi(balance_bfi.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setIntAmt(interest_annum.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndBmf(balance_bmf.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setMgtFee(mgt_fees.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndClo(close_bal.setScale(0,BigDecimal.ROUND_UP).doubleValue());
 
 						if (close_bal.compareTo(cum_premium) == -1) {
 							System.out.println(
-									"adbcov : " + cum_premium.multiply(adb_rate).setScale(2, 4).toPlainString());
+									"adbcov : " + cum_premium.multiply(adb_rate).setScale(0, 4).toPlainString());
 
-							aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(2, 4).doubleValue());
+							aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(0, 4).doubleValue());
 						} else {
 							System.out
-									.println("adbcov : " + close_bal.multiply(adb_rate).setScale(2, 4).toPlainString());
+									.println("adbcov : " + close_bal.multiply(adb_rate).setScale(0, 4).toPlainString());
 
-							aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(2, 4).doubleValue());
+							aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(0, 4).doubleValue());
 						}
 						aipCalShedules.add(aipCalShedule);
 					}
@@ -184,7 +185,7 @@ public class AIPServiceImpl implements AIPService {
 
 			Double tax = calculationUtils.getTaxAmount(adminFee + contribution);
 			System.out.println(tax);
-			aipCalResp.setMaturaty(maturity.doubleValue());
+			aipCalResp.setMaturaty(maturity.setScale(0,BigDecimal.ROUND_UP)   .doubleValue());
 			aipCalResp.setAipCalShedules(aipCalShedules);
 			aipCalResp.setExtraOe(adminFee + tax);
 			return aipCalResp;
@@ -228,7 +229,6 @@ public class AIPServiceImpl implements AIPService {
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
-			quotation.setCustomerDetails(customerDetails);
 			quotation.setProducts(products);
 			quotation.setStatus("active");
 			quotation.setUser(user);
@@ -247,6 +247,13 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
+			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setCustomerDetails(customerDetails);
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
@@ -377,7 +384,7 @@ public class AIPServiceImpl implements AIPService {
 			
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 			
-			customer = details.getQuotation().getCustomerDetails().getCustomer();
+			customer = details.getCustomerDetails().getCustomer();
 			user = userdao.findOne(userId);
 			
 
@@ -388,7 +395,6 @@ public class AIPServiceImpl implements AIPService {
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = details.getQuotation();
-			quotation.setCustomerDetails(customerDetails);
 			quotation.setProducts(products);
 			quotation.setStatus("active");
 			quotation.setUser(user);
@@ -405,6 +411,15 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
+			
+			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
+					new Date(), frequance, false).getMaturaty());
+			quotationDetails.setCustomerDetails(customerDetails);
+			
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());

@@ -230,9 +230,10 @@ public class ARPServiceImpl implements ARPService {
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		//quotationDetails.setTopTerm(Integer.parseInt(calculation.get_personalInfo().getPayingterm()));
 		Quotation quotation = new Quotation();
-		quotation.setCustomerDetails(mainLifeDetail);
-		if (spouseDetail != null)
-			quotation.setSpouseDetails(spouseDetail);
+		quotationDetails.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotationDetails.setSpouseDetails(spouseDetail);
+		}
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
@@ -318,11 +319,11 @@ public class ARPServiceImpl implements ARPService {
 
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
 
-		Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
 		Customer spouse = null;
 		if (spouseDetail != null) {
 			try {
-				spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+				spouse = quotationDetails.getSpouseDetails().getCustomer();
 			} catch (NullPointerException ex) {
 				spouse = null;
 			}
@@ -357,18 +358,22 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-		quotation.setCustomerDetails(mainLifeDetail);
-		if (spouseDetail != null) {
-			quotation.setSpouseDetails(spouseDetail);
-		} else {
-			quotation.setSpouseDetails(null);
-		}
+		
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		quotationDetails1.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotationDetails1.setSpouseDetails(spouseDetail);
+		} else {
+			quotationDetails1.setSpouseDetails(null);
+		}
+		
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
 
+		
+		
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),

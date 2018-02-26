@@ -240,15 +240,17 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 		Quotation quotation = new Quotation();
-		quotation.setCustomerDetails(mainLifeDetail);
-		if (spouseDetail != null)
-			quotation.setSpouseDetails(spouseDetail);
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		quotationDetails.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotationDetails.setSpouseDetails(spouseDetail);
+		}
+		
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 
@@ -333,11 +335,11 @@ public class ENDServiceImpl implements ENDService {
 		
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
 
-		Customer mainlife = quotationDetails.getQuotation().getCustomerDetails().getCustomer();
+		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
 		Customer spouse = null;
 		if (spouseDetail != null) {
 			try {
-				spouse = quotationDetails.getQuotation().getSpouseDetails().getCustomer();
+				spouse = quotationDetails.getSpouseDetails().getCustomer();
 			} catch (NullPointerException ex) {
 				spouse = null;
 			}
@@ -372,15 +374,17 @@ public class ENDServiceImpl implements ENDService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-		quotation.setCustomerDetails(mainLifeDetail);
-		if (spouseDetail != null) {
-			quotation.setSpouseDetails(spouseDetail);
-		} else {
-			quotation.setSpouseDetails(null);
-		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		quotationDetails1.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotationDetails1.setSpouseDetails(spouseDetail);
+		} else {
+			quotationDetails1.setSpouseDetails(null);
+		}
+
+		
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
 

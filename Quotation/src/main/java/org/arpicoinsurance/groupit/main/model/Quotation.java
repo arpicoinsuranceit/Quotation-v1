@@ -16,8 +16,6 @@ public class Quotation implements Serializable{
 	private Integer id;
 	private String status;
 	private Products products;
-	private CustomerDetails customerDetails;
-	private CustomerDetails spouseDetails;
 	private Users user;
 	
 	public Quotation(){}
@@ -52,16 +50,6 @@ public class Quotation implements Serializable{
 	}
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_id", nullable = false)
-	public CustomerDetails getCustomerDetails() {
-		return customerDetails;
-	}
-
-	public void setCustomerDetails(CustomerDetails customerDetails) {
-		this.customerDetails = customerDetails;
-	}
-
-	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", nullable = false)
 	public Users getUser() {
 		return user;
@@ -69,16 +57,6 @@ public class Quotation implements Serializable{
 
 	public void setUser(Users user) {
 		this.user = user;
-	}
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "spouse_id", nullable = true)
-	public CustomerDetails getSpouseDetails() {
-		return spouseDetails;
-	}
-
-	public void setSpouseDetails(CustomerDetails spouseDetails) {
-		this.spouseDetails = spouseDetails;
 	}
 
 
