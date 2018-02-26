@@ -5,7 +5,9 @@ import java.util.Date;
 
 public class ViewQuotation {
 	private String productCode;
+	private String productName;
 	private Integer quoDetailId;
+	private Integer quotationId;
 	private Date quotationDate;
 	private MainLife _mainlife;
 	private Spouse _spouse;
@@ -74,6 +76,18 @@ public class ViewQuotation {
 	}
 	public void setQuotationDate(Date quotationDate) {
 		this.quotationDate = quotationDate;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public Integer getQuotationId() {
+		return quotationId;
+	}
+	public void setQuotationId(Integer quotationId) {
+		this.quotationId = quotationId;
 	}
 	
 	
