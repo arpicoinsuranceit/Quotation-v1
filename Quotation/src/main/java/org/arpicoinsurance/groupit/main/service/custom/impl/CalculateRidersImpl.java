@@ -32,6 +32,7 @@ import org.arpicoinsurance.groupit.main.service.rider.PPDBSService;
 import org.arpicoinsurance.groupit.main.service.rider.PPDBService;
 import org.arpicoinsurance.groupit.main.service.rider.SCBService;
 import org.arpicoinsurance.groupit.main.service.rider.SCIBService;
+import org.arpicoinsurance.groupit.main.service.rider.SFPOService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBSService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBService;
@@ -64,6 +65,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 	@Autowired
 	private ADBSService adbsService;
+	
+	@Autowired
+	private SFPOService sfpoService;
 
 	@Autowired
 	private TPDASBService tpdasbService;
@@ -325,6 +329,15 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setAdb(adb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adb.doubleValue());
 			calResp.setAdbTerm(term);
+			return calResp;
+		case "SFPO":
+			ocuLoading=oculoding.get("SFPO");
+			if(ocuLoading==null)
+				ocuLoading=1.0;
+			BigDecimal sfpo = sfpoService.calculateSFPO(age, term,new Date(),ridsumasu, payFrequency, 1.0, ocuLoading);
+			calResp.setSfpo(sfpo.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + sfpo.doubleValue());
+			calResp.setSfpoTerm(term);
 			return calResp;
 		case "ADBS":
 			ocuLoading=oculoding.get("ADBS");

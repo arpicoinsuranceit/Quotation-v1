@@ -44,6 +44,12 @@ public class Validation {
 							return "ATPB must equals to BSA or ATPB must be multi value of BSA till 10 times";
 						}
 						break;
+					case "SFPO":
+						System.out.println("call SFPO");
+						if (validateInvpSFPO().equals(0)) {
+							return "SFPO must be greater than or equal 250,000 and SFPO must be multi value of 50,000 and SFPO must be less than or equal to multi value of BSA till 10 times";
+						}
+						break;
 					case "ADB":
 						if (validateInvpABD().equals(0)) {
 							return "ADB must equals to BSA or ADB must be multi value of BSA till 6 times and Maximum of 2,500,000";
@@ -369,6 +375,19 @@ public class Validation {
 			Double rbsa = benifict.getSumAssured();
 			if ((rbsa >= bsa && rbsa <= bsa * 6 && rbsa % bsa == 0 && rbsa <= 2500000)
 					|| (bsa >= 2500000 && rbsa <= 2500000)) {
+				return 1;
+			}
+		}
+		return 0;
+
+	}
+	
+	public Integer validateInvpSFPO() {
+		if (benefitMap.containsKey("SFPO")) {
+			Benifict benifict = benefitMap.get("SFPO");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa >= 250000 && (rbsa%50000==0) && (rbsa<=bsa*10)) {
 				return 1;
 			}
 		}
