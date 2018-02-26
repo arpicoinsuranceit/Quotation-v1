@@ -23,4 +23,8 @@ public interface Quo_Benef_DetailsService {
 	List <QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception;
 	
 	List <Quo_Benef_Details> findByQuotationDetails(QuotationDetails quotation) throws Exception;
+	
+	QuotationView getQuo_Benef_DetailByQuoDetailId(QuotationDetails quotationDetails) throws Exception;
+	
+	QuotationDetails getQuo_Benef_DetailByQuoDetailId(Quotation quotation) throws Exception;
 }

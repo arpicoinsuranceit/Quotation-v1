@@ -15,5 +15,7 @@ public interface QuotationDetailsDao extends CrudRepository<QuotationDetails,Str
 	
 	List<QuotationDetails> findByQuotationOrderByQdIdDesc(Quotation quotation) throws Exception;
 	
+	QuotationDetails findFirstByQuotationOrderByQdIdDesc(Quotation quotation) throws Exception;
+	
 	QuotationDetails findByQdId(Integer qdId) throws Exception;
 }
