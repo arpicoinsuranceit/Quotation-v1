@@ -1,0 +1,101 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN"
+   "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+   
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              					http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="report1" pageWidth="595" pageHeight="842" 
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+  
+    <field name="ChildId" class="java.lang.Integer">
+        <fieldDescription><![CDATA[childId]]></fieldDescription>
+    </field>    
+    
+    <field name="ChildName" class="java.lang.String">
+        <fieldDescription><![CDATA[childName]]></fieldDescription>
+    </field>
+	
+    <field name="ChildNic" class="java.lang.String">
+        <fieldDescription><![CDATA[childNic]]></fieldDescription>
+    </field>
+    
+    <field name="ChildDob" class="java.util.Date">
+        <fieldDescription><![CDATA[childDob]]></fieldDescription>
+    </field>    
+    
+    <field name="ChildGender" class="java.lang.String">
+        <fieldDescription><![CDATA[childGender]]></fieldDescription>
+    </field>
+	
+    <field name="ChildRelation" class="java.lang.String">
+        <fieldDescription><![CDATA[childRelation]]></fieldDescription>
+    </field>
+   
+    <detail>
+        <band height="15">
+          
+            <textField>
+                <reportElement x="0" y="0" width="10" height="15" />
+            
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.lang.Integer">
+                    <![CDATA[$F{ChildId}]]>
+                </textFieldExpression>
+            </textField>       
+         
+            <textField>
+                <reportElement x="50" y="0" width="50" height="15" />
+            
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{ChildName}]]>
+                </textFieldExpression>
+            </textField>               
+          
+            <textField>
+                <reportElement x="100" y="0" width="50" height="15"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{ChildNic}]]>
+                </textFieldExpression>
+            </textField>   
+            
+            <textField>
+                <reportElement x="150" y="0" width="50" height="15" />
+            
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.util.Date">
+                    <![CDATA[$F{ChildDob}]]>
+                </textFieldExpression>
+            </textField>               
+          
+            <textField>
+                <reportElement x="200" y="0" width="50" height="15"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{ChildGender}]]>
+                </textFieldExpression>
+            </textField>  
+            
+            <textField>
+                <reportElement x="250" y="0" width="50" height="15" />
+            
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+            
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$F{ChildRelation}]]>
+                </textFieldExpression>
+            </textField>       
+
+        </band>
+    </detail>
+
+</jasperReport>

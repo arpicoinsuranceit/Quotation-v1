@@ -1,19 +1,26 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.model.Login;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.service.ChildService;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 
 @RestController
@@ -31,6 +38,12 @@ public class LoginController {
 	
 	@Autowired
 	private UsersService usersService;
+	
+	@Autowired
+    private ApplicationContext appContext;
+	
+	@Autowired
+	private ChildService childService;
 	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
@@ -122,6 +135,25 @@ public class LoginController {
 
 		return count;
 	}
+	
+	
+	@RequestMapping(path = "/pdf", method = RequestMethod.GET)
+    public ModelAndView report() {
+		System.out.println("Called reports.....");
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:report1.jrxml");
+        view.setApplicationContext(appContext);
+
+        Map<String, Object> params = new HashMap<>();
+        try {
+			params.put("datasource", childService.getAll());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        return new ModelAndView(view, params);
+    }
 	
 	/*public void saveData() {
 		ArrayList<Logs> logList=(ArrayList<Logs>) session.getAttribute("log_list");
