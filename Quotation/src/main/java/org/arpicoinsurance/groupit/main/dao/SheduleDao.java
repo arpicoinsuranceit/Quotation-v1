@@ -8,6 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface SheduleDao extends CrudRepository<Shedule, Integer> {
 	
-	List<Shedule> findByQuotationDetails(QuotationDetails quotationDetails)throws Exception;
+	public List<Shedule> findByQuotationDetails(QuotationDetails quotationDetails)throws Exception;
 
 }

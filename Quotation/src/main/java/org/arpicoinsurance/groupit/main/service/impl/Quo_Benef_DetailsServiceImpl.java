@@ -125,7 +125,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 	    diffInYears+=1;
 	    String age=Long.toString(diffInYears);
-	    
+	    //System.out.println(" 2222222 "+quoDetails.getQuotation().getCustomerDetails().getCustName());
 		customer.setMainLifeName(quoDetails.getQuotation().getCustomerDetails().getCustName());
 		customer.setMainLifeOccupation(quoDetails.getQuotation().getCustomerDetails().getOccupation().getOcupationName());
 		customer.setMainLifeAge(Integer.parseInt(age));
@@ -146,7 +146,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			customer.setSpouseAge(null);
 		}
 		
-		
+		//System.out.println(customer.getMainLifeName());
 		return customer;
 	}
 
@@ -159,6 +159,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		
 		QuotationView quotationView=new QuotationView();
 		quotationView.setCustDetails(customer);
+		
 		
 		for (Quo_Benef_Details quo_Benef_Details : benfDetails) {
 			Benefits benf=quo_Benef_Details.getBenefit();
@@ -290,6 +291,31 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		}
 		
 		return allQuotationList;
+	}
+	
+	@Override
+	public QuotationView getQuo_Benef_DetailByQuoDetailId(QuotationDetails quotationDetails) throws Exception {
+		//Quotation quotation=quotationDetails.getQuotation();
+		//System.out.println(quotation.getCustomerDetails());
+		QuotationView quotationView = new QuotationView();
+		if(quotationDetails != null) {
+			
+				QuoCustomer customer=setCustomerDetails(quotationDetails);
+				List<Quo_Benef_Details> benef_Details=new ArrayList<>();
+				quoBenefDao.findByQuoDetailId(quotationDetails.getQdId()).forEach(benef_Details::add);
+				
+				if(!benef_Details.isEmpty()) {
+					quotationView=getQuotationBenfList(benef_Details, customer, quotationDetails.getQdId());
+				}
+				
+			
+		}
+		return quotationView;
+	}
+
+	@Override
+	public QuotationDetails getQuo_Benef_DetailByQuoDetailId(Quotation quotation) throws Exception {
+		return quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
 	}
 
 	
