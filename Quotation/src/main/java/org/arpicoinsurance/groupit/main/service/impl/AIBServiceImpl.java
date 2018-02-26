@@ -140,7 +140,6 @@ public class AIBServiceImpl implements AIBService {
 		customerDetails.setCustomer(customer);
 
 		Quotation quotation = new Quotation();
-		quotation.setCustomerDetails(customerDetails);
 		quotation.setProducts(products);
 		quotation.setStatus("active");
 		quotation.setUser(user);
@@ -158,9 +157,21 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
+		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
+					"S").doubleValue());
+		quotationDetails.setMaturity2(0.0);
+		quotationDetails.setMaturity3(0.0);
+		quotationDetails.setCustomerDetails(customerDetails);
 
 		if (customerDao.save(customer) != null) {
-			if (CustomerDetailsDao.save(customerDetails) != null) {
+			
+			CustomerDetails c= CustomerDetailsDao.save(customerDetails);
+			System.out.println(c==null);
+			System.out.println(c!=null);
+			System.out.println(c.getCustDetailId());
+			if (c != null) {
+				
+				
 				if (quotationDao.save(quotation) != null) {
 					if (quotationDetailsDao.save(quotationDetails) != null) {
 						return "Success";
@@ -222,7 +233,7 @@ public class AIBServiceImpl implements AIBService {
 		Double adminFee = calculationUtils.getAdminFee("S");
 		Double tax = calculationUtils.getTaxAmount(bsa.doubleValue() + adminFee);
 
-		Customer customer = details.getQuotation().getCustomerDetails().getCustomer();
+		Customer customer = details.getCustomerDetails().getCustomer();
 		customer.setCustModifyBy(user.getUser_Code());
 		customer.setCustModifyDate(new Date());
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
@@ -234,7 +245,6 @@ public class AIBServiceImpl implements AIBService {
 		customerDetails.setCustomer(customer);
 		
 		Quotation quotation=details.getQuotation();
-		quotation.setCustomerDetails(customerDetails);
 		quotation.setProducts(products);
 		quotation.setStatus("active");
 		quotation.setUser(user);
@@ -254,7 +264,10 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
-
+		quotationDetails.setCustomerDetails(customerDetails);
+		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
+				"S").doubleValue());
+		
 		if (customerDao.save(customer) != null) {
 			if (CustomerDetailsDao.save(customerDetails) != null) {
 				if (quotationDao.save(quotation) != null) {

@@ -156,6 +156,9 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setTaxAmount(taxAmount);
 			quotationDetails.setQuotationquotationCreateDate(new Date());
+			quotationDetails.setMaturity1(calResp.getAt6());
+			quotationDetails.setMaturity2(calResp.getAt8());
+			quotationDetails.setMaturity3(calResp.getAt10());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
 				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());

@@ -70,8 +70,8 @@ public class QuotationServiceImpl implements QuotationService{
 				for (Quotation quotation : quoList) {
 					QuoDetails details=new QuoDetails();
 					details.setQuotationNum(quotation.getId());
-					details.setCustomerName(quotation.getCustomerDetails().getCustName());
-					details.setCustomerNic(quotation.getCustomerDetails().getCustNic());
+					//details.setCustomerName(quotation.getCustomerDetails().getCustName());
+					//details.setCustomerNic(quotation.getCustomerDetails().getCustNic());
 					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
 					details.setProductCode(quotation.getProducts().getProductCode());
 					
