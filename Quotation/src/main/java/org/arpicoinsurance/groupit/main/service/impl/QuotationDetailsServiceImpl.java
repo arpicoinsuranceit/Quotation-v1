@@ -243,7 +243,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 	private Plan getPlanDetails(QuotationDetails details) {
 		Plan plan=new Plan();
 		plan.set_bsa(details.getBaseSum());
-		plan.set_term(details.getPayTerm());
+		plan.set_term(details.getPolTerm());
 		plan.set_interestRate(details.getInterestRate());
 		
 		switch (details.getPayMode()) {

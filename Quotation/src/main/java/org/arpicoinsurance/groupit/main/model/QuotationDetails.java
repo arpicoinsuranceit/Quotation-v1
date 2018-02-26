@@ -14,8 +14,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class QuotationDetails implements Serializable{
 	private Integer qdId;
-	private Integer topTerm;
-	private Integer payTerm;
+	private String paingTerm;
+	private Integer polTerm;
 	private Double baseSum;
 	private String payMode;
 	private Double premiumMonth;
@@ -62,20 +62,20 @@ public class QuotationDetails implements Serializable{
 		this.qdId = qdId;
 	}
 
-	public Integer getTopTerm() {
-		return topTerm;
+	public String getPaingTerm() {
+		return paingTerm;
 	}
 
-	public void setTopTerm(Integer topTerm) {
-		this.topTerm = topTerm;
+	public void setPaingTerm(String paingTerm) {
+		this.paingTerm = paingTerm;
 	}
 
-	public Integer getPayTerm() {
-		return payTerm;
+	public Integer getPolTerm() {
+		return polTerm;
 	}
 
-	public void setPayTerm(Integer payTerm) {
-		this.payTerm = payTerm;
+	public void setPolTerm(Integer polTerm) {
+		this.polTerm = polTerm;
 	}
 
 	public Double getBaseSum() {

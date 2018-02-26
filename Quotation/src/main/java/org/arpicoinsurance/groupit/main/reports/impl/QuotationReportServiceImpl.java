@@ -3105,8 +3105,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
         cusTable.addCell(cucell15);
         Cell cuCell16 = new Cell();
         cuCell16.setBorder(Border.NO_BORDER);
-        if(quotationDetails.getPayTerm()!=null) {
-        	cuCell16.add(new Paragraph(": " + Integer.toString(quotationDetails.getPayTerm())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+        if(quotationDetails.getPolTerm()!=null) {
+        	cuCell16.add(new Paragraph(": " + Integer.toString(quotationDetails.getPolTerm())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
         }else {
         	cuCell16.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
 
