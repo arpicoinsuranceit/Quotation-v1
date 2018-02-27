@@ -152,7 +152,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			quotationDetails.setInvestmentPos(calResp.getBasicSumAssured() - lifePos);
 
 			quotationDetails.setPayMode(calculation.get_personalInfo().getFrequance());
-			quotationDetails.setPayTerm(calculation.get_personalInfo().getTerm());
+			quotationDetails.setPaingTerm(calculation.get_personalInfo().getPayingterm());
+			quotationDetails.setPolTerm(calculation.get_personalInfo().getTerm());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setTaxAmount(taxAmount);
 			quotationDetails.setQuotationquotationCreateDate(new Date());

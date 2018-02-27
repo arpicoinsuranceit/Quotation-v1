@@ -6,7 +6,7 @@ public class Plan {
 	private Double _bsa;
 	private Double contribution;
 	private Double _interestRate;
-	private Integer _payingterm;
+	private String _payingterm;
 	private Double _msfb;
 	
 	public Integer get_term() {
@@ -39,10 +39,10 @@ public class Plan {
 	public void set_interestRate(Double _intrate) {
 		this._interestRate = _intrate;
 	}
-	public Integer get_payingterm() {
+	public String get_payingterm() {
 		return _payingterm;
 	}
-	public void set_payingterm(Integer _payingterm) {
+	public void set_payingterm(String _payingterm) {
 		this._payingterm = _payingterm;
 	}
 	public Double get_msfb() {

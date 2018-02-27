@@ -243,7 +243,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
-			quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
+			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
@@ -407,7 +407,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
-			quotationDetails.setPayTerm(_invpSaveQuotation.get_plan().get_term());
+			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());

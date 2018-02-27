@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.QuoDetails;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class QuotationServiceImpl implements QuotationService{
+	
+	@Autowired
+	private QuotationDetailsDao quotationDetailsDao;
 	
 	@Autowired
 	private QuotationDao quotationDao;
@@ -70,8 +75,9 @@ public class QuotationServiceImpl implements QuotationService{
 				for (Quotation quotation : quoList) {
 					QuoDetails details=new QuoDetails();
 					details.setQuotationNum(quotation.getId());
-					//details.setCustomerName(quotation.getCustomerDetails().getCustName());
-					//details.setCustomerNic(quotation.getCustomerDetails().getCustNic());
+					QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+					details.setCustomerName(quotationDetails.getCustomerDetails().getCustName());
+					details.setCustomerNic(quotationDetails.getCustomerDetails().getCustNic());
 					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
 					details.setProductCode(quotation.getProducts().getProductCode());
 					

@@ -94,7 +94,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	//set customer and spouse details according to quotationdetail object
 	private QuoCustomer setCustomerDetails(QuotationDetails quoDetails) {
 		QuoCustomer customer=new QuoCustomer();
-		customer.setTerm(quoDetails.getPayTerm());
+		customer.setTerm(quoDetails.getPolTerm());
 		customer.setMode(quoDetails.getPayMode());
 		
 		if(quoDetails.getPayMode()!=null) {
@@ -167,12 +167,14 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			if(benf.getBenefitType().equals("s")) {//check benf_type is spouse
 				QuoBenf qb=new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
 				qb.setRiderSum(quo_Benef_Details.getRiderSum());
 				spouseBenef.add(qb);
 			}else if(benf.getBenefitType().equals("m")) {//check benf_type is mainLife
 				QuoBenf qb=new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
 				qb.setRiderSum(quo_Benef_Details.getRiderSum());
 				mainLifeBenef.add(qb);
@@ -188,6 +190,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 						Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
 						if(!childMap.containsKey(child.getChildName())) {
 							ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benfs.add(qb);
 							
@@ -199,6 +202,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 						}else {
 							QuoChildBenef childBenefit=childMap.get(child.getChildName());
 							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benflist.add(qb);
 							
@@ -275,6 +279,8 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			
 			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
 			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
+			viewQuotation.setProductName(quotation.getProducts().getProductName());
+			viewQuotation.setQuotationId(quotation.getId());
 			viewQuotation.setQuotationDate(quotationView.getQuotationDate());
 			viewQuotation.set_children(editQuotation.get_children());
 			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
