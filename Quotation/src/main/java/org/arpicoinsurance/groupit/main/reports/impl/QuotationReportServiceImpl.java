@@ -3,16 +3,23 @@ package org.arpicoinsurance.groupit.main.reports.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 //import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.SheduleDao;
+//import org.arpicoinsurance.groupit.main.helper.EditQuotation;
+//import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
+//import org.arpicoinsurance.groupit.main.helper.Spouse;
+//import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
+//import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
+//import org.arpicoinsurance.groupit.main.service.impl.Quo_Benef_DetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +39,7 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.ListNumberingType;
 import com.itextpdf.layout.property.TextAlignment;
 
+
 @Service
 @Transactional
 public class QuotationReportServiceImpl implements QuotationReportService {
@@ -43,12 +51,16 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Autowired
 	private SheduleDao sheduleDao;
 	
+
 	//Creating Arpico Insurance Plus Report
 	@Override
-	public String createAIPReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createAIPReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
+	
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(quotationDetails.getQuotationquotationCreateDate());
 		
-		//create mainlife details object
-		QuoCustomer customer = quotationView.getCustDetails();
+	    ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
+
 
 		//pdf save path
 		File file = new File(DEST+"INVP/"+quotationDetails.getQdId().toString()+".pdf");
@@ -92,56 +104,56 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        
 	        Cell agCell1 = new Cell();
 	        agCell1.setBorder(Border.NO_BORDER);
-	        agCell1.add(new Paragraph("Date").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agCell1.add(new Paragraph("Date").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agCell1);
 	        Cell agcell2 = new Cell();
 	        agcell2.setBorder(Border.NO_BORDER);
-	        agcell2.add(new Paragraph(quotationDetails.getQuotationquotationCreateDate()!=null ? ": "+quotationDetails.getQuotationquotationCreateDate() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell2.add(new Paragraph(quotationDetails.getQuotationquotationCreateDate()!=null ? ": "+quotationDetails.getQuotationquotationCreateDate() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell2);
 	        
 	        agtTable.startNewRow();
 	        
 	        Cell agCell3 = new Cell();
 	        agCell3.setBorder(Border.NO_BORDER);
-	        agCell3.add(new Paragraph("Branch Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agCell3.add(new Paragraph("Branch Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agCell3);
 	        Cell agcell4 = new Cell();
 	        agcell4.setBorder(Border.NO_BORDER);
-	        agcell4.add(new Paragraph(quotationDetails.getQuotation().getUser().getBranch().getBranch_Name()!=null ? ": "+quotationDetails.getQuotation().getUser().getBranch().getBranch_Name() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell4.add(new Paragraph(quotationDetails.getQuotation().getUser().getBranch().getBranch_Name()!=null ? ": "+quotationDetails.getQuotation().getUser().getBranch().getBranch_Name() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell4);
 	        
 	        agtTable.startNewRow();
 	        
 	        Cell agCell5 = new Cell();
 	        agCell5.setBorder(Border.NO_BORDER);
-	        agCell5.add(new Paragraph("Agent Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agCell5.add(new Paragraph("Agent Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agCell5);
 	        Cell agcell6 = new Cell();
 	        agcell6.setBorder(Border.NO_BORDER);
-	        agcell6.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Name()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Name() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell6.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Name()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Name() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell6);
 	        
 	        agtTable.startNewRow();
 	        
 	        Cell agcell7 = new Cell();
 	        agcell7.setBorder(Border.NO_BORDER);
-	        agcell7.add(new Paragraph("Agent Code").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell7.add(new Paragraph("Agent Code").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell7);
 	        Cell agcell8 = new Cell();
 	        agcell8.setBorder(Border.NO_BORDER);
-	        agcell8.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Code()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Code() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell8.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Code()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Code() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell8);
 	        
 	        agtTable.startNewRow();
 	        
 	        Cell agcell9 = new Cell();
 	        agcell9.setBorder(Border.NO_BORDER);
-	        agcell9.add(new Paragraph("Contact No").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        agcell9.add(new Paragraph("Contact No").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agcell9);
 	        
 	        Cell agCell10 = new Cell();
 	        agCell10.setBorder(Border.NO_BORDER);
-        	agCell10.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Mobile()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Mobile() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+        	agCell10.add(new Paragraph(quotationDetails.getQuotation().getUser().getUser_Mobile()!=null ? ": "+quotationDetails.getQuotation().getUser().getUser_Mobile() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        agtTable.addCell(agCell10);
 
 	        document.add(agtTable);
@@ -156,25 +168,25 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        
 	        Cell cucell1 = new Cell();
 	        cucell1.setBorder(Border.NO_BORDER);
-	        cucell1.add(new Paragraph("Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell1.add(new Paragraph("Name").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell1);
 	        Cell cuCell2 = new Cell();
 	        cuCell2.setBorder(Border.NO_BORDER);
-	        cuCell2.add(new Paragraph(customer.getMainLifeName()!=null ? ": "+customer.getMainLifeName() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cuCell2.add(new Paragraph(quotationDetails.getCustomerDetails().getCustName()!=null ? ": "+quotationDetails.getCustomerDetails().getCustName() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cuCell2);
 	       
 	        cusTable.startNewRow();
 	        
 	        Cell cucell3 = new Cell();
 	        cucell3.setBorder(Border.NO_BORDER);
-	        cucell3.add(new Paragraph("Age Next Birthday (Life Assured)").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell3.add(new Paragraph("Age Next Birthday (Life Assured)").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell3);
 	        Cell cuCell4 = new Cell();
 	        cuCell4.setBorder(Border.NO_BORDER);
-	        if(customer.getMainLifeAge()!=null) {
-		        cuCell4.add(new Paragraph(": " + Integer.toString(customer.getMainLifeAge())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        if(quoCustomer.getMainLifeAge()!=null) {
+		        cuCell4.add(new Paragraph(": "+quoCustomer.getMainLifeAge()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }else {
-		        cuCell4.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+		        cuCell4.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }
 	        cusTable.addCell(cuCell4);
 	        
@@ -182,25 +194,24 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        
 	        Cell cucell5 = new Cell();
 	        cucell5.setBorder(Border.NO_BORDER);
-	        cucell5.add(new Paragraph("Occupation (Life Assured)").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell5.add(new Paragraph("Occupation (Life Assured)").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell5);
 	        Cell cuCell6 = new Cell();
 	        cuCell6.setBorder(Border.NO_BORDER);
-	        cuCell6.add(new Paragraph(customer.getMainLifeOccupation()!=null ? ": "+customer.getMainLifeOccupation() : ": " ).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cuCell6.add(new Paragraph(quotationDetails.getCustomerDetails().getOccupation().getOcupationName()!=null ? ": "+quotationDetails.getCustomerDetails().getOccupation().getOcupationName() : ": " ).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cuCell6);
-	        
 	        cusTable.startNewRow();
 	        
 	        Cell cucell7 = new Cell();
 	        cucell7.setBorder(Border.NO_BORDER);
-	        cucell7.add(new Paragraph("Term").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell7.add(new Paragraph("Term").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell7);
 	        Cell cuCell8 = new Cell();
 	        cuCell8.setBorder(Border.NO_BORDER);
-	        if(customer.getTerm()!=null) {
-		        cuCell8.add(new Paragraph(": " + Integer.toString(customer.getTerm())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        if(quotationDetails.getTopTerm()!=null) {
+		        cuCell8.add(new Paragraph(": " + Integer.toString(quotationDetails.getTopTerm())).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }else {
-		        cuCell8.add(new Paragraph(": ").setTextAlignment(TextAlignment.LEFT));
+		        cuCell8.add(new Paragraph(": ").setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }
 	        cusTable.addCell(cuCell8);
 	        
@@ -208,52 +219,58 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        
 	        Cell cucell9 = new Cell();
 	        cucell9.setBorder(Border.NO_BORDER);
-	        cucell9.add(new Paragraph("Mode").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell9.add(new Paragraph("Mode").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell9);
 	        Cell cuCell10 = new Cell();
 	        cuCell10.setBorder(Border.NO_BORDER);
-	        cuCell10.add(new Paragraph(customer.getMode()!=null ? ": "+customer.getMode() : ": " ).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cuCell10.add(new Paragraph(quotationDetails.getPayMode()!=null ? ": "+quotationDetails.getPayMode() : ": " ).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cuCell10);
 	        
 	        cusTable.startNewRow();
 	        
 	        Cell cucell11 = new Cell();
 	        cucell11.setBorder(Border.NO_BORDER);
-	        cucell11.add(new Paragraph("Mode Premium").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell11.add(new Paragraph("Mode Premium").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell11);
 	        Cell cuCell12 = new Cell();
 	        cuCell12.setBorder(Border.NO_BORDER);
-	        if(customer.getModePremium()!=null) {
-		        cuCell12.add(new Paragraph(": " + Double.toString(customer.getModePremium())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        if(quoCustomer.getModePremium()!=null) {
+		        cuCell12.add(new Paragraph(": " + Double.toString(quoCustomer.getModePremium())).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }else {
-		        cuCell12.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+		        cuCell12.add(new Paragraph("").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 
-	        }
+	       }
 	        cusTable.addCell(cuCell12);
 	        
 	        cusTable.startNewRow();
 	        
 	        Cell cucell13 = new Cell();
 	        cucell13.setBorder(Border.NO_BORDER);
-	        cucell13.add(new Paragraph("Policy Fees").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell13.add(new Paragraph("Policy Fees").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell13);
 	        Cell cuCell14 = new Cell();
 	        cuCell14.setBorder(Border.NO_BORDER);
-	        cuCell14.add(new Paragraph(": 300.00").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        if(quotationDetails.getPolicyFee()!=null) {
+		        cuCell14.add(new Paragraph(": "+Double.toString(quotationDetails.getPolicyFee())).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
+
+	        }else {
+		        cuCell14.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
+
+	        }
 	        cusTable.addCell(cuCell14);
 	        
 	        cusTable.startNewRow();
 	        
 	        Cell cucell15 = new Cell();
 	        cucell15.setBorder(Border.NO_BORDER);
-	        cucell15.add(new Paragraph("Total Premium").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        cucell15.add(new Paragraph("Total Premium").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        cusTable.addCell(cucell15);
 	        Cell cuCell16 = new Cell();
 	        cuCell16.setBorder(Border.NO_BORDER);
-	        if(customer.getTotPremium()!=null) {
-		        cuCell16.add(new Paragraph(": " +Double.toString(customer.getTotPremium())).setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+	        if(quoCustomer.getTotPremium()!=null) {
+		        cuCell16.add(new Paragraph(": " +Double.toString(quoCustomer.getTotPremium())).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 	        }else {
-		        cuCell16.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT));
+		        cuCell16.add(new Paragraph(": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 
 	        }
 	        cusTable.addCell(cuCell16);
@@ -280,6 +297,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        benLivTable.addCell(cell2);  
 	        
 	        benLivTable.startNewRow();
+
 	        //hard code yet
 	        Cell cell3 = new Cell();
 	        cell3.add(new Paragraph("Illustrated Maturity Value 9.5%").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
@@ -290,7 +308,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        benLivTable.addCell(cell4);  
 	       
 	        benLivTable.startNewRow();
-	        //hard code yet
+	        
+	     //hard code yet
 	        Cell cell5 = new Cell();
 	        cell5.add(new Paragraph("Illustrated Maturity Value 11.00%").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
 	        benLivTable.addCell(cell5);           
@@ -306,10 +325,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        Cell cell8 = new Cell();
 	        cell8.add(new Paragraph("364,271.00").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 	        benLivTable.addCell(cell8); 
+	        
 	       
 	        document.add(benLivTable);
-	       
-	        document.add(new Paragraph("Guranteed minimum dividend rate declared for 2016").setFontSize(10));
+
+	        document.add(new Paragraph("Guranteed minimum dividend rate declared for "+calendar.get(Calendar.YEAR)).setFontSize(10));
 	        document.add(new Paragraph(""));
 	        
 	        //Create Additional Benefits Table
@@ -353,15 +373,15 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	        List list = new List(ListNumberingType.DECIMAL);
 	        list.setFontSize(10);
 	        ListItem item1 = new ListItem();
-	        item1.add(new Paragraph("This is an indicative quote only and is valid for 30 days from date of issue.").setFontSize(10).setFixedLeading(1));
+	        item1.add(new Paragraph("This is an indicative quote only and is valid for 30 days from date of issue.").setFontSize(10).setFixedLeading(2));
 	        list.add(item1);
 	        
 	        ListItem item2 = new ListItem();
-	        item2.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(1));
+	        item2.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(2));
 	        list.add(item2);
 	        
 	        ListItem item3 = new ListItem();
-	        item3.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).").setFontSize(10).setFixedLeading(1));
+	        item3.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).").setFontSize(10).setFixedLeading(2));
 	        list.add(item3);
 	        
 	        document.add(list);
@@ -377,7 +397,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	
 	//creating Arpico Investment Bond Report
 	@Override
-	public String createAIBReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createAIBReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		//create mainlife details object
 				QuoCustomer customer = quotationView.getCustDetails();
 
@@ -491,7 +511,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			        cusTable.addCell(cucell1);
 			        Cell cuCell2 = new Cell();
 			        cuCell2.setBorder(Border.NO_BORDER);
-			        cuCell2.add(new Paragraph(customer.getMainLifeName()!=null ? ": "+customer.getMainLifeName() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
+			        //cuCell2.add(new Paragraph(customer.getMainLifeName()!=null ? ": "+customer.getMainLifeName() : ": ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(8));
 			        cusTable.addCell(cuCell2);
 			       
 			        cusTable.startNewRow();
@@ -690,7 +710,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 	//Create Arpico Investment Plan Report
 	@Override
-	public String createINVPReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createINVPReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
@@ -1096,7 +1116,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 	//Creating DTA Report
 	@Override
-	public String createDTAReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createDTAReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
@@ -1524,7 +1544,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 
 	@Override
-	public String createATRMReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createATRMReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
@@ -1974,7 +1994,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 
 	@Override
-	public String createEND1Report(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createEND1Report(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
 		ArrayList<QuoBenf> benefitsSpouse = quotationView.getSpouseBenf();
@@ -2428,7 +2448,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 
 	@Override
-	public String createASFPReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createASFPReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
 		ArrayList<QuoBenf> benefitsSpouse = quotationView.getSpouseBenf();
@@ -2886,7 +2906,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	}
 
 	@Override
-	public String createARPReport(QuotationDetails quotationDetails, QuotationView quotationView) throws Exception {
+	public String createARPReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception {
 		QuoCustomer customer = quotationView.getCustDetails();
 		ArrayList<QuoBenf> benefitsLife = quotationView.getMainLifeBenf();
 		ArrayList<QuoBenf> benefitsSpouse = quotationView.getSpouseBenf();
