@@ -8,6 +8,7 @@ public class Plan {
 	private Double _interestRate;
 	private String _payingterm;
 	private Double _msfb;
+	private Double _bsaTotal;
 	
 	public Integer get_term() {
 		return _term;
@@ -50,6 +51,12 @@ public class Plan {
 	}
 	public void set_msfb(Double _msfb) {
 		this._msfb = _msfb;
+	}
+	public Double get_bsaTotal() {
+		return _bsaTotal;
+	}
+	public void set_bsaTotal(Double _bsaTotal) {
+		this._bsaTotal = _bsaTotal;
 	}
 	
 }

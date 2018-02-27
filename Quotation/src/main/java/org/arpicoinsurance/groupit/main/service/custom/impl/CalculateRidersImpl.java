@@ -249,6 +249,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 								benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
 						String benfName = benifict.getType();
 
+						System.out.println(term + ";;;;;;;;;;;;;;;;;; child");
+						
 						switch (benfName) {
 						case "CIBC":
 							if (children.is_cCibc()) {

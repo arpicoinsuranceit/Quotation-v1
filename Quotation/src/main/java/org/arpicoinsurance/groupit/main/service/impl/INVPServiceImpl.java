@@ -268,7 +268,7 @@ public class INVPServiceImpl implements INVPService {
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
 		}
-		
+
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 
@@ -276,6 +276,15 @@ public class INVPServiceImpl implements INVPService {
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////// Add Maturity
+		//////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		
+
+		///////////////////////////// END ADD MATURITY////////////////////////
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -301,12 +310,18 @@ public class INVPServiceImpl implements INVPService {
 
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
+			
+			/////////////////////Add Maturity //////////////////
+			
+			benef_DetailsList = quotationSaveUtilService.addMaturity("INVP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
+			/////////////////////Done Add Maturity //////////////////
+			
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
-
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
@@ -353,142 +368,148 @@ public class INVPServiceImpl implements INVPService {
 	@Override
 	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
 			Integer qdId) throws Exception {
-			
-			CalculationUtils calculationUtils = new CalculationUtils();
 
-			QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
+		CalculationUtils calculationUtils = new CalculationUtils();
 
-			Products products = productDao.findByProductCode("INVP");
-			Users user = userDao.findOne(userId);
+		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 
-			Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
-			Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+		Products products = productDao.findByProductCode("INVP");
+		Users user = userDao.findOne(userId);
 
-			CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
-					_invpSaveQuotation.get_personalInfo(), user);
-			CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
-					_invpSaveQuotation.get_personalInfo(), user);
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-			QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
-			Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
-			Customer spouse =null;
-			if(spouseDetail != null) {
-				try {
-					spouse = quotationDetails.getSpouseDetails().getCustomer();
-				}catch(NullPointerException ex) {
-					spouse=null;
-				}
-				
-				if (spouse != null) {
-					spouseDetail.setCustomer(spouse);
-				} else {
-					spouse = new Customer();
-					spouse.setCustName(spouseDetail.getCustName());
-					spouse.setCustCreateDate(new Date());
-					spouse.setCustCreateBy(user.getUser_Name());
-					spouseDetail.setCustomer(spouse);
-				}
-				
-			}else {
-				
-			}
-			
-			
-			mainLifeDetail.setCustomer(mainlife);
+		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
 
-			ArrayList<Child> childList = quotationSaveUtilService
-					.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
-
-			ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
-			if (childList != null && !childList.isEmpty()) {
-				for (Child child : childList) {
-					CustChildDetails custChildDetails = new CustChildDetails();
-					custChildDetails.setChild(child);
-					custChildDetails.setCustomer(mainLifeDetail);
-					custChildDetailsList.add(custChildDetails);
-				}
+		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
+		Customer spouse = null;
+		if (spouseDetail != null) {
+			try {
+				spouse = quotationDetails.getSpouseDetails().getCustomer();
+			} catch (NullPointerException ex) {
+				spouse = null;
 			}
 
-			Quotation quotation = quotationDetails.getQuotation();
-			
-			Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
-					calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
-					calResp.getBasicSumAssured(),
-					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
+			if (spouse != null) {
+				spouseDetail.setCustomer(spouse);
+			} else {
+				spouse = new Customer();
+				spouse.setCustName(spouseDetail.getCustName());
+				spouse.setCustCreateDate(new Date());
+				spouse.setCustCreateBy(user.getUser_Name());
+				spouseDetail.setCustomer(spouse);
+			}
 
-			QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
+		} else {
 
-			quotationDetails1.setCustomerDetails(mainLifeDetail);
+		}
+
+		mainLifeDetail.setCustomer(mainlife);
+
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+
+		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
+		if (childList != null && !childList.isEmpty()) {
+			for (Child child : childList) {
+				CustChildDetails custChildDetails = new CustChildDetails();
+				custChildDetails.setChild(child);
+				custChildDetails.setCustomer(mainLifeDetail);
+				custChildDetailsList.add(custChildDetails);
+			}
+		}
+
+		Quotation quotation = quotationDetails.getQuotation();
+
+		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
+				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
+				calResp.getBasicSumAssured(),
+				calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
+
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
+
+		quotationDetails1.setCustomerDetails(mainLifeDetail);
+		if (spouseDetail != null) {
+			quotationDetails1.setSpouseDetails(spouseDetail);
+		} else {
+			quotationDetails1.setSpouseDetails(null);
+		}
+
+		quotationDetails1.setQuotation(quotation);
+		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
+				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		//////////////////////////// save edit//////////////////////////////////
+
+		Customer life = (Customer) customerDao.save(mainlife);
+		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+		ArrayList<CustChildDetails> custChildDList = null;
+		if (life != null && mainLifeDetails != null) {
+
 			if (spouseDetail != null) {
-				quotationDetails1.setSpouseDetails(spouseDetail);
-			} else {
-				quotationDetails1.setSpouseDetails(null);
+				Customer sp = customerDao.save(spouse);
+				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+				if (sp == null && spDetsils != null) {
+					return "Error at Spouse Saving";
+				}
 			}
 
-			
-			quotationDetails1.setQuotation(quotation);
-			quotationDetails1.setQuotationCreateBy(user.getUser_Code());
-
-			ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
-					_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
-					_invpSaveQuotation.get_personalInfo().get_childrenList(),
-					_invpSaveQuotation.get_personalInfo().get_plan().get_term());
-
-			//////////////////////////// save edit//////////////////////////////////
-			
-			Customer life = (Customer) customerDao.save(mainlife);
-			CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
-			ArrayList<CustChildDetails> custChildDList = null;
-			if (life != null && mainLifeDetails != null) {
-
-				if (spouseDetail != null) {
-					Customer sp = customerDao.save(spouse);
-					CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
-					if (sp == null && spDetsils != null) {
-						return "Error at Spouse Saving";
-					}
+			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+			if (childList != null && childList.size() > 0) {
+				if (cList == null && custChildDList == null) {
+					return "Error at Child Updating";
 				}
+			}
 
-				ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
-				custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
-				if (childList != null && childList.size() > 0) {
-					if (cList == null && custChildDList == null) {
-						return "Error at Child Updating";
+			Quotation quo = quotationDao.save(quotation);
+			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			/////////// Add Maturity///////////////////////
+			
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("INVP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////////////// END ADD MATURITY////////////////////////
+
+			if (quo != null && quoDetails != null) {
+				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+						.save(benef_DetailsList);
+				if (bnfdList != null) {
+
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
+							calculation.get_personalInfo().getFrequance(),
+							calculation.get_riderDetails().get_cRiders());
+
+					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+						return "Error at Child Benifict Updating";
 					}
-				}
 
-				Quotation quo = quotationDao.save(quotation);
-				QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
-
-				if (quo != null && quoDetails != null) {
-					ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
-							.save(benef_DetailsList);
-					if (bnfdList != null) {
-
-						ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
-								custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
-								_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-								calculation.get_personalInfo().getFrequance(),
-								calculation.get_riderDetails().get_cRiders());
-
-						if (quoBenifChildDetailsDao.save(childBenifList) == null) {
-							return "Error at Child Benifict Updating";
-						}
-
-					} else {
-						return "Error at Benifict Updating";
-					}
 				} else {
-					return "Error at Quotation Updating";
+					return "Error at Benifict Updating";
 				}
-
 			} else {
-				return "Error at MainLife Updating";
+				return "Error at Quotation Updating";
 			}
 
-			
+		} else {
+			return "Error at MainLife Updating";
+		}
+
 		return "Success";
 
 	}
+
 }

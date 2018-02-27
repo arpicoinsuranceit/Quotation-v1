@@ -132,6 +132,7 @@ public class ENDServiceImpl implements ENDService {
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 			calResp.setGuaranteed(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 
@@ -284,6 +285,13 @@ public class ENDServiceImpl implements ENDService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
+			/////////////////////Add Maturity //////////////////
+			
+			benef_DetailsList = quotationSaveUtilService.addMaturity("END1", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			/////////////////////Done Add Maturity //////////////////
+			
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
@@ -419,6 +427,13 @@ public class ENDServiceImpl implements ENDService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
+			/////////////////////Add Maturity //////////////////
+					
+			benef_DetailsList = quotationSaveUtilService.addMaturity("END1", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+		
+			/////////////////////Done Add Maturity //////////////////
+			
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);

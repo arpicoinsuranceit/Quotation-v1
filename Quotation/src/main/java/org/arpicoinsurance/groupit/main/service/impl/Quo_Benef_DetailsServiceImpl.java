@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,6 +33,8 @@ import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.gson.Gson;
 
 @Service
 @Transactional
@@ -156,7 +160,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		ArrayList<QuoBenf> mainLifeBenef=new ArrayList<>();
 		ArrayList<QuoBenf> spouseBenef=new ArrayList<>();
 		
-		TreeMap< String, QuoChildBenef> childMap=new TreeMap<>();
+		HashMap< String, QuoChildBenef> childMap=new HashMap<>();
 		
 		QuotationView quotationView=new QuotationView();
 		quotationView.setCustDetails(customer);
@@ -167,6 +171,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			if(benf.getBenefitType().equals("s")) {//check benf_type is spouse
 				QuoBenf qb=new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setRiderCode(quo_Benef_Details.getRierCode());
 				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
 				qb.setRiderSum(quo_Benef_Details.getRiderSum());
@@ -174,6 +179,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			}else if(benf.getBenefitType().equals("m")) {//check benf_type is mainLife
 				QuoBenf qb=new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setRiderCode(quo_Benef_Details.getRierCode());
 				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
 				qb.setRiderSum(quo_Benef_Details.getRiderSum());
@@ -182,15 +188,18 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				
 				List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
 				if(!qbcd.isEmpty()) {
-					QuoBenf qb=new QuoBenf();
-					qb.setBenfName(benf.getBenefitName());
-					qb.setRiderSum(quo_Benef_Details.getRiderSum());
+					
 					
 					for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
 						Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
 						if(!childMap.containsKey(child.getChildName())) {
 							ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+							QuoBenf qb=new QuoBenf();
+							qb.setBenfName(benf.getBenefitName());
+							qb.setRiderSum(quo_Benef_Details.getRiderSum());
+							qb.setRiderCode(quo_Benef_Details.getRierCode());
 							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
+							System.out.println(quo_Benef_Child_Details.getTerm()+"TTTTTTTTTT");
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benfs.add(qb);
 							
@@ -202,7 +211,12 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 						}else {
 							QuoChildBenef childBenefit=childMap.get(child.getChildName());
 							ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+							QuoBenf qb=new QuoBenf();
+							qb.setBenfName(benf.getBenefitName());
+							qb.setRiderSum(quo_Benef_Details.getRiderSum());
+							qb.setRiderCode(quo_Benef_Details.getRierCode());
 							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
+							System.out.println(quo_Benef_Child_Details.getTerm());
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benflist.add(qb);
 							
@@ -219,6 +233,10 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		}
 		
 		Set<Entry<String, QuoChildBenef>> benefs=childMap.entrySet();
+		
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(childMap));
+		
 		ArrayList<QuoChildBenef> childBenefList=new ArrayList<>();
 		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
 			QuoChildBenef cb=entry.getValue();
@@ -284,6 +302,21 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			viewQuotation.setQuotationDate(quotationView.getQuotationDate());
 			viewQuotation.set_children(editQuotation.get_children());
 			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
+			
+			if(editQuotation.get_mainlife().get_mGender().equals("F")) {
+				editQuotation.get_mainlife().set_mGender("Female");
+			}else {
+				editQuotation.get_mainlife().set_mGender("Male");
+			}
+			
+			if(editQuotation.get_spouse() == null) {
+				if(editQuotation.get_spouse().get_sGender().equals("F")) {
+					editQuotation.get_spouse().set_sGender("Female");
+				}else {
+					editQuotation.get_spouse().set_sGender("Male");
+				}
+			}
+			
 			editQuotation.get_mainlife().set_mOccupation(quotationView.getCustDetails().getMainLifeOccupation());
 			viewQuotation.set_mainlife(editQuotation.get_mainlife());
 			viewQuotation.set_mainLifeBenefits(quotationView.getMainLifeBenf());

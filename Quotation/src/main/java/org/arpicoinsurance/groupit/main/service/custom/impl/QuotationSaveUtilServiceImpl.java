@@ -157,9 +157,6 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setTaxAmount(taxAmount);
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-			quotationDetails.setMaturity1(calResp.getAt6());
-			quotationDetails.setMaturity2(calResp.getAt8());
-			quotationDetails.setMaturity3(calResp.getAt10());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
 				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());
@@ -534,10 +531,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"CIBC", term);
+								System.out.println(valiedTerm+"//////////////////// valied term");
 								benef_Child_Details.setTerm(valiedTerm);
 
 								BigDecimal cibc = cibcService.calculateCIBC(children.get_cAge(),
-										term > (21 - 6) ? (21 - 6) : term, new Date(), cib, frequancy, 1.0);
+										term > (21 - 6) ? (21 - 6) : valiedTerm, new Date(), cib, frequancy, 1.0);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -623,5 +621,106 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 		
 		return sheduleList;
 	}
+
+	@Override
+	public ArrayList<Quo_Benef_Details> addMaturity(String product, ArrayList<Quo_Benef_Details> benefictList,
+			QuotationQuickCalResponse calResp, Integer term, QuotationDetails quotationDetails) throws Exception {
+		
+		Quo_Benef_Details mat1 = new Quo_Benef_Details();
+		Quo_Benef_Details mat2 = new Quo_Benef_Details();
+		Quo_Benef_Details mat3 = new Quo_Benef_Details();
+		
+		mat1.setRiderPremium(0.0);
+		mat1.setRiderTerm(term);
+		mat1.setRiderSum(calResp.getAt6());
+		mat1.setQuotationDetails(quotationDetails);
+		
+		mat2.setRiderPremium(0.0);
+		mat2.setRiderTerm(term);
+		mat2.setRiderSum(calResp.getAt8());
+		mat2.setQuotationDetails(quotationDetails);
+		
+		mat3.setRiderPremium(0.0);
+		mat3.setRiderTerm(term);
+		mat3.setRiderSum(calResp.getAt10());
+		mat3.setQuotationDetails(quotationDetails);
+		
+		switch (product) {
+		case "INVP":
+			mat1.setRierCode("L3");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L3"));
+			benefictList.add(mat1);
+			
+			
+			mat2.setRierCode("L4");
+			mat2.setBenefit(benefitsDao.findByRiderCode("L4"));
+			benefictList.add(mat2);
+			
+			
+			mat3.setRierCode("L5");
+			mat3.setBenefit(benefitsDao.findByRiderCode("L5"));
+			benefictList.add(mat3);
+			break;
+			
+		case "END1":
+			mat1.setRierCode("L1");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L1"));
+			benefictList.add(mat1);
+			
+			break;
+			
+		case "ASIP":
+			mat1.setRierCode("L11");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L11"));
+			benefictList.add(mat1);
+			
+			
+			mat2.setRierCode("L12");
+			mat2.setBenefit(benefitsDao.findByRiderCode("L12"));
+			benefictList.add(mat2);
+			
+			
+			mat3.setRierCode("L13");
+			mat3.setBenefit(benefitsDao.findByRiderCode("L13"));
+			benefictList.add(mat3);
+			break;
+			
+		case "ARP":
+			mat1.setRierCode("L1");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L1"));
+			benefictList.add(mat1);
+			
+			break;
+			
+		case "AIP":
+			mat1.setRierCode("L6");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L6"));
+			benefictList.add(mat1);
+			
+			
+			mat2.setRierCode("L8");
+			mat2.setBenefit(benefitsDao.findByRiderCode("L8"));
+			benefictList.add(mat2);
+			
+			
+			mat3.setRierCode("L9");
+			mat3.setBenefit(benefitsDao.findByRiderCode("L9"));
+			benefictList.add(mat3);
+			break;
+			
+		case "AIB":
+			mat1.setRierCode("IAIB");
+			mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
+			benefictList.add(mat1);
+			
+			break;
+			
+		default:
+			break;
+		}
+		
+		return benefictList;
+	}
+	
 
 }

@@ -316,15 +316,13 @@ public class ASIPServiceImpl implements ASIPService {
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
-		
-		
 		Quotation quotation = new Quotation();
-		
+
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
 		}
-		
+
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
@@ -362,6 +360,12 @@ public class ASIPServiceImpl implements ASIPService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
+			/////////// Add Maturity///////////////////////
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ASIP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////////////// END ADD MATURITY////////////////////////
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
@@ -451,7 +455,7 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-		
+
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -461,7 +465,6 @@ public class ASIPServiceImpl implements ASIPService {
 			quotationDetails1.setSpouseDetails(null);
 		}
 
-		
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
 
@@ -496,6 +499,12 @@ public class ASIPServiceImpl implements ASIPService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
+			/////////// Add Maturity///////////////////////
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ASIP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////////////// END ADD MATURITY////////////////////////
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);

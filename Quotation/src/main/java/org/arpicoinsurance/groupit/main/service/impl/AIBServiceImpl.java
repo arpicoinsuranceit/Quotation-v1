@@ -1,13 +1,17 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
+import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIBDao;
@@ -18,6 +22,7 @@ import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardAIB;
@@ -30,6 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AIBServiceImpl implements AIBService {
+
+	@Autowired
+	private BenefitsDao benefitsDao;
+
+	@Autowired
+	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
 	@Autowired
 	private RateCardAIBDao rateCardAIBDao;
@@ -112,7 +123,7 @@ public class AIBServiceImpl implements AIBService {
 		}
 
 		System.out.println("maturity : " + total_amount.toString());
-		maturity = total_amount;
+		maturity = total_amount.setScale(2, RoundingMode.HALF_UP);
 		return maturity;
 	}
 
@@ -121,12 +132,14 @@ public class AIBServiceImpl implements AIBService {
 		CalculationUtils calculationUtils = new CalculationUtils();
 		Users user = userDao.findOne(id);
 		Products products = productDao.findByProductCode("AIB");
-		System.out.println(_invpSaveQuotation.get_plan().get_bsa()+"*********************");
-		Double contribution=_invpSaveQuotation.get_plan().get_bsa();
-		BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new Date(),
-				"S");
+		System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+		/*
+		 * BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new
+		 * Date(), "S");
+		 */
 		Double adminFee = calculationUtils.getAdminFee("S");
-		Double tax = calculationUtils.getTaxAmount(bsa.doubleValue() + adminFee);
+		Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 
 		Customer customer = new Customer();
 		customer.setCustCreateBy(user.getUser_Code());
@@ -157,25 +170,40 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
-		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
-					"S").doubleValue());
-		quotationDetails.setMaturity2(0.0);
-		quotationDetails.setMaturity3(0.0);
 		quotationDetails.setCustomerDetails(customerDetails);
 
+		ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+
 		if (customerDao.save(customer) != null) {
-			
-			CustomerDetails c= CustomerDetailsDao.save(customerDetails);
-			System.out.println(c==null);
-			System.out.println(c!=null);
-			System.out.println(c.getCustDetailId());
+
+			CustomerDetails c = CustomerDetailsDao.save(customerDetails);
 			if (c != null) {
-				
-				
 				if (quotationDao.save(quotation) != null) {
-					if (quotationDetailsDao.save(quotationDetails) != null) {
-						return "Success";
-					}else {
+
+					QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
+
+					/////////// Add Maturity///////////////////////
+
+					Quo_Benef_Details mat1 = new Quo_Benef_Details();
+					mat1.setRiderPremium(0.0);
+					mat1.setRiderTerm(2);
+					mat1.setRiderSum(
+							calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S").doubleValue());
+					mat1.setQuotationDetails(quoDetails);
+					mat1.setRierCode("IAIB");
+					mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
+					benefictList.add(mat1);
+
+					///////////////////////////// END ADD MATURITY////////////////////////
+
+					if (quoDetails != null) {
+						if (quoBenifDetailDao.save(benefictList) != null) {
+							return "Success";
+						} else {
+							return "Error at saving Maturity";
+						}
+
+					} else {
 						return "Error at Quotation Detail Saving";
 					}
 				} else {
@@ -216,22 +244,19 @@ public class AIBServiceImpl implements AIBService {
 	}
 
 	@Override
-	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
+	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
+			throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 		Users user = userDao.findOne(userId);
-		
-		QuotationDetails details=quotationDetailsDao.findByQdId(qdId);
-		
-		
-		
-		
+
+		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
+
 		Products products = productDao.findByProductCode("AIB");
-		System.out.println(_invpSaveQuotation.get_plan().get_bsa()+"*********************");
-		Double contribution=_invpSaveQuotation.get_plan().get_bsa();
-		BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new Date(),
-				"S");
+		System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+		/*BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S");*/
 		Double adminFee = calculationUtils.getAdminFee("S");
-		Double tax = calculationUtils.getTaxAmount(bsa.doubleValue() + adminFee);
+		Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 
 		Customer customer = details.getCustomerDetails().getCustomer();
 		customer.setCustModifyBy(user.getUser_Code());
@@ -243,8 +268,8 @@ public class AIBServiceImpl implements AIBService {
 
 		CustomerDetails customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 		customerDetails.setCustomer(customer);
-		
-		Quotation quotation=details.getQuotation();
+
+		Quotation quotation = details.getQuotation();
 		quotation.setProducts(products);
 		quotation.setStatus("active");
 		quotation.setUser(user);
@@ -265,15 +290,36 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
 		quotationDetails.setCustomerDetails(customerDetails);
-		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
-				"S").doubleValue());
-		
+
+		ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+
 		if (customerDao.save(customer) != null) {
 			if (CustomerDetailsDao.save(customerDetails) != null) {
 				if (quotationDao.save(quotation) != null) {
-					if (quotationDetailsDao.save(quotationDetails) != null) {
-						return "Success";
-					}else {
+					QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
+
+					/////////// Add Maturity///////////////////////
+
+					Quo_Benef_Details mat1 = new Quo_Benef_Details();
+					mat1.setRiderPremium(0.0);
+					mat1.setRiderTerm(2);
+					mat1.setRiderSum(
+							calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S").doubleValue());
+					mat1.setQuotationDetails(quoDetails);
+					mat1.setRierCode("IAIB");
+					mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
+					benefictList.add(mat1);
+
+					///////////////////////////// END ADD MATURITY////////////////////////
+
+					if (quoDetails != null) {
+						if (quoBenifDetailDao.save(benefictList) != null) {
+							return "Success";
+						} else {
+							return "Error at saving Maturity";
+						}
+
+					} else {
 						return "Error at Quotation Detail Saving";
 					}
 				} else {

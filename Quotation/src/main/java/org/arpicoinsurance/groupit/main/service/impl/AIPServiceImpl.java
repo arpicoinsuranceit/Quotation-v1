@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
+import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIPDao;
@@ -20,6 +22,7 @@ import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardAIP;
@@ -32,6 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AIPServiceImpl implements AIPService {
+
+	@Autowired
+	private BenefitsDao benefitsDao;
+
+	@Autowired
+	private Quo_Benef_DetailsDao quoBenifDetailDao;
+
 	@Autowired
 	private RateCardAIPDao rateCardAIPDao;
 
@@ -116,7 +126,7 @@ public class AIPServiceImpl implements AIPService {
 						System.out.println("polyer : " + i + " polmth : " + j + " opnfun : " + open_fund.toString());
 						aipCalShedule.setPolicyYear(i);
 						aipCalShedule.setPolicyMonth(j);
-						aipCalShedule.setOpeningFee(open_fund.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setOpeningFee(open_fund.setScale(0, BigDecimal.ROUND_UP).doubleValue());
 					}
 
 					if ((paymod.equalsIgnoreCase("S")) && (i > 1)) {
@@ -147,26 +157,24 @@ public class AIPServiceImpl implements AIPService {
 								+ " fndbfi : " + balance_bfi.toString() + " intanm : " + interest_annum.toString()
 								+ " fndbmf : " + balance_bmf.toString() + " mgtfee : " + mgt_fees.toString()
 								+ " fndclo : " + close_bal.toString() + " fndclo : " + close_bal.toString());
-						
-						
-						aipCalShedule.setComCon(cum_premium.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFundAmt(fund_amount.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndBfi(balance_bfi.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setIntAmt(interest_annum.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndBmf(balance_bmf.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setMgtFee(mgt_fees.setScale(0,BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndClo(close_bal.setScale(0,BigDecimal.ROUND_UP).doubleValue());
+
+						aipCalShedule.setComCon(cum_premium.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFundAmt(fund_amount.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndBfi(balance_bfi.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndBmf(balance_bmf.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setMgtFee(mgt_fees.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setFndClo(close_bal.setScale(2, BigDecimal.ROUND_UP).doubleValue());
 
 						if (close_bal.compareTo(cum_premium) == -1) {
 							System.out.println(
-									"adbcov : " + cum_premium.multiply(adb_rate).setScale(0, 4).toPlainString());
+									"adbcov : " + cum_premium.multiply(adb_rate).setScale(2, 4).toPlainString());
 
-							aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(0, 4).doubleValue());
+							aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(2, 4).doubleValue());
 						} else {
 							System.out
-									.println("adbcov : " + close_bal.multiply(adb_rate).setScale(0, 4).toPlainString());
+									.println("adbcov : " + close_bal.multiply(adb_rate).setScale(2, 4).toPlainString());
 
-							aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(0, 4).doubleValue());
+							aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(2, 4).doubleValue());
 						}
 						aipCalShedules.add(aipCalShedule);
 					}
@@ -185,7 +193,7 @@ public class AIPServiceImpl implements AIPService {
 
 			Double tax = calculationUtils.getTaxAmount(adminFee + contribution);
 			System.out.println(tax);
-			aipCalResp.setMaturaty(maturity.setScale(0,BigDecimal.ROUND_UP)   .doubleValue());
+			aipCalResp.setMaturaty(maturity.setScale(0, BigDecimal.ROUND_UP).doubleValue());
 			aipCalResp.setAipCalShedules(aipCalShedules);
 			aipCalResp.setExtraOe(adminFee + tax);
 			return aipCalResp;
@@ -211,13 +219,21 @@ public class AIPServiceImpl implements AIPService {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
+
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 12.5,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
-			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
+			Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 			customer = new Customer();
 			user = userdao.findOne(id);
 
@@ -225,7 +241,6 @@ public class AIPServiceImpl implements AIPService {
 			customer.setCustModifyDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
-			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
@@ -238,7 +253,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setQuotationModifyBy(user.getUser_Code());
 			quotationDetails.setQuotationModifyDate(new Date());
-			quotationDetails.setBaseSum(aip.getMaturaty());
+			quotationDetails.setBaseSum(0.0);
 			quotationDetails.setInterestRate(10.0);
 			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
@@ -247,12 +262,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
-					new Date(), frequance, false).getMaturaty());
+
 			quotationDetails.setCustomerDetails(customerDetails);
 			switch (frequance) {
 			case "M":
@@ -288,14 +298,55 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 
+			ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+
 			if (customerDao.save(customer) != null) {
 				if (customerDetailsDao.save(customerDetails) != null) {
 					if (quotationDao.save(quotation) != null) {
-						if (quotationDetailsDao.save(quotationDetails) != null) {
-							return "Success";
+						QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
+
+						/////////// Add Maturity///////////////////////
+
+						Quo_Benef_Details mat1 = new Quo_Benef_Details();
+						mat1.setRiderPremium(0.0);
+						mat1.setRiderTerm(2);
+						mat1.setRiderSum(aip.getMaturaty());
+						mat1.setQuotationDetails(quoDetails);
+						mat1.setRierCode("L6");
+						mat1.setBenefit(benefitsDao.findByRiderCode("L6"));
+						benefictList.add(mat1);
+
+						Quo_Benef_Details mat2 = new Quo_Benef_Details();
+						mat2.setRiderPremium(0.0);
+						mat2.setRiderTerm(2);
+						mat2.setRiderSum(aip2.getMaturaty());
+						mat2.setQuotationDetails(quoDetails);
+						mat2.setRierCode("L8");
+						mat2.setBenefit(benefitsDao.findByRiderCode("L8"));
+						benefictList.add(mat2);
+
+						Quo_Benef_Details mat3 = new Quo_Benef_Details();
+						mat3.setRiderPremium(0.0);
+						mat3.setRiderTerm(2);
+						mat3.setRiderSum(aip3.getMaturaty());
+						mat3.setQuotationDetails(quoDetails);
+						mat3.setRierCode("L9");
+						mat3.setBenefit(benefitsDao.findByRiderCode("L9"));
+						benefictList.add(mat3);
+
+						///////////////////////////// END ADD MATURITY////////////////////////
+
+						if (quoDetails != null) {
+							if (quoBenifDetailDao.save(benefictList) != null) {
+								return "Success";
+							} else {
+								return "Error at saving Maturity";
+							}
+
 						} else {
-							return "Error at Quotation Details Saving";
+							return "Error at Quotation Detail Saving";
 						}
+
 					} else {
 						return "Error at Quotation Saving";
 					}
@@ -361,7 +412,8 @@ public class AIPServiceImpl implements AIPService {
 	}
 
 	@Override
-	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
+	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
+			throws Exception {
 		CalculationUtils calculationUtils = null;
 		Products products = null;
 		Customer customer = null;
@@ -374,19 +426,25 @@ public class AIPServiceImpl implements AIPService {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), true);
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 12.5,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
 			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
-			
+
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
-			
+
 			customer = details.getCustomerDetails().getCustomer();
 			user = userdao.findOne(userId);
-			
 
 			customer.setCustCreateBy(user.getUser_Code());
 			customer.setCustCreateDate(new Date());
@@ -411,15 +469,8 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-			
-			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
-					new Date(), frequance, false).getMaturaty());
 			quotationDetails.setCustomerDetails(customerDetails);
-			
+
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
@@ -454,13 +505,53 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 
+			ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+
 			if (customerDao.save(customer) != null) {
 				if (customerDetailsDao.save(customerDetails) != null) {
 					if (quotationDao.save(quotation) != null) {
-						if (quotationDetailsDao.save(quotationDetails) != null) {
-							return "Success";
+						QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
+
+						/////////// Add Maturity///////////////////////
+
+						Quo_Benef_Details mat1 = new Quo_Benef_Details();
+						mat1.setRiderPremium(0.0);
+						mat1.setRiderTerm(2);
+						mat1.setRiderSum(aip.getMaturaty());
+						mat1.setQuotationDetails(quoDetails);
+						mat1.setRierCode("L6");
+						mat1.setBenefit(benefitsDao.findByRiderCode("L6"));
+						benefictList.add(mat1);
+
+						Quo_Benef_Details mat2 = new Quo_Benef_Details();
+						mat2.setRiderPremium(0.0);
+						mat2.setRiderTerm(2);
+						mat2.setRiderSum(aip2.getMaturaty());
+						mat2.setQuotationDetails(quoDetails);
+						mat2.setRierCode("L8");
+						mat2.setBenefit(benefitsDao.findByRiderCode("L8"));
+						benefictList.add(mat2);
+
+						Quo_Benef_Details mat3 = new Quo_Benef_Details();
+						mat3.setRiderPremium(0.0);
+						mat3.setRiderTerm(2);
+						mat3.setRiderSum(aip3.getMaturaty());
+						mat3.setQuotationDetails(quoDetails);
+						mat3.setRierCode("L9");
+						mat3.setBenefit(benefitsDao.findByRiderCode("L9"));
+						benefictList.add(mat3);
+
+						///////////////////////////// END ADD MATURITY////////////////////////
+
+						if (quoDetails != null) {
+							if (quoBenifDetailDao.save(benefictList) != null) {
+								return "Success";
+							} else {
+								return "Error at saving Maturity";
+							}
+
 						} else {
-							return "Error at Quotation Details Saving";
+							return "Error at Quotation Detail Saving";
 						}
 					} else {
 						return "Error at Quotation Saving";

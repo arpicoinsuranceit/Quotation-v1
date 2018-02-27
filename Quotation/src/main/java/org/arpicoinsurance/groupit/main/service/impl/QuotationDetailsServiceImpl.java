@@ -251,22 +251,27 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		case "M":
 			plan.set_frequance("Monthly");
 			plan.setContribution(details.getPremiumMonth());
+			plan.set_bsaTotal(details.getPremiumMonthT());
 			break;
 		case "Q":
 			plan.set_frequance("Quartaly");
 			plan.setContribution(details.getPremiumQuater());
+			plan.set_bsaTotal(details.getPremiumQuaterT());
 			break;
 		case "H":
 			plan.set_frequance("Half Yearly");
 			plan.setContribution(details.getPremiumHalf());
+			plan.set_bsaTotal(details.getPremiumHalfT());
 			break;
 		case "Y":
 			plan.set_frequance("Yearly");
 			plan.setContribution(details.getPremiumYear());
+			plan.set_bsaTotal(details.getPremiumYearT());
 			break;
 		case "S":
 			plan.set_frequance("Single Premium");
 			plan.setContribution(details.getPremiumSingle());
+			plan.set_bsaTotal(details.getPremiumSingleT());
 			break;
 
 		default:

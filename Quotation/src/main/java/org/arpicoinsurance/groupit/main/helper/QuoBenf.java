@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.helper;
 
 public class QuoBenf {
 	private String benfName;
+	private String riderCode;
 	private Integer riderTerm;
 	private Double riderSum;
 	private Double premium;
@@ -28,6 +29,12 @@ public class QuoBenf {
 	}
 	public void setRiderTerm(Integer riderTerm) {
 		this.riderTerm = riderTerm;
+	}
+	public String getRiderCode() {
+		return riderCode;
+	}
+	public void setRiderCode(String riderCode) {
+		this.riderCode = riderCode;
 	}
 	
 }

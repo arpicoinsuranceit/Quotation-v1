@@ -87,20 +87,19 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
-	
+
 	@Autowired
 	private CalculateRiders calculateriders;
 
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-	
+
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
-	
+
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
-		
+
 		CalculationUtils calculationUtils = null;
 		try {
 
@@ -114,7 +113,7 @@ public class ARPServiceImpl implements ARPService {
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance());
-			
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
@@ -187,7 +186,6 @@ public class ARPServiceImpl implements ARPService {
 		return maturity;
 	}
 
-
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
@@ -197,10 +195,11 @@ public class ARPServiceImpl implements ARPService {
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
-				user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
 
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -216,7 +215,8 @@ public class ARPServiceImpl implements ARPService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -228,7 +228,7 @@ public class ARPServiceImpl implements ARPService {
 			}
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-		//quotationDetails.setTopTerm(Integer.parseInt(calculation.get_personalInfo().getPayingterm()));
+		// quotationDetails.setTopTerm(Integer.parseInt(calculation.get_personalInfo().getPayingterm()));
 		Quotation quotation = new Quotation();
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
@@ -241,8 +241,9 @@ public class ARPServiceImpl implements ARPService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
 		//////////////////////////// save//////////////////////////////////
@@ -270,13 +271,20 @@ public class ARPServiceImpl implements ARPService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
+			/////////// Add Maturity///////////////////////
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ARP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////////////// END ADD MATURITY////////////////////////
+
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
@@ -301,8 +309,8 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,Integer qdId)
-			throws Exception {
+	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
@@ -358,7 +366,6 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-		
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -368,12 +375,10 @@ public class ARPServiceImpl implements ARPService {
 		} else {
 			quotationDetails1.setSpouseDetails(null);
 		}
-		
+
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
 
-		
-		
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -405,6 +410,13 @@ public class ARPServiceImpl implements ARPService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
+			/////////// Add Maturity///////////////////////
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ARP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////////////// END ADD MATURITY////////////////////////
+
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
@@ -433,5 +445,5 @@ public class ARPServiceImpl implements ARPService {
 
 		return "Success";
 	}
-	
+
 }

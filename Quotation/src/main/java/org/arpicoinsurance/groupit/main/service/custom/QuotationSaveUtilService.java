@@ -41,4 +41,6 @@ public interface QuotationSaveUtilService {
 				throws Exception;
 	 
 	 ArrayList<Shedule> getSheduleDtaDtapl(QuotationQuickCalResponse calResp, QuotationDetails quotationDetails) throws Exception;
+	 
+	 ArrayList<Quo_Benef_Details> addMaturity(String product, ArrayList<Quo_Benef_Details> benefictList, QuotationQuickCalResponse calResp, Integer term, QuotationDetails quotationDetails) throws Exception;
 }

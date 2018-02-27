@@ -28,10 +28,6 @@ public class QuotationDetails implements Serializable{
 	private Double premiumYearT;
 	private Double premiumSingle;
 	private Double premiumSingleT;
-	private Double maturity1;
-	private Double maturity2;
-	private Double maturity3;
-	
 	
 	private Double policyFee;
 	private Double taxAmount;
@@ -262,31 +258,6 @@ public class QuotationDetails implements Serializable{
 
 	public void setQuotationModifyDate(Date quotationModifyDate) {
 		this.quotationModifyDate = quotationModifyDate;
-	}
-	
-	
-	public Double getMaturity1() {
-		return maturity1;
-	}
-
-	public void setMaturity1(Double maturity1) {
-		this.maturity1 = maturity1;
-	}
-
-	public Double getMaturity2() {
-		return maturity2;
-	}
-
-	public void setMaturity2(Double maturity2) {
-		this.maturity2 = maturity2;
-	}
-
-	public Double getMaturity3() {
-		return maturity3;
-	}
-
-	public void setMaturity3(Double maturity3) {
-		this.maturity3 = maturity3;
 	}
 
 	@ManyToOne(cascade = CascadeType.ALL)
