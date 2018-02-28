@@ -220,7 +220,7 @@ public class ATRMServiceImpl implements ATRMService {
 		quotation.setProducts(products);
 
 		quotationDetails.setQuotation(quotation);
-		quotationDetails.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails.setQuotationCreateBy(user.getUserCode());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
 				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -353,7 +353,7 @@ public class ATRMServiceImpl implements ATRMService {
 
 		
 		quotationDetails1.setQuotation(quotation);
-		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,

@@ -70,7 +70,7 @@ public class TokenController {
 						users = userService.getUserByLoginId(login.getLoginId());
 
 						if (users != null) {
-							helperLogin.setUserCode(users.getUser_Code());
+							helperLogin.setUserCode(users.getUserCode());
 							helperLogin.setUserFullName(users.getUser_Name());
 							helperLogin.setUserId(users.getUserId());
 							loginDao.updateOne(new Date(), login.getLoginId());
@@ -115,7 +115,7 @@ public class TokenController {
 				users = userService.getUserByLoginId(login.getLoginId());
 
 				if (users != null) {
-					helperLogin.setUserCode(users.getUser_Code());
+					helperLogin.setUserCode(users.getUserCode());
 					helperLogin.setUserFullName(users.getUser_Name());
 					helperLogin.setUserId(users.getUserId());
 

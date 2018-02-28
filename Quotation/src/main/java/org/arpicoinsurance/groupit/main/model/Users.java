@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class Users implements Serializable{
 	private Integer userId;
-    private String user_Code;
+    private String userCode;
     private String user_EmpNo;
     private String user_Title;
     private String user_Name;
@@ -47,12 +47,12 @@ public class Users implements Serializable{
 		this.userId = userId;
 	}
 
-	public String getUser_Code() {
-		return user_Code;
+	public String getUserCode() {
+		return userCode;
 	}
 
-	public void setUser_Code(String user_Code) {
-		this.user_Code = user_Code;
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 	public String getUser_EmpNo() {

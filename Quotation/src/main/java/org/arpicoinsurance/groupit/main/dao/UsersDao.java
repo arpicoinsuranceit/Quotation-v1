@@ -16,4 +16,6 @@ public interface UsersDao extends CrudRepository<Users,String> {
 	
 	@Query("from Users where login_login_id=?1")
 	Users findByLoginId(Integer id) throws Exception;
+	
+	Users findOneByUserCode(String usercode) throws Exception;
 }

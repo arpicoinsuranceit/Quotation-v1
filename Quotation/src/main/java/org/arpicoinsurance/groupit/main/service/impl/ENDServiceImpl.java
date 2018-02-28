@@ -253,7 +253,7 @@ public class ENDServiceImpl implements ENDService {
 		}
 		
 		quotationDetails.setQuotation(quotation);
-		quotationDetails.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails.setQuotationCreateBy(user.getUserCode());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
@@ -394,7 +394,7 @@ public class ENDServiceImpl implements ENDService {
 
 		
 		quotationDetails1.setQuotation(quotation);
-		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,

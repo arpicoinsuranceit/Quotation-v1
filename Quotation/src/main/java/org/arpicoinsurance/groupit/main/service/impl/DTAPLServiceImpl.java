@@ -236,7 +236,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		}
 		
 		quotationDetails.setQuotation(quotation);
-		quotationDetails.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
@@ -341,7 +341,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		
 		quotationDetails1.setQuotation(quotation);
-		quotationDetails1.setQuotationCreateBy(user.getUser_Code());
+		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(

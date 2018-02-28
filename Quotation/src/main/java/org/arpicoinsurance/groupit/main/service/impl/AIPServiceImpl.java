@@ -237,7 +237,7 @@ public class AIPServiceImpl implements AIPService {
 			customer = new Customer();
 			user = userdao.findOne(id);
 
-			customer.setCustModifyBy(user.getUser_Code());
+			customer.setCustModifyBy(user.getUserCode());
 			customer.setCustModifyDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
@@ -251,7 +251,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
-			quotationDetails.setQuotationModifyBy(user.getUser_Code());
+			quotationDetails.setQuotationModifyBy(user.getUserCode());
 			quotationDetails.setQuotationModifyDate(new Date());
 			quotationDetails.setBaseSum(0.0);
 			quotationDetails.setInterestRate(10.0);
@@ -260,7 +260,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 
 			quotationDetails.setCustomerDetails(customerDetails);
@@ -295,7 +295,7 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			}
 
-			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 
 			ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
@@ -446,7 +446,7 @@ public class AIPServiceImpl implements AIPService {
 			customer = details.getCustomerDetails().getCustomer();
 			user = userdao.findOne(userId);
 
-			customer.setCustCreateBy(user.getUser_Code());
+			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
@@ -467,7 +467,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			quotationDetails.setCustomerDetails(customerDetails);
 
@@ -502,7 +502,7 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			}
 
-			quotationDetails.setQuotationCreateBy(user.getUser_Code());
+			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 
 			ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
