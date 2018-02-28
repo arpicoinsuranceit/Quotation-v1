@@ -78,7 +78,7 @@ public class ItextReportsimpl implements ItextReports{
 	//set customer and spouse details according to quotationdetail object
 		private QuoCustomer setCustomerDetails(QuotationDetails quoDetails) {
 			QuoCustomer customer=new QuoCustomer();
-			customer.setTerm(quoDetails.getPayTerm());
+			customer.setTerm(quoDetails.getPolTerm());
 			customer.setMode(quoDetails.getPayMode());
 			
 			if(quoDetails.getPayMode()!=null) {

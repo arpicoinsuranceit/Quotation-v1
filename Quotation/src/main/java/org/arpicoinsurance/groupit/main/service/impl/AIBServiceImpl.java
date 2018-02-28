@@ -157,10 +157,6 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setPremiumSingleT(contribution + adminFee + tax);
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
-		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
-					"S").doubleValue());
-		quotationDetails.setMaturity2(0.0);
-		quotationDetails.setMaturity3(0.0);
 		quotationDetails.setCustomerDetails(customerDetails);
 
 		if (customerDao.save(customer) != null) {
@@ -265,8 +261,6 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setQuotationCreateBy(user.getUser_Code());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
 		quotationDetails.setCustomerDetails(customerDetails);
-		quotationDetails.setMaturity1(calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(),
-				"S").doubleValue());
 		
 		if (customerDao.save(customer) != null) {
 			if (CustomerDetailsDao.save(customerDetails) != null) {

@@ -247,12 +247,6 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
-					new Date(), frequance, false).getMaturaty());
 			quotationDetails.setCustomerDetails(customerDetails);
 			switch (frequance) {
 			case "M":
@@ -411,13 +405,6 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUser_Code());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-			
-			quotationDetails.setMaturity1(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 9.5, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity2(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 11.0, contribution,
-					new Date(), frequance, false).getMaturaty());
-			quotationDetails.setMaturity3(calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.02, 12.5, contribution,
-					new Date(), frequance, false).getMaturaty());
 			quotationDetails.setCustomerDetails(customerDetails);
 			
 			switch (frequance) {
