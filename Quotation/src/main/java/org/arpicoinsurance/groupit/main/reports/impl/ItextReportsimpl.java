@@ -28,7 +28,7 @@ public class ItextReportsimpl implements ItextReports{
 	private QuotationReportService quotationReportService;
 	
 	@Override
-	public String createQuotationReport(Integer quoId) throws Exception {
+	public byte[] createQuotationReport(Integer quoId) throws Exception {
 		
 		QuotationDetails quotationDetails=quotationDetailsService.findQuotationDetails(quoId);
 		QuotationView quotationView = quoBenefDetailService.getQuo_Benef_DetailByQuoDetailId(quotationDetails);
@@ -38,41 +38,37 @@ public class ItextReportsimpl implements ItextReports{
 	    if(quotationView != null) {
 			
 		if(quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("AIP")) {
-				quotationReportService.createAIPReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createAIPReport(quotationDetails, quotationView, quoCustomer);
 				
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("AIB")) {
-				quotationReportService.createAIBReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createAIBReport(quotationDetails, quotationView, quoCustomer);
 		
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("INVP") || 
 				  (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ASIP"))) {
-				quotationReportService.createINVPReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createINVPReport(quotationDetails, quotationView, quoCustomer);
 		
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTA") || 
 				  (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL"))) {
-				quotationReportService.createDTAReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createDTAReport(quotationDetails, quotationView, quoCustomer);
 		
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ATRM")) {
-				quotationReportService.createATRMReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createATRMReport(quotationDetails, quotationView, quoCustomer);
 		
 		}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("END1")) {
-				quotationReportService.createEND1Report(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createEND1Report(quotationDetails, quotationView, quoCustomer);
 		
 		}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ASFP")) {
-				quotationReportService.createASFPReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createASFPReport(quotationDetails, quotationView, quoCustomer);
 		
 		}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ARP")) {
-				quotationReportService.createARPReport(quotationDetails, quotationView, quoCustomer);
+				return quotationReportService.createARPReport(quotationDetails, quotationView, quoCustomer);
 		}
 		
 		
 		
 		}
-		
-		
-		return "success";
-			
-		
-	        
+	    
+	    return new byte[] {};
 	}
 	
 	//set customer and spouse details according to quotationdetail object
