@@ -3,10 +3,12 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.arpicoinsurance.groupit.main.model.UserProfilePicture;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -66,4 +68,40 @@ public class UserController {
 		return jsonMap;
 	}
 	
+	@RequestMapping(path = "/getprofilePictures", method = RequestMethod.GET)
+	public @ResponseBody ArrayList<UserProfilePicture> getNotApprovedUsers() {
+
+
+		try {
+			return userService.getNotApprovedUserProfilePic();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(path = "/loadPendingProf/{id}", method = RequestMethod.GET)
+	public @ResponseBody Map<String, String> getPendingImage(@PathVariable String id) {
+		try {
+			return userService.getPendingImage(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value = "/approveUserProfile/{id}", method = RequestMethod.GET)
+	public ArrayList<UserProfilePicture> approveImage(@PathVariable String id) {
+		System.out.println(id);
+		try {
+			return userService.approveImage(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

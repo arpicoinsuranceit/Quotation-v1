@@ -1,7 +1,9 @@
 package org.arpicoinsurance.groupit.main.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.arpicoinsurance.groupit.main.model.UserProfilePicture;
 import org.arpicoinsurance.groupit.main.model.Users;
@@ -24,6 +26,10 @@ public interface UsersService {
 	
 	String saveUserProfilePic(MultipartFile image, String userCode) throws Exception;
 
-	ArrayList<UserProfilePicture> approveUserProfilePic(Integer id, String userCode) throws Exception;
+	ArrayList<UserProfilePicture> getNotApprovedUserProfilePic() throws Exception;
+	 
+	Map<String, String> getPendingImage(String userCode) throws Exception;
+
+	ArrayList<UserProfilePicture> approveImage(String id) throws Exception;
 	
 }
