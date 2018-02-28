@@ -290,7 +290,6 @@ public class AIBServiceImpl implements AIBService {
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setQuotationquotationCreateDate(new Date());
 		quotationDetails.setCustomerDetails(customerDetails);
-
 		ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
 
 		if (customerDao.save(customer) != null) {

@@ -262,7 +262,6 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
-
 			quotationDetails.setCustomerDetails(customerDetails);
 			switch (frequance) {
 			case "M":
