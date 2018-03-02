@@ -1,11 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.arpicoinsurance.groupit.main.model.UserProfilePicture;
@@ -49,23 +44,11 @@ public class UserController {
 	}
 	
 	@RequestMapping(path = "/downloadProfPic/{id}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, String> getImage(@PathVariable String id) throws IOException {
-
-		File file = new File("F://temp//"+id);
+	public @ResponseBody Map<String, String> getImage(@PathVariable String id) throws Exception {
 		
-		if(!file.exists()) {
-			file = new File("F://temp//dummy");
-		}
+		Map<String, String> image =userService.getProfileImage(id);
 
-		
-		
-		String encodeImage = Base64.getEncoder().withoutPadding().encodeToString(Files.readAllBytes(file.toPath()));
-
-		Map<String, String> jsonMap = new HashMap<>();
-
-		jsonMap.put("content", encodeImage);
-
-		return jsonMap;
+		return image;
 	}
 	
 	@RequestMapping(path = "/getprofilePictures", method = RequestMethod.GET)
@@ -97,6 +80,18 @@ public class UserController {
 		System.out.println(id);
 		try {
 			return userService.approveImage(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value = "/rejectUserProfile/{id}", method = RequestMethod.GET)
+	public ArrayList<UserProfilePicture> rejectImage(@PathVariable String id) {
+		System.out.println(id);
+		try {
+			return userService.rejectImage(id);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

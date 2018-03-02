@@ -10,5 +10,7 @@ public interface UserProfilePictureDao extends CrudRepository<UserProfilePicture
 
 	UserProfilePicture findByUsersAndApprove(Users users, boolean approve) throws Exception;
 	
-	ArrayList<UserProfilePicture> findAllByApprove(Boolean approve) throws Exception;
+	ArrayList<UserProfilePicture> findAllByApproveAndStatus(Boolean approve, String status) throws Exception;
+	
+	ArrayList<UserProfilePicture> findAllByUsersAndStatus(Users users , String status) throws Exception;
 }

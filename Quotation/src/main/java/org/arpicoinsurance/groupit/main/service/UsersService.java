@@ -1,6 +1,5 @@
 package org.arpicoinsurance.groupit.main.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,5 +30,9 @@ public interface UsersService {
 	Map<String, String> getPendingImage(String userCode) throws Exception;
 
 	ArrayList<UserProfilePicture> approveImage(String id) throws Exception;
+
+	ArrayList<UserProfilePicture> rejectImage(String id) throws Exception;
+
+	Map<String, String> getProfileImage(String id) throws Exception;
 	
 }

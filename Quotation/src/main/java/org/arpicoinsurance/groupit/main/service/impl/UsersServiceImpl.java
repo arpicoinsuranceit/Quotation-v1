@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -94,14 +92,19 @@ public class UsersServiceImpl implements UsersService {
 
 			stream.write(bytes);
 
-			UserProfilePicture userProfilePicture = userProfilePictureDao.findByUsersAndApprove(user, false);
+			// UserProfilePicture userProfilePicture =
+			// userProfilePictureDao.findByUsersAndApprove(user, false);
 
-			if (userProfilePicture == null) {
-				userProfilePicture = new UserProfilePicture();
-				userProfilePicture.setUsers(user);
-				userProfilePicture.setApprove(false);
-			}
+			UserProfilePicture userProfilePicture = new UserProfilePicture();
+			/*
+			 * if (userProfilePicture == null) { userProfilePicture = new
+			 * UserProfilePicture(); userProfilePicture.setUsers(user);
+			 * userProfilePicture.setApprove(false); }
+			 */
 
+			userProfilePicture = new UserProfilePicture();
+			userProfilePicture.setUsers(user);
+			userProfilePicture.setApprove(false);
 			userProfilePicture.setUrl(fileName);
 			userProfilePicture.setUploadDate(new Date());
 			userProfilePicture.setStatus("Pending");
@@ -140,7 +143,8 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public ArrayList<UserProfilePicture> getNotApprovedUserProfilePic() throws Exception {
 
-		ArrayList<UserProfilePicture> profilePictureLsit = userProfilePictureDao.findAllByApprove(false);
+		ArrayList<UserProfilePicture> profilePictureLsit = userProfilePictureDao.findAllByApproveAndStatus(false,
+				"Pending");
 		for (UserProfilePicture userProfilePicture : profilePictureLsit) {
 			Branch branch = userProfilePicture.getUsers().getBranch();
 			userProfilePicture.getUsers().setBranch(branch);
@@ -149,31 +153,27 @@ public class UsersServiceImpl implements UsersService {
 	}
 
 	@Override
-	public ArrayList<UserProfilePicture> approveImage(String id) throws Exception {
+	public ArrayList<UserProfilePicture> rejectImage(String id) throws Exception {
 
 		ArrayList<UserProfilePicture> profilePictureLsit = null;
 
-		UserProfilePicture userProfilePicture = userProfilePictureDao.findOne(Integer.parseInt(id));
-		if (userProfilePicture != null) {
-			UserProfilePicture userProfilePictureCurrent = userProfilePictureDao
-					.findByUsersAndApprove(userProfilePicture.getUsers(), true);
-			if (userProfilePictureCurrent != null) {
-				File currentFile = new File(UPLOADED_FOLDER + userProfilePictureCurrent.getUsers().getUserCode());
-				if (currentFile.exists()) {
-					File dest = new File(UPLOADED_FOLDER + "old_" + userProfilePicture.getUsers().getUserCode());
-					currentFile.renameTo(dest);
-					userProfilePictureCurrent.setApprove(false);
-					userProfilePictureCurrent.setStatus("Old");
-				}
-			}
-			File file = new File(userProfilePicture.getUrl());
+		UserProfilePicture userProfilePicturePending = userProfilePictureDao.findOne(Integer.parseInt(id));
+		UserProfilePicture userProfilePictureCurrent = null;
+
+		if (userProfilePicturePending != null) {
+			userProfilePictureCurrent = userProfilePictureDao
+					.findByUsersAndApprove(userProfilePicturePending.getUsers(), true);
+			
+			File file = new File(userProfilePicturePending.getUrl());
 			if (file.exists()) {
-				File dest = new File(UPLOADED_FOLDER + userProfilePicture.getUsers().getUserCode());
+				ArrayList<UserProfilePicture> rejectList = userProfilePictureDao.findAllByUsersAndStatus(userProfilePicturePending.getUsers(), "Reject");
+				File dest = new File(UPLOADED_FOLDER + "Reject_"+ userProfilePicturePending.getUsers().getUserCode()+"_"+(rejectList.size()+1));
 				file.renameTo(dest);
-				userProfilePicture.setApprove(true);
-				userProfilePicture.setApprovedBy(usersDao.findOneByUserCode("kavinda"));
-				userProfilePicture.setApprovedDate(new Date());
-				userProfilePicture.setStatus("Approved");
+				userProfilePicturePending.setApprove(false);
+				userProfilePicturePending.setUrl(UPLOADED_FOLDER + "Reject_"+ userProfilePicturePending.getUsers().getUserCode()+"_"+(rejectList.size()+1));
+				userProfilePicturePending.setApprovedBy(usersDao.findOneByUserCode("kavinda"));
+				userProfilePicturePending.setApprovedDate(new Date());
+				userProfilePicturePending.setStatus("Reject");
 
 			}
 
@@ -183,10 +183,93 @@ public class UsersServiceImpl implements UsersService {
 			return profilePictureLsit;
 		}
 
-		if (userProfilePictureDao.save(userProfilePicture) != null) {
-			return profilePictureLsit;
+		if (userProfilePictureDao.save(userProfilePicturePending) != null) {
+			if (userProfilePictureCurrent != null) {
+				if (userProfilePictureDao.save(userProfilePictureCurrent) != null) {
+					return profilePictureLsit;
+				}
+			}
+
 		}
 		return profilePictureLsit;
+	}
+	
+	
+	@Override
+	public ArrayList<UserProfilePicture> approveImage(String id) throws Exception {
+
+		ArrayList<UserProfilePicture> profilePictureLsit = null;
+
+		UserProfilePicture userProfilePicturePending = userProfilePictureDao.findOne(Integer.parseInt(id));
+		UserProfilePicture userProfilePictureCurrent = null;
+
+		if (userProfilePicturePending != null) {
+			userProfilePictureCurrent = userProfilePictureDao
+					.findByUsersAndApprove(userProfilePicturePending.getUsers(), true);
+			if (userProfilePictureCurrent != null) {
+				ArrayList<UserProfilePicture> oldList = userProfilePictureDao.findAllByUsersAndStatus(userProfilePicturePending.getUsers(), "Old");
+				File currentFile = new File(userProfilePictureCurrent.getUrl());
+				if (currentFile.exists()) {
+					
+					System.out.println("Called");
+					File dest = new File(UPLOADED_FOLDER + "old_" + userProfilePicturePending.getUsers().getUserCode()+"_"+(oldList.size()+1));
+					if (dest.exists()) {
+						dest.delete();
+					}
+					currentFile.renameTo(dest);
+				}
+				userProfilePictureCurrent
+						.setUrl(UPLOADED_FOLDER + "old_" + userProfilePicturePending.getUsers().getUserCode()+"_"+(oldList.size()+1));
+				userProfilePictureCurrent.setApprove(false);
+				userProfilePictureCurrent.setStatus("Old");
+			}
+			File file = new File(userProfilePicturePending.getUrl());
+			if (file.exists()) {
+				File dest = new File(UPLOADED_FOLDER + userProfilePicturePending.getUsers().getUserCode());
+				if (dest.exists()) {
+					dest.delete();
+				}
+				file.renameTo(dest);
+				userProfilePicturePending.setApprove(true);
+				userProfilePicturePending.setUrl(UPLOADED_FOLDER + userProfilePicturePending.getUsers().getUserCode());
+				userProfilePicturePending.setApprovedBy(usersDao.findOneByUserCode("kavinda"));
+				userProfilePicturePending.setApprovedDate(new Date());
+				userProfilePicturePending.setStatus("Approved");
+
+			}
+
+			profilePictureLsit = getNotApprovedUserProfilePic();
+
+		} else {
+			return profilePictureLsit;
+		}
+
+		if (userProfilePictureDao.save(userProfilePicturePending) != null) {
+			if (userProfilePictureCurrent != null) {
+				if (userProfilePictureDao.save(userProfilePictureCurrent) != null) {
+					return profilePictureLsit;
+				}
+			}
+
+		}
+		return profilePictureLsit;
+	}
+
+	@Override
+	public Map<String, String> getProfileImage(String id) throws Exception {
+		File file = new File("F://temp//" + id);
+
+		if (!file.exists()) {
+			file = new File("F://temp//dummy");
+		}
+
+		String encodeImage = Base64.getEncoder().withoutPadding().encodeToString(Files.readAllBytes(file.toPath()));
+
+		Map<String, String> jsonMap = new HashMap<>();
+
+		jsonMap.put("content", encodeImage);
+
+		return jsonMap;
 	}
 
 }
