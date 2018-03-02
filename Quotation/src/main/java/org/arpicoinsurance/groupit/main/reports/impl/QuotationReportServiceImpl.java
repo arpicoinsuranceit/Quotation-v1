@@ -79,13 +79,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// Arpico Logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		/*
 		 * Setting new Font PdfFont font = PdfFontFactory.createFont(FONT,
@@ -477,13 +477,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// Arpico Logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -865,13 +865,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -1361,13 +1361,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -1862,13 +1862,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -2354,13 +2354,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -2846,13 +2846,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
@@ -3352,13 +3352,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// logo
-		Paragraph pLogo = new Paragraph();
+		/*Paragraph pLogo = new Paragraph();
 		Image logo = new Image(ImageDataFactory.create(IMG));
 		logo.setHeight(100);
 		logo.setWidth(120);
 		logo.setFixedPosition(460, 720);
 		pLogo.add(logo);
-		document.add(pLogo);
+		document.add(pLogo);*/
 
 		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));

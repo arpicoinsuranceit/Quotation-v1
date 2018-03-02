@@ -41,7 +41,7 @@ public class Quo_Benef_DetailsDaoImpl implements Quo_Benef_DetailsDaoCustom {
 
 	@Override
 	public List<Quo_Benef_Details> findByQuoDetailId(Integer id) throws Exception {
-		String sql="Select * from Customer_Details cd,Quotation_Details qd,Quo_Benef_Details qbd,Benefits b where \r\n" + 
+		String sql="Select * from customer_details cd,quotation_details qd,quo_benef_details qbd,benefits b where \r\n" + 
 				"qd.customer_id=cd.cust_detail_id and qbd.quodetails_id=qd.qd_id and b.id=qbd.benef_id and qd.qd_id=?";
 		
 		Query query=entityManager.createNativeQuery(sql,Quo_Benef_Details.class);
