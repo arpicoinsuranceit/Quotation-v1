@@ -158,12 +158,13 @@ public class AIPServiceImpl implements AIPService {
 								+ " fndbmf : " + balance_bmf.toString() + " mgtfee : " + mgt_fees.toString()
 								+ " fndclo : " + close_bal.toString() + " fndclo : " + close_bal.toString());
 
-						aipCalShedule.setComCon(cum_premium.setScale(2, BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFundAmt(fund_amount.setScale(2, BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndBfi(balance_bfi.setScale(2, BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndBmf(balance_bmf.setScale(2, BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setMgtFee(mgt_fees.setScale(2, BigDecimal.ROUND_UP).doubleValue());
-						aipCalShedule.setFndClo(close_bal.setScale(2, BigDecimal.ROUND_UP).doubleValue());
+						aipCalShedule.setComCon(cum_premium.setScale(2, BigDecimal.ROUND_HALF_UP	).doubleValue());
+						aipCalShedule.setFundAmt(fund_amount.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+						aipCalShedule.setFndBfi(balance_bfi.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+						aipCalShedule.setFndBmf(balance_bmf.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+						aipCalShedule.setMgtFee(mgt_fees.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+						aipCalShedule.setFndClo(close_bal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+						aipCalShedule.setIntAmt(interest_annum.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
 						if (close_bal.compareTo(cum_premium) == -1) {
 							System.out.println(
