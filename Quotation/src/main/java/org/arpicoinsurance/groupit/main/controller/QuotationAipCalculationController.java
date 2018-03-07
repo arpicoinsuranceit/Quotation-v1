@@ -56,7 +56,7 @@ public class QuotationAipCalculationController {
 		System.out.println(plan.get_bsa() + "*************");
 		System.out.println(plan.get_term() + "*************");
 		try {
-			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.02, 9.5, contribution,
+			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), plan.get_frequance(), true);
 			// aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.02, 11.0,
 			// contribution, new Date(), plan.get_frequance(),false);
