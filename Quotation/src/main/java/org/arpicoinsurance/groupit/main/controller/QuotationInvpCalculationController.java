@@ -30,20 +30,24 @@ public class QuotationInvpCalculationController {
 			Validation validation = new Validation(calculation);
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();
-				
+
 				System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-				
-				if (error.equals("No")) {
-					calResp = invpService.getCalcutatedInvp(calculation);
-					if(validation.InvpPostValidation(calResp)) {
-						return calResp;
-					}else {
+				if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
+					if (error.equals("No")) {
+						calResp = invpService.getCalcutatedInvp(calculation);
+						if (validation.InvpPostValidation(calResp)) {
+							return calResp;
+						} else {
+							calResp.setErrorExist(true);
+							calResp.setError("Product");
+						}
+					} else {
 						calResp.setErrorExist(true);
-						calResp.setError("Product");
+						calResp.setError(error);
 					}
 				} else {
+					calResp.setError("Term is too large for mainlife age..");
 					calResp.setErrorExist(true);
-					calResp.setError(error);
 				}
 			} else {
 				calResp.setErrorExist(true);
@@ -56,7 +60,6 @@ public class QuotationInvpCalculationController {
 		}
 		return null;
 	}
-
 
 	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
@@ -73,23 +76,27 @@ public class QuotationInvpCalculationController {
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
-					if (validation.validateInvpEndProd() == 1) {
-						String error = validation.validateBenifict();
-						
-						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-						
-						if (error.equals("No")) {
+					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
+						if (validation.validateInvpEndProd() == 1) {
+							String error = validation.validateBenifict();
 
-							String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+							if (error.equals("No")) {
+
+								String response = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+								resp = response;
+							} else {
+								resp = error;
+							}
 						} else {
-							resp = error;
+							resp = "Error at product";
 						}
 					} else {
-						resp = "Error at product";
+						resp = "Incomplete";
 					}
 				} else {
-					resp = "Incomplete";
+					resp = "Term is too large for mainlife age..";
 				}
 			} else {
 				resp = "User can't be identify";
@@ -109,11 +116,11 @@ public class QuotationInvpCalculationController {
 
 		return resp;
 	}
-	
+
 	@RequestMapping(value = "/quoInvpEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
-			, @PathVariable("qdId") Integer qdId) {
-		
+	public String editInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId,
+			@PathVariable("qdId") Integer qdId) {
+
 		System.out.println(userId);
 		System.out.println(qdId);
 		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
@@ -130,24 +137,30 @@ public class QuotationInvpCalculationController {
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
-					if (validation.validateInvpEndProd() == 1) {
-						String error = validation.validateBenifict();
-						
-						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-						
-						if (error.equals("No")) {
+					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
+						if (validation.validateInvpEndProd() == 1) {
+							String error = validation.validateBenifict();
 
-							String response = invpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-							resp = response;
+							System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+							if (error.equals("No")) {
+
+								String response = invpService.editQuotation(calculation, _invpSaveQuotation, userId,
+										qdId);
+								resp = response;
+							} else {
+								resp = error;
+							}
 						} else {
-							resp = error;
+							resp = "Error at product";
 						}
 					} else {
-						resp = "Error at product";
+						resp = "Term is too large for mainlife age..";
 					}
 				} else {
 					resp = "Incomplete";
 				}
+
 			} else {
 				resp = "User can't be identify";
 
