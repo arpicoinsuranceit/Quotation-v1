@@ -33,14 +33,20 @@ public class QuotationDtaCalculationController {
 			validation = new Validation(calculation);
 			String error = validation.validateBenifict();
 
-			if (error.equals("No")) {
-				calResp = dtaService.getCalcutatedDta(calculation);
-			}
-			
-			else {
-				calResp.setError(error);
+			if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
+				if (error.equals("No")) {
+					calResp = dtaService.getCalcutatedDta(calculation);
+				}else {
+					calResp.setError(error);
+					calResp.setErrorExist(true);
+				}
+			}else {
+				calResp.setError("Term is too large for mainlife age..");
 				calResp.setErrorExist(true);
 			}
+			
+			
+			
 			
 			return calResp;
 			
@@ -76,13 +82,16 @@ public class QuotationDtaCalculationController {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
 					String error = validation.validateBenifict();
-
-					if (error.equals("No")) {
-
-						String response = dtaService.saveQuotation(calculation, _invpSaveQuotation, id);
-						resp = response;
-					} else {
-						resp =  error;
+					if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
+						if (error.equals("No")) {
+	
+							String response = dtaService.saveQuotation(calculation, _invpSaveQuotation, id);
+							resp = response;
+						} else {
+							resp =  error;
+						}
+					}else {
+						resp ="Term is too large for mainlife age..";
 					}
 
 				} else {
@@ -132,13 +141,16 @@ public class QuotationDtaCalculationController {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
 					String error = validation.validateBenifict();
-					
-					if (error.equals("No")) {
-
-						String response = dtaService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-						resp = response;
-					} else {
-						resp = error;
+					if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
+						if (error.equals("No")) {
+	
+							String response = dtaService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
+							resp = response;
+						} else {
+							resp = error;
+						}
+					}else {
+						resp ="Term is too large for mainlife age..";
 					}
 					
 				} else {
