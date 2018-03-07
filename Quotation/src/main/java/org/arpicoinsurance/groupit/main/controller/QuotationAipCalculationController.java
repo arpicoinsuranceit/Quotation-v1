@@ -83,7 +83,12 @@ public class QuotationAipCalculationController {
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
-					resp = aipService.saveQuotation(_invpSaveQuotation, id);
+					if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
+							+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+						resp = aipService.saveQuotation(_invpSaveQuotation, id);
+					} else {
+						resp = "Term is too large for Mainlife age";
+					}
 				}
 			}
 
@@ -96,7 +101,7 @@ public class QuotationAipCalculationController {
 	}
 
 	@RequestMapping(value = "/quoAipEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,@PathVariable("userId") Integer userId,
+	public String editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
 			@PathVariable("qdId") Integer qdId) {
 		String resp = "Fail";
 
@@ -104,8 +109,12 @@ public class QuotationAipCalculationController {
 			if (userId != null) {
 				if (qdId != null) {
 					if (_invpSaveQuotation != null) {
-						resp = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
-
+						if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
+								+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+							resp = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
+						} else {
+							resp = "Term is too large for Mainlife age";
+						}
 					}
 				}
 			}

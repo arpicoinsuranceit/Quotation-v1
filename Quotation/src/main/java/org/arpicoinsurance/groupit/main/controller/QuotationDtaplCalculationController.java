@@ -22,7 +22,7 @@ public class QuotationDtaplCalculationController {
 
 	@Autowired
 	private DTAPLService dtaplService;
-	
+
 	@RequestMapping(value = "/quoDtaplCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		Validation validation = null;
@@ -31,23 +31,28 @@ public class QuotationDtaplCalculationController {
 			calResp = new QuotationQuickCalResponse();
 			validation = new Validation(calculation);
 			String error = validation.validateBenifict();
+			if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
+				if (error.equals("No")) {
+					calResp = dtaplService.getCalcutatedDta(calculation);
+				}
 
-			if (error.equals("No")) {
-				calResp = dtaplService.getCalcutatedDta(calculation);
-			}
-			
-			else {
-				calResp.setError(error);
+				else {
+					calResp.setError(error);
+					calResp.setErrorExist(true);
+				}
+			} else {
+				calResp.setError("Term is too large for Mainlife age");
+				;
 				calResp.setErrorExist(true);
 			}
-			
+
 			return calResp;
-			
+
 		} catch (Exception e) {
-			
+
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 		} finally {
 			if (validation != null) {
 				validation = null;
@@ -55,11 +60,11 @@ public class QuotationDtaplCalculationController {
 			if (calResp != null) {
 				calResp = null;
 			}
-			
+
 		}
 		return null;
 	}
-	
+
 	@RequestMapping(value = "/quoDtaplsave/{id}", method = RequestMethod.POST)
 	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
@@ -77,11 +82,15 @@ public class QuotationDtaplCalculationController {
 					String error = validation.validateBenifict();
 
 					if (error.equals("No")) {
+						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
 
-						String response = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
-						resp = response;
+							String response = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
+							resp = response;
+						} else {
+							resp="Term is too large for Mainlife age";
+						}
 					} else {
-						resp =  error;
+						resp = error;
 					}
 
 				} else {
@@ -93,27 +102,27 @@ public class QuotationDtaplCalculationController {
 			}
 
 		} catch (Exception e) {
-			
+
 			Logger.getLogger(QuotationDtaplCalculationController.class.getName()).log(Level.SEVERE, null, e);
-			
+
 		} finally {
-			
+
 			if (calculation != null) {
 				calculation = null;
 			}
 			if (validation != null) {
 				validation = null;
 			}
-			
+
 		}
 
 		return resp;
 	}
-	
+
 	@RequestMapping(value = "/quoDtaplEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
-			, @PathVariable("qdId") Integer qdId) {
-		
+	public String editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId,
+			@PathVariable("qdId") Integer qdId) {
+
 		System.out.println(userId);
 		System.out.println(qdId);
 		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
@@ -131,15 +140,21 @@ public class QuotationDtaplCalculationController {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					validation = new Validation(calculation);
 					String error = validation.validateBenifict();
-					
-					if (error.equals("No")) {
 
-						String response = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-						resp = response;
+					if (error.equals("No")) {
+						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
+
+							String response = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							resp = response;
+						} else {
+							resp="Term is too large for Mainlife age";
+						}
+
+						
 					} else {
 						resp = error;
 					}
-					
+
 				} else {
 					resp = "Incomplete";
 				}
