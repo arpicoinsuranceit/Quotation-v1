@@ -26,7 +26,10 @@ public class QuotationAtrmCalculationController {
 
 	@RequestMapping(value = "/quoAtrmCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		System.out.println(calculation.get_personalInfo().getMgenger());
+		//System.out.println(calculation);
+		System.out.println(calculation.get_personalInfo().getSgenger()+"***************************");
+		
+		System.out.println(calculation.get_personalInfo().getMgenger()+"************************************");
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);

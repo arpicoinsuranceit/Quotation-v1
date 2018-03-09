@@ -123,7 +123,7 @@ public class AIBServiceImpl implements AIBService {
 		}
 
 		System.out.println("maturity : " + total_amount.toString());
-		maturity = total_amount.setScale(2, RoundingMode.HALF_UP);
+		maturity = total_amount.setScale(0, BigDecimal.ROUND_UP);
 		return maturity;
 	}
 

@@ -131,6 +131,10 @@ public class ATRMServiceImpl implements ATRMService {
 	public QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
 		System.out.println(calculation.get_personalInfo().getMgenger());
 
+		System.out.println(calculation.get_personalInfo().getMgenger()+ "/////////////////////////////////////////////////////////////");
+		System.out.println(calculation.get_personalInfo().getSgenger() + "/////////////////////////////////////////////////////////////");
+		
+		
 		CalculationUtils calculationUtils = null;
 		try {
 

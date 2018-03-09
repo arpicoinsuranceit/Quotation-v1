@@ -270,7 +270,7 @@ public class ASIPServiceImpl implements ASIPService {
 		System.out.println("maturity " + intrat + " : " + total_amount.setScale(0, BigDecimal.ROUND_HALF_UP) + " ---- "
 				+ total_amount.toString());
 		maturity = total_amount;
-		return maturity.setScale(2, RoundingMode.HALF_UP);
+		return maturity.setScale(0, BigDecimal.ROUND_UP);
 	}
 
 	@Override
