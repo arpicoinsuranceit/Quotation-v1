@@ -311,14 +311,14 @@ public class Validation {
 	////////////// Asip Product Validation
 
 	public Integer validateAsipProd() {
-		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11
+		if ((calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 11
 				|| calculation.get_personalInfo().getTerm() == 15 || calculation.get_personalInfo().getTerm() == 20
 				|| calculation.get_personalInfo().getTerm() == 25 || calculation.get_personalInfo().getTerm() == 30
 				|| calculation.get_personalInfo().getTerm() == 35 || calculation.get_personalInfo().getTerm() == 40
 				|| calculation.get_personalInfo().getTerm() == 45
-				|| calculation.get_personalInfo().getTerm() == 50 && calculation.get_personalInfo().getMage() >= 18
+				|| calculation.get_personalInfo().getTerm() == 50 ) && calculation.get_personalInfo().getMage() >= 18
 						&& calculation.get_personalInfo().getMage() <= 65
-						&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 65) {
+						&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70) {
 			return 1;
 		}
 
