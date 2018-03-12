@@ -218,6 +218,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getAdbTerm());
 						benef_Details.setRierCode(type);
 						break;
+					case "SFPO":
+						benef_Details.setRiderPremium(calResp.getSfpo());
+						benef_Details.setRiderTerm(calResp.getSfpoTerm());
+						benef_Details.setRierCode(type);
+						break;
 					case "ATPB":
 						benef_Details.setRiderPremium(calResp.getAtpb());
 						benef_Details.setRiderTerm(calResp.getAtpbTerm());
@@ -487,6 +492,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 		if (benef_DetailsList != null && !benef_DetailsList.isEmpty()) {
 			for (Quo_Benef_Details benef_Details : benef_DetailsList) {
 				String type = benef_Details.getRierCode();
+				System.out.println(type+"Tttttttttttttttt");
 				switch (type) {
 				case "CIBC":
 					cibc_Benef_Details = benef_Details;

@@ -17,6 +17,8 @@ public class QuotationQuickCalResponse {
 	
 	private Double adb= 0.00;
 	private int adbTerm = 0;
+	private Double sfpo= 0.00;
+	private int sfpoTerm = 0;
 	private Double atpb= 0.00;
 	private int atpbTerm = 0;
 	private Double cib= 0.00;
@@ -584,6 +586,18 @@ public class QuotationQuickCalResponse {
 	}
 	public void setL2(Double l2) {
 		this.l2 = l2;
+	}
+	public Double getSfpo() {
+		return sfpo;
+	}
+	public void setSfpo(Double sfpo) {
+		this.sfpo = sfpo;
+	}
+	public int getSfpoTerm() {
+		return sfpoTerm;
+	}
+	public void setSfpoTerm(int sfpoTerm) {
+		this.sfpoTerm = sfpoTerm;
 	}
 	
 	
