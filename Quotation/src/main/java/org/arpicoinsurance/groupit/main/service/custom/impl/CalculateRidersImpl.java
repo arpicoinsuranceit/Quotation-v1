@@ -234,7 +234,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			if (_sRiders != null) {
 
 				for (Benifict benifict : _sRiders) {
-
+					System.out.println(quotationCalculation.get_personalInfo().getTerm()+"?????????????????????????-------------------");
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
 							benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
@@ -652,6 +652,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			
 /////////////////////////////////////////////////////////////////////////
 		default:
+			calResp.setHrbsTerm(term);
 			return calResp;
 		}
 
