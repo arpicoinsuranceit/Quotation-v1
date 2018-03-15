@@ -25,6 +25,8 @@ public class CIBCServiceImpl implements CIBCService{
 		// TODO Auto-generated method stub
 		BigDecimal premiumCIBC = new BigDecimal(0);
 		System.out.println(age + " $ " +term + " $ "+ chedat);
+		
+		System.out.println(term + "//////");
 		RateCardCIBC rateCardCIBC = rateCardCIBCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		
 		System.out.println(" Rate : "+rateCardCIBC.getRate());

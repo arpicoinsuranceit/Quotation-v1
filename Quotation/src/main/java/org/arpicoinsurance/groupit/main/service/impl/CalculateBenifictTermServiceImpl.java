@@ -9,25 +9,54 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermService{
+public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermService {
 
 	@Autowired
 	private BenefitsDao beneficeDao;
-	
-	
+
 	@Override
 	public Integer calculateBenifictTerm(Integer age, String riderCode, Integer term) throws Exception {
-		if(riderCode.equals("BSAS"))
-			riderCode="SCB";
-		if(riderCode.equals("CIBS"))
-			riderCode="SCIB";
-		System.out.println(age+"******************************************");
-		Benefits benefits=beneficeDao.findByRiderCode(riderCode);
-		if(age>=benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
-			Integer ageDiferance=benefits.getBenefitMaxAge()-age;
-			if(ageDiferance >= term) {
+		if (riderCode.equals("BSAS"))
+			riderCode = "SCB";
+		if (riderCode.equals("CIBS"))
+			riderCode = "SCIB";
+		System.out.println(age + "******************************************");
+		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
+		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
+			Integer ageDiferance = benefits.getBenefitMaxAge() - age;
+			if (ageDiferance >= term) {
 				return term;
-			}else {
+			} else {
+				return ageDiferance;
+			}
+		}
+		return -1;
+	}
+
+	public Integer calculateBenifictTermARP(Integer age, String riderCode, Integer term, String payingTerm)
+			throws Exception {
+		if (riderCode.equals("BSAS"))
+			riderCode = "SCB";
+		if (riderCode.equals("CIBS"))
+			riderCode = "SCIB";
+		System.out.println(age + "******************************************");
+
+		int payTerm = 0;
+
+		if (!payingTerm.equals("S")) {
+			try {
+				payTerm = Integer.parseInt(payingTerm);
+			} catch (Exception e) {
+				return -1;
+			}
+		}
+
+		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
+		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
+			Integer ageDiferance = benefits.getBenefitMaxAge() - (age+payTerm);
+			if (ageDiferance >= term) {
+				return term;
+			} else {
 				return ageDiferance;
 			}
 		}
