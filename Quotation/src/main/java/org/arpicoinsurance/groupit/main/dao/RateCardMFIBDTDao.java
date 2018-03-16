@@ -9,4 +9,5 @@ public interface RateCardMFIBDTDao extends MongoRepository<RateCardMFIBDT, Strin
 	
 	RateCardMFIBDT findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 
+	RateCardMFIBDT findFirstByOrderByTermDesc() throws Exception;
 }

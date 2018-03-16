@@ -12,4 +12,5 @@ public interface RateCardSUHRBDao extends MongoRepository<RateCardSUHRB, String>
 	@Query("{$and : [{ $or: [ { 'ageto' : { $lt: ?0 } }, { 'ageto' : ?1 } ]} , {$or: [ { 'agefrom' : { $gt: ?2 } }, { 'agefrom' : ?3 } ] }], 'sex' : ?4, 'term' : ?5 ,'sumasu' : ?6 , $or:[{'strdat' :{$lt: ?7} }, {'strdat' : ?8}]}")
 	RateCardSUHRB findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(int ageto1, int ageto2, int agefrom1, int agefrom2, String sex, int term, double sumasu, Date strdat1,Date strdat2) throws Exception;
 
+	RateCardSUHRB findFirstByOrderByTermDesc() throws Exception;
 }

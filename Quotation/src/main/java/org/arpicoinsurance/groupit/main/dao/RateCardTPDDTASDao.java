@@ -9,4 +9,5 @@ public interface RateCardTPDDTASDao extends MongoRepository<RateCardTPDDTAS, Str
 
 	RateCardTPDDTAS findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, String sex, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 	
+	RateCardTPDDTAS findFirstByOrderByTermDesc() throws Exception;
 }

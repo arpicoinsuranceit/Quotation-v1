@@ -9,4 +9,6 @@ public interface RateCardATFESCDao extends MongoRepository<RateCardATFESC, Strin
 	
 	RateCardATFESC findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 
+	RateCardATFESC findFirstByOrderByTermDesc() throws Exception;
+	
 }
