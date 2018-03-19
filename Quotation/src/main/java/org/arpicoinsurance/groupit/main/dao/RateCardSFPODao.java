@@ -9,4 +9,5 @@ public interface RateCardSFPODao extends MongoRepository<RateCardSFPO, String> {
 	
 	RateCardSFPO findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 
+	RateCardSFPO findFirstByOrderByTermDesc() throws Exception;
 }

@@ -33,13 +33,9 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 		return -1;
 	}
 
-	public Integer calculateBenifictTermARP(Integer age, String riderCode, Integer term, String payingTerm)
+	@Override
+	public Integer calculateChildBenifictTermARP(Integer age, String riderCode, Integer term, String payingTerm)
 			throws Exception {
-		if (riderCode.equals("BSAS"))
-			riderCode = "SCB";
-		if (riderCode.equals("CIBS"))
-			riderCode = "SCIB";
-		System.out.println(age + "******************************************");
 
 		int payTerm = 0;
 
@@ -52,15 +48,31 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 		}
 
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
-		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
-			Integer ageDiferance = benefits.getBenefitMaxAge() - (age+payTerm);
-			if (ageDiferance >= term) {
-				return term;
-			} else {
-				return ageDiferance;
-			}
+		// if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge())
+		// {
+		if (((benefits.getBenefitMaxAge() - age) - payTerm) >= 5) {
+			
+			return benefits.getBenefitMaxAge() - age;
 		}
 		return -1;
 	}
+
+	/*
+	 * public Integer calculateBenifictTermARP(Integer age, String riderCode,
+	 * Integer term, String payingTerm) throws Exception { if
+	 * (riderCode.equals("BSAS")) riderCode = "SCB"; if (riderCode.equals("CIBS"))
+	 * riderCode = "SCIB"; System.out.println(age +
+	 * "******************************************");
+	 * 
+	 * int payTerm = 0;
+	 * 
+	 * if (!payingTerm.equals("S")) { try { payTerm = Integer.parseInt(payingTerm);
+	 * } catch (Exception e) { return -1; } }
+	 * 
+	 * Benefits benefits = beneficeDao.findByRiderCode(riderCode); if (age >=
+	 * benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) { Integer
+	 * ageDiferance = benefits.getBenefitMaxAge() - (age+payTerm); if (ageDiferance
+	 * >= term) { return term; } else { return ageDiferance; } } return -1; }
+	 */
 
 }

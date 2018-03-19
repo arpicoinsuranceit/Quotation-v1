@@ -9,4 +9,5 @@ public interface RateCardCIBCDao extends MongoRepository<RateCardCIBC, String>{
 	
 	RateCardCIBC findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 
+	RateCardCIBC findFirstByOrderByTermDesc() throws Exception;
 }
