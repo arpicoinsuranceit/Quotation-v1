@@ -309,7 +309,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				editQuotation.get_mainlife().set_mGender("Male");
 			}
 			
-			if(editQuotation.get_spouse() != null) {
+			if(editQuotation.get_spouse().get_sAge() != null && editQuotation.get_spouse().get_sName() != null) {
 				if(editQuotation.get_spouse().get_sGender().equals("F")) {
 					editQuotation.get_spouse().set_sGender("Female");
 				}else {
