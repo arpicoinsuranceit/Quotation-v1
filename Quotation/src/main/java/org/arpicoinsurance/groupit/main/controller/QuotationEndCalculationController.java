@@ -62,6 +62,7 @@ public class QuotationEndCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
@@ -116,6 +117,7 @@ public class QuotationEndCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();

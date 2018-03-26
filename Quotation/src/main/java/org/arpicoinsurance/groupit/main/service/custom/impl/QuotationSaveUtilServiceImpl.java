@@ -276,7 +276,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						*/
 					case "HRBI":
 						benef_Details.setRiderPremium(calResp.getHrbi());
-						benef_Details.setRiderTerm(calResp.getHrbicTerm());
+						benef_Details.setRiderTerm(calResp.getHrbiTerm());
 						benef_Details.setRierCode(type);
 						break;
 						
@@ -518,7 +518,9 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 		Double cib = null;
 		Double suhrb = null;
 		Double hb = null;
+		Double hrbi = null;
 
+		
 		Quo_Benef_Details cibc_Benef_Details = null;
 		//Quo_Benef_Details hrbc_Benef_Details = null;
 		Quo_Benef_Details hrbfc_Benef_Details = null;
@@ -564,6 +566,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 					suhrb = benifict.getSumAssured();
 				if (benifict.getType().equals("HBC"))
 					hb = benifict.getSumAssured();
+				if (benifict.getType().equals("HRBIC"))
+					hrbi = benifict.getSumAssured();
 			}
 
 		ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
@@ -585,7 +589,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 								benef_Child_Details.setTerm(valiedTerm);
 
 								BigDecimal cibc = cibcService.calculateCIBC(children.get_cAge(),
-										term > (21 - 6) ? (21 - 6) : valiedTerm, new Date(), cib, frequancy, 1.0);
+										valiedTerm, new Date(), cib, frequancy, 1.0);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -642,16 +646,18 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 								childBenifList.add(benef_Child_Details);
 							}*/
 							if (children.is_cHrbic()) {
-								System.out.println("addddddddddddddddddddddddddddddddddddddd4");
+								System.out.println("addddddddddddddddddddddddddddddddddddddd4  called HRBIC");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"HRBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 
+								BigDecimal hrbic = new BigDecimal(100);
+								
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
-								benef_Child_Details.setPremium(0.0);
+								benef_Child_Details.setPremium(hrbic.doubleValue());
 								benef_Child_Details.setQuo_Benef_Details(hrbic_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}

@@ -75,6 +75,7 @@ public class QuotationInvpCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
 						if (validation.validateInvpEndProd() == 1) {
@@ -136,6 +137,7 @@ public class QuotationInvpCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
 						if (validation.validateInvpEndProd() == 1) {

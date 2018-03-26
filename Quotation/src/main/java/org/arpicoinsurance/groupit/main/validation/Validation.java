@@ -180,12 +180,12 @@ public class Validation {
 						*/
 					case "HRBIS":
 						if (validateInvpHRBIS().equals(0)) {
-							return "HRBIS must be equal to HRB";
+							return "HRBIS must be equal to HRBS";
 						}
 						break;
 					case "HRBFS":
 						if (validateInvpHRBFS().equals(0)) {
-							return "HRBFS must be equal to HRB";
+							return "HRBFS must be equal to HRBF";
 						}
 						break;
 					case "PPDBS":
@@ -265,13 +265,13 @@ public class Validation {
 						*/
 					case "HRBIC":
 						if (validateInvpHRBIC().equals(0)) {
-							return "HRBIC must be equal to HRB";
+							return "HRBIC must be equal to HRBC";
 						}
 						break;
 						
 					case "HRBFC":
 						if (validateInvpHRBFC().equals(0)) {
-							return "HRBFC must be equal to HRB";
+							return "HRBFC must be equal to HRBF";
 						}
 						break;
 					case "SUHRBC":

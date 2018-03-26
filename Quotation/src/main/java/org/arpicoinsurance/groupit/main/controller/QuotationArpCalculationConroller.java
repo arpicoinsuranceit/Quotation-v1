@@ -61,6 +61,7 @@ public class QuotationArpCalculationConroller {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validationInvp = new Validation(calculation);
 					if (validationInvp.validateAsipProd() == 1) {
 						String error = validationInvp.validateBenifict();
@@ -72,7 +73,7 @@ public class QuotationArpCalculationConroller {
 							resp = error;
 						}
 					} else {
-						resp = "Error at product";
+						resp = "Error at product ";
 					}
 				} else {
 					resp = "Incomplete";
@@ -115,6 +116,7 @@ public class QuotationArpCalculationConroller {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateAsipProd() == 1) {
 						String error = validation.validateBenifict();
@@ -126,7 +128,7 @@ public class QuotationArpCalculationConroller {
 							resp = error;
 						}
 					} else {
-						resp = "Error at product";
+						resp = "Error at product ";
 					}
 				} else {
 					resp = "Incomplete";

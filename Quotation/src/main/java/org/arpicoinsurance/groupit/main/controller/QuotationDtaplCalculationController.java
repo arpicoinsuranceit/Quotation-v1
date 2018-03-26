@@ -78,6 +78,7 @@ public class QuotationDtaplCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					String error = validation.validateBenifict();
 
@@ -138,6 +139,7 @@ public class QuotationDtaplCalculationController {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					String error = validation.validateBenifict();
 

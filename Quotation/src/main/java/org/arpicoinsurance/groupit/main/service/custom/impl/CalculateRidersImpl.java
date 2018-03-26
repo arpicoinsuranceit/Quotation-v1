@@ -359,6 +359,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				if (_cRiders != null) {
 					for (Benifict benifict : _cRiders) {
 						Integer term = 0;
+						System.out.println("product :" +quotationCalculation.get_product());
 						if (quotationCalculation.get_product().equals("ARP")) {
 							term = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(), benifict.getType(),
 									quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getPayingterm());
@@ -392,6 +393,14 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 						case "SUHRBC":
 							if (children.is_cSuhrbc()) {
+								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
+										children.get_cTitle(), children.get_cAge(),
+										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
+										adultCount, childCount, -1.0, -1.0);
+							}
+							break;
+						case "HRBIC":
+							if (children.is_cHrbic()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,

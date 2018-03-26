@@ -224,11 +224,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 						}
 						
 						if(bnf.getBenfName().equals("HRBIC")) {
-							children.set_cHbc(true);
+							children.set_cHrbic(true);
 						}
 						
 						if(bnf.getBenfName().equals("HRBFC")) {
-							children.set_cHbc(true);
+							children.set_cHrbfc(true);
 						}
 					}
 				}
