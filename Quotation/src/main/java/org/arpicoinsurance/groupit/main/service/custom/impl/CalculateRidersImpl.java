@@ -35,6 +35,10 @@ import org.arpicoinsurance.groupit.main.service.rider.FEBService;
 import org.arpicoinsurance.groupit.main.service.rider.HBCService;
 import org.arpicoinsurance.groupit.main.service.rider.HBSService;
 import org.arpicoinsurance.groupit.main.service.rider.HBService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBFService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBICService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBISService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBIService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBService;
@@ -124,8 +128,20 @@ public class CalculateRidersImpl implements CalculateRiders {
 	@Autowired
 	private MFIBDTService mfibdtService;
 
+	//@Autowired
+	//private HRBService hrbService;
+	
 	@Autowired
-	private HRBService hrbService;
+	private HRBFService hrbfService;
+	
+	@Autowired
+	private HRBIService hrbiService;
+	
+	@Autowired
+	private HRBISService hrbisService;
+	
+	@Autowired
+	private HRBICService hrbicService;
 
 	@Autowired
 	private SUHRBService suhrbService;
@@ -241,7 +257,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 		}
-		if (_mRiders != null) {
+		/*if (_mRiders != null) {
 			for (Benifict benifict : _mRiders) {
 				adultCount = 1;
 				if (benifict.getType().equals("HRB")) {
@@ -277,7 +293,47 @@ public class CalculateRidersImpl implements CalculateRiders {
 						quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate);
 
 			}
+		}*/
+		
+		
+		if (_mRiders != null) {
+			for (Benifict benifict : _mRiders) {
+				adultCount = 1;
+				if (benifict.getType().equals("HRBF")) {
+
+					if (quotationCalculation.get_personalInfo().getSage() != null
+							&& quotationCalculation.get_personalInfo().getSgenger() != null
+							&& quotationCalculation.get_personalInfo().getSocu() != null) {
+						if (_sRiders != null) {
+							for (Benifict benifict2 : _sRiders) {
+								if (benifict2.getType().equals("HRBFS")) {
+									adultCount += 1;
+								}
+							}
+						}
+					}
+
+					if (quotationCalculation.get_personalInfo().getChildrens() != null
+							&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
+						if (_cRiders != null) {
+							for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
+								if (children.is_cHrbfc()) {
+									childCount += 1;
+								}
+							}
+						}
+					}
+				}
+
+				calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
+						quotationCalculation.get_personalInfo().getTerm(), benifict.getSumAssured(),
+						quotationCalculation.get_personalInfo().getMgenger(),
+						quotationCalculation.get_personalInfo().getFrequance(),
+						quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate);
+
+			}
 		}
+		
 
 		if (quotationCalculation.get_personalInfo().getSage() != null
 				&& quotationCalculation.get_personalInfo().getSgenger() != null
@@ -615,7 +671,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setAddBenif(calResp.getAddBenif() + mfibdt.doubleValue());
 			calResp.setMifdbtTerm(valiedTermMFIBDT);
 			return calResp;
-		case "HRB":
+		/*case "HRB":
 			ocuLoading = oculoding.get("HRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -626,6 +682,84 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setAddBenif(calResp.getAddBenif() + hrb.doubleValue());
 			calResp.setHrbTerm(term);
 			return calResp;
+			*/
+			
+		case "HRBF":
+			ocuLoading = oculoding.get("HRBF");
+			if (ocuLoading == null)
+				ocuLoading = 1.0;
+			// Term calculation ///////
+			/*
+			Integer maxTermToBenefictHRBF = rateCardHRBFDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermHRBF = maxTermToBenefictHRBF > term ? term : maxTermToBenefictHRBF;
+			*/
+
+			Integer valiedTermHRBF = 10;
+			
+			BigDecimal hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , gender, ridsumasu, adultCount, childCount, new Date(),
+					payFrequency, 1.0, ocuLoading);
+			calResp.setHrbf(hrbf.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
+			calResp.setHrbfTerm(valiedTermHRBF);
+			return calResp;
+			
+		case "HRBI":
+			ocuLoading = oculoding.get("HRBI");
+			if (ocuLoading == null)
+				ocuLoading = 1.0;
+			// Term calculation ///////
+			/*
+			Integer maxTermToBenefictHRBI = rateCardHRBFDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermHRBI = maxTermToBenefictHRBI > term ? term : maxTermToBenefictHRBI;
+			*/
+
+			Integer valiedTermHRBI = 10;
+			
+			BigDecimal hrbi = hrbiService.calculateHRBCI (age, valiedTermHRBI , gender, ridsumasu, adultCount, childCount, new Date(),
+					payFrequency, 1.0, ocuLoading);
+			calResp.setHrbi(hrbi.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + hrbi.doubleValue());
+			calResp.setHrbiTerm(valiedTermHRBI);
+			return calResp;
+			
+		case "HRBIS":
+			ocuLoading = oculoding.get("HRBIS");
+			if (ocuLoading == null)
+				ocuLoading = 1.0;
+			// Term calculation ///////
+			/*
+			Integer maxTermToBenefictHRBIS = rateCardHRBFSDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermHRBIS = maxTermToBenefictHRBIS > term ? term : maxTermToBenefictHRBIS;
+			*/
+
+			Integer valiedTermHRBIS = 10;
+			
+			BigDecimal hrbis = hrbisService.calculateHRBCIS (age, valiedTermHRBIS , gender, ridsumasu, adultCount, childCount, new Date(),
+					payFrequency, 1.0, ocuLoading);
+			calResp.setHrbis(hrbis.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + hrbis.doubleValue());
+			calResp.setHrbisTerm(valiedTermHRBIS);
+			return calResp;
+			
+		case "HRBIC":
+			ocuLoading = oculoding.get("HRBIC");
+			if (ocuLoading == null)
+				ocuLoading = 1.0;
+			// Term calculation ///////
+			/*
+			Integer maxTermToBenefictHRBIC = rateCardHRBFCDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermHRBIC = maxTermToBenefictHRBIC > term ? term : maxTermToBenefictHRBIC;
+			*/
+
+			Integer valiedTermHRBIC = 10;
+			
+			BigDecimal hrbic = hrbicService.calculateHRBCIC (age, valiedTermHRBIC , gender, ridsumasu, adultCount, childCount, new Date(),
+					payFrequency, 1.0, ocuLoading);
+			calResp.setHrbic(hrbic.doubleValue());
+			calResp.setAddBenif(calResp.getAddBenif() + hrbic.doubleValue());
+			calResp.setHrbicTerm(valiedTermHRBIC);
+			return calResp;
+
 		case "SUHRB":
 			ocuLoading = oculoding.get("SUHRB");
 			if (ocuLoading == null)
@@ -828,7 +962,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		/////////////////////////////////////////////////////////////////////////
 		default:
-			calResp.setHrbsTerm(term);
+			//calResp.setHrbsTerm(term);
+			calResp.setHrbfsTerm(term);
 			return calResp;
 		}
 

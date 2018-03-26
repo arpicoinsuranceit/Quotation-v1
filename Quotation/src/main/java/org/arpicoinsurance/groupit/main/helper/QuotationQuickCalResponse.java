@@ -27,8 +27,8 @@ public class QuotationQuickCalResponse {
 	private int febTerm = 0;
 	private Double hb= 0.00;
 	private int hbTerm = 0;
-	private Double hrb= 0.00;
-	private int hrbTerm = 0;
+	//private Double hrb= 0.00;
+	//private int hrbTerm = 0;
 	private Double mifdb= 0.00;
 	private int mifdbTerm = 0;
 	private Double mifdbt= 0.00;
@@ -55,8 +55,8 @@ public class QuotationQuickCalResponse {
 	private int febsTerm = 0;
 	private Double hbs= 0.00;
 	private int hbsTerm = 0;
-	private Double hrbs= 0.00;
-	private int hrbsTerm = 0;
+	//private Double hrbs= 0.00;
+	//private int hrbsTerm = 0;
 	private Double ppdbs= 0.00;
 	private int ppdbsTerm = 0;
 	private Double suhrbs= 0.00;
@@ -71,8 +71,8 @@ public class QuotationQuickCalResponse {
 	private int cibcTerm = 0;
 	private Double hbc= 0.00;
 	private int hbcTerm = 0;
-	private Double hrbc= 0.00;
-	private int hrbcTerm = 0;
+	//private Double hrbc= 0.00;
+	//private int hrbcTerm = 0;
 	private Double suhrbc= 0.00;
 	private int suhrbcTerm = 0;
 	private Double jlb= 0.00;
@@ -87,6 +87,22 @@ public class QuotationQuickCalResponse {
 	private int tpddtaplTerm = 0;
 	private Double tpddtaspl= 0.00;
 	private int tpddtasplTerm = 0;
+	
+	private Double hrbi = 0.0;
+	private int hrbiTerm = 0;
+	private Double hrbf = 0.0;
+	private int hrbfTerm = 0;
+	
+	private Double hrbis = 0.0;
+	private int hrbisTerm = 0;
+	private Double hrbfs = 0.0;
+	private int hrbfsTerm = 0;
+	
+	private Double hrbic = 0.0;
+	private int hrbicTerm = 0;
+	private Double hrbfc = 0.0;
+	private int hrbfcTerm = 0;
+	
 	
 	private ArrayList<DTAShedule> dtaShedules=null;
 	
@@ -165,12 +181,13 @@ public class QuotationQuickCalResponse {
 	public void setHb(Double hb) {
 		this.hb = hb;
 	}
+	/*
 	public Double getHrb() {
 		return hrb;
 	}
 	public void setHrb(Double hrb) {
 		this.hrb = hrb;
-	}
+	}*/
 	public Double getMifdb() {
 		return mifdb;
 	}
@@ -249,12 +266,13 @@ public class QuotationQuickCalResponse {
 	public void setHbs(Double hbs) {
 		this.hbs = hbs;
 	}
+	/*
 	public Double getHrbs() {
 		return hrbs;
 	}
 	public void setHrbs(Double hrbs) {
 		this.hrbs = hrbs;
-	}
+	}*/
 	public Double getPpdbs() {
 		return ppdbs;
 	}
@@ -297,12 +315,13 @@ public class QuotationQuickCalResponse {
 	public void setHbc(Double hbc) {
 		this.hbc = hbc;
 	}
+	/*
 	public Double getHrbc() {
 		return hrbc;
 	}
 	public void setHrbc(Double hrbc) {
 		this.hrbc = hrbc;
-	}
+	}*/
 	public Double getSuhrbc() {
 		return suhrbc;
 	}
@@ -351,12 +370,13 @@ public class QuotationQuickCalResponse {
 	public void setHbTerm(int hbTerm) {
 		this.hbTerm = hbTerm;
 	}
+	/*
 	public int getHrbTerm() {
 		return hrbTerm;
 	}
 	public void setHrbTerm(int hrbTerm) {
 		this.hrbTerm = hrbTerm;
-	}
+	}*/
 	public int getMifdbTerm() {
 		return mifdbTerm;
 	}
@@ -435,12 +455,14 @@ public class QuotationQuickCalResponse {
 	public void setHbsTerm(int hbsTerm) {
 		this.hbsTerm = hbsTerm;
 	}
+	/*
 	public int getHrbsTerm() {
 		return hrbsTerm;
 	}
 	public void setHrbsTerm(int hrbsTerm) {
 		this.hrbsTerm = hrbsTerm;
 	}
+	*/
 	public int getPpdbsTerm() {
 		return ppdbsTerm;
 	}
@@ -483,12 +505,14 @@ public class QuotationQuickCalResponse {
 	public void setHbcTerm(int hbcTerm) {
 		this.hbcTerm = hbcTerm;
 	}
+	/*
 	public int getHrbcTerm() {
 		return hrbcTerm;
 	}
 	public void setHrbcTerm(int hrbcTerm) {
 		this.hrbcTerm = hrbcTerm;
 	}
+	*/
 	public int getSuhrbcTerm() {
 		return suhrbcTerm;
 	}
@@ -598,6 +622,78 @@ public class QuotationQuickCalResponse {
 	}
 	public void setSfpoTerm(int sfpoTerm) {
 		this.sfpoTerm = sfpoTerm;
+	}
+	public Double getHrbi() {
+		return hrbi;
+	}
+	public void setHrbi(Double hrbi) {
+		this.hrbi = hrbi;
+	}
+	public int getHrbiTerm() {
+		return hrbiTerm;
+	}
+	public void setHrbiTerm(int hrbiTerm) {
+		this.hrbiTerm = hrbiTerm;
+	}
+	public Double getHrbf() {
+		return hrbf;
+	}
+	public void setHrbf(Double hrbf) {
+		this.hrbf = hrbf;
+	}
+	public int getHrbfTerm() {
+		return hrbfTerm;
+	}
+	public void setHrbfTerm(int hrbfTerm) {
+		this.hrbfTerm = hrbfTerm;
+	}
+	public Double getHrbis() {
+		return hrbis;
+	}
+	public void setHrbis(Double hrbis) {
+		this.hrbis = hrbis;
+	}
+	public int getHrbisTerm() {
+		return hrbisTerm;
+	}
+	public void setHrbisTerm(int hrbisTerm) {
+		this.hrbisTerm = hrbisTerm;
+	}
+	public Double getHrbfs() {
+		return hrbfs;
+	}
+	public void setHrbfs(Double hrbfs) {
+		this.hrbfs = hrbfs;
+	}
+	public int getHrbfsTerm() {
+		return hrbfsTerm;
+	}
+	public void setHrbfsTerm(int hrbfsTerm) {
+		this.hrbfsTerm = hrbfsTerm;
+	}
+	public Double getHrbic() {
+		return hrbic;
+	}
+	public void setHrbic(Double hrbic) {
+		this.hrbic = hrbic;
+	}
+	public int getHrbicTerm() {
+		return hrbicTerm;
+	}
+	public void setHrbicTerm(int hrbicTerm) {
+		this.hrbicTerm = hrbicTerm;
+	}
+	public Double getHrbfc() {
+		return hrbfc;
+	}
+	public void setHrbfc(Double hrbfc) {
+		this.hrbfc = hrbfc;
+	}
+	public int getHrbfcTerm() {
+		return hrbfcTerm;
+	}
+	public void setHrbfcTerm(int hrbfcTerm) {
+		this.hrbfcTerm = hrbfcTerm;
 	}
 	
 	

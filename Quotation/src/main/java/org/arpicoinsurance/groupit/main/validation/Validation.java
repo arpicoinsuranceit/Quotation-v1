@@ -96,9 +96,19 @@ public class Validation {
 							return "MFIBDT must be greater than 10,000 and less than 100,000";
 						}
 						break;
-					case "HRB":
+					/*case "HRB":
 						if (validateInvpHRB().equals(0)) {
 							return "HRB must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
+						}
+						break;*/
+					case "HRBI":
+						if (validateInvpHRBI().equals(0)) {
+							return "HRBI must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
+						}
+						break;
+					case "HRBF":
+						if (validateInvpHRBF().equals(0)) {
+							return "HRBF must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
 						}
 						break;
 					case "SUHRB":
@@ -162,9 +172,20 @@ public class Validation {
 							return "HBS must be equal to HB";
 						}
 						break;
-					case "HRBS":
+					/*case "HRBS":
 						if (validateInvpHRBS().equals(0)) {
 							return "HRBS must be equal to HRB";
+						}
+						break;
+						*/
+					case "HRBIS":
+						if (validateInvpHRBIS().equals(0)) {
+							return "HRBIS must be equal to HRB";
+						}
+						break;
+					case "HRBFS":
+						if (validateInvpHRBFS().equals(0)) {
+							return "HRBFS must be equal to HRB";
 						}
 						break;
 					case "PPDBS":
@@ -236,9 +257,21 @@ public class Validation {
 							return "CIBC must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 						}
 						break;
-					case "HRBC":
+					/*case "HRBC":
 						if (validateInvpHRBC().equals(0)) {
 							return "HRBC must be equal to HRB";
+						}
+						break;
+						*/
+					case "HRBIC":
+						if (validateInvpHRBIC().equals(0)) {
+							return "HRBIC must be equal to HRB";
+						}
+						break;
+						
+					case "HRBFC":
+						if (validateInvpHRBFC().equals(0)) {
+							return "HRBFC must be equal to HRB";
 						}
 						break;
 					case "SUHRBC":
@@ -551,9 +584,41 @@ public class Validation {
 
 	public Integer validateInvpSUHRB() {
 		if (benefitMap.containsKey("SUHRB")) {
-			if (benefitMap.containsKey("HRB") && !benefitMap.get("HRB").isActive() || !benefitMap.containsKey("HRB")) {
+			if (benefitMap.containsKey("HRBI") && !benefitMap.get("HRBI").isActive() && benefitMap.containsKey("HRBF") && !benefitMap.get("HRBF").isActive() || !benefitMap.containsKey("HRBI") && !benefitMap.containsKey("HRBF")) {
 				Double rbsa = benefitMap.get("SUHRB").getSumAssured();
 				if (rbsa == 600000 || rbsa == 800000 || rbsa == 1000000) {
+					return 1;
+				}
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+	
+	public Integer validateInvpHRBI() {
+		if (benefitMap.containsKey("HRBI")) {
+			if (benefitMap.containsKey("SUHRB") && !benefitMap.get("SUHRB").isActive() && benefitMap.containsKey("HRBF") && !benefitMap.get("HRBF").isActive() || !benefitMap.containsKey("SUHRB") && !benefitMap.containsKey("HRBF")) {
+				Double rbsa = benefitMap.get("HRBI").getSumAssured();
+				if (rbsa == 100000 || rbsa == 200000 || rbsa == 300000 || rbsa == 400000 || rbsa == 500000) {
+					return 1;
+				}
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
+	
+	public Integer validateInvpHRBF() {
+		if (benefitMap.containsKey("HRBF")) {
+			if (benefitMap.containsKey("SUHRB") && !benefitMap.get("SUHRB").isActive() && benefitMap.containsKey("HRBI") && !benefitMap.get("HRBI").isActive() || !benefitMap.containsKey("SUHRB") && !benefitMap.containsKey("HRBI")) {
+				Double rbsa = benefitMap.get("HRBF").getSumAssured();
+				if (rbsa == 100000 || rbsa == 200000 || rbsa == 300000 || rbsa == 400000 || rbsa == 500000) {
 					return 1;
 				}
 			}
@@ -715,6 +780,30 @@ public class Validation {
 		}
 		return 0;
 	}
+	
+	public Integer validateInvpHRBFS() {
+		if (benefitMap.containsKey("HRBFS") && benefitMap.containsKey("HRBF")) {
+			Double hrbf = benefitMap.get("HRBF").getSumAssured();
+			Double hrbfs = benefitMap.get("HRBFS").getSumAssured();
+			//if (hrbf.equals(hrbfs)) {
+				return 1;
+			//}
+			//return 0;
+		}
+		return 0;
+	}
+	
+	public Integer validateInvpHRBIS() {
+		if (benefitMap.containsKey("HRBIS") && benefitMap.containsKey("HRBI")) {
+			Double hrbi = benefitMap.get("HRBI").getSumAssured();
+			Double hrbis = benefitMap.get("HRBIS").getSumAssured();
+			if (hrbi.equals(hrbis)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
 
 	public Integer validateInvpSUHRBS() {
 		if (benefitMap.containsKey("SUHRBS") && benefitMap.containsKey("SUHRB")) {
@@ -786,7 +875,32 @@ public class Validation {
 		}
 		return 0;
 	}
+	
+	public Integer validateInvpHRBIC() {
+		if (benefitMap.containsKey("HRBIC") && benefitMap.containsKey("HRBI")) {
+			Double hrbi = benefitMap.get("HRBI").getSumAssured();
+			Double hrbic = benefitMap.get("HRBIC").getSumAssured();
+			if (hrbi.equals(hrbic)) {
+				return 1;
+			}
+			return 0;
+		}
+		return 0;
+	}
 
+	public Integer validateInvpHRBFC() {
+		if (benefitMap.containsKey("HRBFC") && benefitMap.containsKey("HRBF")) {
+			Double hrbf = benefitMap.get("HRBF").getSumAssured();
+			Double hrbfc = benefitMap.get("HRBFC").getSumAssured();
+			//if (hrbf.equals(hrbfc)) {
+				return 1;
+			//}
+			//return 0;
+		}
+		return 0;
+	}
+
+	
 	public Integer validateInvpSUHRBC() {
 		if (benefitMap.containsKey("SUHRBC") && benefitMap.containsKey("SUHRB")) {
 			Double suhrb = benefitMap.get("SUHRB").getSumAssured();
