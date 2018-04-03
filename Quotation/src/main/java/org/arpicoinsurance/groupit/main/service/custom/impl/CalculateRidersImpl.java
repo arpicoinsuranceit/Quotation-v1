@@ -36,8 +36,6 @@ import org.arpicoinsurance.groupit.main.service.rider.HBCService;
 import org.arpicoinsurance.groupit.main.service.rider.HBSService;
 import org.arpicoinsurance.groupit.main.service.rider.HBService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBFService;
-import org.arpicoinsurance.groupit.main.service.rider.HRBICService;
-import org.arpicoinsurance.groupit.main.service.rider.HRBISService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBIService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
@@ -136,12 +134,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 	
 	@Autowired
 	private HRBIService hrbiService;
-	
-	@Autowired
-	private HRBISService hrbisService;
-	
-	@Autowired
-	private HRBICService hrbicService;
 
 	@Autowired
 	private SUHRBService suhrbService;
@@ -705,7 +697,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			Integer valiedTermHRBF = 10;
 			
-			BigDecimal hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , gender, ridsumasu, adultCount, childCount, new Date(),
+			BigDecimal hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , ridsumasu, adultCount, childCount, new Date(),
 					payFrequency, 1.0, ocuLoading);
 			calResp.setHrbf(hrbf.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
@@ -724,7 +716,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			Integer valiedTermHRBI = 10;
 			
-			BigDecimal hrbi = hrbiService.calculateHRBCI (age, valiedTermHRBI , gender, ridsumasu, adultCount, childCount, new Date(),
+			BigDecimal hrbi = hrbiService.calculateHRBI (age, valiedTermHRBI , gender, ridsumasu, new Date(),
 					payFrequency, 1.0, ocuLoading);
 			calResp.setHrbi(hrbi.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbi.doubleValue());
@@ -743,7 +735,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			Integer valiedTermHRBIS = 10;
 			
-			BigDecimal hrbis = hrbisService.calculateHRBCIS (age, valiedTermHRBIS , gender, ridsumasu, adultCount, childCount, new Date(),
+			BigDecimal hrbis = hrbiService.calculateHRBI (age, valiedTermHRBIS , gender, ridsumasu, new Date(),
 					payFrequency, 1.0, ocuLoading);
 			calResp.setHrbis(hrbis.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbis.doubleValue());
@@ -762,7 +754,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			Integer valiedTermHRBIC = 10;
 			
-			BigDecimal hrbic = hrbicService.calculateHRBCIC (age, valiedTermHRBIC , gender, ridsumasu, adultCount, childCount, new Date(),
+			BigDecimal hrbic = hrbiService.calculateHRBI (age, valiedTermHRBIC , gender, ridsumasu, new Date(),
 					payFrequency, 1.0, ocuLoading);
 			calResp.setHrbic(hrbic.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbic.doubleValue());

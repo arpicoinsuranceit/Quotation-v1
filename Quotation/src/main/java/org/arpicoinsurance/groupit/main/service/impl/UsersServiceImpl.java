@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class UsersServiceImpl implements UsersService {
 
-	private static String UPLOADED_FOLDER = "F://temp//";
+	private static String UPLOADED_FOLDER = "/home/rpcadmin/APINProfilePic/";
 
 	@Autowired
 	private UsersDao usersDao;
@@ -257,10 +257,10 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public Map<String, String> getProfileImage(String id) throws Exception {
-		File file = new File("F://temp//" + id);
+		File file = new File("/home/rpcadmin/APINProfilePic/" + id);
 
 		if (!file.exists()) {
-			file = new File("F://temp//dummy");
+			file = new File("/home/rpcadmin/APINProfilePic/dummy");
 		}
 
 		String encodeImage = Base64.getEncoder().withoutPadding().encodeToString(Files.readAllBytes(file.toPath()));
