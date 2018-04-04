@@ -107,6 +107,9 @@ public class Validation {
 						}
 						break;
 					case "HRBF":
+						if(validateInvpHRBF().equals(2)) {
+							return "You must active Sopuse to get HRBF";
+						}
 						if (validateInvpHRBF().equals(0)) {
 							return "HRBF must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
 						}
@@ -615,6 +618,12 @@ public class Validation {
 	}
 	
 	public Integer validateInvpHRBF() {
+		System.out.println(calculation.get_personalInfo().getSage()+"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		System.out.println(calculation.get_personalInfo().getSgenger()+"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		System.out.println(calculation.get_personalInfo().getSocu()+"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		if(calculation.get_personalInfo().getSage()==null) {
+			return 2;
+		}
 		if (benefitMap.containsKey("HRBF")) {
 			if (benefitMap.containsKey("SUHRB") && !benefitMap.get("SUHRB").isActive() && benefitMap.containsKey("HRBI") && !benefitMap.get("HRBI").isActive() || !benefitMap.containsKey("SUHRB") && !benefitMap.containsKey("HRBI")) {
 				Double rbsa = benefitMap.get("HRBF").getSumAssured();
