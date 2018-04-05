@@ -40,9 +40,9 @@ public class QuotationCalculationController {
 	}
 	
 	
-	@RequestMapping(value="/asfpCal",method=RequestMethod.POST)
+	/*@RequestMapping(value="/asfpCal",method=RequestMethod.POST)
 	public String calculateASFP() {
-		/*try {		
+		try {		
 			asfpService.calculateL10(29, 10, 6.0, new Date(), 100000.0, 1);
 			asfpService.calculateL2(10, 100000.00);
 			sfpoService.calculateSFPO(29, 10, new Date(), 1000000.0, "Y", 1.0);
@@ -50,11 +50,11 @@ public class QuotationCalculationController {
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		return null;
-	}
+	}*/
 	
-	@RequestMapping(value="/atrmCal",method=RequestMethod.POST)
+	/*@RequestMapping(value="/atrmCal",method=RequestMethod.POST)
 	public String calculateATRM() {
 		try {		
 			atrmService.calculateL2(1,29, 30, 0.0, new Date(), 2500000.0, 12);
@@ -64,8 +64,8 @@ public class QuotationCalculationController {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
+	}*/
+/*	
 	@RequestMapping(value="/endCal",method=RequestMethod.POST)
 	public String calculateEND() {
 		try {		
@@ -77,11 +77,11 @@ public class QuotationCalculationController {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
-	@RequestMapping(value="/dtaCal",method=RequestMethod.POST)
+	/*@RequestMapping(value="/dtaCal",method=RequestMethod.POST)
 	public String calculateDTA() {
-		/*try {		
+		try {		
 			dtaService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
 			tpddtaService.calculateTPDDTA(29, 10, 22.0, "M", new Date(), 15000000.0);
 			jlbService.calculateJLB(27, 10, 22.0, "F", new Date(), 15000000.0);
@@ -90,13 +90,13 @@ public class QuotationCalculationController {
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		return null;
-	}
+	}*/
 	
-	@RequestMapping(value="/dtaplCal",method=RequestMethod.POST)
+	/*@RequestMapping(value="/dtaplCal",method=RequestMethod.POST)
 	public String calculateDTAPL() {
-		/*try {		
+		try {		
 			dtaplService.calculateL2(29, 10, 22.0, "M", new Date(), 15000000.0);
 			tpddtaplService.calculateTPDDTAPL(29, 10, 22.0, "M", new Date(), 15000000.0);
 			jlbplService.calculateJLBPL(27, 10, 22.0, "F", new Date(), 15000000.0);
@@ -105,9 +105,9 @@ public class QuotationCalculationController {
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		return null;
-	}
+	}*/
 	
 	
 	@RequestMapping(value="/ageCalculate",method=RequestMethod.POST)

@@ -128,7 +128,7 @@ public class ENDServiceImpl implements ENDService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
@@ -153,7 +153,7 @@ public class ENDServiceImpl implements ENDService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm)
+	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp)
 			throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
@@ -182,7 +182,12 @@ public class ENDServiceImpl implements ENDService {
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
 		System.out.println("premium : " + premium.toString());
-		return premium.multiply(new BigDecimal(rate));
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot()+premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot()+occuLodingPremium.subtract(premium).doubleValue());
+		
+		return occuLodingPremium;
 	}
 
 	@Override

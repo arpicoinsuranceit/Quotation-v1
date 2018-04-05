@@ -287,10 +287,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						break;
 						
 					case "SUHRB":
+						benef_Details.setRiderPremium(calResp.getShcbi());
+						benef_Details.setRiderTerm(calResp.getShcbiTerm());
+						benef_Details.setRierCode(type);
+						break;
+				/*	case "SUHRB":
 						benef_Details.setRiderPremium(calResp.getSuhrb());
 						benef_Details.setRiderTerm(calResp.getSuhrbTerm());
 						benef_Details.setRierCode(type);
-						break;
+						break;*/
 					case "HB":
 						benef_Details.setRiderPremium(calResp.getHb());
 						benef_Details.setRiderTerm(calResp.getHbTerm());
@@ -399,10 +404,24 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getHrbfsTerm());
 						benef_Details.setRierCode(type);
 						break;
-						
+					/*	
 					case "SUHRBS":
 						benef_Details.setRiderPremium(calResp.getSuhrbs());
 						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
+						benef_Details.setRierCode(type);
+						break;
+						*/
+					case "SUHRBS":
+						benef_Details.setRiderPremium(calResp.getSuhrbs());
+						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
+						benef_Details.setRierCode(type);
+						break;
+					/*case "SUHRBC":
+						benef_Details.setRiderPremium(calResp.getSuhrbc());
+						benef_Details.setRierCode(type);
+						break;*/
+					case "SUHRBC":
+						benef_Details.setRiderPremium(calResp.getShcbic());
 						benef_Details.setRierCode(type);
 						break;
 					case "HBS":
