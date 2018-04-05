@@ -14,7 +14,7 @@ public class MedicalReq implements Serializable{
 	private Integer id;
 	private String medCode;
 	private String medName;
-	
+	private String catCode;
 	private String medCreateBy;
 	private Date medCreatedate;
 	private String medModifyBy;
@@ -42,6 +42,14 @@ public class MedicalReq implements Serializable{
 	public void setMedName(String medName) {
 		this.medName = medName;
 	}
+	public String getCatCode() {
+		return catCode;
+	}
+
+	public void setCatCode(String catCode) {
+		this.catCode = catCode;
+	}
+
 	public String getMedCreateBy() {
 		return medCreateBy;
 	}
