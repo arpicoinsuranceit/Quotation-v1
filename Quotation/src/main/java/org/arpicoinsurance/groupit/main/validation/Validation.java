@@ -108,7 +108,7 @@ public class Validation {
 						break;
 					case "HRBF":
 						if(validateInvpHRBF().equals(2)) {
-							return "You must active Sopuse to get HRBF";
+							return "You must add spouse or child for get HRBF";
 						}
 						if (validateInvpHRBF().equals(0)) {
 							return "HRBF must be equal to 100,000 , 200,000 , 300,000 , 400,000 or 500,000";
@@ -161,6 +161,9 @@ public class Validation {
 						}
 						break;
 					case "CIBS":
+						if (validateInvpSCIB().equals(2)) {
+							return "Please Select SCB before get SCIB";
+						}
 						if (validateInvpSCIB().equals(0)) {
 							return "SCIB must be greater than 250,000 and less than 6,000,000 and less than or equal SCB";
 						}
@@ -618,7 +621,7 @@ public class Validation {
 	}
 	
 	public Integer validateInvpHRBF() {
-		if(calculation.get_personalInfo().getSage()==null) {
+		if(calculation.get_personalInfo().getSage()==null && calculation.get_personalInfo().getChildrens()!=null && calculation.get_personalInfo().getChildrens().size() == 0) {
 			return 2;
 		}
 		if (benefitMap.containsKey("HRBF")) {
@@ -747,6 +750,12 @@ public class Validation {
 	}
 
 	public Integer validateInvpSCIB() {
+		System.out.println(benefitMap.get("CIBS").getSumAssured() + "aaaaaaaaaaaaaaaaaa");
+		
+		if(benefitMap.get("BSAS")== null) {
+			return 2;
+		}
+		
 		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
 			Double scb = benefitMap.get("BSAS").getSumAssured();
 			Double cib = benefitMap.get("CIBS").getSumAssured();

@@ -23,6 +23,8 @@ public class HRBFServiceImpl implements HRBFService{
 	public BigDecimal calculateHRBF(Integer age, Integer term, Double ridsumasu, Integer adlcnt,
 			Integer chlcnt, Date chedat, String payFrequency, Double relief, double occupation_loding)
 			throws Exception {
+		
+		System.out.println(adlcnt +"##########"+ chlcnt+"##########"+ term+"##########"+ age+"##########"+ ridsumasu+"##########"+ chlcnt);
 		BigDecimal premiumHRBF = new BigDecimal(0);
 		
 		RateCardHRBF rateCardHRBF= rateCardHRBFDao.findByAgeAndTermAndChlcntAndSumasuAndAdlcntAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chlcnt, ridsumasu, adlcnt, chedat, chedat, chedat, chedat);

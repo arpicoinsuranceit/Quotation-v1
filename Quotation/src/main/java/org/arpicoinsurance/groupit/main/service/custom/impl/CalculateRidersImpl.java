@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.service.custom.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -307,8 +308,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 		
 		
 		if (_mRiders != null) {
+			adultCount = 1;
 			for (Benifict benifict : _mRiders) {
-				adultCount = 1;
+				
 				if (benifict.getType().equals("HRBF")) {
 
 					if (quotationCalculation.get_personalInfo().getSage() != null
@@ -318,6 +320,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 							for (Benifict benifict2 : _sRiders) {
 								if (benifict2.getType().equals("HRBFS")) {
 									adultCount += 1;
+									System.out.println(adultCount);
 								}
 							}
 						}
@@ -744,8 +747,16 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			//Integer valiedTermHRBF = 10;
 			
-			BigDecimal hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , ridsumasu, adultCount, childCount, new Date(),
-					payFrequency, 1.0, ocuLoading);
+			BigDecimal hrbf = null;
+			try {
+				hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , ridsumasu, adultCount, childCount, new Date(),
+						payFrequency, 1.0, ocuLoading);
+			} catch (Exception e) {
+				hrbf = new BigDecimal(0);
+				calResp.setWarning("Please get HRBF for spouse or child to calculate HRBF");
+				calResp.setWarningExist(true);
+				e.printStackTrace();
+			}
 			calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
 			calResp.setHrbf(hrbf.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
@@ -1114,7 +1125,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 	private QuotationQuickCalResponse setLodingDetails(double ocuLoading, double premium,
 			QuotationQuickCalResponse calResp) {
-		Double bsa = new BigDecimal(premium).divide(new BigDecimal(ocuLoading)).doubleValue();
+		
+		Double bsa = new BigDecimal(premium).divide(new BigDecimal(ocuLoading),RoundingMode.HALF_UP).doubleValue();
 		
 		System.out.println("bsa for occu : " +bsa);
 		
