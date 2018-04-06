@@ -74,6 +74,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		    mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
 		    mainLife.set_mSmoking("No");
 		    mainLife.set_mTitle(customerDetails.getCustTitle());
+		    mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
 		    
 		    
 		    if(details.getSpouseDetails() != null) {
