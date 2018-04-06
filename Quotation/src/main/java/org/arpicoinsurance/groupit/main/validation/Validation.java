@@ -41,7 +41,7 @@ public class Validation {
 					case "ATPB":
 						System.out.println("call ATPB");
 						if (validateInvpATBP().equals(0)) {
-							return "ATPB must equals to BSA or ATPB must be multi value of BSA till 10 times";
+							return "ATPB >= BSA and ATPB <= (BSA x 10) and ATPB % 250000 = 0" ;
 						}
 						break;
 					case "SFPO":
@@ -441,7 +441,7 @@ public class Validation {
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
 			System.out.println(bsa + " " + rbsa);
-			if (rbsa >= bsa && rbsa <= bsa * 10 && rbsa % bsa == 0) {
+			if (rbsa >= bsa && rbsa <= bsa * 10 && rbsa % 250000 == 0) {
 				return 1;
 			}
 			return 0;
@@ -536,7 +536,7 @@ public class Validation {
 	}
 
 	public Integer validateInvpMIFBD() {
-		if (benefitMap.containsKey("MFIBD")) {
+		if (benefitMap.containsKey("MFIBD") && !benefitMap.get("MFIBT").isActive() && !benefitMap.get("MFIBDT").isActive()) {
 			Benifict benifict = benefitMap.get("MFIBD");
 			Double rbsa = benifict.getSumAssured();
 			if (rbsa >= 10000 && rbsa <= 100000) {
@@ -548,7 +548,7 @@ public class Validation {
 	}
 
 	public Integer validateInvpMIFBT() {
-		if (benefitMap.containsKey("MFIBT")) {
+		if (benefitMap.containsKey("MFIBT") && !benefitMap.get("MFIBDT").isActive() && !benefitMap.get("MFIBD").isActive()) {
 			Benifict benifict = benefitMap.get("MFIBT");
 			Double rbsa = benifict.getSumAssured();
 			if (rbsa >= 10000 && rbsa <= 100000) {
@@ -560,7 +560,7 @@ public class Validation {
 	}
 
 	public Integer validateInvpMFIBDT() {
-		if (benefitMap.containsKey("MFIBDT")) {
+		if (benefitMap.containsKey("MFIBDT") && !benefitMap.get("MFIBT").isActive() && !benefitMap.get("MFIBD").isActive()) {
 			Benifict benifict = benefitMap.get("MFIBDT");
 			Double rbsa = benifict.getSumAssured();
 			if (rbsa >= 10000 && rbsa <= 100000) {
