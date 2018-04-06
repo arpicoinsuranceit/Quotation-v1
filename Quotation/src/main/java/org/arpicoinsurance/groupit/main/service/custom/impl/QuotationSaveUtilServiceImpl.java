@@ -36,32 +36,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
+public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 
-	@Autowired 
+	@Autowired
 	private BenefitsDao benefitsDao;
-	
+
 	@Autowired
 	private CIBCService cibcService;
 
-
 	@Autowired
 	private SUHRBCService suhrbcService;
-
 
 	@Autowired
 	private HBCService hbcService;
 
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
-	
+
 	public CustomerDetails getCustomerDetail(Occupation occupationMainlife, InvpSavePersonalInfo get_personalInfo,
 			Users user) throws Exception {
 		CustomerDetails mainLifeDetail = null;
 		try {
 			mainLifeDetail = new CustomerDetails();
 			mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
-			mainLifeDetail.setCustCivilStatus(get_personalInfo.get_spouse().is_sActive() ? "Married" : "Single");
+			mainLifeDetail.setCustCivilStatus(get_personalInfo.get_mainlife().get_mCivilStatus());
 			mainLifeDetail.setCustCreateBy(user.getUser_Name());
 			mainLifeDetail.setCustCreateDate(new Date());
 			mainLifeDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
@@ -79,9 +77,9 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			}
 		}
 	}
-	
+
 	public CustomerDetails getSpouseDetail(Occupation occupationSpouse, InvpSavePersonalInfo get_personalInfo,
-			Users user) throws Exception{
+			Users user) throws Exception {
 		CustomerDetails spouseDetail = null;
 		if (get_personalInfo.get_spouse() != null && get_personalInfo.get_spouse().is_sActive() == true) {
 			try {
@@ -106,7 +104,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 		}
 		return null;
 	}
-	
+
 	public ArrayList<Child> getChilds(ArrayList<Children> get_childrenList) throws Exception {
 		ArrayList<Child> childList = null;
 		if (get_childrenList != null && get_childrenList.size() > 0) {
@@ -135,8 +133,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 	}
 
-	public QuotationDetails getQuotationDetail(QuotationQuickCalResponse calResp, QuotationCalculation calculation, Double lifePos)
-			throws Exception {
+	public QuotationDetails getQuotationDetail(QuotationQuickCalResponse calResp, QuotationCalculation calculation,
+			Double lifePos) throws Exception {
 		QuotationDetails quotationDetails = null;
 		CalculationUtils calculationUtils = null;
 		try {
@@ -146,7 +144,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setBaseSum(calculation.get_personalInfo().getBsa());
-			//quotationDetails.setInterestRate(8.5);
+			// quotationDetails.setInterestRate(8.5);
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setLifePos(lifePos);
 			quotationDetails.setInvestmentPos(calResp.getBasicSumAssured() - lifePos);
@@ -190,8 +188,9 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 	}
 
-	public ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails, QuotationQuickCalResponse calResp,
-			QuotationDetails quotationDetails, List<Children> childrenList, Integer integer) throws Exception {
+	public ArrayList<Quo_Benef_Details> getBenifDetails(RiderDetails get_riderDetails,
+			QuotationQuickCalResponse calResp, QuotationDetails quotationDetails, List<Children> childrenList,
+			Integer integer) throws Exception {
 		ArrayList<Quo_Benef_Details> benef_DetailList = null;
 		try {
 			benef_DetailList = new ArrayList<>();
@@ -217,113 +216,130 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderPremium(calResp.getAdb());
 						benef_Details.setRiderTerm(calResp.getAdbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "SFPO":
 						benef_Details.setRiderPremium(calResp.getSfpo());
 						benef_Details.setRiderTerm(calResp.getSfpoTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "ATPB":
 						benef_Details.setRiderPremium(calResp.getAtpb());
 						benef_Details.setRiderTerm(calResp.getAtpbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "TPDASB":
 						benef_Details.setRiderPremium(calResp.getTpdasb());
 						benef_Details.setRiderTerm(calResp.getTpdasbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "TPDB":
 						benef_Details.setRiderPremium(calResp.getTpdb());
 						benef_Details.setRiderTerm(calResp.getTpdbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "PPDB":
 						benef_Details.setRiderPremium(calResp.getPpdb());
 						benef_Details.setRiderTerm(calResp.getPpdbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "CIB":
 						benef_Details.setRiderPremium(calResp.getCib());
 						benef_Details.setRiderTerm(calResp.getCibTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "FEB":
 						benef_Details.setRiderPremium(calResp.getFeb());
 						benef_Details.setRiderTerm(calResp.getFebTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "MFIBD":
 						benef_Details.setRiderPremium(calResp.getMifdb());
 						benef_Details.setRiderTerm(calResp.getMifdbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "MFIBT":
 						benef_Details.setRiderPremium(calResp.getMifdt());
 						benef_Details.setRiderTerm(calResp.getMifdtTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "MFIBDT":
 						benef_Details.setRiderPremium(calResp.getMifdbt());
 						benef_Details.setRiderTerm(calResp.getMifdbtTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
-					/*case "HRB":
-						benef_Details.setRiderPremium(calResp.getHrb());
-						benef_Details.setRiderTerm(calResp.getHrbTerm());
-						benef_Details.setRierCode(type);
-						break;
-						*/
+					/*
+					 * case "HRB": benef_Details.setRiderPremium(calResp.getHrb());
+					 * benef_Details.setRiderTerm(calResp.getHrbTerm());
+					 * benef_Details.setRierCode(type); break;
+					 */
 					case "HRBI":
 						benef_Details.setRiderPremium(calResp.getHrbi());
 						benef_Details.setRiderTerm(calResp.getHrbiTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
-						
+
 					case "HRBF":
-						benef_Details.setRiderPremium(calResp.getHrbf());
-						benef_Details.setRiderTerm(calResp.getHrbfTerm());
-						benef_Details.setRierCode(type);
+						if (calResp.getHrbf() > 0) {
+							benef_Details.setRiderPremium(calResp.getHrbf());
+							benef_Details.setRiderTerm(calResp.getHrbfTerm());
+							benef_Details.setRierCode(type);
+							benef_DetailList.add(benef_Details);
+						}
 						break;
-						
+
 					case "SUHRB":
 						benef_Details.setRiderPremium(calResp.getShcbi());
 						benef_Details.setRiderTerm(calResp.getShcbiTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
-				/*	case "SUHRB":
-						benef_Details.setRiderPremium(calResp.getSuhrb());
-						benef_Details.setRiderTerm(calResp.getSuhrbTerm());
-						benef_Details.setRierCode(type);
-						break;*/
+					/*
+					 * case "SUHRB": benef_Details.setRiderPremium(calResp.getSuhrb());
+					 * benef_Details.setRiderTerm(calResp.getSuhrbTerm());
+					 * benef_Details.setRierCode(type); break;
+					 */
 					case "HB":
 						benef_Details.setRiderPremium(calResp.getHb());
 						benef_Details.setRiderTerm(calResp.getHbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 					case "WPB":
 						benef_Details.setRiderPremium(calResp.getWpb());
 						benef_Details.setRiderTerm(calResp.getWpbTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
-						
+
 					case "TPDDTA":
 						benef_Details.setRiderPremium(calResp.getTpddta());
 						benef_Details.setRiderTerm(calResp.getTpddtaTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
-						
+
 					case "TPDDTAPL":
 						benef_Details.setRiderPremium(calResp.getTpddtapl());
 						benef_Details.setRiderTerm(calResp.getTpddtaplTerm());
 						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
 						break;
 
 					default:
 						break;
 					}
-
-					benef_DetailList.add(benef_Details);
 
 				}
 			}
@@ -387,13 +403,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getFebsTerm());
 						benef_Details.setRierCode(type);
 						break;
-						/*
-					case "HRBS":
-						benef_Details.setRiderPremium(calResp.getHrbs());
-						benef_Details.setRiderTerm(calResp.getHrbsTerm());
-						benef_Details.setRierCode(type);
-						break;
-					*/
+					/*
+					 * case "HRBS": benef_Details.setRiderPremium(calResp.getHrbs());
+					 * benef_Details.setRiderTerm(calResp.getHrbsTerm());
+					 * benef_Details.setRierCode(type); break;
+					 */
 					case "HRBIS":
 						benef_Details.setRiderPremium(calResp.getHrbis());
 						benef_Details.setRiderTerm(calResp.getHrbisTerm());
@@ -404,22 +418,20 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getHrbfsTerm());
 						benef_Details.setRierCode(type);
 						break;
-					/*	
+					/*
+					 * case "SUHRBS": benef_Details.setRiderPremium(calResp.getSuhrbs());
+					 * benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
+					 * benef_Details.setRierCode(type); break;
+					 */
 					case "SUHRBS":
 						benef_Details.setRiderPremium(calResp.getSuhrbs());
 						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
 						benef_Details.setRierCode(type);
 						break;
-						*/
-					case "SUHRBS":
-						benef_Details.setRiderPremium(calResp.getSuhrbs());
-						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
-						benef_Details.setRierCode(type);
-						break;
-					/*case "SUHRBC":
-						benef_Details.setRiderPremium(calResp.getSuhrbc());
-						benef_Details.setRierCode(type);
-						break;*/
+					/*
+					 * case "SUHRBC": benef_Details.setRiderPremium(calResp.getSuhrbc());
+					 * benef_Details.setRierCode(type); break;
+					 */
 					case "SUHRBC":
 						benef_Details.setRiderPremium(calResp.getShcbic());
 						benef_Details.setRierCode(type);
@@ -434,25 +446,25 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderTerm(calResp.getWpbsTerm());
 						benef_Details.setRierCode(type);
 						break;
-						
+
 					case "TPDDTAS":
 						benef_Details.setRiderPremium(calResp.getTpddtas());
 						benef_Details.setRiderTerm(calResp.getTpddtasTerm());
 						benef_Details.setRierCode(type);
 						break;
-						
+
 					case "JLB":
 						benef_Details.setRiderPremium(calResp.getJlb());
 						benef_Details.setRiderTerm(calResp.getJlbTerm());
 						benef_Details.setRierCode(type);
 						break;
-						
+
 					case "TPDDTASPL":
 						benef_Details.setRiderPremium(calResp.getTpddtaspl());
 						benef_Details.setRiderTerm(calResp.getTpddtasplTerm());
 						benef_Details.setRierCode(type);
 						break;
-						
+
 					case "JLBPL":
 						benef_Details.setRiderPremium(calResp.getJlbpl());
 						benef_Details.setRiderTerm(calResp.getJlbplTerm());
@@ -499,16 +511,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 						benef_Details.setRiderPremium(calResp.getHbc());
 						benef_Details.setRierCode(type);
 						break;
-					/*case "HRBC":
-						benef_Details.setRiderPremium(0.0);
-						benef_Details.setRierCode(type);
-						break;
+					/*
+					 * case "HRBC": benef_Details.setRiderPremium(0.0);
+					 * benef_Details.setRierCode(type); break;
 					 */
 					case "HRBFC":
 						benef_Details.setRiderPremium(0.0);
 						benef_Details.setRierCode(type);
 						break;
-						
+
 					case "HRBIC":
 						benef_Details.setRiderPremium(calResp.getHrbic());
 						benef_Details.setRierCode(type);
@@ -528,7 +539,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 			}
 		}
 	}
-	
+
 	public ArrayList<Quo_Benef_Child_Details> getChildBenif(ArrayList<Quo_Benef_Details> benef_DetailsList,
 			ArrayList<CustChildDetails> custChildDetailsList, ArrayList<Child> childList,
 			ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC)
@@ -539,9 +550,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 		Double hb = null;
 		Double hrbi = null;
 
-		
 		Quo_Benef_Details cibc_Benef_Details = null;
-		//Quo_Benef_Details hrbc_Benef_Details = null;
+		// Quo_Benef_Details hrbc_Benef_Details = null;
 		Quo_Benef_Details hrbfc_Benef_Details = null;
 		Quo_Benef_Details hrbic_Benef_Details = null;
 		Quo_Benef_Details suhrbc_Benef_Details = null;
@@ -549,31 +559,33 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 		if (benef_DetailsList != null && !benef_DetailsList.isEmpty()) {
 			for (Quo_Benef_Details benef_Details : benef_DetailsList) {
-				String type = benef_Details.getRierCode();
-				System.out.println(type+"Tttttttttttttttt");
-				switch (type) {
-				case "CIBC":
-					cibc_Benef_Details = benef_Details;
-					break;
-				case "SUHRBC":
-					suhrbc_Benef_Details = benef_Details;
-					break;
-				/*case "HRBC":
-					hrbc_Benef_Details = benef_Details;
-					break;*/
-				case "HRBIC":
-					hrbic_Benef_Details = benef_Details;
-					break;
-				case "HRBFC":
-					hrbfc_Benef_Details = benef_Details;
-					break;
-					
-				case "HBC":
-					hbc_Benef_Details = benef_Details;
-					break;
+				if (benef_Details.getRierCode() != null) {
+					String type = benef_Details.getRierCode();
+					System.out.println(type + "Tttttttttttttttt");
+					switch (type) {
+					case "CIBC":
+						cibc_Benef_Details = benef_Details;
+						break;
+					case "SUHRBC":
+						suhrbc_Benef_Details = benef_Details;
+						break;
+					/*
+					 * case "HRBC": hrbc_Benef_Details = benef_Details; break;
+					 */
+					case "HRBIC":
+						hrbic_Benef_Details = benef_Details;
+						break;
+					case "HRBFC":
+						hrbfc_Benef_Details = benef_Details;
+						break;
 
-				default:
-					break;
+					case "HBC":
+						hbc_Benef_Details = benef_Details;
+						break;
+
+					default:
+						break;
+					}
 				}
 			}
 		}
@@ -604,11 +616,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"CIBC", term);
-								System.out.println(valiedTerm+"//////////////////// valied term");
+								System.out.println(valiedTerm + "//////////////////// valied term");
 								benef_Child_Details.setTerm(valiedTerm);
 
-								BigDecimal cibc = cibcService.calculateCIBC(children.get_cAge(),
-										valiedTerm, new Date(), cib, frequancy, 1.0);
+								BigDecimal cibc = cibcService.calculateCIBC(children.get_cAge(), valiedTerm, new Date(),
+										cib, frequancy, 1.0);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -650,20 +662,20 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 								benef_Child_Details.setQuo_Benef_Details(hbc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
-							/*if (children.is_cHrbc()) {
-								System.out.println("addddddddddddddddddddddddddddddddddddddd4");
-								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
-
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HBC", term);
-								benef_Child_Details.setTerm(valiedTerm);
-
-								benef_Child_Details.setCustChildDetails(childDetails);
-								benef_Child_Details.setTerm(valiedTerm);
-								benef_Child_Details.setPremium(0.0);
-								benef_Child_Details.setQuo_Benef_Details(hrbc_Benef_Details);
-								childBenifList.add(benef_Child_Details);
-							}*/
+							/*
+							 * if (children.is_cHrbc()) {
+							 * System.out.println("addddddddddddddddddddddddddddddddddddddd4");
+							 * Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
+							 * 
+							 * Integer valiedTerm =
+							 * calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(), "HBC",
+							 * term); benef_Child_Details.setTerm(valiedTerm);
+							 * 
+							 * benef_Child_Details.setCustChildDetails(childDetails);
+							 * benef_Child_Details.setTerm(valiedTerm); benef_Child_Details.setPremium(0.0);
+							 * benef_Child_Details.setQuo_Benef_Details(hrbc_Benef_Details);
+							 * childBenifList.add(benef_Child_Details); }
+							 */
 							if (children.is_cHrbic()) {
 								System.out.println("addddddddddddddddddddddddddddddddddddddd4  called HRBIC");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
@@ -673,14 +685,14 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 								benef_Child_Details.setTerm(valiedTerm);
 
 								BigDecimal hrbic = new BigDecimal(100);
-								
+
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(hrbic.doubleValue());
 								benef_Child_Details.setQuo_Benef_Details(hrbic_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
-							
+
 							if (children.is_cHrbfc()) {
 								System.out.println("addddddddddddddddddddddddddddddddddddddd4");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
@@ -707,11 +719,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 	public ArrayList<Shedule> getSheduleDtaDtapl(QuotationQuickCalResponse calResp, QuotationDetails quotationDetails)
 			throws Exception {
 		ArrayList<Shedule> sheduleList = new ArrayList<>();
-		
-		ArrayList < DTAShedule > dtaList = calResp.getDtaShedules();
-		if(dtaList !=null) {
+
+		ArrayList<DTAShedule> dtaList = calResp.getDtaShedules();
+		if (dtaList != null) {
 			for (DTAShedule dtaShedule : dtaList) {
-				Shedule shedule=new Shedule();
+				Shedule shedule = new Shedule();
 				shedule.setLorned(dtaShedule.getLonred());
 				shedule.setOutSum(dtaShedule.getOutsum());
 				shedule.setOutYear(dtaShedule.getOutyer());
@@ -722,109 +734,102 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService{
 				sheduleList.add(shedule);
 			}
 		}
-		
+
 		return sheduleList;
 	}
 
 	@Override
 	public ArrayList<Quo_Benef_Details> addMaturity(String product, ArrayList<Quo_Benef_Details> benefictList,
 			QuotationQuickCalResponse calResp, Integer term, QuotationDetails quotationDetails) throws Exception {
-		
+
 		Quo_Benef_Details mat1 = new Quo_Benef_Details();
 		Quo_Benef_Details mat2 = new Quo_Benef_Details();
 		Quo_Benef_Details mat3 = new Quo_Benef_Details();
-		
+
 		mat1.setRiderPremium(0.0);
 		mat1.setRiderTerm(term);
 		mat1.setRiderSum(calResp.getAt6());
 		mat1.setQuotationDetails(quotationDetails);
-		
+
 		mat2.setRiderPremium(0.0);
 		mat2.setRiderTerm(term);
 		mat2.setRiderSum(calResp.getAt8());
 		mat2.setQuotationDetails(quotationDetails);
-		
+
 		mat3.setRiderPremium(0.0);
 		mat3.setRiderTerm(term);
 		mat3.setRiderSum(calResp.getAt10());
 		mat3.setQuotationDetails(quotationDetails);
-		
+
 		switch (product) {
 		case "INVP":
 			mat1.setRierCode("L3");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L3"));
 			benefictList.add(mat1);
-			
-			
+
 			mat2.setRierCode("L4");
 			mat2.setBenefit(benefitsDao.findByRiderCode("L4"));
 			benefictList.add(mat2);
-			
-			
+
 			mat3.setRierCode("L5");
 			mat3.setBenefit(benefitsDao.findByRiderCode("L5"));
 			benefictList.add(mat3);
 			break;
-			
+
 		case "END1":
 			mat1.setRierCode("L1");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L1"));
 			benefictList.add(mat1);
-			
+
 			break;
-			
+
 		case "ASIP":
 			mat1.setRierCode("L11");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L11"));
 			benefictList.add(mat1);
-			
-			
+
 			mat2.setRierCode("L12");
 			mat2.setBenefit(benefitsDao.findByRiderCode("L12"));
 			benefictList.add(mat2);
-			
-			
+
 			mat3.setRierCode("L13");
 			mat3.setBenefit(benefitsDao.findByRiderCode("L13"));
 			benefictList.add(mat3);
 			break;
-			
+
 		case "ARP":
 			mat1.setRierCode("L1");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L1"));
 			benefictList.add(mat1);
-			
+
 			break;
-			
+
 		case "AIP":
 			mat1.setRierCode("L6");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L6"));
 			benefictList.add(mat1);
-			
-			
+
 			mat2.setRierCode("L8");
 			mat2.setBenefit(benefitsDao.findByRiderCode("L8"));
 			benefictList.add(mat2);
-			
-			
+
 			mat3.setRierCode("L9");
 			mat3.setBenefit(benefitsDao.findByRiderCode("L9"));
 			benefictList.add(mat3);
 			break;
-			
+
 		case "AIB":
 			mat1.setRierCode("IAIB");
 			mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
 			benefictList.add(mat1);
-			
+
 			break;
-			
+
 		default:
 			break;
 		}
-		
+
 		return benefictList;
 	}
-	
 
 }

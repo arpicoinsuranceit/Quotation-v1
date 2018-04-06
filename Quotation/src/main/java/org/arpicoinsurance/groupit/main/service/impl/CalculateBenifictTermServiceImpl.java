@@ -20,6 +20,26 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 			riderCode = "SCB";
 		if (riderCode.equals("CIBS"))
 			riderCode = "SCIB";
+		if (riderCode.equals("HRBF"))
+			riderCode = "HCBF";
+		if (riderCode.equals("HRBFS"))
+			riderCode = "HCBFS";
+		if (riderCode.equals("HRBFC"))
+			riderCode = "HCBFC";
+		if (riderCode.equals("HRBI"))
+			riderCode = "HCBI";
+		if (riderCode.equals("HRBIS"))
+			riderCode = "HCBIS";
+		if (riderCode.equals("HRBIC"))
+			riderCode = "HCBIC";
+		if (riderCode.equals("SUHRB"))
+			riderCode = "SHCBI";
+		if (riderCode.equals("SUHRBC"))
+			riderCode = "SHCBIC";
+		if (riderCode.equals("SUHRBS"))
+			riderCode = "SHCBIS";
+		if (riderCode.equals("CIBS"))
+			riderCode = "SCIB";
 		System.out.println(age + "******************************************");
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
 		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {

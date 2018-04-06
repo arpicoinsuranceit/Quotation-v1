@@ -11,6 +11,7 @@ public class MainLife {
 	private String _mSmoking;
 	private String _mMobile;
 	private String _mOccupation;
+	private String _mCivilStatus;
 	
 	public String get_mTitle() {
 		return _mTitle;
@@ -71,5 +72,11 @@ public class MainLife {
 	}
 	public void set_mOccupation(String _mOccupation) {
 		this._mOccupation = _mOccupation;
+	}
+	public String get_mCivilStatus() {
+		return _mCivilStatus;
+	}
+	public void set_mCivilStatus(String _mCivilStatus) {
+		this._mCivilStatus = _mCivilStatus;
 	}
 }

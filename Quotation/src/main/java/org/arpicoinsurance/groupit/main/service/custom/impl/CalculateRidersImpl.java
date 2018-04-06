@@ -751,16 +751,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 			try {
 				hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF , ridsumasu, adultCount, childCount, new Date(),
 						payFrequency, 1.0, ocuLoading);
+				calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
+				calResp.setHrbf(hrbf.doubleValue());
+				calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
+				calResp.setHrbfTerm(valiedTermHRBF);
 			} catch (Exception e) {
 				hrbf = new BigDecimal(0);
 				calResp.setWarning("Please get HRBF for spouse or child to calculate HRBF");
 				calResp.setWarningExist(true);
 				e.printStackTrace();
 			}
-			calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
-			calResp.setHrbf(hrbf.doubleValue());
-			calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
-			calResp.setHrbfTerm(valiedTermHRBF);
+			
 			return calResp;
 			
 		case "HRBI":
