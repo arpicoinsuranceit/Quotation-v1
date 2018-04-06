@@ -389,7 +389,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 						case "CIBC":
 							if (children.is_cCibc()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-										children.get_cTitle(), children.get_cAge(),
+										children.get_cTitle().equals("Son") ? "M" : "F" , children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
 										adultCount, childCount, -1.0, -1.0);
 							}
@@ -398,7 +398,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 						case "HBC":
 							if (children.is_cHbc()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-										children.get_cTitle(), children.get_cAge(),
+										children.get_cTitle().equals("Son") ? "M" : "F", children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
 										adultCount, childCount, -1.0, -1.0);
 							}
@@ -415,7 +415,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 						case "SUHRBC":
 							if (children.is_cSuhrbc()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-										children.get_cTitle(), children.get_cAge(),
+										children.get_cTitle().equals("Son") ? "M" : "F", children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
 										adultCount, childCount, -1.0, -1.0);
 							}
@@ -423,7 +423,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 						case "HRBIC":
 							if (children.is_cHrbic()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
-										children.get_cTitle(), children.get_cAge(),
+										children.get_cTitle().equals("Son") ? "M" : "F", children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
 										adultCount, childCount, -1.0, -1.0);
 							}

@@ -22,6 +22,8 @@ public class HRBIServiceImpl implements HRBIService{
 	@Override
 	public BigDecimal calculateHRBI(Integer age, Integer term, String sex, Double ridsumasu, Date chedat, String payFrequency, Double relief, double occupation_loding)
 			throws Exception {
+		
+		System.out.println(age + "###############" + term+ "###############" + sex+ "###############" + ridsumasu+ "###############" + payFrequency+ "###############" + relief+ "###############" + occupation_loding);
 		BigDecimal premiumHRBI = new BigDecimal(0);
 		
 		RateCardHRBI rateCardHRBI= rateCardHRBIDao.findByAgeAndTermAndSumasuAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, ridsumasu, sex, chedat, chedat, chedat, chedat);

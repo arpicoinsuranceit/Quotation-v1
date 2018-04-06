@@ -757,9 +757,12 @@ public class Validation {
 		}
 		
 		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
+			System.out.println("called");
 			Double scb = benefitMap.get("BSAS").getSumAssured();
 			Double cib = benefitMap.get("CIBS").getSumAssured();
 
+			System.out.println(scb);
+			System.out.println(cib);
 			if (cib <= scb && cib <= 6000000 && cib >= 250000) {
 				return 1;
 			}
