@@ -201,29 +201,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					case "HRBI":
 						benifict.setType("HCBI");
 						break;
-					case "HRBIS":
-						benifict.setType("HCBIS");
-						break;
-					case "HRBIC":
-						benifict.setType("HCBIC");
-						break;
 					case "HRBF":
 						benifict.setType("HCBF");
 						break;
-					case "HRBFS":
-						benifict.setType("HCBFS");
-						break;
-					case "HRBFC":
-						benifict.setType("HCBFC");
-						break;
 					case "SUHRB":
 						benifict.setType("SHCBI");
-						break;
-					case "SUHRBS":
-						benifict.setType("SHCBIS");
-						break;
-					case "SUHRBC":
-						benifict.setType("SHCBIC");
 						break;
 
 					default:
@@ -385,6 +367,40 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 						benifict.setType("SCB");
 					if (benifict.getType().equals("CIBS"))
 						benifict.setType("SCIB");
+
+					switch (benifict.getType()) {
+					case "HRBI":
+						benifict.setType("HCBI");
+						break;
+					case "HRBIS":
+						benifict.setType("HCBIS");
+						break;
+					case "HRBIC":
+						benifict.setType("HCBIC");
+						break;
+					case "HRBF":
+						benifict.setType("HCBF");
+						break;
+					case "HRBFS":
+						benifict.setType("HCBFS");
+						break;
+					case "HRBFC":
+						benifict.setType("HCBFC");
+						break;
+					case "SUHRB":
+						benifict.setType("SHCBI");
+						break;
+					case "SUHRBS":
+						benifict.setType("SHCBIS");
+						break;
+					case "SUHRBC":
+						benifict.setType("SHCBIC");
+						break;
+
+					default:
+						break;
+					}
+
 					Benefits benifict2 = benefitsDao.findByRiderCode(benifict.getType());
 
 					if (benifict2 != null) {
@@ -518,6 +534,40 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 				for (Benifict benifict : benifictListC) {
 					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 					Benefits benifict2 = benefitsDao.findByRiderCode(benifict.getType());
+
+					switch (benifict.getType()) {
+					case "HRBI":
+						benifict.setType("HCBI");
+						break;
+					case "HRBIS":
+						benifict.setType("HCBIS");
+						break;
+					case "HRBIC":
+						benifict.setType("HCBIC");
+						break;
+					case "HRBF":
+						benifict.setType("HCBF");
+						break;
+					case "HRBFS":
+						benifict.setType("HCBFS");
+						break;
+					case "HRBFC":
+						benifict.setType("HCBFC");
+						break;
+					case "SUHRB":
+						benifict.setType("SHCBI");
+						break;
+					case "SUHRBS":
+						benifict.setType("SHCBIS");
+						break;
+					case "SUHRBC":
+						benifict.setType("SHCBIC");
+						break;
+
+					default:
+						break;
+					}
+
 					if (benifict2 != null) {
 						benef_Details.setBenefit(benifict2);
 					} else {
