@@ -175,9 +175,12 @@ public class DTAServiceImpl implements DTAService {
 
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
-			calResp = calculateriders.getRiders(quotationCalculation, calResp);
+			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-
+			
+			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
+			
+			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);

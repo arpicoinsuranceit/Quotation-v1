@@ -129,9 +129,11 @@ public class ENDServiceImpl implements ENDService {
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
+			
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
-			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 			calResp.setGuaranteed(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),

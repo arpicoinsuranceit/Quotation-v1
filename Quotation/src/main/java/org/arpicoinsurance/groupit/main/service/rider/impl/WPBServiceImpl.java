@@ -15,6 +15,13 @@ public class WPBServiceImpl implements WPBService{
 	@Override
 	public BigDecimal calculateWPB(QuotationQuickCalResponse calResp) throws Exception {
 		BigDecimal premiumWPB = new BigDecimal(0);
+		System.out.println(calResp.getBasicSumAssured() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getAtpb() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getFeb() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getMifdb() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getMifdbt() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getCib() + " WPB SSSSSSSSSSSSSSSS");
+		System.out.println(calResp.getCibc() + " WPB SSSSSSSSSSSSSSSS");
 		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getBasicSumAssured() == null ? 0.0 : calResp.getBasicSumAssured()));
 		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getAtpb() == null ? 0.0 : calResp.getAtpb()));
 		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getFeb() == null ? 0.0 : calResp.getFeb()));
