@@ -197,6 +197,38 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			ArrayList<Benifict> benifictListM = get_riderDetails.get_mRiders();
 			if (benifictListM != null && benifictListM.size() > 0) {
 				for (Benifict benifict : benifictListM) {
+					switch (benifict.getType()) {
+					case "HRBI":
+						benifict.setType("HCBI");
+						break;
+					case "HRBIS":
+						benifict.setType("HCBIS");
+						break;
+					case "HRBIC":
+						benifict.setType("HCBIC");
+						break;
+					case "HRBF":
+						benifict.setType("HCBF");
+						break;
+					case "HRBFS":
+						benifict.setType("HCBFS");
+						break;
+					case "HRBFC":
+						benifict.setType("HCBFC");
+						break;
+					case "SUHRB":
+						benifict.setType("SHCBI");
+						break;
+					case "SUHRBS":
+						benifict.setType("SHCBIS");
+						break;
+					case "SUHRBC":
+						benifict.setType("SHCBIC");
+						break;
+
+					default:
+						break;
+					}
 					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 					Benefits benifict2 = benefitsDao.findByRiderCode(benifict.getType());
 					if (benifict2 != null) {
