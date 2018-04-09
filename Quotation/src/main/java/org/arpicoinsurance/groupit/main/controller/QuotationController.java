@@ -84,15 +84,15 @@ public class QuotationController {
 		return null;
 	}
 	
-	@RequestMapping(value="/getSumAtRisk",method=RequestMethod.POST)
+	/*@RequestMapping(value="/getSumAtRisk",method=RequestMethod.POST)
 	public HashMap<String, Object> getCalculateSumAtrisk(@RequestParam QuotationCalculation calculation,@RequestParam Double previous,@RequestParam String custCode) {
 		
 		try {
-			return healthReqService.getSumAtRiskDetails(calculation, previous, custCode);
+			return healthReqService.getSumAtRiskDetailsMainLife(calculation, previous, custCode);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 }

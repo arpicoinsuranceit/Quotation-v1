@@ -217,18 +217,18 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 						/*if(bnf.getBenfName().equals("HRBC")) {
 							children.set_cHrbc(true);
 						}*/
-						if(bnf.getBenfName().equals("SUHRBC")) {
+						if(bnf.getBenfName().equals("SHCBIC")) {
 							children.set_cSuhrbc(true);
 						}
 						if(bnf.getBenfName().equals("HBC")) {
 							children.set_cHbc(true);
 						}
 						
-						if(bnf.getBenfName().equals("HRBIC")) {
+						if(bnf.getBenfName().equals("HCBIC")) {
 							children.set_cHrbic(true);
 						}
 						
-						if(bnf.getBenfName().equals("HRBFC")) {
+						if(bnf.getBenfName().equals("HCBFC")) {
 							children.set_cHrbfc(true);
 						}
 					}

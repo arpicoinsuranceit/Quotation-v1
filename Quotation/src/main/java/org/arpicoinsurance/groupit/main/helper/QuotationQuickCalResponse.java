@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
@@ -213,6 +214,9 @@ public class QuotationQuickCalResponse {
 	
 	private boolean isWarningExist = false;
 	private String warning = null;
+	
+	private HashMap<String, Object> mainLifeHealthReq = null;
+	private HashMap<String, Object> spouseHealthReq = null;
 	
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
@@ -1119,6 +1123,19 @@ public class QuotationQuickCalResponse {
 	}
 	public void setWarning(String warning) {
 		this.warning = warning;
+	}
+	
+	public HashMap<String, Object> getMainLifeHealthReq() {
+		return mainLifeHealthReq;
+	}
+	public void setMainLifeHealthReq(HashMap<String, Object> mainLifeHealthReq) {
+		this.mainLifeHealthReq = mainLifeHealthReq;
+	}
+	public HashMap<String, Object> getSpouseHealthReq() {
+		return spouseHealthReq;
+	}
+	public void setSpouseHealthReq(HashMap<String, Object> spouseHealthReq) {
+		this.spouseHealthReq = spouseHealthReq;
 	}/*
 	@Override
 	public String toString() {
@@ -1159,6 +1176,7 @@ public class QuotationQuickCalResponse {
 				+ ", isWarningExist=" + isWarningExist + ", warning=" + warning + "]";
 	}
 	*/
+	
 	
 	
 	

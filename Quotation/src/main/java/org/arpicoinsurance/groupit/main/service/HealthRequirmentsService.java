@@ -6,6 +6,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface HealthRequirmentsService {
 
-	HashMap<String, Object> getSumAtRiskDetails(QuotationCalculation calculation, Double previous, String custCode);
+	HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation);
+	HashMap<String, Object> getSumAtRiskDetailsSpouse(QuotationCalculation calculation);
 
 }

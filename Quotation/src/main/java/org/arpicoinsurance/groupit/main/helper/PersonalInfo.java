@@ -15,6 +15,8 @@ public class PersonalInfo {
 	private Double bsa;
 	private Double intrate;
 	private Double msfb;
+	private Double mPreviousSumAtRisk;
+	private Double sPreviousSumAtRisk;
 	
 	private ArrayList<Children> childrens;
 
@@ -120,6 +122,22 @@ public class PersonalInfo {
 
 	public void setMsfb(Double msfb) {
 		this.msfb = msfb;
+	}
+
+	public Double getmPreviousSumAtRisk() {
+		return mPreviousSumAtRisk;
+	}
+
+	public void setmPreviousSumAtRisk(Double mPreviousSumAtRisk) {
+		this.mPreviousSumAtRisk = mPreviousSumAtRisk;
+	}
+
+	public Double getsPreviousSumAtRisk() {
+		return sPreviousSumAtRisk;
+	}
+
+	public void setsPreviousSumAtRisk(Double sPreviousSumAtRisk) {
+		this.sPreviousSumAtRisk = sPreviousSumAtRisk;
 	}
 
 		

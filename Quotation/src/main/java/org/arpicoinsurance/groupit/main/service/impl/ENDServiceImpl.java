@@ -44,6 +44,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardEND;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
@@ -110,6 +111,9 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
+	
+	@Autowired
+	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
@@ -133,6 +137,9 @@ public class ENDServiceImpl implements ENDService {
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
+			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
+			
+			System.out.println((calResp.getMainLifeHealthReq() != null) + " Cal Helth req");
 			
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
