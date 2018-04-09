@@ -269,6 +269,7 @@ public class ENDServiceImpl implements ENDService {
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 		
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+		
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
@@ -298,22 +299,35 @@ public class ENDServiceImpl implements ENDService {
 		
 		benef_DetailsList.add(benef_Details);
 
+		
+		for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
+			System.out.println("");
+			System.out.println(quo_Benef_Details.toString());
+			System.out.println("");
+		}
+		
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
+		System.out.println("custSave");
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+		System.out.println("custDetailSaveSave");
 		ArrayList<CustChildDetails> custChildDList = null;
 		if (life != null && mainLifeDetails != null) {
 
 			if (spouse != null) {
 				Customer sp = customerDao.save(spouse);
+				System.out.println("custSSave");
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+				System.out.println("custSDetailSave");
 				if (sp == null && spDetsils != null) {
 					return "Error at Spouse Saving";
 				}
 			}
 
 			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+			System.out.println("childSave");
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+			System.out.println("childDetailSave");
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
 					return "Error at Child Saving";
@@ -321,7 +335,9 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 			Quotation quo = quotationDao.save(quotation);
+			System.out.println("quotationSave");
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
+			System.out.println("quotationDetailsSave");
 
 			///////////////////// Add Maturity //////////////////
 
@@ -331,8 +347,13 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Done Add Maturity //////////////////
 
 			if (quo != null && quoDetails != null) {
+				for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
+					System.out.println(benef_Details2.toString());
+					System.out.println("");
+				}
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
+				System.out.println("benDetailsSave");
 				if (bnfdList != null) {
 
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,

@@ -192,6 +192,12 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			QuotationQuickCalResponse calResp, QuotationDetails quotationDetails, List<Children> childrenList,
 			Integer integer) throws Exception {
 		ArrayList<Quo_Benef_Details> benef_DetailList = null;
+		
+		for (Benifict quo_Benef_Details :  get_riderDetails.get_mRiders()) {
+			System.out.println(quo_Benef_Details.getType());
+			System.out.println();
+		}
+		
 		try {
 			benef_DetailList = new ArrayList<>();
 			ArrayList<Benifict> benifictListM = get_riderDetails.get_mRiders();
@@ -297,14 +303,14 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					 * benef_Details.setRiderTerm(calResp.getHrbTerm());
 					 * benef_Details.setRierCode(type); break;
 					 */
-					case "HRBI":
+					case "HCBI":
 						benef_Details.setRiderPremium(calResp.getHrbi());
 						benef_Details.setRiderTerm(calResp.getHrbiTerm());
 						benef_Details.setRierCode(type);
 						benef_DetailList.add(benef_Details);
 						break;
 
-					case "HRBF":
+					case "HCBF":
 						if (calResp.getHrbf() > 0) {
 							benef_Details.setRiderPremium(calResp.getHrbf());
 							benef_Details.setRiderTerm(calResp.getHrbfTerm());
@@ -313,7 +319,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 						}
 						break;
 
-					case "SUHRB":
+					case "SHCBI":
 						benef_Details.setRiderPremium(calResp.getShcbi());
 						benef_Details.setRiderTerm(calResp.getShcbiTerm());
 						benef_Details.setRierCode(type);
@@ -367,34 +373,17 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 						benifict.setType("SCB");
 					if (benifict.getType().equals("CIBS"))
 						benifict.setType("SCIB");
+					
 
 					switch (benifict.getType()) {
-					case "HRBI":
-						benifict.setType("HCBI");
-						break;
 					case "HRBIS":
 						benifict.setType("HCBIS");
-						break;
-					case "HRBIC":
-						benifict.setType("HCBIC");
-						break;
-					case "HRBF":
-						benifict.setType("HCBF");
 						break;
 					case "HRBFS":
 						benifict.setType("HCBFS");
 						break;
-					case "HRBFC":
-						benifict.setType("HCBFC");
-						break;
-					case "SUHRB":
-						benifict.setType("SHCBI");
-						break;
 					case "SUHRBS":
 						benifict.setType("SHCBIS");
-						break;
-					case "SUHRBC":
-						benifict.setType("SHCBIC");
 						break;
 
 					default:
@@ -456,12 +445,12 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					 * benef_Details.setRiderTerm(calResp.getHrbsTerm());
 					 * benef_Details.setRierCode(type); break;
 					 */
-					case "HRBIS":
+					case "HCBIS":
 						benef_Details.setRiderPremium(calResp.getHrbis());
 						benef_Details.setRiderTerm(calResp.getHrbisTerm());
 						benef_Details.setRierCode(type);
 						break;
-					case "HRBFS":
+					case "HCBFS":
 						benef_Details.setRiderPremium(calResp.getHrbfs());
 						benef_Details.setRiderTerm(calResp.getHrbfsTerm());
 						benef_Details.setRierCode(type);
@@ -471,19 +460,12 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					 * benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
 					 * benef_Details.setRierCode(type); break;
 					 */
-					case "SUHRBS":
+					case "SHCBIS":
 						benef_Details.setRiderPremium(calResp.getSuhrbs());
 						benef_Details.setRiderTerm(calResp.getSuhrbsTerm());
 						benef_Details.setRierCode(type);
 						break;
-					/*
-					 * case "SUHRBC": benef_Details.setRiderPremium(calResp.getSuhrbc());
-					 * benef_Details.setRierCode(type); break;
-					 */
-					case "SUHRBC":
-						benef_Details.setRiderPremium(calResp.getShcbic());
-						benef_Details.setRierCode(type);
-						break;
+						
 					case "HBS":
 						benef_Details.setRiderPremium(calResp.getHbs());
 						benef_Details.setRiderTerm(calResp.getHbsTerm());
@@ -533,32 +515,13 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			if (benifictListC != null && benifictListC.size() > 0) {
 				for (Benifict benifict : benifictListC) {
 					Quo_Benef_Details benef_Details = new Quo_Benef_Details();
-					Benefits benifict2 = benefitsDao.findByRiderCode(benifict.getType());
-
+					
 					switch (benifict.getType()) {
-					case "HRBI":
-						benifict.setType("HCBI");
-						break;
-					case "HRBIS":
-						benifict.setType("HCBIS");
-						break;
 					case "HRBIC":
 						benifict.setType("HCBIC");
 						break;
-					case "HRBF":
-						benifict.setType("HCBF");
-						break;
-					case "HRBFS":
-						benifict.setType("HCBFS");
-						break;
 					case "HRBFC":
 						benifict.setType("HCBFC");
-						break;
-					case "SUHRB":
-						benifict.setType("SHCBI");
-						break;
-					case "SUHRBS":
-						benifict.setType("SHCBIS");
 						break;
 					case "SUHRBC":
 						benifict.setType("SHCBIC");
@@ -567,6 +530,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					default:
 						break;
 					}
+					
+					Benefits benifict2 = benefitsDao.findByRiderCode(benifict.getType());
 
 					if (benifict2 != null) {
 						benef_Details.setBenefit(benifict2);
@@ -585,7 +550,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 						benef_Details.setRiderPremium(calResp.getCibc());
 						benef_Details.setRierCode(type);
 						break;
-					case "SUHRBC":
+					case "SHCBIC":
 						benef_Details.setRiderPremium(calResp.getSuhrbc());
 						benef_Details.setRierCode(type);
 						break;
@@ -597,12 +562,12 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					 * case "HRBC": benef_Details.setRiderPremium(0.0);
 					 * benef_Details.setRierCode(type); break;
 					 */
-					case "HRBFC":
+					case "HCBFC":
 						benef_Details.setRiderPremium(0.0);
 						benef_Details.setRierCode(type);
 						break;
 
-					case "HRBIC":
+					case "HCBIC":
 						benef_Details.setRiderPremium(calResp.getHrbic());
 						benef_Details.setRierCode(type);
 						break;
@@ -648,16 +613,16 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					case "CIBC":
 						cibc_Benef_Details = benef_Details;
 						break;
-					case "SUHRBC":
+					case "SHCBIC":
 						suhrbc_Benef_Details = benef_Details;
 						break;
 					/*
 					 * case "HRBC": hrbc_Benef_Details = benef_Details; break;
 					 */
-					case "HRBIC":
+					case "HCBIC":
 						hrbic_Benef_Details = benef_Details;
 						break;
-					case "HRBFC":
+					case "HCBFC":
 						hrbfc_Benef_Details = benef_Details;
 						break;
 
@@ -675,11 +640,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			for (Benifict benifict : benifictListC) {
 				if (benifict.getType().equals("CIBC"))
 					cib = benifict.getSumAssured();
-				if (benifict.getType().equals("SUHRBC"))
+				if (benifict.getType().equals("SHCBIC"))
 					suhrb = benifict.getSumAssured();
 				if (benifict.getType().equals("HBC"))
 					hb = benifict.getSumAssured();
-				if (benifict.getType().equals("HRBIC"))
+				if (benifict.getType().equals("HCBIC"))
 					hrbi = benifict.getSumAssured();
 			}
 
@@ -717,7 +682,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"SUHRBC", term);
+										"SHCBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 								System.out.println(children.get_cTitle() + "                                  test");
 								BigDecimal cibc = suhrbcService.calculateSUHRBC(children.get_cAge(),
@@ -763,7 +728,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HRBIC", term);
+										"HCBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 
 								BigDecimal hrbic = new BigDecimal(100);
@@ -780,7 +745,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HRBFC", term);
+										"HCBFC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 
 								benef_Child_Details.setCustChildDetails(childDetails);

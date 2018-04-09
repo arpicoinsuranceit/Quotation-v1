@@ -110,6 +110,15 @@ public class Quo_Benef_Details implements Serializable{
 	public void setRierCode(String riderCode) {
 		this.riderCode = riderCode;
 	}
+
+	@Override
+	public String toString() {
+		return "Quo_Benef_Details [quo_Benef_DetailsId=" + quo_Benef_DetailsId + ", riderPremium=" + riderPremium
+				+ ", riderTerm=" + riderTerm + ", riderSum=" + riderSum + ", riderCode=" + riderCode
+				+ ", quotationDetails=" + quotationDetails + ", benefit=" + benefit + ", quo_Benef_CreateBy="
+				+ quo_Benef_CreateBy + ", quo_Benef_CreateDate=" + quo_Benef_CreateDate + ", quo_Benef_ModifyBy="
+				+ quo_Benef_ModifyBy + ", quo_Benef_ModifyDate=" + quo_Benef_ModifyDate + "]";
+	}
 	
 	
 	
