@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface MediGridDao extends CrudRepository<MediTestGrid, Integer>{
 
-	 List<MediTestGrid> findOneByAgeFromGreaterThanEqualAndAgeToLessThanEqualAndSumAssuredFromGreaterThanEqualAndSumAssuredToLessThanEqual(Integer ageFrom, Integer ageTo, Double sumAssuredFrom, Double sumAssuredTo);
+	 List<MediTestGrid> findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(Integer ageFrom, Integer ageTo, Double sumAssuredFrom, Double sumAssuredTo);
 }

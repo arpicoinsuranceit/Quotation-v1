@@ -13,4 +13,6 @@ public interface MedicalReqDao extends CrudRepository<MedicalReq,String> {
 	@Modifying
 	@Query("DELETE FROM MedicalReq where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
+	
+	MedicalReq findOneByMedCode(String medCode) throws Exception;
 }

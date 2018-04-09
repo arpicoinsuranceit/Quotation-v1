@@ -139,6 +139,9 @@ public class ENDServiceImpl implements ENDService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 			
+			//if(quotationCalculation.get_personalInfo().getSage()!=null && quotationCalculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			
 			System.out.println((calResp.getMainLifeHealthReq() != null) + " Cal Helth req");
 			
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
