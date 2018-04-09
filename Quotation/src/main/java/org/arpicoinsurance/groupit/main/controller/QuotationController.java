@@ -1,11 +1,14 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoDetails;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
@@ -26,6 +30,9 @@ public class QuotationController {
 	
 	@Autowired
 	private QuotationDetailsService quoDetailsService;
+	
+	@Autowired
+	private HealthRequirmentsService healthReqService;
 	
 	@RequestMapping(value="/quotation/{id}",method=RequestMethod.GET)
 	public Quotation getQuotation(@PathVariable Integer id) {
@@ -72,6 +79,17 @@ public class QuotationController {
 			return quoDetails.getQuotation().getProducts().getProductCode();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/getSumAtRisk",method=RequestMethod.POST)
+	public HashMap<String, Object> getCalculateSumAtrisk(@RequestParam QuotationCalculation calculation,@RequestParam Double previous,@RequestParam String custCode) {
+		
+		try {
+			return healthReqService.getSumAtRiskDetails(calculation, previous, custCode);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

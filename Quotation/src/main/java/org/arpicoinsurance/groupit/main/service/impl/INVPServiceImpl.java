@@ -123,7 +123,7 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()),calResp);
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
@@ -159,7 +159,7 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm)
+	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp)
 			throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
@@ -180,6 +180,10 @@ public class INVPServiceImpl implements INVPService {
 		System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		return premium.multiply(new BigDecimal(rate));
 	}
 
