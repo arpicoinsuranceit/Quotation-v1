@@ -11,7 +11,7 @@ public interface ASIPService {
 
 	QuotationQuickCalResponse getCalcutatedASIP(QuotationCalculation quotationCalculation) throws Exception;
 
-	BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm) throws Exception;
+	BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm, QuotationQuickCalResponse calResp) throws Exception;
 
 
 	BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum,

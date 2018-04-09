@@ -103,7 +103,7 @@ public class ATRMServiceImpl implements ATRMService {
 	
 	@Override
 	public BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum,
-			int paytrm) throws Exception {
+			int paytrm, QuotationQuickCalResponse calResp) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits= benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -122,7 +122,11 @@ public class ATRMServiceImpl implements ATRMService {
 		
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardATRM.getRate()).subtract(((new BigDecimal(rateCardATRM.getRate()).multiply(new BigDecimal(rebate))).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-					
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		
 		System.out.println("premium : "+premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
@@ -146,7 +150,7 @@ public class ATRMServiceImpl implements ATRMService {
 			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),calculation.get_personalInfo().getMage(),
 					calculation.get_personalInfo().getTerm(), rebate, new Date(),
 					calculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()));
+					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp);
 
 			
 			calResp = calculateriders.getRiders(calculation, calResp);

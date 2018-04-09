@@ -123,7 +123,7 @@ public class ASIPServiceImpl implements ASIPService {
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
@@ -160,7 +160,7 @@ public class ASIPServiceImpl implements ASIPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm) throws Exception {
+	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm, QuotationQuickCalResponse calResp) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -178,6 +178,11 @@ public class ASIPServiceImpl implements ASIPService {
 				.divide(new BigDecimal(paytrm), 4, RoundingMode.HALF_UP);
 		System.out.println("premium : " + premium.toString());
 
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		
 		return premium.multiply(new BigDecimal(rate));
 	}
 
