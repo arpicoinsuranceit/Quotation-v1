@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
@@ -63,6 +64,9 @@ public class DTAServiceImpl implements DTAService {
 
 	@Autowired
 	private OccupationDao occupationDao;
+	
+	@Autowired
+	private BenefitsDao benefitsDao;
 
 	@Autowired
 	private CustomerDao customerDao;
@@ -253,6 +257,37 @@ public class DTAServiceImpl implements DTAService {
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+		
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails);
+		switch (quotationDetails.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -359,6 +394,36 @@ public class DTAServiceImpl implements DTAService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails1);
+		switch (quotationDetails1.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);

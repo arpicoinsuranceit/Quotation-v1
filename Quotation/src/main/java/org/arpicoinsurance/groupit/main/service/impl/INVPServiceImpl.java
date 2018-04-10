@@ -123,7 +123,7 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()),calResp);
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
@@ -159,8 +159,8 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp)
-			throws Exception {
+	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm,
+			QuotationQuickCalResponse calResp) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -180,7 +180,7 @@ public class INVPServiceImpl implements INVPService {
 		System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
-		
+
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
@@ -281,12 +281,41 @@ public class INVPServiceImpl implements INVPService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails);
+		switch (quotationDetails.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////// Add Maturity
 		//////////////////////////////////////////////////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		
 
 		///////////////////////////// END ADD MATURITY////////////////////////
 
@@ -314,14 +343,14 @@ public class INVPServiceImpl implements INVPService {
 
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
-			
-			/////////////////////Add Maturity //////////////////
-			
+
+			///////////////////// Add Maturity //////////////////
+
 			benef_DetailsList = quotationSaveUtilService.addMaturity("INVP", benef_DetailsList, calResp,
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
-			/////////////////////Done Add Maturity //////////////////
-			
+			///////////////////// Done Add Maturity //////////////////
+
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
@@ -452,6 +481,37 @@ public class INVPServiceImpl implements INVPService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails1);
+		switch (quotationDetails1.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
+
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -479,7 +539,6 @@ public class INVPServiceImpl implements INVPService {
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			/////////// Add Maturity///////////////////////
-			
 
 			benef_DetailsList = quotationSaveUtilService.addMaturity("INVP", benef_DetailsList, calResp,
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);

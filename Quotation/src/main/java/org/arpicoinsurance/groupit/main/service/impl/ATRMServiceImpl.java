@@ -50,12 +50,12 @@ public class ATRMServiceImpl implements ATRMService {
 
 	@Autowired
 	private RateCardATRMDao rateCardATRMDao;
-	
+
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-	
+
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
 
@@ -94,18 +94,18 @@ public class ATRMServiceImpl implements ATRMService {
 
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
-	
+
 	@Autowired
 	private CalculateRiders calculateriders;
-	
+
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Override
-	public BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum,
-			int paytrm, QuotationQuickCalResponse calResp) throws Exception {
+	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm,
+			QuotationQuickCalResponse calResp) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
-		Benefits benefits= benefitsDao.findByRiderCode("L2");
+		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
 		Double rate = 1.0;
 		if (ocupationLoading != null) {
@@ -114,20 +114,26 @@ public class ATRMServiceImpl implements ATRMService {
 				rate = 1.0;
 			}
 		}
-		System.out.println("ARP bassum : "+bassum+" age : "+age+" term : "+term+" paytrm : "+paytrm);
+		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
-		
-		RateCardATRM rateCardATRM = rateCardATRMDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("rateCardATRM : "+rateCardATRM.getRate());
-		
+
+		RateCardATRM rateCardATRM = rateCardATRMDao
+				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+						chedat, chedat);
+		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
+
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
-		premium = ((((new BigDecimal(rateCardATRM.getRate()).subtract(((new BigDecimal(rateCardATRM.getRate()).multiply(new BigDecimal(rebate))).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-		
+		premium = ((((new BigDecimal(rateCardATRM.getRate())
+				.subtract(((new BigDecimal(rateCardATRM.getRate()).multiply(new BigDecimal(rebate)))
+						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
+										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
+
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-		
-		System.out.println("premium : "+premium.toString());
+
+		System.out.println("premium : " + premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
 
@@ -135,10 +141,11 @@ public class ATRMServiceImpl implements ATRMService {
 	public QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
 		System.out.println(calculation.get_personalInfo().getMgenger());
 
-		System.out.println(calculation.get_personalInfo().getMgenger()+ "/////////////////////////////////////////////////////////////");
-		System.out.println(calculation.get_personalInfo().getSgenger() + "/////////////////////////////////////////////////////////////");
-		
-		
+		System.out.println(calculation.get_personalInfo().getMgenger()
+				+ "/////////////////////////////////////////////////////////////");
+		System.out.println(calculation.get_personalInfo().getSgenger()
+				+ "/////////////////////////////////////////////////////////////");
+
 		CalculationUtils calculationUtils = null;
 		try {
 
@@ -147,23 +154,22 @@ public class ATRMServiceImpl implements ATRMService {
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
-			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),calculation.get_personalInfo().getMage(),
-					calculation.get_personalInfo().getTerm(), rebate, new Date(),
-					calculation.get_personalInfo().getBsa(),
+			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),
+					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
+					new Date(), calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp);
 
-			
 			calResp = calculateriders.getRiders(calculation, calResp);
-			
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
-			
-			Double tot=calResp.getBasicSumAssured() + calResp.getAddBenif();
+
+			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
-			Double tax=calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE=adminFee + tax;
+			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
+			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
-			
+
 			return calResp;
 
 		} finally {
@@ -173,7 +179,7 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 	}
 
-	//save quotation
+	// save quotation
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
@@ -184,10 +190,11 @@ public class ATRMServiceImpl implements ATRMService {
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),
-				user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
 
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -203,7 +210,8 @@ public class ATRMServiceImpl implements ATRMService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -214,15 +222,15 @@ public class ATRMServiceImpl implements ATRMService {
 				custChildDetailsList.add(custChildDetails);
 			}
 
-		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation,0.0);
+		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		Quotation quotation = new Quotation();
-		
+
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
 		}
-		
+
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
@@ -230,9 +238,41 @@ public class ATRMServiceImpl implements ATRMService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails);
+		switch (quotationDetails.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -264,8 +304,8 @@ public class ATRMServiceImpl implements ATRMService {
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
@@ -310,14 +350,14 @@ public class ATRMServiceImpl implements ATRMService {
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
 
 		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
-		Customer spouse =null;
-		if(spouseDetail != null) {
+		Customer spouse = null;
+		if (spouseDetail != null) {
 			try {
 				spouse = quotationDetails.getSpouseDetails().getCustomer();
-			}catch(NullPointerException ex) {
-				spouse=null;
+			} catch (NullPointerException ex) {
+				spouse = null;
 			}
-			
+
 			if (spouse != null) {
 				spouseDetail.setCustomer(spouse);
 			} else {
@@ -327,12 +367,11 @@ public class ATRMServiceImpl implements ATRMService {
 				spouse.setCustCreateBy(user.getUser_Name());
 				spouseDetail.setCustomer(spouse);
 			}
-			
-		}else {
-			
+
+		} else {
+
 		}
-		
-		
+
 		mainLifeDetail.setCustomer(mainlife);
 
 		ArrayList<Child> childList = quotationSaveUtilService
@@ -359,7 +398,6 @@ public class ATRMServiceImpl implements ATRMService {
 			quotationDetails1.setSpouseDetails(null);
 		}
 
-		
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
@@ -368,8 +406,39 @@ public class ATRMServiceImpl implements ATRMService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails1);
+		switch (quotationDetails1.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
+
 		//////////////////////////// save edit//////////////////////////////////
-		
+
 		Customer life = (Customer) customerDao.save(mainlife);
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
 		ArrayList<CustChildDetails> custChildDList = null;
@@ -420,9 +489,7 @@ public class ATRMServiceImpl implements ATRMService {
 			return "Error at MainLife Updating";
 		}
 
-		
-	return "Success";
+		return "Success";
 	}
 
-	
 }

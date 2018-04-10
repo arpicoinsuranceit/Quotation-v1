@@ -53,7 +53,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Autowired
 	private RateCardASFPDao rateCardASFPDao;
-	
+
 	ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 
 	@Autowired
@@ -101,20 +101,19 @@ public class ASFPServiceImpl implements ASFPService {
 	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
-
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private CalculateRiders calculateriders;
-	
+
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Override
-	public BigDecimal calculateL10(int ocu,int age, int term, double rebate, Date chedat, double msfb, int paytrm)
+	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm)
 			throws Exception {
-		System.out.println("ARP msfb : "+msfb+" age : "+age+" term : "+term+" paytrm : "+paytrm);
+		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -127,24 +126,31 @@ public class ASFPServiceImpl implements ASFPService {
 			}
 		}
 		BigDecimal premium = new BigDecimal(0);
-		
-		RateCardASFP rateCardASFP = rateCardASFPDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("rateCardASFP : "+rateCardASFP.getRate());
-		
+
+		RateCardASFP rateCardASFP = rateCardASFPDao
+				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+						chedat, chedat);
+		System.out.println("rateCardASFP : " + rateCardASFP.getRate());
+
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
-					premium = ((((new BigDecimal(rateCardASFP.getRate()).subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate))).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb))).divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-					
-		System.out.println("premium : "+premium.toString());
-		
+		premium = ((((new BigDecimal(rateCardASFP.getRate())
+				.subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
+						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+								RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb))).divide(new BigDecimal(paytrm),
+										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
+
+		System.out.println("premium : " + premium.toString());
+
 		return premium.multiply(new BigDecimal(rate));
 	}
 
 	@Override
 	public BigDecimal calculateL2(int term, double msfb) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-		System.out.println("term : "+term+" msfb : "+msfb);
-		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("maturity : "+maturity.toString());
+		System.out.println("term : " + term + " msfb : " + msfb);
+		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0,
+				RoundingMode.HALF_UP);
+		System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -155,27 +161,27 @@ public class ASFPServiceImpl implements ASFPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			
-			
+
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			System.out.println(quotationCalculation.get_personalInfo().getMsfb()+" quotationCalculation.get_personalInfo().getMsfb()");
-			BigDecimal bsa=calculateL2(quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getMsfb());
-			
+			System.out.println(quotationCalculation.get_personalInfo().getMsfb()
+					+ " quotationCalculation.get_personalInfo().getMsfb()");
+			BigDecimal bsa = calculateL2(quotationCalculation.get_personalInfo().getTerm(),
+					quotationCalculation.get_personalInfo().getMsfb());
+
 			BigDecimal bsaPremium = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
-			
-			
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-			
+
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE = adminFee + tax;
-			
+
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
 			calResp.setL2(bsa.doubleValue());
@@ -194,20 +200,19 @@ public class ASFPServiceImpl implements ASFPService {
 			throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
-		
+
 		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(id);
-		
-		
+
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
 		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
-		
-		
-		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife, _invpSaveQuotation.get_personalInfo(),user);
-		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse, _invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+				_invpSaveQuotation.get_personalInfo(), user);
 
 		Customer mainlife = new Customer();
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
@@ -223,7 +228,8 @@ public class ASFPServiceImpl implements ASFPService {
 			spouseDetail.setCustomer(spouse);
 		}
 
-		ArrayList<Child> childList = quotationSaveUtilService.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+		ArrayList<Child> childList = quotationSaveUtilService
+				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
 
 		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
 		if (childList != null && !childList.isEmpty())
@@ -233,26 +239,57 @@ public class ASFPServiceImpl implements ASFPService {
 				custChildDetails.setCustomer(mainLifeDetail);
 				custChildDetailsList.add(custChildDetails);
 			}
-		
+
 		Quotation quotation = new Quotation();
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
-	
+
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-		
+
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
 		}
 
-		
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
-		
-		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(_invpSaveQuotation.get_riderDetails(), calResp,
-				quotationDetails, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails);
+		switch (quotationDetails.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -284,8 +321,8 @@ public class ASFPServiceImpl implements ASFPService {
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
 
-					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList, custChildDList,
-							childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
 							calculation.get_riderDetails().get_cRiders());
@@ -330,14 +367,14 @@ public class ASFPServiceImpl implements ASFPService {
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
 
 		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
-		Customer spouse =null;
-		if(spouseDetail != null) {
+		Customer spouse = null;
+		if (spouseDetail != null) {
 			try {
 				spouse = quotationDetails.getSpouseDetails().getCustomer();
-			}catch(NullPointerException ex) {
-				spouse=null;
+			} catch (NullPointerException ex) {
+				spouse = null;
 			}
-			
+
 			if (spouse != null) {
 				spouseDetail.setCustomer(spouse);
 			} else {
@@ -347,12 +384,11 @@ public class ASFPServiceImpl implements ASFPService {
 				spouse.setCustCreateBy(user.getUser_Name());
 				spouseDetail.setCustomer(spouse);
 			}
-			
-		}else {
-			
+
+		} else {
+
 		}
-		
-		
+
 		mainLifeDetail.setCustomer(mainlife);
 
 		ArrayList<Child> childList = quotationSaveUtilService
@@ -369,7 +405,6 @@ public class ASFPServiceImpl implements ASFPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-		
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -379,7 +414,7 @@ public class ASFPServiceImpl implements ASFPService {
 		} else {
 			quotationDetails1.setSpouseDetails(null);
 		}
-		
+
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
@@ -388,8 +423,38 @@ public class ASFPServiceImpl implements ASFPService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
+		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+
+		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setQuotationDetails(quotationDetails1);
+		switch (quotationDetails1.getPayMode()) {
+		case "M":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
+			break;
+		case "Q":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
+			break;
+		case "H":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+			break;
+		case "Y":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
+			break;
+		case "S":
+			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
+			break;
+
+		default:
+			break;
+		}
+		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
+
+		benef_DetailsList.add(benef_Details);
 		//////////////////////////// save edit//////////////////////////////////
-		
+
 		Customer life = (Customer) customerDao.save(mainlife);
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
 		ArrayList<CustChildDetails> custChildDList = null;
@@ -440,8 +505,7 @@ public class ASFPServiceImpl implements ASFPService {
 			return "Error at MainLife Updating";
 		}
 
-		
-	return "Success";
+		return "Success";
 	}
 
 }
