@@ -9,6 +9,8 @@ import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -24,6 +26,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -33,6 +36,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardDTA;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.DTAPLService;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
@@ -60,10 +64,16 @@ public class DTAPLServiceImpl implements DTAPLService {
 	private UsersDao userDao;
 
 	@Autowired
+	private MedicalDetailsDao medicalDetailsDao;
+	
+	@Autowired
 	private OccupationDao occupationDao;
 
 	@Autowired
 	private CustomerDao customerDao;
+
+	@Autowired
+	private MedicalReqDao medicalReqDao;
 
 	@Autowired
 	private CustomerDetailsDao customerDetailsDao;
@@ -79,12 +89,15 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 	@Autowired
 	private BenefitsDao benefitsDao;
-	
+
 	@Autowired
 	private SheduleDao sheduleDao;
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
+
+	@Autowired
+	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
 	public DTAHelper calculateL2(int age, int term, double intrat, String sex, Date chedat, double loanamt)
@@ -179,6 +192,13 @@ public class DTAPLServiceImpl implements DTAPLService {
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
+
+			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
+
+			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			// quotationCalculation.get_personalInfo().getSgenger()!=null){
+			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
@@ -248,11 +268,37 @@ public class DTAPLServiceImpl implements DTAPLService {
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
 
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
-		
+
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
@@ -299,6 +345,17 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
+
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			ArrayList<Shedule> sheduleList = quotationSaveUtilService.getSheduleDtaDtapl(calResp, quoDetails);
 
@@ -380,6 +437,32 @@ public class DTAPLServiceImpl implements DTAPLService {
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
+		
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
@@ -434,6 +517,17 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+			
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			ArrayList<Shedule> sheduleList = quotationSaveUtilService.getSheduleDtaDtapl(calResp, quoDetails);
 

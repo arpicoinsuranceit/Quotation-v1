@@ -9,6 +9,8 @@ import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -26,6 +28,7 @@ import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
@@ -36,6 +39,7 @@ import org.arpicoinsurance.groupit.main.model.RateCardDTA;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.DTAService;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
@@ -63,14 +67,19 @@ public class DTAServiceImpl implements DTAService {
 	private UsersDao userDao;
 
 	@Autowired
+	private MedicalDetailsDao medicalDetailsDao;
+
+	@Autowired
+	private MedicalReqDao medicalReqDao;
+
+	@Autowired
 	private OccupationDao occupationDao;
-	
+
 	@Autowired
 	private BenefitsDao benefitsDao;
 
 	@Autowired
 	private CustomerDao customerDao;
-
 
 	@Autowired
 	private CustomerDetailsDao customerDetailsDao;
@@ -84,12 +93,14 @@ public class DTAServiceImpl implements DTAService {
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
-
 	@Autowired
 	private SheduleDao sheduleDao;
-	
+
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
+
+	@Autowired
+	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
 	public DTAHelper calculateL2(int age, int term, double intrat, String sex, Date chedat, double loanamt)
@@ -98,7 +109,7 @@ public class DTAServiceImpl implements DTAService {
 
 		System.out.println(
 				"age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex + " loanamt : " + loanamt);
-		
+
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal total_premium = new BigDecimal(0);
 		ArrayList<DTAShedule> dtaSheduleList = new ArrayList<>();
@@ -178,12 +189,19 @@ public class DTAServiceImpl implements DTAService {
 			BigDecimal bsaPremium = dtaHelper.getBsa();
 
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
+
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
-			
+
+			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
+
+			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			// quotationCalculation.get_personalInfo().getSgenger()!=null){
+			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-			
+
 			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
-			
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
@@ -205,7 +223,6 @@ public class DTAServiceImpl implements DTAService {
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
-
 
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
@@ -237,27 +254,53 @@ public class DTAServiceImpl implements DTAService {
 		}
 
 		Quotation quotation = new Quotation();
-		
+
 		quotation.setStatus("active");
 		quotation.setUser(user);
 		quotation.setProducts(products);
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-		
+
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
 		}
-		
+
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
+
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
-		
+
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
@@ -305,6 +348,17 @@ public class DTAServiceImpl implements DTAService {
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
+
 			ArrayList<Shedule> sheduleList = quotationSaveUtilService.getSheduleDtaDtapl(calResp, quoDetails);
 
 			if (quo != null && quoDetails != null) {
@@ -332,7 +386,7 @@ public class DTAServiceImpl implements DTAService {
 	@Override
 	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
 			Integer qdId) throws Exception {
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
 		Products products = productDao.findByProductCode("DTA");
@@ -373,7 +427,6 @@ public class DTAServiceImpl implements DTAService {
 
 		mainLifeDetail.setCustomer(mainlife);
 
-
 		Quotation quotation = quotationDetails.getQuotation();
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -384,10 +437,35 @@ public class DTAServiceImpl implements DTAService {
 			quotationDetails1.setSpouseDetails(null);
 		}
 
-		
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
+
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
 
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
@@ -428,7 +506,7 @@ public class DTAServiceImpl implements DTAService {
 
 		Customer life = (Customer) customerDao.save(mainlife);
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
-		
+
 		if (life != null && mainLifeDetails != null) {
 
 			if (spouseDetail != null) {
@@ -441,6 +519,17 @@ public class DTAServiceImpl implements DTAService {
 
 			Quotation quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			ArrayList<Shedule> sheduleList = quotationSaveUtilService.getSheduleDtaDtapl(calResp, quoDetails);
 

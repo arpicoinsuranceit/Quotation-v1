@@ -16,6 +16,8 @@ import org.arpicoinsurance.groupit.main.dao.ChildDao;
 import org.arpicoinsurance.groupit.main.dao.CustChildDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
@@ -29,6 +31,7 @@ import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
@@ -37,6 +40,7 @@ import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardARP;
 import org.arpicoinsurance.groupit.main.service.ARPService;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
@@ -90,7 +94,13 @@ public class ARPServiceImpl implements ARPService {
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
 	@Autowired
+	private MedicalReqDao medicalReqDao;
+
+	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
+
+	@Autowired
+	private MedicalDetailsDao medicalDetailsDao;
 
 	@Autowired
 	private CalculateRiders calculateriders;
@@ -100,6 +110,9 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
+	
+	@Autowired
+	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
@@ -119,6 +132,14 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getFrequance());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
+			
+			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
+
+			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			// quotationCalculation.get_personalInfo().getSgenger()!=null){
+			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+
+			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
@@ -245,6 +266,32 @@ public class ARPServiceImpl implements ARPService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -312,6 +359,17 @@ public class ARPServiceImpl implements ARPService {
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
 			///////////////////////////// END ADD MATURITY////////////////////////
+
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
@@ -414,6 +472,32 @@ public class ARPServiceImpl implements ARPService {
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -481,6 +565,17 @@ public class ARPServiceImpl implements ARPService {
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
 			///////////////////////////// END ADD MATURITY////////////////////////
+
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao

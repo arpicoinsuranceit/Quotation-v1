@@ -51,8 +51,8 @@ public class Validation {
 						}
 						break;
 					case "ADB":
-						if (validateInvpABD().equals(0)) {
-							return "ADB must equals to BSA or ADB must be multi value of BSA till 6 times and Maximum of 25,000,000";
+						if (validateInvpABD().equals(0)) { 
+							return "ADB must be greater than or equal BSA and ADB must be less than or equal (BSA x 6) and ADB mod 250000 equal 0 Max value must be 25,000,000";
 						}
 						break;
 					case "TPDASB":
@@ -157,7 +157,7 @@ public class Validation {
 						break;
 					case "ADBS":
 						if (validateInvpADBS().equals(0)) {
-							return "ADBS must equals to BSA or ADBS must be multi value of BSA till 6 times and Maximum of 2,500,000";
+							return "ADBS must be greater than or equal SCB and ADBS must be less than or equal (SCB x 6) and ADBS mod 250000 equal 0 Max value must be 25,000,000";
 						}
 						break;
 					case "CIBS":
@@ -406,8 +406,9 @@ public class Validation {
 			Benifict benifict = benefitMap.get("ADB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
-			if ((rbsa >= bsa && rbsa <= bsa * 6 && rbsa % bsa == 0 && rbsa <= 25000000)
+			if ((rbsa >= bsa && rbsa <= bsa * 6 && rbsa % 250000 == 0 && rbsa <= 25000000)
 					|| (bsa >= 25000000 && rbsa <= 25000000)) {
+				
 				return 1;
 			}
 		}
@@ -697,7 +698,7 @@ public class Validation {
 			Double scb = bsas.getSumAssured();
 			Double rbsa = benifict.getSumAssured();
 
-			if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % scb == 0 && rbsa <= 25000000)
+			if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 250000 == 0 && rbsa <= 25000000)
 					|| (scb >= 25000000 && rbsa <= 25000000)) {
 				return 1;
 			}
