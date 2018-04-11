@@ -197,7 +197,7 @@ public class ASIPServiceImpl implements ASIPService {
 		System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " + paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)
 		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP))
-				.divide(new BigDecimal(paytrm), 4, RoundingMode.HALF_UP);
+				.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));

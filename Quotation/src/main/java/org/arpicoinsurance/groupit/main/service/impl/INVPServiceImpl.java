@@ -199,7 +199,7 @@ public class INVPServiceImpl implements INVPService {
 						chedat, chedat, chedat, chedat);
 		System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
-				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 4, RoundingMode.UP);
+				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());

@@ -124,7 +124,7 @@ public class ASFPServiceImpl implements ASFPService {
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm)
+	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm, QuotationQuickCalResponse calResp)
 			throws Exception {
 		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
@@ -153,6 +153,10 @@ public class ASFPServiceImpl implements ASFPService {
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
 		System.out.println("premium : " + premium.toString());
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 
 		return premium.multiply(new BigDecimal(rate));
 	}
@@ -185,7 +189,7 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()));
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			
