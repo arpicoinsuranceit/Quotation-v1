@@ -241,8 +241,6 @@ public class ENDServiceImpl implements ENDService {
 		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
 		if (custCode == null) {
 
-			
-
 			try {
 				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
 				RestTemplate restTemplate = new RestTemplate();

@@ -9,7 +9,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 
 public interface DTAService {
 	
-	DTAHelper calculateL2(int age, int term, double intrat, String sex, Date chedat, double loanamt)throws Exception;
+	DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp)throws Exception;
 
 	QuotationQuickCalResponse getCalcutatedDta(QuotationCalculation quotationCalculation) throws Exception; 
 	

@@ -50,6 +50,7 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -59,7 +60,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
-	
+
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
 
@@ -116,7 +117,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
@@ -130,7 +131,8 @@ public class ARPServiceImpl implements ARPService {
 			calculationUtils = new CalculationUtils();
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
-			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),quotationCalculation.get_personalInfo().getMage(),
+			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
@@ -138,14 +140,13 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getFrequance(), calResp);
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
-			
+
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
 			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
@@ -170,7 +171,7 @@ public class ARPServiceImpl implements ARPService {
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum,
 			String payFrequency, QuotationQuickCalResponse calResp) throws Exception {
-		
+
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -181,13 +182,11 @@ public class ARPServiceImpl implements ARPService {
 				rate = 1.0;
 			}
 		}
-		
+
 		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " rebate : " + rebate
 				+ " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
 		BigDecimal premium = new BigDecimal(0);
 
-		
-		
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
 		System.out.println("rateCardARP : " + rateCardEND.getRate());
@@ -216,7 +215,7 @@ public class ARPServiceImpl implements ARPService {
 													.setScale(0, RoundingMode.HALF_UP);
 		}
 		System.out.println("premium : " + premium.toString());
-		
+
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
@@ -254,6 +253,33 @@ public class ARPServiceImpl implements ARPService {
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
+		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
+		if (custCode == null) {
+
+			try {
+				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			} catch (Exception e) {
+				final String uri = "http://localhost:8085/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}
+
+		} else {
+			mainlife.setCustCode(custCode);
+		}
+
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;

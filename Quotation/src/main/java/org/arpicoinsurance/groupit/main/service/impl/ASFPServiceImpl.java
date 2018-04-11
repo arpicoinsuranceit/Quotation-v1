@@ -50,6 +50,7 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -243,6 +244,35 @@ public class ASFPServiceImpl implements ASFPService {
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
+		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
+		if (custCode == null) {
+
+			
+
+			try {
+				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}catch (Exception e) {
+				final String uri = "http://localhost:8085/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}
+			
+			
+		}else {
+			mainlife.setCustCode(custCode);
+		}
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;

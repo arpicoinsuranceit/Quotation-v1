@@ -31,6 +31,7 @@ import org.arpicoinsurance.groupit.main.service.AIBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -144,6 +145,35 @@ public class AIBServiceImpl implements AIBService {
 		Customer customer = new Customer();
 		customer.setCustCreateBy(user.getUserCode());
 		customer.setCustCreateDate(new Date());
+		String custCode = _invpSaveQuotation.get_mainlife().get_mCustCode();
+		if (custCode == null) {
+
+			
+
+			try {
+				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation, String.class);
+
+				System.out.println(result);
+
+				customer.setCustCode(result);
+
+			}catch (Exception e) {
+				final String uri = "http://localhost:8085/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation, String.class);
+
+				System.out.println(result);
+
+				customer.setCustCode(result);
+
+			}
+			
+			
+		}else {
+			customer.setCustCode(custCode);
+		}
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
 		Occupation occupation = occupationDao

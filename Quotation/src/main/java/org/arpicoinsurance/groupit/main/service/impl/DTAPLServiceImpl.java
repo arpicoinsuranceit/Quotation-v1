@@ -12,6 +12,7 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
@@ -24,10 +25,12 @@ import org.arpicoinsurance.groupit.main.helper.DTAShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
@@ -43,6 +46,7 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -91,6 +95,9 @@ public class DTAPLServiceImpl implements DTAPLService {
 	private BenefitsDao benefitsDao;
 
 	@Autowired
+	private OccupationLodingDao occupationLodingDao;
+	
+	@Autowired
 	private SheduleDao sheduleDao;
 
 	@Autowired
@@ -100,8 +107,20 @@ public class DTAPLServiceImpl implements DTAPLService {
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public DTAHelper calculateL2(int age, int term, double intrat, String sex, Date chedat, double loanamt)
+	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp)
 			throws Exception {
+		
+		Occupation occupation = occupationDao.findByOcupationid(ocu);
+		Benefits benefits = benefitsDao.findByRiderCode("L2");
+		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
+		Double rate = 1.0;
+		if (ocupationLoading != null) {
+			rate = ocupationLoading.getValue();
+			if (rate == null) {
+				rate = 1.0;
+			}
+		}
+		
 		DTAHelper dtaHelper = new DTAHelper();
 
 		System.out.println(
@@ -139,6 +158,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 							(((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000),
 									8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.2))))
 							.setScale(0, RoundingMode.HALF_UP);
+			
+			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 
 			DTAShedule shedule = new DTAShedule();
 
@@ -146,19 +169,21 @@ public class DTAPLServiceImpl implements DTAPLService {
 			shedule.setOutsum(amount.doubleValue());
 			shedule.setOutyer(term - (i - 1));
 			shedule.setPolYear(i);
-			shedule.setPremum(premium.doubleValue());
+			shedule.setPremum(occuLodingPremium.doubleValue());
 			shedule.setPrmrat(rateCardDTA.getRate());
 
 			dtaSheduleList.add(shedule);
 
-			total_premium = total_premium.add(premium);
+			total_premium = total_premium.add(occuLodingPremium);
+			
+			
 
 			System.out.println("polyer : " + String.valueOf(i));
 			System.out.println("outyer : " + String.valueOf(term - (i - 1)));
 			System.out.println("outsum : " + amount.toPlainString());
 			System.out.println("lonred : " + reduction.toPlainString());
 			System.out.println("prmrat : " + rateCardDTA.getRate());
-			System.out.println("premum : " + premium.toPlainString());
+			System.out.println("premum : " + occuLodingPremium.toPlainString());
 
 			amount = outstanding;
 
@@ -181,11 +206,11 @@ public class DTAPLServiceImpl implements DTAPLService {
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
 
-			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMage(),
+			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(), quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getIntrate(),
 					quotationCalculation.get_personalInfo().getMgenger(), new Date(),
-					quotationCalculation.get_personalInfo().getBsa());
+					quotationCalculation.get_personalInfo().getBsa(), calResp);
 
 			BigDecimal bsaPremium = dtaHelper.getBsa();
 
@@ -239,6 +264,35 @@ public class DTAPLServiceImpl implements DTAPLService {
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
+		
+		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
+		if (custCode == null) {
+
+			try {
+				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}catch (Exception e) {
+				final String uri = "http://localhost:8085/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}
+			
+			
+		}else {
+			mainlife.setCustCode(custCode);
+		}
+		
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;
