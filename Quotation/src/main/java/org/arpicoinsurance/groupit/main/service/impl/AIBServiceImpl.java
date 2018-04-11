@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
@@ -145,35 +146,9 @@ public class AIBServiceImpl implements AIBService {
 		Customer customer = new Customer();
 		customer.setCustCreateBy(user.getUserCode());
 		customer.setCustCreateDate(new Date());
-		String custCode = _invpSaveQuotation.get_mainlife().get_mCustCode();
-		if (custCode == null) {
-
-			
-
-			try {
-				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
-				RestTemplate restTemplate = new RestTemplate();
-				String result = restTemplate.postForObject(uri, _invpSaveQuotation, String.class);
-
-				System.out.println(result);
-
-				customer.setCustCode(result);
-
-			}catch (Exception e) {
-				final String uri = "http://localhost:8085/testABC";
-				RestTemplate restTemplate = new RestTemplate();
-				String result = restTemplate.postForObject(uri, _invpSaveQuotation, String.class);
-
-				System.out.println(result);
-
-				customer.setCustCode(result);
-
-			}
-			
-			
-		}else {
-			customer.setCustCode(custCode);
-		}
+		
+		customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
+		
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
 		Occupation occupation = occupationDao
