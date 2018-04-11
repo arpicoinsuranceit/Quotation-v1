@@ -32,7 +32,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	@Override
 	public HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation) {
 
+		
 		System.out.println("called mainlife");
+
+		System.out.println(calculation.get_personalInfo().getBsa());
 
 		HashMap<String, Object> details = new HashMap<>();
 
@@ -83,6 +86,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		default:
 			break;
 		}
+
+		
+		riskCurrent += calculation.get_personalInfo().getBsa();
 
 		if (riskCurrent > 0) {
 
@@ -164,6 +170,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		}
 		
+
+		System.out.println("Sum at risk : " + riskCurrent);
+		
 		if (riskCurrent > 0) {
 
 			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "S", mediGrade);
@@ -190,8 +199,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	}
 
 	private Double calculateRickArpAsipAtrmEndMainlife(QuotationCalculation calculation) {
-		BigDecimal sumAtRisk = new BigDecimal(calculation.get_personalInfo().getBsa());
-
+		
+		BigDecimal sumAtRisk = new BigDecimal(0.0);
+		
 		ArrayList<Benifict> benifictListM = null;
 
 		if (calculation.get_riderDetails() != null) {

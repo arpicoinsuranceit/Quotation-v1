@@ -122,7 +122,7 @@ public class AIPServiceImpl implements AIPService {
 				System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " + rateCardAIP.getRate());
 				BigDecimal fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
 
-				for (int j = 1; j <= calculationUtils.getPayterm(paymod); j++) {
+				for (int j = 1; j <= 12; j++) {
 					AipCalShedule aipCalShedule = new AipCalShedule();
 					if (schedule) {
 						System.out.println("polyer : " + i + " polmth : " + j + " opnfun : " + open_fund.toString());
@@ -131,18 +131,39 @@ public class AIPServiceImpl implements AIPService {
 						aipCalShedule.setOpeningFee(open_fund.setScale(0, BigDecimal.ROUND_UP).doubleValue());
 					}
 
-					if ((paymod.equalsIgnoreCase("S")) && (i > 1)) {
+					if ((paymod.equalsIgnoreCase("S")) && (i ==1)) {
 						fund_amount = new BigDecimal("0");
 						cum_premium = new BigDecimal("0");
-					} else {
+					} else if (paymod.equalsIgnoreCase("M")){
 						fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
 						cum_premium = cum_premium.add(premium);
+					} else if (paymod.equalsIgnoreCase("Q")) {
+						if(i==1) {
+							fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
+							cum_premium = cum_premium.add(premium);
+						} else if(i % 3 == 0) {
+							fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
+							cum_premium = cum_premium.add(premium);
+						}
+					} else if (paymod.equalsIgnoreCase("H")) {
+						if(i==1) {
+							fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
+							cum_premium = cum_premium.add(premium);
+						} else if(i % 6 == 0) {
+							fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
+							cum_premium = cum_premium.add(premium);
+						}
+					} else if (paymod.equalsIgnoreCase("Y")) {
+						if(i==1) {
+							fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
+							cum_premium = cum_premium.add(premium);
+						} 
 					}
 
 					balance_bfi = fund_amount.add(open_fund);
 
 					double interest = Math.pow(1.0D + interest_rate.divide(new BigDecimal("100")).doubleValue(),
-							12.0D / calculationUtils.getPayterm(paymod) / 12.0D) - 1.0D;
+							1 / 12.0D) - 1.0D;
 
 					interest_annum = balance_bfi.multiply(new BigDecimal(interest)).setScale(6, 4);
 
