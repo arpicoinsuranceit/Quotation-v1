@@ -264,6 +264,8 @@ public class ENDServiceImpl implements ENDService {
 			}
 			
 			
+		}else {
+			mainlife.setCustCode(custCode);
 		}
 		mainLifeDetail.setCustomer(mainlife);
 
