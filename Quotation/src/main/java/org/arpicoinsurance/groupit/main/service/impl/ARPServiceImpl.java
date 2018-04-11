@@ -19,6 +19,7 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -27,12 +28,14 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -56,6 +59,9 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
+	
+	@Autowired
+	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private RateCardARPDao rateCardARPDao;
@@ -124,12 +130,12 @@ public class ARPServiceImpl implements ARPService {
 			calculationUtils = new CalculationUtils();
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
-			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMage(),
+			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					quotationCalculation.get_personalInfo().getFrequance());
+					quotationCalculation.get_personalInfo().getFrequance(), calResp);
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			
@@ -162,12 +168,26 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int age, int term, String rlfterm, double rebate, Date chedat, double bassum,
-			String payFrequency) throws Exception {
+	public BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum,
+			String payFrequency, QuotationQuickCalResponse calResp) throws Exception {
+		
+		Occupation occupation = occupationDao.findByOcupationid(ocu);
+		Benefits benefits = benefitsDao.findByRiderCode("L2");
+		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
+		Double rate = 1.0;
+		if (ocupationLoading != null) {
+			rate = ocupationLoading.getValue();
+			if (rate == null) {
+				rate = 1.0;
+			}
+		}
+		
 		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " rebate : " + rebate
 				+ " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
 		BigDecimal premium = new BigDecimal(0);
 
+		
+		
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
 		System.out.println("rateCardARP : " + rateCardEND.getRate());
@@ -196,7 +216,11 @@ public class ARPServiceImpl implements ARPService {
 													.setScale(0, RoundingMode.HALF_UP);
 		}
 		System.out.println("premium : " + premium.toString());
-		return premium;
+		
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		return occuLodingPremium;
 	}
 
 	@Override

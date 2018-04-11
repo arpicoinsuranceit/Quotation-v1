@@ -33,9 +33,9 @@ public class QuotationAipCalculationController {
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), plan.get_frequance(), false);
-			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 11.0, contribution,
+			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 10.5, contribution,
 					new Date(), plan.get_frequance(), false);
-			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 12.5, contribution,
+			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 11.5, contribution,
 					new Date(), plan.get_frequance(), false);
 
 			aipCalResp.setMaturaty10(aipCalResp11.getMaturaty());

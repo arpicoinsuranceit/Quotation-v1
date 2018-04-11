@@ -224,10 +224,10 @@ public class AIPServiceImpl implements AIPService {
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 12.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
 			occupation = occupationDao
@@ -429,10 +429,10 @@ public class AIPServiceImpl implements AIPService {
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 12.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
 
 			occupation = occupationDao

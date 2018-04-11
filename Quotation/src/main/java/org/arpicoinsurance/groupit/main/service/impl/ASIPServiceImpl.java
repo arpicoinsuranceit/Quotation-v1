@@ -149,7 +149,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.0, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.5, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
@@ -159,7 +159,7 @@ public class ASIPServiceImpl implements ASIPService {
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
 			calResp.setAt10(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 0.01, 12.0, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 10.5, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
