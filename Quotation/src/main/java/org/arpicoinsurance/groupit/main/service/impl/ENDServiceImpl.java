@@ -241,15 +241,29 @@ public class ENDServiceImpl implements ENDService {
 		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
 		if (custCode == null) {
 
-			final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+			
 
-			RestTemplate restTemplate = new RestTemplate();
-			String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+			try {
+				final String uri = "http://10.10.10.12:8080/Infosys/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
 
-			System.out.println(result);
+				System.out.println(result);
 
-			mainlife.setCustCode(result);
+				mainlife.setCustCode(result);
 
+			}catch (Exception e) {
+				final String uri = "http://localhost:8085/testABC";
+				RestTemplate restTemplate = new RestTemplate();
+				String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+				System.out.println(result);
+
+				mainlife.setCustCode(result);
+
+			}
+			
+			
 		}
 		mainLifeDetail.setCustomer(mainlife);
 

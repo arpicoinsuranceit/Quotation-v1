@@ -66,8 +66,28 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 				return -1;
 			}
 		}
+		
+		switch (riderCode) {
+		case "HRBIC":
+			riderCode="HCBIC";
+			break;
+		case "HRBFC":
+			riderCode="HCBFC";
+			break;
+		case "SUHRBC":
+			riderCode="SHCBIC";
+			break;
+
+		default:
+			break;
+		}
+		
 
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
+		
+		System.out.println(benefits.getBenefitMaxAge());
+		System.out.println(age);
+		System.out.println(payTerm);
 		// if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge())
 		// {
 		if (((benefits.getBenefitMaxAge() - age) - payTerm) >= 5) {
