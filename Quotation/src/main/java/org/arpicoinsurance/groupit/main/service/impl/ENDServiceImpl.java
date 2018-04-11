@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
-import org.arpicoinsurance.groupit.main.common.DateConverter;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.ChildDao;
 import org.arpicoinsurance.groupit.main.dao.CustChildDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
@@ -21,18 +21,16 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
-import org.arpicoinsurance.groupit.main.helper.Benifict;
-import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.helper.RiderDetails;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
@@ -42,18 +40,15 @@ import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
 import org.arpicoinsurance.groupit.main.model.Users;
-import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
-import org.arpicoinsurance.groupit.main.service.rider.CIBCService;
-import org.arpicoinsurance.groupit.main.service.rider.HBCService;
-import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -86,6 +81,9 @@ public class ENDServiceImpl implements ENDService {
 	private CustomerDao customerDao;
 
 	@Autowired
+	private MedicalReqDao medicalReqDao;
+
+	@Autowired
 	private ChildDao childDao;
 
 	@Autowired
@@ -104,6 +102,9 @@ public class ENDServiceImpl implements ENDService {
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
 	@Autowired
+	private MedicalDetailsDao medicalDetailsDao;
+
+	@Autowired
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
 	@Autowired
@@ -111,7 +112,7 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
@@ -133,17 +134,18 @@ public class ENDServiceImpl implements ENDService {
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
-			
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
-			
-			//if(quotationCalculation.get_personalInfo().getSage()!=null && quotationCalculation.get_personalInfo().getSgenger()!=null){
-				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
-			
+
+			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			// quotationCalculation.get_personalInfo().getSgenger()!=null){
+			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+
 			System.out.println((calResp.getMainLifeHealthReq() != null) + " Cal Helth req");
-			
+
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 			calResp.setGuaranteed(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
@@ -236,6 +238,19 @@ public class ENDServiceImpl implements ENDService {
 		mainlife.setCustName(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mName());
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
+		String custCode = _invpSaveQuotation.get_personalInfo().get_mainlife().get_mCustCode();
+		if (custCode == null) {
+
+			final String uri = "http://localhost:8085/testABC";
+
+			RestTemplate restTemplate = new RestTemplate();
+			String result = restTemplate.postForObject(uri, _invpSaveQuotation.get_personalInfo(), String.class);
+
+			System.out.println(result);
+
+			mainlife.setCustCode(result);
+
+		}
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;
@@ -273,13 +288,39 @@ public class ENDServiceImpl implements ENDService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
-		
+
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
-		
+
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
@@ -306,16 +347,15 @@ public class ENDServiceImpl implements ENDService {
 		}
 		benef_Details.setRiderSum(quotationDetails.getBaseSum());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
-		
+
 		benef_DetailsList.add(benef_Details);
 
-		
 		for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
 			System.out.println("");
 			System.out.println(quo_Benef_Details.toString());
 			System.out.println("");
 		}
-		
+
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
 		System.out.println("custSave");
@@ -347,7 +387,6 @@ public class ENDServiceImpl implements ENDService {
 			Quotation quo = quotationDao.save(quotation);
 			System.out.println("quotationSave");
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
-			System.out.println("quotationDetailsSave");
 
 			///////////////////// Add Maturity //////////////////
 
@@ -355,6 +394,16 @@ public class ENDServiceImpl implements ENDService {
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
 			///////////////////// Done Add Maturity //////////////////
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			if (quo != null && quoDetails != null) {
 				for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
@@ -463,6 +512,32 @@ public class ENDServiceImpl implements ENDService {
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 
+		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+
+		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("main");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
+		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+				MedicalDetails medicalDetail = new MedicalDetails();
+				medicalDetail.setCustStatus("spouse");
+				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+				medicalDetail.setMedDetailsCreatedate(new Date());
+				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+				medicalDetail.setStatus("Active");
+				medicalDetailList.add(medicalDetail);
+			}
+		}
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -495,7 +570,7 @@ public class ENDServiceImpl implements ENDService {
 		}
 		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
-		
+
 		benef_DetailsList.add(benef_Details);
 		//////////////////////////// save edit//////////////////////////////////
 
@@ -529,6 +604,17 @@ public class ENDServiceImpl implements ENDService {
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
 			///////////////////// Done Add Maturity //////////////////
+
+			///////////////////// Medical Re1q //////////////////////
+
+			for (MedicalDetails medicalDetails : medicalDetailList) {
+				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				medicalDetails.setQuotationDetails(quoDetails);
+			}
+
+			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
 
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao

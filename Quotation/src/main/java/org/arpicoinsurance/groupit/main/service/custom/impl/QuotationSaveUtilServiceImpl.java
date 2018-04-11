@@ -193,10 +193,6 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			Integer integer) throws Exception {
 		ArrayList<Quo_Benef_Details> benef_DetailList = null;
 		
-		for (Benifict quo_Benef_Details :  get_riderDetails.get_mRiders()) {
-			System.out.println(quo_Benef_Details.getType());
-			System.out.println();
-		}
 		
 		try {
 			benef_DetailList = new ArrayList<>();

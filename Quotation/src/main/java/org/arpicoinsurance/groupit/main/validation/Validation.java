@@ -666,6 +666,9 @@ public class Validation {
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double scbBsa = bsas.getSumAssured();
 			Double atpbBsa = 0.0;
+			if(benefitMap.containsKey("ATPB")) {
+				atpbBsa = benefitMap.get("ATPB").getSumAssured();
+			}
 
 			if (scbBsa >= 250000 && scbBsa <= (bsa + atpbBsa)) {
 				return 1;

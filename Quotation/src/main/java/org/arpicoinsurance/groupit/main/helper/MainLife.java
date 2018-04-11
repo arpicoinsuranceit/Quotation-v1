@@ -12,6 +12,7 @@ public class MainLife {
 	private String _mMobile;
 	private String _mOccupation;
 	private String _mCivilStatus;
+	private String _mCustCode;
 	
 	public String get_mTitle() {
 		return _mTitle;
@@ -78,5 +79,11 @@ public class MainLife {
 	}
 	public void set_mCivilStatus(String _mCivilStatus) {
 		this._mCivilStatus = _mCivilStatus;
+	}
+	public String get_mCustCode() {
+		return _mCustCode;
+	}
+	public void set_mCustCode(String _mCustCode) {
+		this._mCustCode = _mCustCode;
 	}
 }

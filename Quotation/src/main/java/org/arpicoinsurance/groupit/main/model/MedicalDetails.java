@@ -16,9 +16,10 @@ public class MedicalDetails implements Serializable{
 
 	private Integer id;
 	private String status;
+	private String custStatus;
 	
 	private MedicalReq medicalReq;
-	private Quotation quotation;
+	private QuotationDetails quotationDetails;
 	
 	private String medDetailsCreateBy;
 	private Date medDetailsCreatedate;
@@ -42,6 +43,14 @@ public class MedicalDetails implements Serializable{
 		this.status = status;
 	}
 	
+	public String getCustStatus() {
+		return custStatus;
+	}
+
+	public void setCustStatus(String custStatus) {
+		this.custStatus = custStatus;
+	}
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "medicalReq_id", nullable = false)
 	public MedicalReq getMedicalReq() {
@@ -52,15 +61,15 @@ public class MedicalDetails implements Serializable{
 	}
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "quotation_id", nullable = false)
-	public Quotation getQuotation() {
-		return quotation;
+	@JoinColumn(name = "quotationDetail_id", nullable = false)
+	public QuotationDetails getQuotationDetails() {
+		return quotationDetails;
 	}
-	
-	
-	public void setQuotation(Quotation quotation) {
-		this.quotation = quotation;
+
+	public void setQuotationDetails(QuotationDetails quotationDetails) {
+		this.quotationDetails = quotationDetails;
 	}
+
 	public String getMedDetailsCreateBy() {
 		return medDetailsCreateBy;
 	}

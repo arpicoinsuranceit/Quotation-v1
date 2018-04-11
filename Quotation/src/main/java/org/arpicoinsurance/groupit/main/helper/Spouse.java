@@ -10,6 +10,7 @@ public class Spouse {
 	private String _sAge;
 	private String _sSmoking;
 	private String _sOccupation;
+	private String _sCustCode;
 	
 	public boolean is_sActive() {
 		return _sActive;
@@ -64,5 +65,11 @@ public class Spouse {
 	}
 	public void set_sOccupation(String _sOccupation) {
 		this._sOccupation = _sOccupation;
+	}
+	public String get_sCustCode() {
+		return _sCustCode;
+	}
+	public void set_sCustCode(String _sCustCode) {
+		this._sCustCode = _sCustCode;
 	}
 }
