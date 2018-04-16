@@ -58,15 +58,16 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			mainLife.set_mName(customerDetails.getCustName());
 			
 			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-			
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
 		    LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
 		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 		    diffInYears+=1;
 		    String age=Long.toString(diffInYears);
 		    
+		    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
+		    
 		    mainLife.set_mAge(age);
-		    mainLife.set_mDob(dateFormat.format(customerDetails.getCustDob()));
+		    mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
 		    mainLife.set_mEmail(customerDetails.getCustEmail());
 		    mainLife.set_mGender(customerDetails.getCustGender());
 		    mainLife.set_mMobile(customerDetails.getCustTel());
@@ -89,7 +90,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			    
 				spouse.set_sActive(true);
 			    spouse.set_sAge(sage);
-			    spouse.set_sDob(dateFormat.format(spouseDetails.getCustDob()));
+			    spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
 			    spouse.set_sGender(spouseDetails.getCustGender());
 			    spouse.set_sNic(spouseDetails.getCustNic());
 			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
@@ -173,8 +174,10 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 							    sdiffInYears+=1;
 							    String sage=Long.toString(sdiffInYears);
 							    
+							    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
+							    
 							    children.set_cAge(Integer.parseInt(sage));
-								children.set_cDob(dateFormat.format(child.getChildDob()));
+								children.set_cDob(dateFormat1.format(child.getChildDob()));
 								children.set_cName(child.getChildName());
 								children.set_cNic(child.getChildNic());
 								children.set_cTitle(child.getChildRelation());

@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -27,8 +28,12 @@ public class QuotationCalculationController {
 	
 	@RequestMapping(value="/ageCal",method=RequestMethod.POST)
 	public Long calculateAge(@RequestBody String dob) {
-		try {		
-			LocalDate dateOfBirth = LocalDate.parse(dob);
+		try {
+			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String parsedDate = formatter.format(initDate);
+			System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
+			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
 		     LocalDate currentDate = LocalDate.now();
 		     long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 			return diffInYears+1;
@@ -148,7 +153,7 @@ public class QuotationCalculationController {
 	            bday++;
 	        }
 
-	        String birthday = (year > 1000 ? year : "19"+year)+"-"+(month < 10 ? ("0" + month) : month)+"-"+(bday < 10 ? ("0" + bday) : bday);
+	        String birthday = (bday < 10 ? ("0" + bday) : bday) +"-"+(month < 10 ? ("0" + month) : month) +"-"+ (year > 1000 ? year : "19"+year);
 
 	        Calendar dob = Calendar.getInstance();
 	        dob.set(year,Integer.parseInt(month < 10 ? ("0" + month) : month+""),Integer.parseInt(bday < 10 ? ("0" + bday) : bday+""));
