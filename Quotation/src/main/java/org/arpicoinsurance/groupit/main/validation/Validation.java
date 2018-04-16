@@ -78,7 +78,7 @@ public class Validation {
 						break;
 					case "FEB":
 						if (validateInvpFEB().equals(0)) {
-							return "FEB must be greater than 25,000 and less than 75,000 and less than 0.1% of BSA";
+							return "FEB must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA";
 						}
 						break;
 					case "MFIBD":
@@ -157,7 +157,7 @@ public class Validation {
 						break;
 					case "ADBS":
 						if (validateInvpADBS().equals(0)) {
-							return "ADBS must be greater than or equal SCB and ADBS must be less than or equal (SCB x 6) and ADBS mod 25000 equal 0 Max value must be 25,000,000";
+							return "ADBS must be greater than or equal SCB and ADBS must be less than or equal to ADB and ADBS must be less than or equal (SCB x 6) and ADBS mod 25000 equal 0 Max value must be 25,000,000";
 						}
 						break;
 					case "CIBS":
@@ -170,7 +170,7 @@ public class Validation {
 						break;
 					case "FEBS":
 						if (validateInvpFEBS().equals(0)) {
-							return "FEBS must be greater than 25,000 and less than 75,000 and less than 0.1% of BSA and Less Than or Equal to FEB";
+							return "FEBS must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA";
 						}
 						break;
 					case "HBS":
