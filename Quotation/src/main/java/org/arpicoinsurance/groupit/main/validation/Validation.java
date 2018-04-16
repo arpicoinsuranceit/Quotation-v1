@@ -695,16 +695,20 @@ public class Validation {
 	}
 
 	public Integer validateInvpADBS() {
-		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS")) {
+		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS") && benefitMap.containsKey("ADB")) {
 			Benifict bsas = benefitMap.get("BSAS");
 			Benifict benifict = benefitMap.get("ADBS");
 			Double scb = bsas.getSumAssured();
 			Double rbsa = benifict.getSumAssured();
+			Double adb = benefitMap.get("ADB").getSumAssured();
 
-			if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000)
-					|| (scb >= 25000000 && rbsa <= 25000000)) {
-				return 1;
+			if (rbsa <= adb) {
+				if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000)
+						|| (scb >= 25000000 && rbsa <= 25000000)) {
+					return 1;
+				}
 			}
+
 		}
 		return 0;
 	}
