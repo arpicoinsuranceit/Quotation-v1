@@ -193,6 +193,8 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getMsfb(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -202,8 +204,7 @@ public class ASFPServiceImpl implements ASFPService {
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
 			
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-
+			
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -292,7 +293,7 @@ public class ASFPServiceImpl implements ASFPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -304,7 +305,7 @@ public class ASFPServiceImpl implements ASFPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -320,6 +321,7 @@ public class ASFPServiceImpl implements ASFPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
+		benef_Details.setRierCode("L2");
 		switch (quotationDetails.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
@@ -492,7 +494,7 @@ public class ASFPServiceImpl implements ASFPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -504,7 +506,7 @@ public class ASFPServiceImpl implements ASFPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -520,6 +522,7 @@ public class ASFPServiceImpl implements ASFPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);
+		benef_Details.setRierCode("L2");
 		switch (quotationDetails1.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());

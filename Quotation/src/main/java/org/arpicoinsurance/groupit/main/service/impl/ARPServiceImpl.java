@@ -139,7 +139,8 @@ public class ARPServiceImpl implements ARPService {
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), calResp);
-
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -148,7 +149,6 @@ public class ARPServiceImpl implements ARPService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 
@@ -301,7 +301,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -313,7 +313,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -329,6 +329,7 @@ public class ARPServiceImpl implements ARPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
+		benef_Details.setRierCode("L2");
 		switch (quotationDetails.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
@@ -507,7 +508,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -519,7 +520,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -532,6 +533,7 @@ public class ARPServiceImpl implements ARPService {
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);

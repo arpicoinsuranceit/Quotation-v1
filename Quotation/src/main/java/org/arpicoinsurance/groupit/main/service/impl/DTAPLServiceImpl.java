@@ -217,6 +217,8 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -225,8 +227,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-
+			
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -305,7 +306,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -317,7 +318,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -330,6 +331,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
@@ -475,7 +477,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -487,7 +489,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -500,6 +502,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);

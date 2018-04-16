@@ -28,6 +28,8 @@ public class QuotationDetails implements Serializable{
 	private Double premiumYearT;
 	private Double premiumSingle;
 	private Double premiumSingleT;
+	private Double sumAtRiskMain;
+	private Double sumAtRiskSpouse;
 	
 	private Double policyFee;
 	private Double taxAmount;
@@ -168,6 +170,22 @@ public class QuotationDetails implements Serializable{
 
 	public void setPremiumSingleT(Double premiumSingleT) {
 		this.premiumSingleT = premiumSingleT;
+	}
+
+	public Double getSumAtRiskMain() {
+		return sumAtRiskMain;
+	}
+
+	public void setSumAtRiskMain(Double sumAtRiskMain) {
+		this.sumAtRiskMain = sumAtRiskMain;
+	}
+
+	public Double getSumAtRiskSpouse() {
+		return sumAtRiskSpouse;
+	}
+
+	public void setSumAtRiskSpouse(Double sumAtRiskSpouse) {
+		this.sumAtRiskSpouse = sumAtRiskSpouse;
 	}
 
 	public Double getPolicyFee() {

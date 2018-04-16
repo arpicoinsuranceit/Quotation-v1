@@ -182,7 +182,6 @@ public class ENDServiceImpl implements ENDService {
 				rate = 1.0;
 			}
 		}
-		// TODO Auto-generated method stub
 		System.out.println("END bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
@@ -286,7 +285,7 @@ public class ENDServiceImpl implements ENDService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -298,7 +297,7 @@ public class ENDServiceImpl implements ENDService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -311,6 +310,7 @@ public class ENDServiceImpl implements ENDService {
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
 		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
@@ -510,7 +510,7 @@ public class ENDServiceImpl implements ENDService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -522,7 +522,7 @@ public class ENDServiceImpl implements ENDService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -534,6 +534,7 @@ public class ENDServiceImpl implements ENDService {
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);
