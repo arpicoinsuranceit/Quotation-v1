@@ -256,6 +256,7 @@ public class INVPServiceImpl implements INVPService {
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
 		mainLifeDetail.setCustomer(mainlife);
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob() + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
 
 		Customer spouse = null;
 		if (_invpSaveQuotation.get_personalInfo().get_spouse() != null
