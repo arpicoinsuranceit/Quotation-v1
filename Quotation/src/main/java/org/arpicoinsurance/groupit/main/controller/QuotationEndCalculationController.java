@@ -82,7 +82,7 @@ public class QuotationEndCalculationController {
 							responseMap = endService.saveQuotation(calculation, _invpSaveQuotation, id);
 
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
 						responseMap.replace("status", "Error at product");

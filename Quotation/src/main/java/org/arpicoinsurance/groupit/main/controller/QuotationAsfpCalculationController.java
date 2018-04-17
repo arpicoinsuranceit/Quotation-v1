@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +24,8 @@ public class QuotationAsfpCalculationController {
 
 	@Autowired
 	private ASFPService asfpService;
-	
-	//private Double totPre=0.0;
-	
+
+	// private Double totPre=0.0;
 
 	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
@@ -37,8 +37,8 @@ public class QuotationAsfpCalculationController {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = asfpService.getCalcutatedAsfp(calculation);
-					//totPre=calResp.getTotPremium();
-					if(calResp.isErrorExist()) {
+					// totPre=calResp.getTotPremium();
+					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
@@ -53,10 +53,10 @@ public class QuotationAsfpCalculationController {
 				calResp.setError("Product");
 			}
 
-			if(calResp.getL2()==0) {
+			if (calResp.getL2() == 0) {
 				calResp.setL2(calculation.get_personalInfo().getBsa());
 			}
-			
+
 			return calResp;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -65,14 +65,18 @@ public class QuotationAsfpCalculationController {
 		return null;
 	}
 
-
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
-	public String saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
+
 		QuotationCalculation calculation = null;
 		Validation validation = null;
-		CalculationUtils utils=new CalculationUtils();
+		CalculationUtils utils = new CalculationUtils();
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
@@ -84,25 +88,27 @@ public class QuotationAsfpCalculationController {
 					if (validation.validateAsfpProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-							
-							//if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
-								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
-								resp = response;
-							//}else {
-							///	resp = "Total Premium times frequency must be greater than 1250 times frequency";
-							//}
-						
+
+							// if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1))
+							// {
+							responseMap = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
+
+							// }else {
+							/// resp = "Total Premium times frequency must be greater than 1250 times
+							// frequency";
+							// }
+
 						} else {
-							resp = "Error at benifict :" + error;
+							responseMap.replace("status", "Error at benifict :" + error);
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -117,18 +123,19 @@ public class QuotationAsfpCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
-	
-	
+
 	@RequestMapping(value = "/quoAsfpEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
-			, @PathVariable("qdId") Integer qdId) {
+	public HashMap<String, Object> editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 		System.out.println(qdId);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 		Validation validation = null;
-		CalculationUtils utils=new CalculationUtils();
+		CalculationUtils utils = new CalculationUtils();
 		try {
 			if (userId != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
@@ -140,26 +147,20 @@ public class QuotationAsfpCalculationController {
 					if (validation.validateAsfpProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-							
-							//if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
-								String response = asfpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-								resp = response;
-							//}else {
-							//	resp = "Total Premium times frequency must be greater than 1250 times frequency";
-							//}
 
+							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
 							
 						} else {
-							resp = "Error at benifict :" + error;
+							resp = error;
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -174,9 +175,7 @@ public class QuotationAsfpCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
-	
-	
 
 }
