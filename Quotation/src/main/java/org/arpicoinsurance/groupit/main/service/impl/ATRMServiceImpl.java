@@ -174,6 +174,7 @@ public class ATRMServiceImpl implements ATRMService {
 					new Date(), calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp);
 
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp = calculateriders.getRiders(calculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(calculation));
@@ -182,7 +183,7 @@ public class ATRMServiceImpl implements ATRMService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(calculation));
 
-			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
@@ -269,7 +270,7 @@ public class ATRMServiceImpl implements ATRMService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -281,7 +282,7 @@ public class ATRMServiceImpl implements ATRMService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -297,6 +298,7 @@ public class ATRMServiceImpl implements ATRMService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
+		benef_Details.setRierCode("L2");
 		switch (quotationDetails.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
@@ -470,7 +472,7 @@ public class ATRMServiceImpl implements ATRMService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -482,7 +484,7 @@ public class ATRMServiceImpl implements ATRMService {
 				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
 				medicalDetail.setMedDetailsCreatedate(new Date());
 				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
-				medicalDetail.setStatus("Active");
+				medicalDetail.setStatus("Required");
 				medicalDetailList.add(medicalDetail);
 			}
 		}
@@ -497,6 +499,7 @@ public class ATRMServiceImpl implements ATRMService {
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuotationDetails(quotationDetails1);
 		switch (quotationDetails1.getPayMode()) {
 		case "M":

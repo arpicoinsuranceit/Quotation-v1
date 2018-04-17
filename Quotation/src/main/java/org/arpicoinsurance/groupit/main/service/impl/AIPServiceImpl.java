@@ -107,15 +107,12 @@ public class AIPServiceImpl implements AIPService {
 					}
 				}
 
-				System.out.println(" term : " + term + " polyear : " + polyear + " i % 12 " + i % 12 + " i % 3 " + i % 3
-						+ " i % 6 " + i % 6 + " i % 12 " + i % 12 + " (i / 12) " + (i / 12));
-
 				if (paymod.equalsIgnoreCase("S") && i == 0) {
 					rateCardAIP = rateCardAIPDao
 							.findByTermtoOrTermtoLessThanAndTermfromOrTermfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 									term.intValue(), term.intValue(), term.intValue(), term.intValue(), paymod, chedat,
 									chedat);
-				} else if (i % 12 == 0) {
+				} else if (!paymod.equalsIgnoreCase("S") && i % 12 == 0) {
 					rateCardAIP = rateCardAIPDao
 							.findByTermtoOrTermtoLessThanAndTermfromOrTermfromGreaterThanAndPaymodAndPolyearAndStrdatLessThanOrStrdat(
 									term.intValue(), term.intValue(), term.intValue(), term.intValue(), paymod, polyear,

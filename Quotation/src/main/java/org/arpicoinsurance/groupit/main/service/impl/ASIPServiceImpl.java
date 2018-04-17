@@ -147,9 +147,9 @@ public class ASIPServiceImpl implements ASIPService {
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
 			
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.5, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
@@ -395,6 +395,7 @@ public class ASIPServiceImpl implements ASIPService {
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuotationDetails(quotationDetails);
 		switch (quotationDetails.getPayMode()) {
 		case "M":
@@ -600,6 +601,7 @@ public class ASIPServiceImpl implements ASIPService {
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuotationDetails(quotationDetails1);
 		switch (quotationDetails1.getPayMode()) {
 		case "M":

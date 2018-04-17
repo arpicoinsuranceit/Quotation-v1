@@ -139,7 +139,9 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
-
+			
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -148,7 +150,6 @@ public class INVPServiceImpl implements INVPService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
@@ -256,6 +257,7 @@ public class INVPServiceImpl implements INVPService {
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
 		mainLifeDetail.setCustomer(mainlife);
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob() + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
 
 		Customer spouse = null;
 		if (_invpSaveQuotation.get_personalInfo().get_spouse() != null
@@ -336,6 +338,7 @@ public class INVPServiceImpl implements INVPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
+		benef_Details.setRierCode("L2");
 		switch (quotationDetails.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
@@ -571,6 +574,7 @@ public class INVPServiceImpl implements INVPService {
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
+		benef_Details.setRierCode("L2");
 		benef_Details.setQuotationDetails(quotationDetails1);
 		switch (quotationDetails1.getPayMode()) {
 		case "M":

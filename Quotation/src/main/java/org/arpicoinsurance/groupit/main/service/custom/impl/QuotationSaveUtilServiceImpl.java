@@ -154,6 +154,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			quotationDetails.setPolTerm(calculation.get_personalInfo().getTerm());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
 			quotationDetails.setTaxAmount(taxAmount);
+			quotationDetails.setSumAtRiskMain((Double) calResp.getMainLifeHealthReq().get("sumAtRisk"));
+			quotationDetails.setSumAtRiskSpouse((Double) calResp.getSpouseHealthReq().get("sumAtRisk"));
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
