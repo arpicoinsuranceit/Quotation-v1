@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ public class QuotationEndCalculationController {
 
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		
+
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -33,7 +34,7 @@ public class QuotationEndCalculationController {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = endService.getCalcutatedEnd(calculation);
-					if(calResp.isErrorExist()) {
+					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
@@ -55,11 +56,14 @@ public class QuotationEndCalculationController {
 		return null;
 	}
 
-
 	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
-	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
+
 		QuotationCalculation calculation = null;
 		Validation validation = null;
 		try {
@@ -75,19 +79,19 @@ public class QuotationEndCalculationController {
 						System.out.println(error + "ssssssssssss");
 						if (error.equals("No")) {
 
-							String response = endService.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							responseMap = endService.saveQuotation(calculation, _invpSaveQuotation, id);
+
 						} else {
 							resp = error;
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -102,19 +106,21 @@ public class QuotationEndCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
-	
+
 	@RequestMapping(value = "/quoEndEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
-			, @PathVariable("qdId") Integer qdId) {
-		
+	public HashMap<String, Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+
 		System.out.println(userId);
 		System.out.println(qdId);
 		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -128,24 +134,24 @@ public class QuotationEndCalculationController {
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
-						
+
 						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-						
+
 						if (error.equals("No")) {
 
-							String response = endService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-							resp = response;
+							responseMap = endService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							
 						} else {
 							resp = error;
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -160,7 +166,7 @@ public class QuotationEndCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 
 }

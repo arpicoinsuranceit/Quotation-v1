@@ -583,7 +583,6 @@ public class Validation {
 			}
 
 			return 0;
-
 		}
 		return 0;
 
