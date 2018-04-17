@@ -341,8 +341,8 @@ public class Validation {
 	////////////// Asfp Product Validation
 	public Integer validateAsfpProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 40
-				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 60
-				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 60) {
+				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 70
+				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70) {
 			return 1;
 		}
 

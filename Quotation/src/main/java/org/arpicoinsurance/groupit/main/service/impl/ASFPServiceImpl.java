@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
+import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
@@ -34,6 +36,7 @@ import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
+import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
@@ -70,6 +73,9 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Autowired
 	private UsersDao userDao;
+
+	@Autowired
+	private NomineeDao nomineeDao;
 
 	@Autowired
 	private OccupationDao occupationDao;
@@ -121,13 +127,13 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm, QuotationQuickCalResponse calResp)
-			throws Exception {
+	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
+			QuotationQuickCalResponse calResp) throws Exception {
 		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -155,7 +161,7 @@ public class ASFPServiceImpl implements ASFPService {
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
 		System.out.println("premium : " + premium.toString());
-		
+
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
@@ -192,33 +198,37 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
-			
+
 			BigDecimal bsaYearly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
-					quotationCalculation.get_personalInfo().getMsfb(),
-					1, calResp);
+					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp);
 
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
-			
+
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
 			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			
-			
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE = adminFee + tax;
 
 			calResp.setExtraOE(extraOE);
+
 			calResp.setTotPremium(tot + extraOE);
+
+			if (calResp.getTotPremium() < 1250) {
+				calResp.setErrorExist(true);
+				calResp.setError("Total premium must be greater than 1250");
+			}
+
 			calResp.setL2(bsa.doubleValue());
 
 			return calResp;
@@ -236,7 +246,22 @@ public class ASFPServiceImpl implements ASFPService {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
 
-	
+		Nominee nominee = null;
+
+		if (_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomineeAge() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomineedob() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomoneeRelation() != null) {
+			nominee = new Nominee();
+			nominee.setAge(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeAge());
+			nominee.setNomineeName(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName());
+			nominee.setNomineeDob(new SimpleDateFormat("dd-MM-yyyy")
+					.parse(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineedob()));
+			nominee.setRelation(_invpSaveQuotation.get_personalInfo().get_plan().get_nomoneeRelation());
+		} else {
+			return "Error at Nominee";
+		}
+
 		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
@@ -384,7 +409,11 @@ public class ASFPServiceImpl implements ASFPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
+			//////////// save nominee ////////////////////////
+			nominee.setQuotationDetails(quoDetails);
+			nomineeDao.save(nominee);
 
+			//////////// done save nominee ////////////////////////
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
@@ -437,7 +466,23 @@ public class ASFPServiceImpl implements ASFPService {
 		if (calResp.isErrorExist()) {
 			return "Error at calculation";
 		}
-		
+
+		Nominee nominee = null;
+
+		if (_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomineeAge() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomineedob() != null
+				&& _invpSaveQuotation.get_personalInfo().get_plan().get_nomoneeRelation() != null) {
+			nominee = new Nominee();
+			nominee.setAge(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeAge());
+			nominee.setNomineeName(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName());
+			nominee.setNomineeDob(new SimpleDateFormat("dd-MM-yyyy")
+					.parse(_invpSaveQuotation.get_personalInfo().get_plan().get_nomineedob()));
+			nominee.setRelation(_invpSaveQuotation.get_personalInfo().get_plan().get_nomoneeRelation());
+		} else {
+			return "Error at Nominee";
+		}
+
 		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(userId);
 
@@ -590,6 +635,12 @@ public class ASFPServiceImpl implements ASFPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			//////////// save nominee ////////////////////////
+			nominee.setQuotationDetails(quoDetails);
+			nomineeDao.save(nominee);
+
+			//////////// done save nominee ////////////////////////
 
 			///////////////////// Medical Re1q //////////////////////
 

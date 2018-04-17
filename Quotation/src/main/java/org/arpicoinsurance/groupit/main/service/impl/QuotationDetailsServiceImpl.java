@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import javax.transaction.Transactional;
+
+import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
@@ -20,6 +22,7 @@ import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
+import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
@@ -41,6 +44,9 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 	
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
+	
+	@Autowired
+	private NomineeDao nomineeDao;
 
 	@Override
 	public QuotationDetails findQuotationDetails(Integer qdId) throws Exception {
@@ -107,6 +113,14 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
+		
+		List<Nominee> nominees = nomineeDao.findByQuotationDetails(details);
+		if(nominees.size()>0) {
+			editQuotation.get_plan().set_nomineeName(nominees.get(0).getNomineeName());
+			editQuotation.get_plan().set_nomineeAge(nominees.get(0).getAge());
+			editQuotation.get_plan().set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
+			editQuotation.get_plan().set_nomoneeRelation(nominees.get(0).getRelation());
+		}
 		
 		//return editQuotation;
 		return getBenefitsAndChildDetails(details,editQuotation);

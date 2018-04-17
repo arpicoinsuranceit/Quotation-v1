@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
+import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
@@ -34,6 +36,7 @@ import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
+import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
@@ -66,7 +69,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private ProductDao productDao;
-
+	
 	@Autowired
 	private UsersDao userDao;
 
@@ -311,10 +314,13 @@ public class ASIPServiceImpl implements ASIPService {
 			throws Exception {
 		Quotation quo = null;
 
+		
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
 			return "Error at calculation";
 		}
+		
+		
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -473,6 +479,7 @@ public class ASIPServiceImpl implements ASIPService {
 			medicalDetailsDao.save(medicalDetailList);
 
 			///////////////////// Done Save Medical req ////////////////
+			
 			
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao

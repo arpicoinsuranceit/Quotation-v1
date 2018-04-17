@@ -9,6 +9,10 @@ public class Plan {
 	private String _payingterm;
 	private Double _msfb;
 	private Double _bsaTotal;
+	private String _nomineeName;
+	private String _nomineedob;
+	private Integer _nomineeAge;
+	private String _nomoneeRelation;
 	
 	public Integer get_term() {
 		return _term;
@@ -57,6 +61,30 @@ public class Plan {
 	}
 	public void set_bsaTotal(Double _bsaTotal) {
 		this._bsaTotal = _bsaTotal;
+	}
+	public String get_nomineeName() {
+		return _nomineeName;
+	}
+	public void set_nomineeName(String _nomineeName) {
+		this._nomineeName = _nomineeName;
+	}
+	public String get_nomineedob() {
+		return _nomineedob;
+	}
+	public void set_nomineedob(String _nomineedob) {
+		this._nomineedob = _nomineedob;
+	}
+	public Integer get_nomineeAge() {
+		return _nomineeAge;
+	}
+	public void set_nomineeAge(Integer _nomineeAge) {
+		this._nomineeAge = _nomineeAge;
+	}
+	public String get_nomoneeRelation() {
+		return _nomoneeRelation;
+	}
+	public void set_nomoneeRelation(String _nomoneeRelation) {
+		this._nomoneeRelation = _nomoneeRelation;
 	}
 	
 }

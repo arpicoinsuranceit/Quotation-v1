@@ -24,7 +24,7 @@ public class QuotationAsfpCalculationController {
 	@Autowired
 	private ASFPService asfpService;
 	
-	private Double totPre=0.0;
+	//private Double totPre=0.0;
 	
 
 	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
@@ -37,7 +37,7 @@ public class QuotationAsfpCalculationController {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = asfpService.getCalcutatedAsfp(calculation);
-					totPre=calResp.getTotPremium();
+					//totPre=calResp.getTotPremium();
 					if(calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
@@ -85,14 +85,13 @@ public class QuotationAsfpCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 							
-							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
+							//if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
 								String response = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
 								resp = response;
-							}else {
-								resp = "Total Premium times frequency must be greater than 1250 times frequency";
-							}
-
-							
+							//}else {
+							///	resp = "Total Premium times frequency must be greater than 1250 times frequency";
+							//}
+						
 						} else {
 							resp = "Error at benifict :" + error;
 						}
@@ -142,12 +141,12 @@ public class QuotationAsfpCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 							
-							if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
+							//if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1)) {
 								String response = asfpService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 								resp = response;
-							}else {
-								resp = "Total Premium times frequency must be greater than 1250 times frequency";
-							}
+							//}else {
+							//	resp = "Total Premium times frequency must be greater than 1250 times frequency";
+							//}
 
 							
 						} else {
