@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,9 +49,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	private SheduleDao sheduleDao;
 
 	// getting medical requirements
-
 	@Autowired
 	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
+
 	// paymode switch case variable
 	String modeMethod;
 
@@ -1377,11 +1379,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			if (benefitsChild != null) {
 
+				// Calculating Child Age
+				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+				LocalDate dateOfBirth = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
+				LocalDate currentDate = LocalDate
+						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
+				long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+				diffInYears += 1;
+				String childAge = Long.toString(diffInYears);
+
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
-						+ "Relationship : " + quoChild.getChild().getChildRelation() + '\t' + '\t' + "Age : "
-						+ quoChild.getChild().getChildNic()).setFontSize(9).setBold()
-								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
+				abCell13.add(
+						new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + "Relationship : "
+								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age : " + childAge)
+										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
+										.setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
@@ -2726,10 +2738,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			for (QuoChildBenef quoChild : benefitsChild) {
 
+				// Calculating Child Age
+				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+				LocalDate dateOfBirth = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
+				LocalDate currentDate = LocalDate
+						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
+				long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+				diffInYears += 1;
+				String childAge = Long.toString(diffInYears);
+
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
-						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
-								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
+				abCell13.add(
+						new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + " Relationship : "
+								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + " Age : " + childAge)
+										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
+										.setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
@@ -3342,10 +3365,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			if (benefitsChild != null) {
 
+				// Calculating Child Age
+				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+				LocalDate dateOfBirth = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
+				LocalDate currentDate = LocalDate
+						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
+				long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+				diffInYears += 1;
+				String childAge = Long.toString(diffInYears);
+
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
-						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
-								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
+				abCell13.add(
+						new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + " Relationship : "
+								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + " Age : " + childAge)
+										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
+										.setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
@@ -3958,10 +3992,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			for (QuoChildBenef quoChild : benefitsChild) {
 
+				// Calculating Child Age
+				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+				LocalDate dateOfBirth = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
+				LocalDate currentDate = LocalDate
+						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
+				long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+				diffInYears += 1;
+				String childAge = Long.toString(diffInYears);
+
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
-						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
-								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
+				abCell13.add(
+						new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + " Relationship : "
+								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + " Age : " + childAge)
+										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
+										.setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
@@ -4598,10 +4643,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			for (QuoChildBenef quoChild : benefitsChild) {
 
+				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+				LocalDate dateOfBirth = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
+				LocalDate currentDate = LocalDate
+						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
+				long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+				diffInYears += 1;
+				String childAge = Long.toString(diffInYears);
+
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
-						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
-								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
+				abCell13.add(
+						new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + " Relationship : "
+								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + " Age : " + childAge)
+										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
+										.setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
