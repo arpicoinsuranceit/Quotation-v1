@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.dao.SheduleDao;
+import org.arpicoinsurance.groupit.main.dao.custom.MedicalRequirementsDaoCustom;
+import org.arpicoinsurance.groupit.main.helper.MedicalRequirementsHelper;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
@@ -44,6 +46,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Autowired
 	private SheduleDao sheduleDao;
 
+	// getting medical requirements
+
+	@Autowired
+	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
 	// paymode switch case variable
 	String modeMethod;
 
@@ -899,6 +905,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	public byte[] createINVPReport(QuotationDetails quotationDetails, QuotationView quotationView,
 			QuoCustomer quoCustomer) throws Exception {
 
+		// getting current year
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(quotationDetails.getQuotationquotationCreateDate());
+
 		String mainLifeOcc = quotationDetails.getCustomerDetails().getOccupation().getOcupationName();
 		String mainLifeOccupation = "";
 
@@ -1368,36 +1378,111 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			if (benefitsChild != null) {
 
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + " Relationship : "
-						+ quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
+				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
+						+ "Relationship : " + quoChild.getChild().getChildRelation() + '\t' + '\t' + "Age : "
+						+ quoChild.getChild().getChildNic()).setFontSize(9).setBold()
 								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
-				// loop again to get children benf
-				for (QuoChildBenef quoChildBenef : benefitsChild) {
+				// getting benefits of child
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
 					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfs().get(0).getBenfName()).setFontSize(9)
+					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
 							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell14);
 					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getBenfs().get(0).getRiderSum()))
-							.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell15);
 					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChild.getBenfs().get(0).getPremium())).setFontSize(9)
+					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
 							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell16);
 					benAddTable.startNewRow();
+
 				}
 
 			} else {
 
 			}
-
 		}
 
 		document.add(benAddTable);
+
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths6 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths6);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 
 		document.add(new Paragraph(""));
 		document.add(new Paragraph("Special Notes").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
@@ -1434,8 +1519,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph("Guranteed minimum dividend rate declared for 2016 - 7.25%").setFontSize(10)
-				.setFixedLeading(2));
+		item6.add(new Paragraph(
+				"Guranteed minimum dividend rate declared for " + calendar.get(Calendar.YEAR) + " - 7.25%")
+						.setFontSize(10).setFixedLeading(2));
 		list.add(item6);
 
 		document.add(list);
@@ -2056,6 +2142,78 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(scdTable);
 
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths7 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths7);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 		document.add(new Paragraph("Special Notes").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 
 		document.add(new Paragraph(""));
@@ -2569,33 +2727,107 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			for (QuoChildBenef quoChild : benefitsChild) {
 
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + " Relationship : "
-						+ quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
+				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
+						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
 								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
-				// loop again to get children benf
-				for (QuoChildBenef quoChildBenef : benefitsChild) {
+				// getting benefits of child
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
 					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfs().get(0).getBenfName()).setFontSize(9)
+					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
 							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell14);
 					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getBenfs().get(0).getRiderSum()))
-							.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell15);
 					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChild.getBenfs().get(0).getPremium())).setFontSize(9)
+					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
 							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell16);
 					benAddTable.startNewRow();
+
 				}
 
 			}
 		}
-
 		document.add(benAddTable);
+
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths7 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths7);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 
 		document.add(new Paragraph(""));
 
@@ -3108,27 +3340,27 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		for (QuoChildBenef quoChild : benefitsChild) {
 
-			if (quoChild.getChild().getChildName() != null) {
+			if (benefitsChild != null) {
 
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + " Relationship : "
-						+ quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
+				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
+						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
 								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
 				// loop again to get children benf
-				for (QuoChildBenef quoChildBenef : benefitsChild) {
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
 					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfs().get(0).getBenfName()).setFontSize(9)
+					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
 							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell14);
 					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getBenfs().get(0).getRiderSum()))
-							.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell15);
 					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChild.getBenfs().get(0).getPremium())).setFontSize(9)
+					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
 							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell16);
 					benAddTable.startNewRow();
@@ -3140,6 +3372,78 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(benAddTable);
 
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths7 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths7);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 		document.add(new Paragraph(""));
 
 		document.add(new Paragraph("Special Notes").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
@@ -3655,24 +3959,24 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			for (QuoChildBenef quoChild : benefitsChild) {
 
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + " Relationship : "
-						+ quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
+				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
+						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
 								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
 				// loop again to get children benf
-				for (QuoChildBenef quoChildBenef : benefitsChild) {
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
 					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfs().get(0).getBenfName()).setFontSize(9)
+					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
 							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell14);
 					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getBenfs().get(0).getRiderSum()))
-							.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell15);
 					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChild.getBenfs().get(0).getPremium())).setFontSize(9)
+					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
 							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell16);
 					benAddTable.startNewRow();
@@ -3688,6 +3992,79 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				"If no claim arises during the policy term on the primary benefit Guranteed maturity value : 0.00")
 						.setFontSize(10));
 		document.add(new Paragraph(" "));
+
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths7 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths7);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 
 		document.add(new Paragraph("Special Notes").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 
@@ -4222,24 +4599,24 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			for (QuoChildBenef quoChild : benefitsChild) {
 
 				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + " Relationship : "
-						+ quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
+				abCell13.add(new Paragraph("Name : " + quoChild.getChild().getChildName() + '\t' + '\t'
+						+ " Relationship : " + quoChild.getChild().getChildRelation()).setFontSize(9).setBold()
 								.setTextAlignment(TextAlignment.LEFT).setCharacterSpacing(1));
 				benAddTable.addCell(abCell13);
 				benAddTable.startNewRow();
 
 				// loop again to get children benf
-				for (QuoChildBenef quoChildBenef : benefitsChild) {
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
 					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfs().get(0).getBenfName()).setFontSize(9)
+					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
 							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell14);
 					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getBenfs().get(0).getRiderSum()))
-							.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell15);
 					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChild.getBenfs().get(0).getPremium())).setFontSize(9)
+					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
 							.setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(abCell16);
 					benAddTable.startNewRow();
@@ -4309,6 +4686,79 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph(""));
 		document.add(new Paragraph("Guranteed Maturity : 343,750.00").setFontSize(10));
 		document.add(new Paragraph(" "));
+
+		try {
+			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
+					.findByQuoDetail(quotationDetails.getQdId());
+
+			if (medicalDetails.isEmpty()) {
+
+			} else {
+				document.add(new Paragraph(""));
+
+				// Medical Requirements Table
+				float[] pointColumnWidths7 = { 150, 150, 150 };
+				Table medReqTable = new Table(pointColumnWidths7);
+				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+				Cell mrqCell1 = new Cell(0, 3);
+				mrqCell1.setBorder(Border.NO_BORDER);
+				mrqCell1.add(new Paragraph("Medical Requirements").setBold().setFontSize(9)
+						.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell1);
+
+				medReqTable.startNewRow();
+
+				Cell mrqEtyCell = new Cell(0, 3);
+				mrqEtyCell.setBorder(Border.NO_BORDER);
+				medReqTable.addCell(mrqEtyCell);
+
+				Cell mrqCell2 = new Cell();
+				mrqCell2.add(new Paragraph("Requirements").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell2);
+
+				Cell mrqCell3 = new Cell();
+				mrqCell3.add(new Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell3);
+
+				Cell mrqCell4 = new Cell();
+				mrqCell4.add(new Paragraph("Spouse").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+						.setFixedLeading(10).setCharacterSpacing(1));
+				medReqTable.addCell(mrqCell4);
+
+				medReqTable.startNewRow();
+				///////
+				for (MedicalRequirementsHelper medicalReq : medicalDetails) {
+
+					Cell mrqCell5 = new Cell();
+					mrqCell5.add(new Paragraph(medicalReq.getMedicalReqname()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell5);
+
+					Cell mrqCell6 = new Cell();
+					mrqCell6.add(new Paragraph(medicalReq.getMainStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell6);
+
+					Cell mrqCell7 = new Cell();
+					mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+					medReqTable.addCell(mrqCell7);
+
+					medReqTable.startNewRow();
+				}
+				document.add(medReqTable);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		//////
 
 		document.add(new Paragraph("Special Notes").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 
