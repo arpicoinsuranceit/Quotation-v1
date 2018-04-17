@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -245,9 +246,13 @@ public class DTAServiceImpl implements DTAService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
+		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		Quotation quo =null;
+		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
 		Products products = productDao.findByProductCode("DTA");
@@ -368,11 +373,12 @@ public class DTAServiceImpl implements DTAService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Saving");
+					return responseMap;
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Medical Re1q //////////////////////
@@ -393,29 +399,39 @@ public class DTAServiceImpl implements DTAService {
 						.save(benef_DetailsList);
 				if (sheduleDao.save(sheduleList) != null) {
 					if (bnfdList == null) {
-						return "Error at Benifict Saving";
+						responseMap.put("status", "Error at Benifict Updating");
+						return responseMap;
 					}
 				} else {
-					return "Error at Shedule Saving";
+					responseMap.put("status", "Error at Shedule Saving");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Saving";
+				responseMap.put("status", "Error at Quotation Saving");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Saving";
+			responseMap.put("status", "Error at MainLife Saving");
+			return responseMap;
 		}
 
-		return "Success";
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;
 
 	}
 
 	@Override
-	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
 			Integer qdId) throws Exception {
 
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
+		Quotation quo = null;
+		
+		HashMap<String, Object> responseMap = new HashMap<>();
+		
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);
 
@@ -541,11 +557,12 @@ public class DTAServiceImpl implements DTAService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Updating");
+					return responseMap;
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			///////////////////// Medical Re1q //////////////////////
@@ -566,20 +583,25 @@ public class DTAServiceImpl implements DTAService {
 						.save(benef_DetailsList);
 				if (sheduleDao.save(sheduleList) != null) {
 					if (bnfdList == null) {
-						return "Error at Benifict Saving";
+						responseMap.put("status", "Error at Benifict Updating");
+						return responseMap;
 					}
 				} else {
-					return "Error at Shedule Saving";
+					responseMap.put("status", "Error at Shedule Updating");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Saving";
+				responseMap.put("status", "Error at Quotation Updating");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Saving";
+			responseMap.put("status", "Error at MainLife Updating");
+			return responseMap;
 		}
 
-		return "Success";
-	}
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;	}
 
 }

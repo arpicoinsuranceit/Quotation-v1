@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -246,14 +247,16 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 		
 		Quotation quo = null;
+		HashMap<String, Object> responseMap = new HashMap<>();
 
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
-			return "Error at calculation";
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
 		}
 
 		
@@ -383,7 +386,8 @@ public class ARPServiceImpl implements ARPService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Saving");
+					return responseMap;
 				}
 			}
 
@@ -391,7 +395,8 @@ public class ARPServiceImpl implements ARPService {
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
-					return "Error at Child Saving";
+					responseMap.put("status", "Error at Child Saving");
+					return responseMap;
 				}
 			}
 
@@ -428,34 +433,44 @@ public class ARPServiceImpl implements ARPService {
 							calculation.get_riderDetails().get_cRiders());
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
-						return "Error at Child Benifict Saving";
+						responseMap.put("status", "Error at Child Benifict Saving");
+						return responseMap;
 					}
 
 				} else {
-					return "Error at Benifict Saving";
+					responseMap.put("status", "Error at Benifict Saving");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Saving";
+				responseMap.put("status", "Error at Quotation Saving");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Saving";
+			responseMap.put("status", "Error at MainLife Saving");
+			return responseMap;
 		}
 
-		return "Success";
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+
+		return responseMap;
 
 	}
 
 	@Override
-	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
 			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 		
 		Quotation quo = null;
 
+		HashMap<String, Object> responseMap = new HashMap<>();
+		
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
-			return "Error at calculation";
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
 		}
 
 		Products products = productDao.findByProductCode("ARP");
@@ -596,7 +611,8 @@ public class ARPServiceImpl implements ARPService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Updating");
+					return responseMap;
 				}
 			}
 
@@ -604,7 +620,8 @@ public class ARPServiceImpl implements ARPService {
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
-					return "Error at Child Updating";
+					responseMap.put("status", "Error at Child Updating");
+					return responseMap;
 				}
 			}
 
@@ -641,21 +658,27 @@ public class ARPServiceImpl implements ARPService {
 							calculation.get_riderDetails().get_cRiders());
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
-						return "Error at Child Benifict Updating";
+						responseMap.put("status", "Error at Child Benifict Updating");
+						return responseMap;
 					}
 
 				} else {
-					return "Error at Benifict Updating";
+					responseMap.put("status", "Error at Benifict Updating");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Updating";
+				responseMap.put("status", "Error at Quotation Updating");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Updating";
+			responseMap.put("status", "Error at MainLife Updating");
+			return responseMap;
 		}
 
-		return "Success";
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;
 	}
 
 }

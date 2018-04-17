@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -130,9 +132,12 @@ public class AIBServiceImpl implements AIBService {
 	}
 
 	@Override
-	public String saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception {
+	public HashMap<String, Object> saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 		Users user = userDao.findOne(id);
+		Quotation quo = null;
+		HashMap<String, Object> responseMap = new HashMap<>();
+		
 		Products products = productDao.findByProductCode("AIB");
 		System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
@@ -183,7 +188,8 @@ public class AIBServiceImpl implements AIBService {
 
 			CustomerDetails c = CustomerDetailsDao.save(customerDetails);
 			if (c != null) {
-				if (quotationDao.save(quotation) != null) {
+				quo = quotationDao.save(quotation);
+				if (quo != null) {
 
 					QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
 
@@ -203,22 +209,31 @@ public class AIBServiceImpl implements AIBService {
 
 					if (quoDetails != null) {
 						if (quoBenifDetailDao.save(benefictList) != null) {
-							return "Success";
+							responseMap.put("status", "Success");
+							responseMap.put("code", quo.getId().toString());
+
+							return responseMap;
 						} else {
-							return "Error at saving Maturity";
+							responseMap.put("status", "Error at saving Maturity");
+							return responseMap;
 						}
 
 					} else {
-						return "Error at Quotation Detail Saving";
+						responseMap.put("status", "Error at Quotation Detail Saving");
+						return responseMap;
 					}
+
 				} else {
-					return "Error at Quotation Saving";
+					responseMap.put("status", "Error at Quotation Saving");
+					return responseMap;
 				}
 			} else {
-				return "Error at Customer Detail Saving";
+				responseMap.put("status", "Error at Customer Details Saving");
+				return responseMap;
 			}
 		} else {
-			return "Error at Customer Saving";
+			responseMap.put("status", "Error at Customer Saving");
+			return responseMap;
 		}
 
 	}
@@ -249,11 +264,15 @@ public class AIBServiceImpl implements AIBService {
 	}
 
 	@Override
-	public String editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
+	public HashMap<String, Object> editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
 			throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 		Users user = userDao.findOne(userId);
 
+		Quotation quo = null;
+		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		
 		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
 		Products products = productDao.findByProductCode("AIB");
@@ -299,7 +318,8 @@ public class AIBServiceImpl implements AIBService {
 
 		if (customerDao.save(customer) != null) {
 			if (CustomerDetailsDao.save(customerDetails) != null) {
-				if (quotationDao.save(quotation) != null) {
+				quo = quotationDao.save(quotation);
+				if (quo != null) {
 					QuotationDetails quoDetails = quotationDetailsDao.save(quotationDetails);
 
 					/////////// Add Maturity///////////////////////
@@ -318,22 +338,31 @@ public class AIBServiceImpl implements AIBService {
 
 					if (quoDetails != null) {
 						if (quoBenifDetailDao.save(benefictList) != null) {
-							return "Success";
+							responseMap.put("status", "Success");
+							responseMap.put("code", quo.getId().toString());
+
+							return responseMap;
 						} else {
-							return "Error at saving Maturity";
+							responseMap.put("status", "Error at saving Maturity");
+							return responseMap;
 						}
 
 					} else {
-						return "Error at Quotation Detail Saving";
+						responseMap.put("status", "Error at Quotation Detail Saving");
+						return responseMap;
 					}
+
 				} else {
-					return "Error at Quotation Saving";
+					responseMap.put("status", "Error at Quotation Saving");
+					return responseMap;
 				}
 			} else {
-				return "Error at Customer Detail Saving";
+				responseMap.put("status", "Error at Customer Details Saving");
+				return responseMap;
 			}
 		} else {
-			return "Error at Customer Saving";
+			responseMap.put("status", "Error at Customer Saving");
+			return responseMap;
 		}
 
 	}

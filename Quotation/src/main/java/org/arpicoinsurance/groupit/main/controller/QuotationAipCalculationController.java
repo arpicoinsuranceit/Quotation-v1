@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
@@ -77,17 +78,18 @@ public class QuotationAipCalculationController {
 	}
 
 	@RequestMapping(value = "/aipSavequo/{id}", method = RequestMethod.POST)
-	public String saveAIP(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveAIP(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
 		String resp = "Fail";
-
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
 					if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
 							+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
-						resp = aipService.saveQuotation(_invpSaveQuotation, id);
+						responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
 					} else {
-						resp = "Term is too large for Mainlife age";
+						responseMap.replace("status", "Term is too large for Mainlife age");
 					}
 				}
 			}
@@ -97,23 +99,24 @@ public class QuotationAipCalculationController {
 		} finally {
 
 		}
-		return resp;
+		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoAipEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
+	public HashMap<String, Object> editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
 			@PathVariable("qdId") Integer qdId) {
 		String resp = "Fail";
-
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		try {
 			if (userId != null) {
 				if (qdId != null) {
 					if (_invpSaveQuotation != null) {
 						if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
 								+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
-							resp = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
+							responseMap = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
 						} else {
-							resp = "Term is too large for Mainlife age";
+							responseMap.replace("status", "Term is too large for Mainlife age");
 						}
 					}
 				}
@@ -124,6 +127,6 @@ public class QuotationAipCalculationController {
 		} finally {
 
 		}
-		return resp;
+		return responseMap;
 	}
 }

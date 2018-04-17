@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,9 +58,11 @@ public class QuotationArpCalculationConroller {
 	}
 
 	@RequestMapping(value = "/quoArpsave/{id}", method = RequestMethod.POST)
-	public String saveArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 		Validation validationInvp = null;
 		try {
@@ -74,19 +77,19 @@ public class QuotationArpCalculationConroller {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {
 
-							String response = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							responseMap = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
+							
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
-						resp = "Error at product ";
+						responseMap.replace("status", "Error at product ");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -101,11 +104,11 @@ public class QuotationArpCalculationConroller {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 	
 	@RequestMapping(value = "/quoArpEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+	public HashMap<String, Object> editArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
 			, @PathVariable("qdId") Integer qdId) {
 		
 		System.out.println(userId);
@@ -114,6 +117,8 @@ public class QuotationArpCalculationConroller {
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -129,22 +134,21 @@ public class QuotationArpCalculationConroller {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
-							String response = arpServie.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-							resp = response;
+							responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
+							
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
-						resp = "Error at product ";
+						responseMap.replace("status", "Error at product ");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
-
 		} catch (Exception e) {
 			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
 		} finally {
@@ -156,6 +160,6 @@ public class QuotationArpCalculationConroller {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 }

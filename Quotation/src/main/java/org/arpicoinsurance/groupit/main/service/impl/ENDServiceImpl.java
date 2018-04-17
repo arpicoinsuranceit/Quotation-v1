@@ -606,7 +606,7 @@ public class ENDServiceImpl implements ENDService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					responseMap.put("status", "Error at Spouse Saving");
+					responseMap.put("status", "Error at Spouse Updating");
 					return responseMap;
 				}
 			}

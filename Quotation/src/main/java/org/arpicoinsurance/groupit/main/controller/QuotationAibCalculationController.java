@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,20 +46,21 @@ public class QuotationAibCalculationController {
 	}
 
 	@RequestMapping(value = "/quoAibsave/{id}", method = RequestMethod.POST)
-	public String saveInvp(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveInvp(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
-					String response = aibService.saveQuotation(_invpSaveQuotation, id);
-					resp = response;
+					responseMap = aibService.saveQuotation(_invpSaveQuotation, id);
 
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
+				responseMap.replace("status", "User can't be identify");
 
 			}
 
@@ -68,31 +70,31 @@ public class QuotationAibCalculationController {
 
 		}
 
-		return resp;
+		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoAibEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
+	public HashMap<String, Object> editAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
 			@PathVariable("qdId") Integer qdId) {
 		
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		try {
 			if (userId != null) {
 				if (qdId != null) {
 					if (_invpSaveQuotation != null) {
-						String response = aibService.editQuotation(_invpSaveQuotation, userId, qdId);
-						resp = response;
+						responseMap = aibService.editQuotation(_invpSaveQuotation, userId, qdId);
 
 					} else {
-						resp = "Incomplete";
+						responseMap.replace("status", "Incomplete");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -101,6 +103,6 @@ public class QuotationAibCalculationController {
 
 		}
 
-		return resp;
+		return responseMap;
 	}
 }

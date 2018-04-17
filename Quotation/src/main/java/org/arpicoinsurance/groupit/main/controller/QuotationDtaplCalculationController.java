@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ public class QuotationDtaplCalculationController {
 			if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
 				if (error.equals("No")) {
 					calResp = dtaplService.getCalcutatedDta(calculation);
-					if(calResp.isErrorExist()) {
+					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
@@ -72,9 +73,12 @@ public class QuotationDtaplCalculationController {
 	}
 
 	@RequestMapping(value = "/quoDtaplsave/{id}", method = RequestMethod.POST)
-	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -91,21 +95,20 @@ public class QuotationDtaplCalculationController {
 					if (error.equals("No")) {
 						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
 
-							String response = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							responseMap = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
+							
 						} else {
-							resp="Term is too large for Mainlife age";
+							responseMap.replace("status", "Term is too large for mainlife age..");
 						}
 					} else {
-						resp = error;
+						responseMap.replace("status", error);
 					}
 
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -123,12 +126,12 @@ public class QuotationDtaplCalculationController {
 
 		}
 
-		return resp;
+		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoDtaplEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId,
-			@PathVariable("qdId") Integer qdId) {
+	public HashMap<String, Object> editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
 		System.out.println(userId);
 		System.out.println(qdId);
@@ -136,6 +139,8 @@ public class QuotationDtaplCalculationController {
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -152,23 +157,20 @@ public class QuotationDtaplCalculationController {
 					if (error.equals("No")) {
 						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
 
-							String response = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-							resp = response;
+							responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
 						} else {
-							resp="Term is too large for Mainlife age";
-						}
+							responseMap.replace("status", "Term is too large for mainlife age..");
 
-						
+						}
 					} else {
-						resp = error;
+						responseMap.replace("status", error);
 					}
 
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -182,6 +184,6 @@ public class QuotationDtaplCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 }

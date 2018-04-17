@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,9 +75,11 @@ public class QuotationDtaCalculationController {
 	}
 
 	@RequestMapping(value = "/quoDtasave/{id}", method = RequestMethod.POST)
-	public String saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
+	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		System.out.println(id);
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -92,21 +95,21 @@ public class QuotationDtaCalculationController {
 					if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
 						if (error.equals("No")) {
 	
-							String response = dtaService.saveQuotation(calculation, _invpSaveQuotation, id);
-							resp = response;
+							responseMap = dtaService.saveQuotation(calculation, _invpSaveQuotation, id);
+							
 						} else {
-							resp =  error;
+							responseMap.replace("status", error);
+							resp = error;
 						}
 					}else {
-						resp ="Term is too large for mainlife age..";
+						responseMap.replace("status", "Term is too large for mainlife age..");
 					}
-
+					
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -124,11 +127,11 @@ public class QuotationDtaCalculationController {
 			
 		}
 
-		return resp;
+		return responseMap;
 	}
 	
 	@RequestMapping(value = "/quoDtaEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editDta(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
+	public HashMap<String, Object> editDta(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
 			, @PathVariable("qdId") Integer qdId) {
 		
 		System.out.println(userId);
@@ -137,6 +140,8 @@ public class QuotationDtaCalculationController {
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -152,21 +157,20 @@ public class QuotationDtaCalculationController {
 					if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
 						if (error.equals("No")) {
 	
-							String response = dtaService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-							resp = response;
+							responseMap = dtaService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
 						} else {
+							responseMap.replace("status", error);
 							resp = error;
 						}
 					}else {
-						resp ="Term is too large for mainlife age..";
+						responseMap.replace("status", "Term is too large for mainlife age..");
 					}
 					
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -180,7 +184,7 @@ public class QuotationDtaCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 
 }

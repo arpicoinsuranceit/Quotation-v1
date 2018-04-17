@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
@@ -21,15 +22,15 @@ public class QuotationAtrmCalculationController {
 
 	@Autowired
 	private ATRMService atrmService;
-	
-	private double totPre=0.0;
+
+	private double totPre = 0.0;
 
 	@RequestMapping(value = "/quoAtrmCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		//System.out.println(calculation);
-		System.out.println(calculation.get_personalInfo().getSgenger()+"***************************");
-		
-		System.out.println(calculation.get_personalInfo().getMgenger()+"************************************");
+		// System.out.println(calculation);
+		System.out.println(calculation.get_personalInfo().getSgenger() + "***************************");
+
+		System.out.println(calculation.get_personalInfo().getMgenger() + "************************************");
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -37,8 +38,8 @@ public class QuotationAtrmCalculationController {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = atrmService.getCalcutatedAtrm(calculation);
-					totPre=calResp.getTotPremium();
-					if(calResp.isErrorExist()) {
+					totPre = calResp.getTotPremium();
+					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
@@ -60,11 +61,13 @@ public class QuotationAtrmCalculationController {
 		return null;
 	}
 
-
 	@RequestMapping(value = "/quoAtrmsave/{id}", method = RequestMethod.POST)
-	public String saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
-		System.out.print(_invpSaveQuotation.get_product()+" pppppppppppppppppppppppppppppppppppppp");
+	public HashMap<String, Object> saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable Integer id) {
+		System.out.print(_invpSaveQuotation.get_product() + " pppppppppppppppppppppppppppppppppppppp");
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 		Validation validation = null;
 		try {
@@ -78,27 +81,23 @@ public class QuotationAtrmCalculationController {
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-							
-							if(validation.validateInvpProdTotPremium(totPre).equals(1)) {
-								String response = atrmService.saveQuotation(calculation, _invpSaveQuotation, id);
-								resp = response;
-							}else {
-								resp = "Total Premium must be greater than 1250";
-							}
 
-							
+							if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
+								responseMap = atrmService.saveQuotation(calculation, _invpSaveQuotation, id);
+							} else {
+								responseMap.replace("status", "Total Premium must be greater than 1250");
+							}
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -112,19 +111,21 @@ public class QuotationAtrmCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
-	
+
 	@RequestMapping(value = "/quoAtrmEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public String editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable("userId") Integer userId
-			, @PathVariable("qdId") Integer qdId) {
-		
+	public HashMap<String, Object> editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+
 		System.out.println(userId);
 		System.out.println(qdId);
 		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 
 		String resp = "Fail";
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
@@ -139,27 +140,23 @@ public class QuotationAtrmCalculationController {
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-							
-							if(validation.validateInvpProdTotPremium(totPre).equals(1)) {
-								String response = atrmService.editQuotation(calculation, _invpSaveQuotation, userId,qdId);
-								resp = response;
-							}else {
-								resp = "Total Premium must be greater than 1250";
-							}
 
-							
+							if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
+								responseMap = atrmService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							} else {
+								responseMap.replace("status", "Total Premium must be greater than 1250");
+							}
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
-						resp = "Error at product";
+						responseMap.replace("status", "Error at product");
 					}
 				} else {
-					resp = "Incomplete";
+					responseMap.replace("status", "Incomplete");
 				}
 			} else {
-				resp = "User can't be identify";
-
+				responseMap.replace("status", "User can't be identify");
 			}
 
 		} catch (Exception e) {
@@ -173,7 +170,7 @@ public class QuotationAtrmCalculationController {
 			}
 		}
 
-		return resp;
+		return responseMap;
 	}
 
 }

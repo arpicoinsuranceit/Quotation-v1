@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -70,7 +71,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 	@Autowired
 	private MedicalDetailsDao medicalDetailsDao;
-	
+
 	@Autowired
 	private OccupationDao occupationDao;
 
@@ -97,7 +98,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
-	
+
 	@Autowired
 	private SheduleDao sheduleDao;
 
@@ -108,9 +109,9 @@ public class DTAPLServiceImpl implements DTAPLService {
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp)
-			throws Exception {
-		
+	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt,
+			QuotationQuickCalResponse calResp) throws Exception {
+
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -121,7 +122,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 				rate = 1.0;
 			}
 		}
-		
+
 		DTAHelper dtaHelper = new DTAHelper();
 
 		System.out.println(
@@ -159,7 +160,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 							(((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000),
 									8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.2))))
 							.setScale(0, RoundingMode.HALF_UP);
-			
+
 			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
@@ -176,8 +177,6 @@ public class DTAPLServiceImpl implements DTAPLService {
 			dtaSheduleList.add(shedule);
 
 			total_premium = total_premium.add(occuLodingPremium);
-			
-			
 
 			System.out.println("polyer : " + String.valueOf(i));
 			System.out.println("outyer : " + String.valueOf(term - (i - 1)));
@@ -207,7 +206,8 @@ public class DTAPLServiceImpl implements DTAPLService {
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
 
-			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(), quotationCalculation.get_personalInfo().getMage(),
+			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getIntrate(),
 					quotationCalculation.get_personalInfo().getMgenger(), new Date(),
@@ -227,7 +227,6 @@ public class DTAPLServiceImpl implements DTAPLService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -246,9 +245,12 @@ public class DTAPLServiceImpl implements DTAPLService {
 	}
 
 	@Override
-	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
 
+		Quotation quo = null;
+
+		HashMap<String, Object> responseMap = new HashMap<>();
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
 		Products products = productDao.findByProductCode("DTAPL");
@@ -267,7 +269,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
-		
+
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;
@@ -369,11 +371,12 @@ public class DTAPLServiceImpl implements DTAPLService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Updating");
+					return responseMap;
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Medical Re1q //////////////////////
@@ -394,26 +397,36 @@ public class DTAPLServiceImpl implements DTAPLService {
 						.save(benef_DetailsList);
 				if (sheduleDao.save(sheduleList) != null) {
 					if (bnfdList == null) {
-						return "Error at Benifict Saving";
+						responseMap.put("status", "Error at Benifict Updating");
+						return responseMap;
 					}
 				} else {
-					return "Error at Shedule Saving";
+					responseMap.put("status", "Error at Shedule Saving");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Saving";
+				responseMap.put("status", "Error at Quotation Saving");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Saving";
+			responseMap.put("status", "Error at MainLife Saving");
+			return responseMap;
 		}
 
-		return "Success";
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;
 	}
 
 	@Override
-	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+
+		Quotation quo = null;
+
+		HashMap<String, Object> responseMap = new HashMap<>();
 
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);
@@ -467,7 +480,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
-		
+
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
@@ -542,13 +555,14 @@ public class DTAPLServiceImpl implements DTAPLService {
 				Customer sp = customerDao.save(spouse);
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
 				if (sp == null && spDetsils != null) {
-					return "Error at Spouse Saving";
+					responseMap.put("status", "Error at Spouse Saving");
+					return responseMap;
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
-			
+
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
@@ -567,20 +581,26 @@ public class DTAPLServiceImpl implements DTAPLService {
 						.save(benef_DetailsList);
 				if (sheduleDao.save(sheduleList) != null) {
 					if (bnfdList == null) {
-						return "Error at Benifict Saving";
+						responseMap.put("status", "Error at Benifict Updating");
+						return responseMap;
 					}
 				} else {
-					return "Error at Shedule Saving";
+					responseMap.put("status", "Error at Shedule Updating");
+					return responseMap;
 				}
 			} else {
-				return "Error at Quotation Saving";
+				responseMap.put("status", "Error at Quotation Updating");
+				return responseMap;
 			}
 
 		} else {
-			return "Error at MainLife Saving";
+			responseMap.put("status", "Error at MainLife Updating");
+			return responseMap;
 		}
 
-		return "Success";
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;
 	}
 
 }
