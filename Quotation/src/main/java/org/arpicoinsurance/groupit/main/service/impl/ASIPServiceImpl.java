@@ -140,6 +140,10 @@ public class ASIPServiceImpl implements ASIPService {
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 			
+			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
+					1 , calResp);
+			
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
 			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
@@ -148,6 +152,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
@@ -304,7 +309,12 @@ public class ASIPServiceImpl implements ASIPService {
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -444,7 +454,7 @@ public class ASIPServiceImpl implements ASIPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			/////////// Add Maturity///////////////////////
@@ -498,8 +508,13 @@ public class ASIPServiceImpl implements ASIPService {
 			Integer qdId) throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
+		
+		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(userId);
@@ -651,7 +666,7 @@ public class ASIPServiceImpl implements ASIPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			/////////// Add Maturity///////////////////////

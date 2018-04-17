@@ -10,6 +10,7 @@ public class QuotationQuickCalResponse {
 	private Double totPremium= 0.00;
 	private Double occuLodingTot = 0.0;
 	private Double withoutLoadingTot = 0.0;
+	private Double bsaYearlyPremium = 0.0;
 	
 	
 	private Double l2=0.00;
@@ -253,6 +254,12 @@ public class QuotationQuickCalResponse {
 	}
 	public void setWithoutLoadingTot(Double withoutLoadingTot) {
 		this.withoutLoadingTot = withoutLoadingTot;
+	}
+	public Double getBsaYearlyPremium() {
+		return bsaYearlyPremium;
+	}
+	public void setBsaYearlyPremium(Double bsaYearlyPremium) {
+		this.bsaYearlyPremium = bsaYearlyPremium;
 	}
 	public Double getL2() {
 		return l2;

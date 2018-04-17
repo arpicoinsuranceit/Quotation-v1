@@ -957,8 +957,16 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHB = rateCardHBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHB = maxTermToBenefictHB > term ? term : maxTermToBenefictHB;
 
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()*0.1) {
+				calResp.setErrorExist(true);
+				calResp.setError("HB MAx Value is " + calResp.getBsaYearlyPremium()*0.1);
+				return calResp;
+			}
+			
 			BigDecimal hb = hbService.calculateHB(age, valiedTermHB, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
+			
+			
 			calResp = setLodingDetails(ocuLoading, hb.doubleValue(), calResp);
 			calResp.setHb(hb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hb.doubleValue());

@@ -32,7 +32,14 @@ public class QuotationArpCalculationConroller {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = arpServie.getCalcutatedArp(calculation);
+					if(calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return calRespPost;
+					}
 					return calResp;
+					
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);

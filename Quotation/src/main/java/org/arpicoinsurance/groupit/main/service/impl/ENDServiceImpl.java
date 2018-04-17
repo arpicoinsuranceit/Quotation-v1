@@ -136,7 +136,13 @@ public class ENDServiceImpl implements ENDService {
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 
+			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp);
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -222,7 +228,12 @@ public class ENDServiceImpl implements ENDService {
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -373,7 +384,7 @@ public class ENDServiceImpl implements ENDService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			System.out.println("quotationSave");
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
@@ -434,7 +445,12 @@ public class ENDServiceImpl implements ENDService {
 			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(userId);
@@ -585,7 +601,7 @@ public class ENDServiceImpl implements ENDService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			///////////////////// Add Maturity //////////////////

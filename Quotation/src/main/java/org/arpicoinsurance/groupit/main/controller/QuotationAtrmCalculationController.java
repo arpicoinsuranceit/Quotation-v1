@@ -38,6 +38,12 @@ public class QuotationAtrmCalculationController {
 				if (error.equals("No")) {
 					calResp = atrmService.getCalcutatedAtrm(calculation);
 					totPre=calResp.getTotPremium();
+					if(calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return calRespPost;
+					}
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);

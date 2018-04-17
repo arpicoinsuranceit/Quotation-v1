@@ -173,8 +173,13 @@ public class ATRMServiceImpl implements ATRMService {
 					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
 					new Date(), calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp);
+			
+			BigDecimal bsaYearly = calculateL2(calculation.get_personalInfo().getMocu(),
+					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
+					new Date(), calculation.get_personalInfo().getBsa(),1, calResp);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(calculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(calculation));
@@ -206,7 +211,12 @@ public class ATRMServiceImpl implements ATRMService {
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
 
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 		Products products = productDao.findByProductCode("ATRM");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -347,7 +357,7 @@ public class ATRMServiceImpl implements ATRMService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Medical Re1q //////////////////////
@@ -396,7 +406,12 @@ public class ATRMServiceImpl implements ATRMService {
 			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("ATRM");
 		Users user = userDao.findOne(userId);
@@ -549,7 +564,7 @@ public class ATRMServiceImpl implements ATRMService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			///////////////////// Medical Re1q //////////////////////

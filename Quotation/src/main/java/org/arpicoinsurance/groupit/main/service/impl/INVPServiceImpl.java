@@ -140,8 +140,13 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
 			
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp);
 			
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -237,8 +242,13 @@ public class INVPServiceImpl implements INVPService {
 			throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
+		
+		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(id);
@@ -393,7 +403,7 @@ public class INVPServiceImpl implements INVPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Add Maturity //////////////////
@@ -467,6 +477,9 @@ public class INVPServiceImpl implements INVPService {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(userId);

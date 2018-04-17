@@ -139,7 +139,17 @@ public class ARPServiceImpl implements ARPService {
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), calResp);
+			
+			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(),
+					quotationCalculation.get_personalInfo().getPayingterm(),
+					1, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(),
+					"Y" , calResp);
+			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
@@ -238,7 +248,15 @@ public class ARPServiceImpl implements ARPService {
 	@Override
 	public String saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
 			throws Exception {
+		
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
+
+		
 		Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -377,7 +395,7 @@ public class ARPServiceImpl implements ARPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			/////////// Add Maturity///////////////////////
@@ -432,8 +450,14 @@ public class ARPServiceImpl implements ARPService {
 	public String editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
 			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
+		
+		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
+
 		Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
 
@@ -584,7 +608,7 @@ public class ARPServiceImpl implements ARPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			/////////// Add Maturity///////////////////////

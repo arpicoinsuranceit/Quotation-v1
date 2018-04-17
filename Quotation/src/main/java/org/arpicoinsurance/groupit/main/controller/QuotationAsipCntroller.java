@@ -34,6 +34,12 @@ public class QuotationAsipCntroller {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = asipService.getCalcutatedASIP(calculation);
+					if(calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return calRespPost;
+					}
 						return calResp;
 				} else {
 					calResp.setErrorExist(true);

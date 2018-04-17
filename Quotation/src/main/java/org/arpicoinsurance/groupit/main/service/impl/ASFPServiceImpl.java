@@ -192,8 +192,15 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
+			
+			BigDecimal bsaYearly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getMsfb(),
+					1, calResp);
 
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			
@@ -229,7 +236,13 @@ public class ASFPServiceImpl implements ASFPService {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
 
+	
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
 
 		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(id);
@@ -369,7 +382,7 @@ public class ASFPServiceImpl implements ASFPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Medical Re1q //////////////////////
@@ -418,8 +431,13 @@ public class ASFPServiceImpl implements ASFPService {
 			Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
-		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
+		Quotation quo = null;
 
+		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
+		if (calResp.isErrorExist()) {
+			return "Error at calculation";
+		}
+		
 		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(userId);
 
@@ -570,7 +588,7 @@ public class ASFPServiceImpl implements ASFPService {
 				}
 			}
 
-			Quotation quo = quotationDao.save(quotation);
+			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
 
 			///////////////////// Medical Re1q //////////////////////

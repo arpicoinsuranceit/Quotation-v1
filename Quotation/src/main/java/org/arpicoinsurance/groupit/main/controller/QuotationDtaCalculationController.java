@@ -36,6 +36,12 @@ public class QuotationDtaCalculationController {
 			if((calculation.get_personalInfo().getMage()+calculation.get_personalInfo().getTerm()) <= 65) {
 				if (error.equals("No")) {
 					calResp = dtaService.getCalcutatedDta(calculation);
+					if(calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return calRespPost;
+					}
 				}else {
 					calResp.setError(error);
 					calResp.setErrorExist(true);
