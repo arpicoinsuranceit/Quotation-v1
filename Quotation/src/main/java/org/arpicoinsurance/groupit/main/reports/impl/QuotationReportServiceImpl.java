@@ -47,9 +47,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	private SheduleDao sheduleDao;
 
 	// getting medical requirements
-
 	@Autowired
 	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
+	
 	// paymode switch case variable
 	String modeMethod;
 
