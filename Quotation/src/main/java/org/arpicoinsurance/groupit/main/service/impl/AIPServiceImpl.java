@@ -441,7 +441,7 @@ public class AIPServiceImpl implements AIPService {
 		try {
 			mainLifeDetail = new CustomerDetails();
 			mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
-			mainLifeDetail.setCustCivilStatus("");
+			mainLifeDetail.setCustCivilStatus(get_personalInfo.get_mainlife().get_mCivilStatus());
 			mainLifeDetail.setCustCreateBy(user.getUser_Name());
 			mainLifeDetail.setCustCreateDate(new Date());
 			mainLifeDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
