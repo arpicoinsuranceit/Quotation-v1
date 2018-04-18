@@ -99,9 +99,9 @@ public class AIPServiceImpl implements AIPService {
 			aipCalShedules = new ArrayList<>();
 
 			RateCardAIP rateCardAIP = null;
-
+			int polyear = 0;
 			for (int i = 0; i < (term.intValue() * 12); i++) {
-				int polyear = 0;
+				
 				if (i % 12 == 0) {
 					polyear = (polyear+1);
 					if (polyear > 3) {
