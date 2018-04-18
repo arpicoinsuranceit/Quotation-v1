@@ -12,6 +12,7 @@ public class RateCardTPDASB {
 	@Id
     private String id;
     private Integer age;
+    private Integer term;
     private Double rate;
     private Date strdat;
     private Date enddat;
@@ -63,6 +64,12 @@ public class RateCardTPDASB {
 	}
 	public void setCreadt(Date creadt) {
 		this.creadt = creadt;
+	}
+	public Integer getTerm() {
+		return term;
+	}
+	public void setTerm(Integer term) {
+		this.term = term;
 	}
       
 }

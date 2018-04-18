@@ -19,6 +19,7 @@ import org.arpicoinsurance.groupit.main.dao.RateCardMFIBDTDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardMFIBTDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardSFPODao;
 import org.arpicoinsurance.groupit.main.dao.RateCardSUHRBDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardTPDASBDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardTPDDTADao;
 import org.arpicoinsurance.groupit.main.dao.RateCardTPDDTASDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
@@ -197,7 +198,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 	private CalculateBenifictTermService calculateBenefictTerm;
 
 	@Autowired
-	private RateCardATFESCDao rateCardATFESCDao;
+	private RateCardATFESCDao rateCardATFESCDao;  
+	
+	@Autowired
+	private RateCardTPDASBDao rateCardTPDASBDao;
 
 	@Autowired
 	private RateCardSFPODao rateCardSFPODao;
@@ -538,23 +542,31 @@ public class CalculateRidersImpl implements CalculateRiders {
 			ocuLoading = oculoding.get("TPDASB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
-			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, new Date(), ridsumasu, payFrequency, 1.0,
+			
+			Integer maxTermToBenefictTPDASB = rateCardTPDASBDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermTPDASB = maxTermToBenefictTPDASB > term ? term : maxTermToBenefictTPDASB;
+			
+			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, valiedTermTPDASB, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
 			calResp = setLodingDetails(ocuLoading, tpdasb.doubleValue(), calResp);
 			calResp.setTpdasb(tpdasb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasb.doubleValue());
-			calResp.setTpdasbTerm(term);
+			calResp.setTpdasbTerm(valiedTermTPDASB);
 			return calResp;
 		case "TPDASBS":
 			ocuLoading = oculoding.get("TPDASBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
-			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, new Date(), ridsumasu, payFrequency, 1.0,
+			
+			Integer maxTermToBenefictTPDASBS = rateCardTPDASBDao.findFirstByOrderByTermDesc().getTerm();
+			Integer valiedTermTPDASBS = maxTermToBenefictTPDASBS > term ? term : maxTermToBenefictTPDASBS;
+			
+			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, valiedTermTPDASBS, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
 			calResp = setLodingDetails(ocuLoading, tpdasbs.doubleValue(), calResp);
 			calResp.setTpdasbs(tpdasbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasbs.doubleValue());
-			calResp.setTpdasbsTerm(term);
+			calResp.setTpdasbsTerm(valiedTermTPDASBS);
 			return calResp;
 		case "TPDB":
 			ocuLoading = oculoding.get("TPDB");

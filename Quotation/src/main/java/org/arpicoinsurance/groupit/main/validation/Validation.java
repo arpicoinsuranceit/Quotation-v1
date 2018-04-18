@@ -328,7 +328,7 @@ public class Validation {
 
 	////////////// Invp Product Validation
 	public Integer validateInvpEndProd() {
-		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 30
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 45
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
 				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70
 				&& calculation.get_personalInfo().getBsa() >= 250000) {

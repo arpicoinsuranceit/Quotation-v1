@@ -19,10 +19,10 @@ public class TPDASBSServiceImpl implements TPDASBSService {
 	private RateCardTPDASBDao cardTPDASBDao;
 	
 	@Override
-	public BigDecimal calculateTPDASBS(int age, Date chedat, double ridsumasu, String payFrequency, double relief, double occupation_loding)
+	public BigDecimal calculateTPDASBS(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief, double occupation_loding)
 			throws Exception {
 		BigDecimal premiumTPDASBS = new BigDecimal(0);
-		RateCardTPDASB rateCardTPDASB = cardTPDASBDao.findByAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, chedat, chedat, chedat, chedat);
+		RateCardTPDASB rateCardTPDASB = cardTPDASBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("TPDASBS ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@*@rider_sum_assured@/1000))*@relief@
