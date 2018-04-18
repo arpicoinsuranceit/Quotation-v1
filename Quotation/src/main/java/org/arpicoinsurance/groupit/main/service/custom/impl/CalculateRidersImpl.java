@@ -502,6 +502,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictSFPO = rateCardSFPODao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSFPO = maxTermToBenefictSFPO > term ? term : maxTermToBenefictSFPO;
 
+			
 			BigDecimal sfpo = sfpoService.calculateSFPO(age, valiedTermSFPO, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
 			calResp = setLodingDetails(ocuLoading, sfpo.doubleValue(), calResp);
