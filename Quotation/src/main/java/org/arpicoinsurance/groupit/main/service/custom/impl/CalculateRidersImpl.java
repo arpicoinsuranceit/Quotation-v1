@@ -502,6 +502,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictSFPO = rateCardSFPODao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSFPO = maxTermToBenefictSFPO > term ? term : maxTermToBenefictSFPO;
 
+			
 			BigDecimal sfpo = sfpoService.calculateSFPO(age, valiedTermSFPO, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
 			calResp = setLodingDetails(ocuLoading, sfpo.doubleValue(), calResp);
@@ -971,7 +972,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()*0.1) {
 				calResp.setErrorExist(true);
-				calResp.setError("HB MAx Value is " + calResp.getBsaYearlyPremium()*0.1);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.1));
+				calResp.setError("HB MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
 				return calResp;
 			}
 			
