@@ -10,7 +10,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface ARPService {
 	
-	BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum, String payFrequency, QuotationQuickCalResponse calResp)throws Exception;
+	BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum, String payFrequency, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)throws Exception;
 	
 	BigDecimal calculateMaturity(int term, double bassum)throws Exception;
 	

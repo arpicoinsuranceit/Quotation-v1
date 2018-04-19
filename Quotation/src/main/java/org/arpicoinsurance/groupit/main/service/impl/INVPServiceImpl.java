@@ -139,12 +139,12 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 			
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp);
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
 			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -189,7 +189,7 @@ public class INVPServiceImpl implements INVPService {
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm,
-			QuotationQuickCalResponse calResp) throws Exception {
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -211,8 +211,11 @@ public class INVPServiceImpl implements INVPService {
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		if(isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+			
+		}
 		return premium.multiply(new BigDecimal(rate));
 	}
 

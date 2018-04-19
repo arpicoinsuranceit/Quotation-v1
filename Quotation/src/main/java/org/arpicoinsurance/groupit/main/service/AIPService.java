@@ -8,7 +8,7 @@ import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 
 public interface AIPService {
 	
-	AIPCalResp calculateAIPMaturaty(Integer term, Double adbrat, Double fundmarat, Double intrat, Double contribution, Date chedat, String paymod, boolean schedule)throws Exception;
+	AIPCalResp calculateAIPMaturaty(Integer term, Double adbrat, Double fundmarat, Double intrat, Double contribution, Date chedat, String paymod, boolean schedule, boolean isAddOccuLoading)throws Exception;
 	
 	HashMap<String, Object> saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception;
 

@@ -134,7 +134,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
-			QuotationQuickCalResponse calResp) throws Exception {
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -164,9 +164,11 @@ public class ASFPServiceImpl implements ASFPService {
 		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		if (isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 
+		}
 		return premium.multiply(new BigDecimal(rate));
 	}
 
@@ -198,12 +200,12 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 
 			BigDecimal bsaYearly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
-					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp);
+					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp, false);
 
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());

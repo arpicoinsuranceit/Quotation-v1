@@ -10,7 +10,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 
 public interface ASFPService {
 	
-	BigDecimal calculateL10(int ocu,int age, int term, double rebate, Date chedat, double msfb, int paytrm, QuotationQuickCalResponse calResp)throws Exception;
+	BigDecimal calculateL10(int ocu,int age, int term, double rebate, Date chedat, double msfb, int paytrm, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)throws Exception;
 	
 	BigDecimal calculateL2(int term, double msfb)throws Exception;
 

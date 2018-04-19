@@ -12,7 +12,7 @@ public interface INVPService {
 	
 	QuotationQuickCalResponse getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception; 
 	
-	BigDecimal calculateL2(int ocu,int age, int term, double intrat, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResponse)throws Exception;
+	BigDecimal calculateL2(int ocu,int age, int term, double intrat, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResponse, boolean isAddOccuLoading)throws Exception;
 	
 	BigDecimal calculateMaturity(int age, int term, double intrat, Date chedat, double bassum, int paytrm)throws Exception;
 	

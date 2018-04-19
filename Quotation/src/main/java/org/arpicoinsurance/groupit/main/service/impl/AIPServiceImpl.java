@@ -72,7 +72,7 @@ public class AIPServiceImpl implements AIPService {
 	}
 
 	public AIPCalResp calculateAIPMaturaty(Integer term, Double adbrat, Double fundmarat, Double intrat,
-			Double contribution, Date chedat, String paymod, boolean schedule) throws Exception {
+			Double contribution, Date chedat, String paymod, boolean schedule, boolean isAddOccuLoading) throws Exception {
 
 		AIPCalResp aipCalResp = null;
 		ArrayList<AipCalShedule> aipCalShedules = null;
@@ -262,13 +262,13 @@ public class AIPServiceImpl implements AIPService {
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
-					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
 			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
@@ -483,13 +483,13 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
-					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
 			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
-					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false);
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));

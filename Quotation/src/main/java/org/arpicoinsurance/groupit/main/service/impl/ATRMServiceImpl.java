@@ -120,7 +120,7 @@ public class ATRMServiceImpl implements ATRMService {
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm,
-			QuotationQuickCalResponse calResp) throws Exception {
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -147,9 +147,10 @@ public class ATRMServiceImpl implements ATRMService {
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-
+		if (isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		}
 		System.out.println("premium : " + premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
@@ -174,11 +175,11 @@ public class ATRMServiceImpl implements ATRMService {
 			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),
 					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
 					new Date(), calculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp);
-			
+					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp, true);
+
 			BigDecimal bsaYearly = calculateL2(calculation.get_personalInfo().getMocu(),
 					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
-					new Date(), calculation.get_personalInfo().getBsa(),1, calResp);
+					new Date(), calculation.get_personalInfo().getBsa(), 1, calResp, false);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -189,8 +190,6 @@ public class ATRMServiceImpl implements ATRMService {
 			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(calculation));
-
-			
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
@@ -210,11 +209,11 @@ public class ATRMServiceImpl implements ATRMService {
 
 	// save quotation
 	@Override
-	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
 
 		Quotation quo = null;
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
@@ -416,14 +415,13 @@ public class ATRMServiceImpl implements ATRMService {
 	}
 
 	@Override
-	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		if (calResp.isErrorExist()) {

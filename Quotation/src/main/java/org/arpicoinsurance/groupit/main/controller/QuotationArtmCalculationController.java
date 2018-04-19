@@ -28,7 +28,7 @@ public class QuotationArtmCalculationController {
 		String valError = validation.validateArtm(plan);
 		if(valError.equals("ok")) {
 			try {
-				return artmService.calculateARTMMaturaty(plan, 1.0, false);
+				return artmService.calculateARTMMaturaty(plan, 1.0, false, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				AIPCalResp aipCalResp = new AIPCalResp();
@@ -51,7 +51,7 @@ public class QuotationArtmCalculationController {
 		Validation validation = new Validation();
 		if(validation.validateArtm(plan).equals("ok")) {
 			try {
-				return (ArrayList<AipCalShedule>) artmService.calculateARTMMaturaty(plan, 1.0, true).getAipCalShedules();
+				return (ArrayList<AipCalShedule>) artmService.calculateARTMMaturaty(plan, 1.0, true,false).getAipCalShedules();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
