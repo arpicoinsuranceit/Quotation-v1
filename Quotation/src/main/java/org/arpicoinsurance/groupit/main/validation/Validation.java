@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.Benifict;
+import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
@@ -12,6 +13,10 @@ public class Validation {
 	private QuotationCalculation calculation;
 
 	HashMap<String, Benifict> benefitMap = new HashMap<>();
+
+	public Validation() {
+
+	}
 
 	public Validation(QuotationCalculation calculation) {
 		this.calculation = calculation;
@@ -421,7 +426,7 @@ public class Validation {
 
 	public Integer validateInvpSFPO() {
 		if (benefitMap.containsKey("SFPO")) {
-			if(calculation.get_personalInfo().getMage()>60) {
+			if (calculation.get_personalInfo().getMage() > 60) {
 				return 2;
 			}
 			Benifict benifict = benefitMap.get("SFPO");
@@ -1035,5 +1040,34 @@ public class Validation {
 			}
 		}
 		return 0;
+	}
+
+	public String validateArtm(Plan plan) {
+
+		if (plan.getRetAge() >= 40 && plan.getRetAge() <= 65) {
+
+			if (plan.getPensionPaingTerm() == 10 || plan.getPensionPaingTerm() == 15
+					|| plan.getPensionPaingTerm() == 20) {
+				Integer paingTerm = Integer.parseInt(plan.get_payingterm());
+				if (paingTerm >= 10 && paingTerm <= 47 || plan.get_frequance().equals("S")) {
+					if(paingTerm <= (plan.getRetAge()-plan.getAge()) || plan.get_frequance().equals("S") ) {
+						
+						return "ok";
+						
+						
+					}else {
+						return "Pension Paying Max Term must "+ (plan.getRetAge()-plan.getAge());
+					}
+				} else {
+					return "Pension Paying Term must between 10 and 47";
+				}
+			} else {
+				return "Pension Pension Paying Term must be 10, 15 or 20";
+			}
+		} else {
+			return "Retirement Age must between 60 and 40";
+		}
+
+
 	}
 }

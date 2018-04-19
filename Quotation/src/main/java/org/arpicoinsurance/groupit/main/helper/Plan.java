@@ -13,6 +13,10 @@ public class Plan {
 	private String _nomineedob;
 	private Integer _nomineeAge;
 	private String _nomoneeRelation;
+	private Integer pensionPaingTerm;
+	private Integer retAge;
+	private Integer age;
+	
 	
 	public Integer get_term() {
 		return _term;
@@ -85,6 +89,24 @@ public class Plan {
 	}
 	public void set_nomoneeRelation(String _nomoneeRelation) {
 		this._nomoneeRelation = _nomoneeRelation;
+	}
+	public Integer getPensionPaingTerm() {
+		return pensionPaingTerm;
+	}
+	public void setPensionPaingTerm(Integer pensionPaingTerm) {
+		this.pensionPaingTerm = pensionPaingTerm;
+	}
+	public Integer getRetAge() {
+		return retAge;
+	}
+	public void setRetAge(Integer retAge) {
+		this.retAge = retAge;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 	
 }

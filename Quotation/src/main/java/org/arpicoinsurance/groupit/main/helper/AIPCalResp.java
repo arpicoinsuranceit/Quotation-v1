@@ -6,6 +6,8 @@ public class AIPCalResp {
 	private Double maturaty;
 	private Double maturaty10;
 	private Double maturaty12;
+	private Boolean errorExist;
+	private String error;
 	private List<AipCalShedule> aipCalShedules;
 	
 	private Double extraOe;
@@ -33,6 +35,18 @@ public class AIPCalResp {
 	}
 	public void setMaturaty12(Double maturaty12) {
 		this.maturaty12 = maturaty12;
+	}
+	public Boolean getErrorExist() {
+		return errorExist;
+	}
+	public void setErrorExist(Boolean errorExist) {
+		this.errorExist = errorExist;
+	}
+	public String getError() {
+		return error;
+	}
+	public void setError(String error) {
+		this.error = error;
 	}
 	public Double getExtraOe() {
 		return extraOe;
