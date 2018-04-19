@@ -139,19 +139,17 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					quotationCalculation.get_personalInfo().getFrequance(), calResp);
-			
+					quotationCalculation.get_personalInfo().getFrequance(), calResp, true);
+
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getPayingterm(),
-					1, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					"Y" , calResp);
-			
+					quotationCalculation.get_personalInfo().getPayingterm(), 1, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), "Y", calResp, false);
+
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
-			
+
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
@@ -182,7 +180,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum,
-			String payFrequency, QuotationQuickCalResponse calResp) throws Exception {
+			String payFrequency, QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -229,8 +227,10 @@ public class ARPServiceImpl implements ARPService {
 		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		if (isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		}
 		return occuLodingPremium;
 	}
 
@@ -247,9 +247,9 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
-		
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
+
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
@@ -259,7 +259,6 @@ public class ARPServiceImpl implements ARPService {
 			return responseMap;
 		}
 
-		
 		Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -459,14 +458,14 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
-		
+
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");

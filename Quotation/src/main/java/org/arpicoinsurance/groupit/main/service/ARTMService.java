@@ -8,7 +8,7 @@ import org.arpicoinsurance.groupit.main.helper.Plan;
 
 public interface ARTMService {
 	
-	AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat, boolean shedule)throws Exception;
+	AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat, boolean shedule, boolean isAddOccuLoading)throws Exception;
 	
 	HashMap<String, Object> saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception;
 

@@ -36,7 +36,7 @@ public class ARTMServiceImpl implements ARTMService{
 
 	
 	@Override
-	public AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat, boolean shedule) throws Exception {
+	public AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat, boolean shedule, boolean isAddOccuLoading) throws Exception {
 		AIPCalResp aipCalResp = new AIPCalResp();
 		aipCalResp.setMaturaty(100.00);
 		aipCalResp.setMaturaty10(100.00);
@@ -67,7 +67,7 @@ public class ARTMServiceImpl implements ARTMService{
 			
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 			
-			AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(), 0.0, false);
+			AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(), 0.0, false, true);
 			
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));

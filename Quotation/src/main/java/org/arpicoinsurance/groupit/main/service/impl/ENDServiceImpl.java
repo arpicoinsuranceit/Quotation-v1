@@ -132,17 +132,19 @@ public class ENDServiceImpl implements ENDService {
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
+			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
+
+			
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
-					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp);
-
+			
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
@@ -178,7 +180,7 @@ public class ENDServiceImpl implements ENDService {
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm,
-			QuotationQuickCalResponse calResp) throws Exception {
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -207,9 +209,20 @@ public class ENDServiceImpl implements ENDService {
 		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		
+		System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot() );
+		System.out.println("occu loading :" + calResp.getOccuLodingTot() );
+		
+		if(isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		}
+		
 
+		System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot() );
+		System.out.println("occu loading :" + calResp.getOccuLodingTot() );
+		
+		
 		return occuLodingPremium;
 	}
 

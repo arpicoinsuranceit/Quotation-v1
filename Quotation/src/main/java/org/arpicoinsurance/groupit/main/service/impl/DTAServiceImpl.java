@@ -112,7 +112,7 @@ public class DTAServiceImpl implements DTAService {
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp)
+	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)
 			throws Exception {
 		
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
@@ -162,9 +162,11 @@ public class DTAServiceImpl implements DTAService {
 					.divide(new BigDecimal(1000), 0, BigDecimal.ROUND_HALF_UP);
 			
 			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-
+			if(isAddOccuLoading) {
+				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+				calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+			}
+			
 			DTAShedule shedule = new DTAShedule();
 
 			shedule.setLonred(reduction.doubleValue());
@@ -209,7 +211,7 @@ public class DTAServiceImpl implements DTAService {
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getIntrate(),
 					quotationCalculation.get_personalInfo().getMgenger(), new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), calResp);
+					quotationCalculation.get_personalInfo().getBsa(), calResp, true);
 
 			BigDecimal bsaPremium = dtaHelper.getBsa();
 

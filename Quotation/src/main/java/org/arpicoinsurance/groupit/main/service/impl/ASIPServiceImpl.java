@@ -70,7 +70,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private ProductDao productDao;
-	
+
 	@Autowired
 	private UsersDao userDao;
 
@@ -100,7 +100,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private CustChildDetailsDao custChildDetailsDao;
-	
+
 	@Autowired
 	private MedicalReqDao medicalReqDao;
 
@@ -112,7 +112,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
-	
+
 	@Autowired
 	private MedicalDetailsDao medicalDetailsDao;
 
@@ -127,7 +127,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
-	
+
 	@Override
 	public QuotationQuickCalResponse getCalcutatedASIP(QuotationCalculation quotationCalculation) throws Exception {
 
@@ -142,19 +142,18 @@ public class ASIPServiceImpl implements ASIPService {
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp);
-			
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
+
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
-					1 , calResp);
-			
+					1, calResp, false);
+
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
 			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
@@ -192,8 +191,8 @@ public class ASIPServiceImpl implements ASIPService {
 	}
 
 	@Override
-	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm, QuotationQuickCalResponse calResp)
-			throws Exception {
+	public BigDecimal calculateL2(int ocu, int term, double bassum, int paytrm, QuotationQuickCalResponse calResp,
+			boolean isAddOccuLoading) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -212,9 +211,10 @@ public class ASIPServiceImpl implements ASIPService {
 		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-
+		if (isAddOccuLoading) {
+			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		}
 		return premium.multiply(new BigDecimal(rate));
 	}
 
@@ -311,19 +311,18 @@ public class ASIPServiceImpl implements ASIPService {
 	}
 
 	@Override
-	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
-		
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
+
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
-		
+
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -377,7 +376,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
-		
+
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
@@ -484,8 +483,7 @@ public class ASIPServiceImpl implements ASIPService {
 			medicalDetailsDao.save(medicalDetailList);
 
 			///////////////////// Done Save Medical req ////////////////
-			
-			
+
 			if (quo != null && quoDetails != null) {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
@@ -523,13 +521,13 @@ public class ASIPServiceImpl implements ASIPService {
 	}
 
 	@Override
-	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
-		
+
 		Quotation quo = null;
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
@@ -602,7 +600,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
-		
+
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {

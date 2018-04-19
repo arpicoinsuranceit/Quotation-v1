@@ -10,7 +10,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface ATRMService {
 
-	BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp)throws Exception;
+	BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)throws Exception;
 	
 	QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation)throws Exception;
 	
