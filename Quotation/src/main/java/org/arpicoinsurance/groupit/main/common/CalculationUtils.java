@@ -83,6 +83,7 @@ public class CalculationUtils {
 	}
 	
 	public double getTaxAmount(double bassum) {
+		System.out.println(bassum + "bassum at tax");
 		return new BigDecimal(0.002).multiply(new BigDecimal(bassum)).setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 

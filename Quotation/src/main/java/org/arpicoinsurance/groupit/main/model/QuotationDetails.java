@@ -43,6 +43,9 @@ public class QuotationDetails implements Serializable{
 	private CustomerDetails customerDetails;
 	private CustomerDetails spouseDetails;
 	
+	private Integer pensionTerm;
+	private Integer retirmentAge;
+	
 	private String quotationCreateBy;
 	private Date quotationCreateDate;
 	private String quotationModifyBy;
@@ -296,5 +299,21 @@ public class QuotationDetails implements Serializable{
 
 	public void setSpouseDetails(CustomerDetails spouseDetails) {
 		this.spouseDetails = spouseDetails;
+	}
+
+	public Integer getPensionTerm() {
+		return pensionTerm;
+	}
+
+	public void setPensionTerm(Integer pensionTerm) {
+		this.pensionTerm = pensionTerm;
+	}
+
+	public Integer getRetirmentAge() {
+		return retirmentAge;
+	}
+
+	public void setRetirmentAge(Integer retirmentAge) {
+		this.retirmentAge = retirmentAge;
 	}
 }

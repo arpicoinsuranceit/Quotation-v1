@@ -28,9 +28,6 @@ public class QuotationAipCalculationController {
 	public AIPCalResp calculateAIP(@RequestBody Plan plan) {
 
 		Double contribution = plan.get_bsa();
-		System.out.println(plan.get_frequance() + "*************");
-		System.out.println(plan.get_bsa() + "*************");
-		System.out.println(plan.get_term() + "*************");
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), plan.get_frequance(), false);
@@ -53,16 +50,9 @@ public class QuotationAipCalculationController {
 	@RequestMapping(value = "/aipshedule", method = RequestMethod.POST)
 	public ArrayList<AipCalShedule> loadSheduleAIP(@RequestBody Plan plan) {
 		Double contribution = plan.get_bsa();
-		System.out.println(plan.get_frequance() + "*************");
-		System.out.println(plan.get_bsa() + "*************");
-		System.out.println(plan.get_term() + "*************");
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
 					new Date(), plan.get_frequance(), true);
-			// aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.02, 11.0,
-			// contribution, new Date(), plan.get_frequance(),false);
-			// aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.02, 12.5,
-			// contribution, new Date(), plan.get_frequance(),false);
 
 			ArrayList<AipCalShedule> aipCalSchedule = (ArrayList<AipCalShedule>) aipCalResp.getAipCalShedules();
 			if (aipCalSchedule != null && !aipCalSchedule.isEmpty()) {

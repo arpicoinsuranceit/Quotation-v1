@@ -159,24 +159,49 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
+				System.out.println(calResp.getBasicSumAssured());
+				System.out.println(calResp.getTotPremium());
+				System.out.println(calResp.getExtraOE());
+				System.out.println(adminFee);
+				System.out.println(taxAmount);
 				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumMonthT(calResp.getTotPremium() - calResp.getExtraOE());
+				quotationDetails.setPremiumMonthT(calResp.getTotPremium());
 				break;
 			case "Q":
+				System.out.println(calResp.getBasicSumAssured());
+				System.out.println(calResp.getTotPremium());
+				System.out.println(calResp.getExtraOE());
+				System.out.println(adminFee);
+				System.out.println(taxAmount);
 				quotationDetails.setPremiumQuater(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumQuaterT(calResp.getTotPremium() - calResp.getExtraOE());
+				quotationDetails.setPremiumQuaterT(calResp.getTotPremium());
 				break;
 			case "H":
+				System.out.println(calResp.getBasicSumAssured());
+				System.out.println(calResp.getTotPremium());
+				System.out.println(calResp.getExtraOE());
+				System.out.println(adminFee);
+				System.out.println(taxAmount);
 				quotationDetails.setPremiumHalf(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumHalfT(calResp.getTotPremium() - calResp.getExtraOE());
+				quotationDetails.setPremiumHalfT(calResp.getTotPremium());
 				break;
 			case "Y":
+				System.out.println(calResp.getBasicSumAssured());
+				System.out.println(calResp.getTotPremium());
+				System.out.println(calResp.getExtraOE());
+				System.out.println(adminFee);
+				System.out.println(taxAmount);
 				quotationDetails.setPremiumYear(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumYearT(calResp.getTotPremium() - calResp.getExtraOE());
+				quotationDetails.setPremiumYearT(calResp.getTotPremium());
 				break;
 			case "S":
+				System.out.println(calResp.getBasicSumAssured());
+				System.out.println(calResp.getTotPremium());
+				System.out.println(calResp.getExtraOE());
+				System.out.println(adminFee);
+				System.out.println(taxAmount);
 				quotationDetails.setPremiumSingle(calResp.getBasicSumAssured());
-				quotationDetails.setPremiumSingleT(calResp.getTotPremium() - calResp.getExtraOE());
+				quotationDetails.setPremiumSingleT(calResp.getTotPremium());
 				break;
 			default:
 				break;

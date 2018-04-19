@@ -463,6 +463,11 @@ public class AIPServiceImpl implements AIPService {
 	@Override
 	public HashMap<String, Object> editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
 			throws Exception {
+		
+		System.out.println(_invpSaveQuotation.get_plan().get_frequance());
+		System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+		System.out.println(_invpSaveQuotation.get_plan().get_term());
+		
 		CalculationUtils calculationUtils = null;
 		Products products = null;
 		Customer customer = null;
@@ -490,7 +495,7 @@ public class AIPServiceImpl implements AIPService {
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
-			Double tax = calculationUtils.getTaxAmount(aip.getMaturaty() + adminFee);
+			
 
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
@@ -513,7 +518,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setBaseSum(aip.getMaturaty());
 			quotationDetails.setInterestRate(10.0);
-			quotationDetails.setTaxAmount(tax);
+			
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
@@ -521,29 +526,53 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			quotationDetails.setCustomerDetails(customerDetails);
-
+			Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
+			quotationDetails.setTaxAmount(tax);
 			switch (frequance) {
 			case "M":
+				
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				System.out.println(adminFee);
+				System.out.println(tax);
+				
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
+				
 				quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "Q":
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				System.out.println(adminFee);
+				System.out.println(tax);
 				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "H":
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				System.out.println(adminFee);
+				System.out.println(tax);
 				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "Y":
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				System.out.println(adminFee);
+				System.out.println(tax);
 				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "S":
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				System.out.println(adminFee);
+				System.out.println(tax);
 				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
@@ -625,6 +654,7 @@ public class AIPServiceImpl implements AIPService {
 			}
 
 		} finally {
+			
 			if (calculationUtils != null) {
 				calculationUtils = null;
 			}
