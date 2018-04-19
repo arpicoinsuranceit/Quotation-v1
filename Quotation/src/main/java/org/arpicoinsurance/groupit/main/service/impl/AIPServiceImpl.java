@@ -144,6 +144,7 @@ public class AIPServiceImpl implements AIPService {
 						com_premium = premium;
 					} else {
 						fund_amount = new BigDecimal("0");
+						com_premium = new BigDecimal("0");
 					}
 				} else if (paymod.equalsIgnoreCase("M")) {
 					fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
@@ -156,6 +157,7 @@ public class AIPServiceImpl implements AIPService {
 						com_premium = premium;
 					} else {
 						fund_amount = new BigDecimal("0");
+						com_premium = new BigDecimal("0");
 					}
 				} else if (paymod.equalsIgnoreCase("H")) {
 					if (i % 6 == 0) {
@@ -164,6 +166,7 @@ public class AIPServiceImpl implements AIPService {
 						com_premium = premium;
 					} else {
 						fund_amount = new BigDecimal("0");
+						com_premium = new BigDecimal("0");
 					}
 				} else if (paymod.equalsIgnoreCase("Y")) {
 					if (i % 12 == 0) {
@@ -172,6 +175,7 @@ public class AIPServiceImpl implements AIPService {
 						com_premium = premium;
 					} else {
 						fund_amount = new BigDecimal("0");
+						com_premium = new BigDecimal("0");
 					}
 				}
 
