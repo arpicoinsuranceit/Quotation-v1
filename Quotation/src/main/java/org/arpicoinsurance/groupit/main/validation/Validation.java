@@ -165,7 +165,7 @@ public class Validation {
 						break;
 					case "ADBS":
 						if (validateInvpADBS().equals(0)) {
-							return "ADBS must be greater than or equal SCB and ADBS must be less than or equal to ADB and ADBS must be less than or equal (SCB x 6) and ADBS mod 25000 equal 0 Max value must be 25,000,000";
+							return "ADBS must be greater than or equal SCB and ADBS must be less than or equal (SCB x 6) and ADBS mod 25000 equal 0 Max value must be 25,000,000";
 						}
 						break;
 					case "CIBS":
@@ -173,7 +173,7 @@ public class Validation {
 							return "Please Select SCB before get SCIB";
 						}
 						if (validateInvpSCIB().equals(0)) {
-							return "SCIB must be greater than 250,000 and less than 6,000,000 and less than or equal SCB";
+							return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000";
 						}
 						break;
 					case "FEBS":
@@ -266,7 +266,7 @@ public class Validation {
 					switch (type) {
 					case "CIBC":
 						if (validateInvpCIBC().equals(0)) {
-							return "CIBC must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+							return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000";
 						}
 						break;
 					/*
@@ -895,7 +895,7 @@ public class Validation {
 				Double cibcBsa = cibc.getSumAssured();
 				Double atpbBsa = atpb.getSumAssured();
 
-				if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa <= (bsa + atpbBsa)) {
+				if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
 					return 1;
 				}
 			}
