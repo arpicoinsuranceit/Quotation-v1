@@ -137,7 +137,7 @@ public class ASFPServiceImpl implements ASFPService {
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
-		Benefits benefits = benefitsDao.findByRiderCode("L2");
+		Benefits benefits = benefitsDao.findByRiderCode("L10");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
 
 		Double rate = 1.0;
@@ -370,7 +370,7 @@ public class ASFPServiceImpl implements ASFPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
-		benef_Details.setRierCode("L2");
+		benef_Details.setRierCode("L10");
 		switch (quotationDetails.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
@@ -612,7 +612,7 @@ public class ASFPServiceImpl implements ASFPService {
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);
-		benef_Details.setRierCode("L2");
+		benef_Details.setRierCode("L10");
 		switch (quotationDetails1.getPayMode()) {
 		case "M":
 			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
