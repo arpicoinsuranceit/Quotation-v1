@@ -884,7 +884,7 @@ public class Validation {
 			Double cibcBsa = cibc.getSumAssured();
 			Double atpbBsa = 0.0;
 
-			if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa <= (bsa + atpbBsa)) {
+			if (cibcBsa >= 250000 && cibcBsa <= 1000000 ) {
 				return 1;
 			}
 		} else {
