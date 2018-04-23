@@ -11,11 +11,15 @@ import org.arpicoinsurance.groupit.main.service.ARTMService;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@CrossOrigin (origins = "*")
 public class QuotationArtmCalculationController {
 
 	@Autowired
@@ -24,6 +28,7 @@ public class QuotationArtmCalculationController {
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public AIPCalResp calculateATRM (@RequestBody Plan plan) {
 		
+		System.out.println("call artm");
 		Validation validation = new Validation();
 		String valError = validation.validateArtm(plan);
 		if(valError.equals("ok")) {

@@ -272,6 +272,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		plan.set_term(details.getPolTerm());
 		plan.set_interestRate(details.getInterestRate());
 		plan.set_payingterm(details.getPaingTerm());
+		plan.setPensionPaingTerm(details.getPensionTerm());
+		plan.setRetAge(details.getRetirmentAge());
+		plan.set_payingterm(details.getPaingTerm());
+		
+		System.out.println("paing term " + details.getPaingTerm());
 		
 		switch (details.getPayMode()) {
 		case "M":
