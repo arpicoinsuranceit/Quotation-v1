@@ -697,6 +697,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictMFIBD = rateCardMFIBDDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBD = maxTermToBenefictMFIBD > term ? term : maxTermToBenefictMFIBD;
 
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.1));
+				calResp.setError("MFIBD MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
+			
 			BigDecimal mfibd = mfibdService.calculateMFIBD(age, valiedTermMFIBD, new Date(), ridsumasu, payFrequency,
 					1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, mfibd.doubleValue(), calResp);
@@ -709,6 +716,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 			ocuLoading = oculoding.get("MFIBT");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
+			
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.1));
+				calResp.setError("MFIBT MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
 
 			Integer maxTermToBenefictMFIBT = rateCardMFIBTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBT = maxTermToBenefictMFIBT > term ? term : maxTermToBenefictMFIBT;
@@ -728,6 +742,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictMFIBDT = rateCardMFIBDTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBDT = maxTermToBenefictMFIBDT > term ? term : maxTermToBenefictMFIBDT;
 
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.1));
+				calResp.setError("MFIBDT MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
+			
 			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, valiedTermMFIBDT, new Date(), ridsumasu,
 					payFrequency, 1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, mfibdt.doubleValue(), calResp);

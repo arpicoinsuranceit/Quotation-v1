@@ -547,7 +547,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBDT"))) {
 			Benifict benifict = benefitMap.get("MFIBD");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && (rbsa % 1000) == 0) {
 				return 1;
 			}
 		}
@@ -561,7 +561,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBDT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && (rbsa % 1000) == 0) {
 				return 1;
 			}
 		}
@@ -575,7 +575,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBDT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && (rbsa % 1000) == 0) {
 				return 1;
 			}
 		}
