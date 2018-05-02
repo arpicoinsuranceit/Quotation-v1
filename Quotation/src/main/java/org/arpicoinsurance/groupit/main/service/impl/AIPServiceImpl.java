@@ -267,13 +267,13 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
@@ -488,13 +488,13 @@ public class AIPServiceImpl implements AIPService {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao

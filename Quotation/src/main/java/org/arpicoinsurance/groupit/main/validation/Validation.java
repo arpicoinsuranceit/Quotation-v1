@@ -705,15 +705,15 @@ public class Validation {
 	}
 
 	public Integer validateInvpADBS() {
-		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS")) {
+		if (benefitMap.containsKey("ADBS") && benefitMap.containsKey("BSAS") && benefitMap.containsKey("ADB")) {
 			Benifict bsas = benefitMap.get("BSAS");
 			Benifict benifict = benefitMap.get("ADBS");
 			Double scb = bsas.getSumAssured();
 			Double rbsa = benifict.getSumAssured();
-			//Double adb = benefitMap.get("ADB").getSumAssured();
+			Double adb = benefitMap.get("ADB").getSumAssured();
 
-				if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000)
-						|| (scb >= 25000000 && rbsa <= 25000000)) {
+				if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000 && adb >= rbsa)
+						|| (scb >= 25000000 && rbsa <= 25000000 && adb >= rbsa)) {
 					return 1;
 				}
 		}
@@ -797,11 +797,12 @@ public class Validation {
 	}
 
 	public Integer validateInvpFEBS() {
-		if (benefitMap.containsKey("FEBS")) {
+		if (benefitMap.containsKey("FEBS") && benefitMap.containsKey("FEB")) {
 			Benifict benifict = benefitMap.get("FEBS");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1)) {
+			Double feb = benefitMap.get("FEB").getSumAssured();
+			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1) && feb>= rbsa) {
 				return 1;
 			}
 		}
