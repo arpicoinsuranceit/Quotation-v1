@@ -462,6 +462,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer adultCount, Integer childCount, Double loan, Double inRate) throws Exception {
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
+		System.out.println(term + " Term pass");
 		Double ocuLoading = 1.0;
 		switch (type) {
 		case "BSAS":
@@ -786,6 +787,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHRBI = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHRBI = maxTermToBenefictHRBI > term ? term : maxTermToBenefictHRBI;
 			
+			System.out.println(term + " Term");
+			System.out.println(maxTermToBenefictHRBI + "HRBI MAX Term");
+			System.out.println(valiedTermHRBI + "HRBI VALID Term");
+			
 
 			//Integer valiedTermHRBI = 10;
 			
@@ -871,9 +876,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setShcbi(suhrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
 			calResp.setShcbiTerm(valiedTermSUHRB);
-			calResp.setSuhrb(suhrb.doubleValue());
-			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
-			calResp.setSuhrbTerm(valiedTermSUHRB);
 			return calResp;
 		/*case "SUHRB":
 			ocuLoading = oculoding.get("SUHRB");
@@ -905,9 +907,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setShcbis(suhrbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
 			calResp.setShcbisTerm(valiedTermSUHRBS);
-			calResp.setSuhrbs(suhrbs.doubleValue());
-			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
-			calResp.setSuhrbsTerm(valiedTermSUHRBS);
 			return calResp;
 			
 		/*case "SUHRBS":
@@ -941,9 +940,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setShcbic(calResp.getShcbic() + suhrbc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbc.doubleValue());
 			calResp.setShcbicTerm(valiedTermSUHRBC);
-			calResp.setSuhrbc(calResp.getSuhrbc() + suhrbc.doubleValue());
-			calResp.setAddBenif(calResp.getAddBenif() + suhrbc.doubleValue());
-			calResp.setSuhrbcTerm(valiedTermSUHRBC);
 			return calResp;
 		/*case "SUHRBC":
 			ocuLoading = oculoding.get("SUHRBC");
