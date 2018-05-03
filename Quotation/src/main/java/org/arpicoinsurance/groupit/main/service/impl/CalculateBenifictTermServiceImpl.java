@@ -42,6 +42,7 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 			riderCode = "SCIB";
 		System.out.println(age + "******************************************");
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
+		System.out.println(riderCode+ "******************************************");
 		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
 			Integer ageDiferance = benefits.getBenefitMaxAge() - age;
 			if (ageDiferance >= term) {

@@ -59,8 +59,14 @@ public class Validation {
 						}
 						break;
 					case "ADB":
-						if (validateInvpABD().equals(0)) {
-							return "ADB must be greater than or equal BSA and ADB must be less than or equal (BSA x 6) and ADB mod 25000 equal 0 Max value must be 25,000,000";
+						if (calculation.get_product().equals("ASFP")) {
+							if (validateASFPABD().equals(0)) {
+								return "ADB must be greater than or equal 500000 and ADB must be less than or equal (500000 x 6) and ADB mod 25000 equal 0";
+							}
+						} else {
+							if (validateInvpABD().equals(0)) {
+								return "ADB must be greater than or equal BSA and ADB must be less than or equal (BSA x 6) and ADB mod 25000 equal 0 Max value must be 25,000,000";
+							}
 						}
 						break;
 					case "TPDASB":
@@ -424,6 +430,20 @@ public class Validation {
 
 	}
 
+	public Integer validateASFPABD() {
+		if (benefitMap.containsKey("ADB")) {
+			Benifict benifict = benefitMap.get("ADB");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double rbsa = benifict.getSumAssured();
+			if ((rbsa >= 500000 && rbsa <= 3000000 && rbsa % 25000 == 0)) {
+
+				return 1;
+			}
+		}
+		return 0;
+
+	}
+
 	public Integer validateInvpSFPO() {
 		if (benefitMap.containsKey("SFPO")) {
 			if (calculation.get_personalInfo().getMage() > 60) {
@@ -712,10 +732,10 @@ public class Validation {
 			Double rbsa = benifict.getSumAssured();
 			Double adb = benefitMap.get("ADB").getSumAssured();
 
-				if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000 && adb >= rbsa)
-						|| (scb >= 25000000 && rbsa <= 25000000 && adb >= rbsa)) {
-					return 1;
-				}
+			if ((rbsa >= scb && rbsa <= scb * 6 && rbsa % 25000 == 0 && rbsa <= 25000000 && adb >= rbsa)
+					|| (scb >= 25000000 && rbsa <= 25000000 && adb >= rbsa)) {
+				return 1;
+			}
 		}
 		return 0;
 	}
@@ -802,7 +822,7 @@ public class Validation {
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
 			Double feb = benefitMap.get("FEB").getSumAssured();
-			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1) && feb>= rbsa) {
+			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1) && feb >= rbsa) {
 				return 1;
 			}
 		}
@@ -885,7 +905,7 @@ public class Validation {
 			Double cibcBsa = cibc.getSumAssured();
 			Double atpbBsa = 0.0;
 
-			if (cibcBsa >= 250000 && cibcBsa <= 1000000 ) {
+			if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
 				return 1;
 			}
 		} else {
@@ -1047,13 +1067,12 @@ public class Validation {
 					|| plan.getPensionPaingTerm() == 20) {
 				Integer paingTerm = Integer.parseInt(plan.get_payingterm());
 				if (paingTerm >= 10 && paingTerm <= 47 || plan.get_frequance().equals("S")) {
-					if(paingTerm <= (plan.getRetAge()-plan.getAge()) || plan.get_frequance().equals("S") ) {
-						
+					if (paingTerm <= (plan.getRetAge() - plan.getAge()) || plan.get_frequance().equals("S")) {
+
 						return "ok";
-						
-						
-					}else {
-						return "Pension Paying Max Term must "+ (plan.getRetAge()-plan.getAge());
+
+					} else {
+						return "Pension Paying Max Term must " + (plan.getRetAge() - plan.getAge());
 					}
 				} else {
 					return "Pension Paying Term must between 10 and 47";
@@ -1064,7 +1083,6 @@ public class Validation {
 		} else {
 			return "Retirement Age must between 60 and 40";
 		}
-
 
 	}
 }
