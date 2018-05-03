@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class UsersServiceImpl implements UsersService {
 
-	private static String UPLOADED_FOLDER = "/home/rpcadmin/APINProfilePic/";
+	private static String UPLOADED_FOLDER = "D:/APINProfilePic/";
 
 	@Autowired
 	private UsersDao usersDao;

@@ -76,7 +76,7 @@ public class QuotationAipCalculationController {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
 					if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-							+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+							+ _invpSaveQuotation.get_plan().get_term()) <= 100) {
 						responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
 					} else {
 						responseMap.replace("status", "Term is too large for Mainlife age");
@@ -103,7 +103,7 @@ public class QuotationAipCalculationController {
 				if (qdId != null) {
 					if (_invpSaveQuotation != null) {
 						if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-								+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+								+ _invpSaveQuotation.get_plan().get_term()) <= 100) {
 							responseMap = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
 						} else {
 							responseMap.replace("status", "Term is too large for Mainlife age");
