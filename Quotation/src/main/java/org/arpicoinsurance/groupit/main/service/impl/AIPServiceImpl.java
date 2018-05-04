@@ -522,7 +522,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
-			quotationDetails.setBaseSum(aip.getMaturaty());
+			quotationDetails.setBaseSum(0.0);
 			quotationDetails.setInterestRate(10.0);
 			
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
