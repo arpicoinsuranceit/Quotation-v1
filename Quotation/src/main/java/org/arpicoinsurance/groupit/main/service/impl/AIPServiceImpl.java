@@ -355,7 +355,7 @@ public class AIPServiceImpl implements AIPService {
 						/////////// Add Maturity///////////////////////
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
-						mat1.setRiderPremium(0.0);
+						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat1.setRiderTerm(2);
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
@@ -364,7 +364,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat1);
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
-						mat2.setRiderPremium(0.0);
+						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat2.setRiderTerm(2);
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
@@ -373,7 +373,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat2);
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
-						mat3.setRiderPremium(0.0);
+						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat3.setRiderTerm(2);
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);
@@ -602,7 +602,7 @@ public class AIPServiceImpl implements AIPService {
 						/////////// Add Maturity///////////////////////
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
-						mat1.setRiderPremium(0.0);
+						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat1.setRiderTerm(2);
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
@@ -611,7 +611,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat1);
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
-						mat2.setRiderPremium(0.0);
+						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat2.setRiderTerm(2);
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
@@ -620,7 +620,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat2);
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
-						mat3.setRiderPremium(0.0);
+						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat3.setRiderTerm(2);
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);
