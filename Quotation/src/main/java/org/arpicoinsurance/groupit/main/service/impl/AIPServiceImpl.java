@@ -300,7 +300,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setQuotationModifyBy(user.getUserCode());
 			quotationDetails.setQuotationModifyDate(new Date());
-			quotationDetails.setBaseSum(0.0);
+			quotationDetails.setBaseSum(aip.getMaturaty());
 			quotationDetails.setInterestRate(10.0);
 			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
