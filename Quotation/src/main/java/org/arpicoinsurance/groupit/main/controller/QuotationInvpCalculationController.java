@@ -80,7 +80,7 @@ public class QuotationInvpCalculationController {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
-					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
+					if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 70) {
 						if (validation.validateInvpEndProd() == 1) {
 							String error = validation.validateBenifict();
 
