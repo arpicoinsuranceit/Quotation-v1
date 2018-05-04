@@ -17,6 +17,7 @@ import org.arpicoinsurance.groupit.main.model.MediTestGrid;
 import org.arpicoinsurance.groupit.main.model.MedicalReq;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Multiply;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,15 +60,18 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "ARP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent = calculation.get_personalInfo().getBsa();
+			riskCurrent = new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
 			break;
 		case "ASIP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
 			riskCurrent = calculation.get_personalInfo().getBsa();
@@ -79,17 +83,17 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "END1":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		default:
 			break;
 		}
 
-		
-		riskCurrent += calculation.get_personalInfo().getBsa();
-
+	
 		if (riskCurrent > 0) {
 
 			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "M", mediGrade);
@@ -142,15 +146,18 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "ARP":
 			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent = calculation.get_personalInfo().getBsa();
+			riskCurrent = new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
 			break;
 		case "ASIP":
 			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
 			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
 			riskCurrent = calculation.get_personalInfo().getBsa();
@@ -162,9 +169,11 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "END1":
 			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
 			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		default:
 			break;

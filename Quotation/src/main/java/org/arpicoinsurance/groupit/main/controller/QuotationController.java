@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
@@ -52,7 +53,6 @@ public class QuotationController {
 		try {
 			return quotationService.getQuotationDetails(userId);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -65,7 +65,6 @@ public class QuotationController {
 			EditQuotation quoDetails= quoDetailsService.editQuotationDetails(qdId);
 			return quoDetails;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -78,10 +77,39 @@ public class QuotationController {
 			QuotationDetails quoDetails= quoDetailsService.findQuotationDetails(qdId);
 			return quoDetails.getQuotation().getProducts().getProductCode();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@RequestMapping(value="/findQuotation",method=RequestMethod.POST)
+	public HashMap<String, String> findQuotationToPrint(@RequestBody String id) {
+		System.out.println("Find Quotation Called..." + id);
+		Integer qdId=Integer.valueOf(id);
+		HashMap<String, String> map=new HashMap<>();
+		
+		try {
+			QuotationDetails quoDetails= quoDetailsService.findFirstByQuotationOrderByQdIdDesc(qdId);
+			if(quoDetails!=null) {
+				map.put("status", "1");
+				map.put("quotationNumber",Integer.toString(quoDetails.getQuotation().getId()));
+				map.put("quotationDetId",Integer.toString(quoDetails.getQdId()));
+				map.put("agentCode",quoDetails.getQuotation().getUser().getUserCode());
+				map.put("agentName",quoDetails.getQuotation().getUser().getUser_Name());
+				map.put("branchCode",quoDetails.getQuotation().getUser().getBranch().getBranch_Code());
+				map.put("branchName",quoDetails.getQuotation().getUser().getBranch().getBranch_Name());
+				map.put("productName",quoDetails.getQuotation().getProducts().getProductName());
+				map.put("productCode",quoDetails.getQuotation().getProducts().getProductCode());
+				map.put("custName",quoDetails.getCustomerDetails().getCustName());
+				map.put("custNic",quoDetails.getCustomerDetails().getCustNic());
+				map.put("date",String.valueOf(quoDetails.getQuotationquotationCreateDate()));
+			}else {
+				map.put("status", "0");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 	
 	/*@RequestMapping(value="/getSumAtRisk",method=RequestMethod.POST)

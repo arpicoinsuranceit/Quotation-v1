@@ -300,7 +300,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setQuotationModifyBy(user.getUserCode());
 			quotationDetails.setQuotationModifyDate(new Date());
-			quotationDetails.setBaseSum(0.0);
+			quotationDetails.setBaseSum(aip.getMaturaty());
 			quotationDetails.setInterestRate(10.0);
 			quotationDetails.setTaxAmount(tax);
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
@@ -356,7 +356,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
 						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat1.setRiderTerm(2);
+						mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
 						mat1.setRierCode("L6");
@@ -365,7 +365,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
 						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat2.setRiderTerm(2);
+						mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
 						mat2.setRierCode("L8");
@@ -374,7 +374,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
 						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat3.setRiderTerm(2);
+						mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);
 						mat3.setRierCode("L9");
@@ -603,7 +603,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
 						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat1.setRiderTerm(2);
+						mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
 						mat1.setRierCode("L6");
@@ -612,7 +612,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
 						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat2.setRiderTerm(2);
+						mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
 						mat2.setRierCode("L8");
@@ -621,7 +621,7 @@ public class AIPServiceImpl implements AIPService {
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
 						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
-						mat3.setRiderTerm(2);
+						mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);
 						mat3.setRierCode("L9");

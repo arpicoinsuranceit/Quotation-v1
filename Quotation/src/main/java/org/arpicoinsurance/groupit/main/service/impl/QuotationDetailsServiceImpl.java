@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import javax.transaction.Transactional;
-
 import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.Children;
@@ -25,10 +24,12 @@ import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
+import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_Child_DetailsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
+import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,9 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 	
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
+	
+	@Autowired
+	private QuotationService quotationService;
 	
 	@Autowired
 	private NomineeDao nomineeDao;
@@ -305,6 +309,19 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		}
 		
 		return plan;
+	}
+
+	@Override
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+		Quotation quotation=quotationService.getQuotation(quotationId);
+		if(quotation!=null) {
+			QuotationDetails quotationDetails=quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+			if(quotationDetails!=null) {
+				return quotationDetails;
+			}
+		}
+		
+		return null;
 	}
 	
 	
