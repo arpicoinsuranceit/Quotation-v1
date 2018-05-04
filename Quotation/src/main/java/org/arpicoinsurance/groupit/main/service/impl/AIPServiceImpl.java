@@ -267,13 +267,13 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
@@ -355,7 +355,7 @@ public class AIPServiceImpl implements AIPService {
 						/////////// Add Maturity///////////////////////
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
-						mat1.setRiderPremium(0.0);
+						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
@@ -364,7 +364,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat1);
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
-						mat2.setRiderPremium(0.0);
+						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
@@ -373,7 +373,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat2);
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
-						mat3.setRiderPremium(0.0);
+						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);
@@ -470,6 +470,10 @@ public class AIPServiceImpl implements AIPService {
 	public HashMap<String, Object> editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
 			throws Exception {
 		
+		System.out.println(_invpSaveQuotation.get_plan().get_frequance());
+		System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+		System.out.println(_invpSaveQuotation.get_plan().get_term());
+		
 		CalculationUtils calculationUtils = null;
 		Products products = null;
 		Customer customer = null;
@@ -484,13 +488,13 @@ public class AIPServiceImpl implements AIPService {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.5,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.5,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
@@ -518,7 +522,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
-			quotationDetails.setBaseSum(aip.getMaturaty());
+			quotationDetails.setBaseSum(0.0);
 			quotationDetails.setInterestRate(10.0);
 			
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
@@ -598,7 +602,7 @@ public class AIPServiceImpl implements AIPService {
 						/////////// Add Maturity///////////////////////
 
 						Quo_Benef_Details mat1 = new Quo_Benef_Details();
-						mat1.setRiderPremium(0.0);
+						mat1.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat1.setRiderSum(aip.getMaturaty());
 						mat1.setQuotationDetails(quoDetails);
@@ -607,7 +611,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat1);
 
 						Quo_Benef_Details mat2 = new Quo_Benef_Details();
-						mat2.setRiderPremium(0.0);
+						mat2.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat2.setRiderSum(aip2.getMaturaty());
 						mat2.setQuotationDetails(quoDetails);
@@ -616,7 +620,7 @@ public class AIPServiceImpl implements AIPService {
 						benefictList.add(mat2);
 
 						Quo_Benef_Details mat3 = new Quo_Benef_Details();
-						mat3.setRiderPremium(0.0);
+						mat3.setRiderPremium(_invpSaveQuotation.get_plan().get_bsa());
 						mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
 						mat3.setRiderSum(aip3.getMaturaty());
 						mat3.setQuotationDetails(quoDetails);

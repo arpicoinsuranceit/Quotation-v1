@@ -12,9 +12,11 @@ public interface ARPService {
 	
 	BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum, String payFrequency, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)throws Exception;
 	
-	BigDecimal calculateMaturity(int term, double bassum)throws Exception;
+	BigDecimal calculateMaturity(int term, double bassum) throws Exception;
 	
-	QuotationQuickCalResponse getCalcutatedArp ( QuotationCalculation calculation) throws Exception;
+	HashMap<String, Object> calculateSurrendervals(int age, int term, String rlfterm, double bassum, String payFrequency, double total_premium) throws Exception;
+	
+	QuotationQuickCalResponse getCalcutatedArp (QuotationCalculation calculation) throws Exception;
 	
 	HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 

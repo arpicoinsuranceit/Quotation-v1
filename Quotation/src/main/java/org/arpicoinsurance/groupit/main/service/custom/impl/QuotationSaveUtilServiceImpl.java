@@ -475,7 +475,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 						break;
 					case "HCBFS":
 						benef_Details.setRiderPremium(calResp.getHrbfs());
-						if(benef_Details.getRiderSum().equals(null)) {
+						if(benef_Details.getRiderSum() == null) {
 							benef_Details.setRiderSum(0.0);
 						}
 						benef_Details.setRiderTerm(calResp.getHrbfsTerm());
@@ -590,7 +590,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					 */
 					case "HCBFC":
 						benef_Details.setRiderPremium(0.0);
-						if(benef_Details.getRiderSum().equals(null)) {
+						if(benef_Details.getRiderSum() == null) {
 							benef_Details.setRiderSum(0.0);
 						}
 						benef_Details.setRierCode(type);

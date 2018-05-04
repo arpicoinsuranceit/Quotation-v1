@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.reports.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.SheduleDao;
 import org.arpicoinsurance.groupit.main.dao.custom.MedicalRequirementsDaoCustom;
 import org.arpicoinsurance.groupit.main.helper.MedicalRequirementsHelper;
@@ -24,11 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
@@ -52,6 +52,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	// getting schedule details object
 	@Autowired
 	private SheduleDao sheduleDao;
+	
+	
 
 	@Autowired
 	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
@@ -124,7 +126,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		// Agent Details
 		// width of coloumns
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -137,6 +139,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -257,7 +271,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 502, 230);// top bottom width
+		DtlTable.setFixedPosition(400, 490, 230);// top bottom width
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -335,12 +349,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Cell dlcell7 = new Cell();
 		dlcell7.setBorder(Border.NO_BORDER);
-		dlcell7.add(new Paragraph("Tax").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		dlcell7.add(new Paragraph("Admin Fee/Tax").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		DtlTable.addCell(dlcell7);
 		Cell dlcell8 = new Cell();
 		dlcell8.setBorder(Border.NO_BORDER);
 		if (quotationDetails.getPolicyFee() != null) {
-			dlcell8.add(new Paragraph(": " + formatter.format(quotationDetails.getTaxAmount())).setFontSize(10)
+			dlcell8.add(new Paragraph(": " + formatter.format(quotationDetails.getTaxAmount()+quotationDetails.getAdminFee())).setFontSize(10)
 					.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 
 		} else {
@@ -548,7 +562,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph(" "));
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -561,6 +575,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -983,7 +1009,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(50);
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -996,6 +1022,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -1192,7 +1230,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 640, 230);
+		DtlTable.setFixedPosition(400, 630, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -1535,7 +1573,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		ListItem item6 = new ListItem();
 		item6.add(new Paragraph(
-				"Guranteed minimum dividend rate declared for " + calendar.get(Calendar.YEAR) + " - 7.25%")
+				"Guranteed minimum dividend rate declared for " + calendar.get(Calendar.YEAR) + " - 9.0%")
 						.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
 
@@ -1627,7 +1665,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(50);
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -1640,6 +1678,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -1838,7 +1888,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 610, 230);
+		DtlTable.setFixedPosition(400, 600, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -2299,7 +2349,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(50);
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -2312,6 +2362,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -2503,7 +2565,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 640, 230);
+		DtlTable.setFixedPosition(400, 630, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -2925,7 +2987,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(50);
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -2938,6 +3000,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -3128,7 +3202,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 640, 230);
+		DtlTable.setFixedPosition(400, 630, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -3550,7 +3624,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(50);
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -3563,6 +3637,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -3757,7 +3843,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 635, 230);
+		DtlTable.setFixedPosition(400, 625, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -3988,9 +4074,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(benAddTable);
 
 		document.add(new Paragraph(""));
+        BigDecimal sfpo = new BigDecimal(0.0);
+        BigDecimal rdrprm = new BigDecimal(0.0);
+			for (QuoBenf quoBenf : benefitsLife) {
+				if(quoBenf.getRiderCode().equalsIgnoreCase("SFPO")) {
+					sfpo = new BigDecimal(quoBenf.getRiderSum());
+				} else if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
+					rdrprm = new BigDecimal(quoBenf.getPremium());
+				}
+			}
+	
 		document.add(new Paragraph(
-				"If no claim arises during the policy term on the primary benefit Guranteed maturity value : 0.00")
-						.setFontSize(10));
+				"If no claim arises during the policy term on the primary benefit Guranteed maturity value : "+ 
+		formatter.format((((rdrprm.multiply(new BigDecimal(new CalculationUtils().getPayterm(quotationDetails.getPayMode())))).multiply(new BigDecimal(quotationDetails.getPolTerm()))).add(sfpo).setScale(0, RoundingMode.HALF_UP)).setScale(2).doubleValue())
+				).setFontSize(10));
 
 		// Medical Requirements
 		try {
@@ -4189,7 +4286,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph(" "));
 
 		// Agent Details
-		float[] pointColumnWidths1 = { 70, 200 };
+		float[] pointColumnWidths1 = { 90, 200 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
@@ -4202,6 +4299,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agcell2.add(
 				new Paragraph(": " + date).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agcell2);
+
+		agtTable.startNewRow();
+		
+		Cell agCellQId = new Cell();
+		agCellQId.setBorder(Border.NO_BORDER);
+		agCellQId.add(new Paragraph("Quotation No ").setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQId);
+		Cell agCellQ = new Cell();
+		agCellQ.setBorder(Border.NO_BORDER);
+		agCellQ.add(
+				new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId()).setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
 
@@ -4392,7 +4501,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 620, 230);
+		DtlTable.setFixedPosition(400, 610, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -4529,6 +4638,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			for (QuoBenf quoBenf : benefitsLife) {
 
+				if(!quoBenf.getRiderCode().equalsIgnoreCase("L1")) {
 				Cell abCell5 = new Cell();
 				abCell5.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
 				benAddTable.addCell(abCell5);
@@ -4542,6 +4652,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				benAddTable.addCell(abCell7);
 
 				benAddTable.startNewRow();
+				}
 
 			}
 		}
@@ -4641,8 +4752,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(benAddTable);
 
-		document.add(new Paragraph("Sum assured increase every year by 2.5%").setFontSize(10));
-
+		document.add(new Paragraph("* Sum assured increase every year by 2.5%").setFontSize(10));
+/*
 		// Policy Summary Details
 		float[] pointColumnWidths6 = { 40, 100, 100, 100, 100 };
 		Table polSmyTable = new Table(pointColumnWidths6);
@@ -4705,9 +4816,16 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		polSmyTable.addCell(psCell11);
 
 		document.add(polSmyTable);
-
+*/
 		document.add(new Paragraph(""));
-		document.add(new Paragraph("**Guranteed Maturity : 343,750.00").setFontSize(10));
+		
+		for (QuoBenf maturity: benefitsLife) {
+			
+			if(maturity.getRiderCode().equalsIgnoreCase("L1")) {
+			document.add(new Paragraph("Guranteed Maturity : "+formatter.format(maturity.getRiderSum())).setFontSize(10));
+			}
+
+		}
 
 		// Medical Requirements
 		try {

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardSurenderDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -29,6 +30,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
+import org.arpicoinsurance.groupit.main.model.RateCardSurender;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -68,6 +70,9 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardARPDao rateCardARPDao;
+	
+	@Autowired
+	private RateCardSurenderDao rateCardSurenderDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -678,6 +683,14 @@ public class ARPServiceImpl implements ARPService {
 		responseMap.put("status", "Success");
 		responseMap.put("code", quo.getId().toString());
 		return responseMap;
+	}
+
+	@Override
+	public HashMap<String, Object> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
+			String payFrequency, double total_premium) throws Exception {
+
+        
+		return null;
 	}
 
 }

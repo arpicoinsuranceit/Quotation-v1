@@ -29,11 +29,11 @@ public class QuotationAipCalculationController {
 
 		Double contribution = plan.get_bsa();
 		try {
-			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), plan.get_frequance(), false, true);
-			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 10.5, contribution,
+			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 10.0, contribution,
 					new Date(), plan.get_frequance(), false, false);
-			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 11.5, contribution,
+			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 11.0, contribution,
 					new Date(), plan.get_frequance(), false, false);
 
 			aipCalResp.setMaturaty10(aipCalResp11.getMaturaty());
@@ -51,7 +51,7 @@ public class QuotationAipCalculationController {
 	public ArrayList<AipCalShedule> loadSheduleAIP(@RequestBody Plan plan) {
 		Double contribution = plan.get_bsa();
 		try {
-			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.5, contribution,
+			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.0, contribution,
 					new Date(), plan.get_frequance(), true, false);
 
 			ArrayList<AipCalShedule> aipCalSchedule = (ArrayList<AipCalShedule>) aipCalResp.getAipCalShedules();
@@ -75,12 +75,12 @@ public class QuotationAipCalculationController {
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation != null) {
-					if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-							+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+					//if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
+					//		+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
 						responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
-					} else {
+					/*} else {
 						responseMap.replace("status", "Term is too large for Mainlife age");
-					}
+					}*/
 				}
 			}
 
@@ -102,12 +102,12 @@ public class QuotationAipCalculationController {
 			if (userId != null) {
 				if (qdId != null) {
 					if (_invpSaveQuotation != null) {
-						if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-								+ _invpSaveQuotation.get_plan().get_term()) <= 70) {
+						/*if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
+								+ _invpSaveQuotation.get_plan().get_term()) <= 70) {*/
 							responseMap = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
-						} else {
+						/*} else {
 							responseMap.replace("status", "Term is too large for Mainlife age");
-						}
+						}*/
 					}
 				}
 			}

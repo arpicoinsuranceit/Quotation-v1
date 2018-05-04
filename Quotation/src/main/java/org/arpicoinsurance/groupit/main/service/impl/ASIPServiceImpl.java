@@ -159,17 +159,17 @@ public class ASIPServiceImpl implements ASIPService {
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.5, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
 			calResp.setAt8(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 0.01, 9.5, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 9.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
 			calResp.setAt10(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 0.01, 10.5, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 0.01, 10.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
