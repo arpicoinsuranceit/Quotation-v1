@@ -45,7 +45,7 @@ public class Medical_RequirementsDaoImpl implements MedicalRequirementsDaoCustom
 			args.add(id);
 
 			requirementsHelpers = jdbcTemplate.query(
-					"select x.med_name,if(max(x.main)=1,'Required','NA') main,if(max(x.spouse)=1,'Required','NA') spouse from (  "
+					"select x.med_name,if(max(x.main)=1,'R','NR') main,if(max(x.spouse)=1,'R','NR') spouse from (  "
 							+ "select r.med_name,if(d.cust_status='main',1,0) main,   "
 							+ "if(d.cust_status='spouse',1,0) spouse,d.medical_req_id  "
 							+"from medical_details d inner join medical_req r on d.medical_req_id=r.id "
