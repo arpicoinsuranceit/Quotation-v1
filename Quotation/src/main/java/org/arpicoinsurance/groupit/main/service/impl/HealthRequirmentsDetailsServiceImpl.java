@@ -17,7 +17,6 @@ import org.arpicoinsurance.groupit.main.model.MediTestGrid;
 import org.arpicoinsurance.groupit.main.model.MedicalReq;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Multiply;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -93,7 +92,6 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		}
 
-	
 		if (riskCurrent > 0) {
 
 			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "M", mediGrade);
