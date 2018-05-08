@@ -59,15 +59,18 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "ARP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
 			riskCurrent = calculation.get_personalInfo().getBsa();
 			break;
 		case "ASIP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
 			riskCurrent = calculation.get_personalInfo().getBsa();
@@ -79,16 +82,15 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "END1":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
 			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		default:
 			break;
 		}
-
-		
-		riskCurrent += calculation.get_personalInfo().getBsa();
 
 		if (riskCurrent > 0) {
 
