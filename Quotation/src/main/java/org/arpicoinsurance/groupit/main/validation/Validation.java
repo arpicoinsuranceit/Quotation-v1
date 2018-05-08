@@ -466,7 +466,6 @@ public class Validation {
 			Benifict benifict = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
-			System.out.println(bsa + " " + rbsa);
 			if (rbsa >= bsa && rbsa <= bsa * 10 && rbsa % 25000 == 0) {
 				return 1;
 			}
@@ -474,7 +473,6 @@ public class Validation {
 
 		}
 		return 0;
-
 	}
 
 	public Integer validateInvpTPDASB() {
