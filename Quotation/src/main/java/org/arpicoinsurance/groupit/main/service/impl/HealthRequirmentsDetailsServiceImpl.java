@@ -45,10 +45,14 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 		Double riskCurrent = 0.0;
 
+		System.out.println("sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk: " + calculation.get_personalInfo().getmPreviousSumAtRisk());
+		
 		if (calculation.get_personalInfo().getmPreviousSumAtRisk() != null
 				&& calculation.get_personalInfo().getmPreviousSumAtRisk() > 0) {
 			riskCurrent = calculation.get_personalInfo().getmPreviousSumAtRisk();
 		}
+		
+		System.out.println("sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk: " + calculation.get_personalInfo().getmPreviousSumAtRisk());
 
 		switch (product) {
 		case "AIB":
@@ -58,35 +62,35 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = 0.0;
 			break;
 		case "ARP":
-			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent = new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
+			riskCurrent = riskCurrent + new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
 			break;
 		case "ASIP":
-			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
-			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
-			riskCurrent = calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			mediGrade = "DTG";
 			break;
 		case "DTAPL":
-			riskCurrent = calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			mediGrade = "DTG";
 			break;
 		case "END1":
-			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
-			riskCurrent = calculateRickArpAsipAtrmEndMainlife(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		default:
 			break;
@@ -143,34 +147,34 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = 0.0;
 			break;
 		case "ARP":
-			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent = new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
+			riskCurrent += new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
 			break;
 		case "ASIP":
-			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
-			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
-			riskCurrent = calculation.get_personalInfo().getBsa();
-			mediGrade = "DTG";
+			riskCurrent += calculation.get_personalInfo().getBsa();
+			mediGrade += "DTG";
 			break;
 		case "DTAPL":
-			riskCurrent = calculation.get_personalInfo().getBsa();
-			mediGrade = "DTG";
+			riskCurrent += calculation.get_personalInfo().getBsa();
+			mediGrade += "DTG";
 			break;
 		case "END1":
-			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
-			riskCurrent = calculateRickArpAsipAtrmEndSpouse(calculation);
+			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		default:
