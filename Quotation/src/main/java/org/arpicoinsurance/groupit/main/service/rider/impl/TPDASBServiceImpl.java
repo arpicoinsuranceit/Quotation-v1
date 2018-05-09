@@ -21,6 +21,8 @@ public class TPDASBServiceImpl implements TPDASBService{
 	@Override
 	public BigDecimal calculateTPDASB(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief, double occupation_loding)
 			throws Exception {
+		
+		System.out.println("age :" +age + "term : " + term );
 		BigDecimal premiumTPDASB = new BigDecimal(0);
 		RateCardTPDASB rateCardTPDASB = cardTPDASBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("TPDASB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());

@@ -23,6 +23,7 @@ public class CIBServiceImpl implements CIBService{
 	public BigDecimal calculateCIB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
 		// TODO Auto-generated method stub
+		System.out.println("age :" +age + "term : " + term );
 		BigDecimal premiumCIB = new BigDecimal(0);
 		RateCardCIB rateCardCIB = rateCardCIBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("CIB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIB.getRate());
