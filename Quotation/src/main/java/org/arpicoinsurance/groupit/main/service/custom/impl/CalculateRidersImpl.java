@@ -380,6 +380,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 						if (quotationCalculation.get_product().equals("ARP")) {
 							term = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(), benifict.getType(),
 									quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getPayingterm());
+							if(term < 5) {
+								calResp.setErrorExist(true);
+								calResp.setError("Can't get benifict fof child because 21 - ( Child Age + Pay Term) must be greate than 5");
+								return calResp;
+							}
 						} else {
 							term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(), benifict.getType(),
 									quotationCalculation.get_personalInfo().getTerm());
