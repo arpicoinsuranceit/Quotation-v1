@@ -144,7 +144,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = 0.0;
 			break;
 		case "AIP":
-			riskCurrent = 0.0;
+			riskCurrent += 0.0;
 			break;
 		case "ARP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);

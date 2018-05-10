@@ -136,13 +136,12 @@ public class ARPServiceImpl implements ARPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getPayingterm(),
-					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance()), new Date(),
+					rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), calResp, true);
 
@@ -152,7 +151,9 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getPayingterm(), 1, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), "Y", calResp, false);
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
@@ -233,7 +234,10 @@ public class ARPServiceImpl implements ARPService {
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
+			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+			System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
 		return occuLodingPremium;

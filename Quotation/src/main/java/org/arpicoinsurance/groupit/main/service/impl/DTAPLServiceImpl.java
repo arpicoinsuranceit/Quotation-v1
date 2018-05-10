@@ -206,8 +206,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
@@ -220,8 +219,8 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
 			calResp.setDtaShedules(dtaHelper.getDtaSheduleList());
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-
+			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
