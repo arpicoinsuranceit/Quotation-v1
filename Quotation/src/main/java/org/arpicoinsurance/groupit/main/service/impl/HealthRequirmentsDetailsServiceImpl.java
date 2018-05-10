@@ -13,6 +13,7 @@ import org.arpicoinsurance.groupit.main.dao.MediGridDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.MediTestGrid;
 import org.arpicoinsurance.groupit.main.model.MedicalReq;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
@@ -32,7 +33,6 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	@Override
 	public HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation) {
 
-		
 		System.out.println("called mainlife");
 
 		System.out.println(calculation.get_personalInfo().getBsa());
@@ -45,15 +45,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 		Double riskCurrent = 0.0;
 
-		System.out.println("sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk: " + calculation.get_personalInfo().getmPreviousSumAtRisk());
-		
 		if (calculation.get_personalInfo().getmPreviousSumAtRisk() != null
 				&& calculation.get_personalInfo().getmPreviousSumAtRisk() > 0) {
 			riskCurrent = calculation.get_personalInfo().getmPreviousSumAtRisk();
 		}
-		
-		System.out.println("sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk: " + calculation.get_personalInfo().getmPreviousSumAtRisk());
-
 		switch (product) {
 		case "AIB":
 			riskCurrent = 0.0;
@@ -66,7 +61,11 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent = riskCurrent + new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
+			riskCurrent = riskCurrent + new BigDecimal(calculation.get_personalInfo().getTerm())
+					.multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb())))
+					.doubleValue();
+			riskCurrent = riskCurrent/2;
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
 			break;
 		case "ASIP":
 			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
@@ -125,8 +124,6 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	@Override
 	public HashMap<String, Object> getSumAtRiskDetailsSpouse(QuotationCalculation calculation) {
 		String product = calculation.get_product();
-		
-		
 
 		HashMap<String, Object> details = new HashMap<>();
 
@@ -135,7 +132,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		if (calculation.get_personalInfo().getsPreviousSumAtRisk() != null
 				&& calculation.get_personalInfo().getsPreviousSumAtRisk() > 0) {
 			riskCurrent = calculation.get_personalInfo().getsPreviousSumAtRisk();
-		
+
 		}
 		String mediGrade = "DEF";
 
@@ -148,42 +145,36 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "ARP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ASFP":
-			riskCurrent += new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb()))).doubleValue();
+			
 			break;
 		case "ASIP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "ATRM":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTA":
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			mediGrade += "DTG";
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "DTAPL":
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			mediGrade += "DTG";
+			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "END1":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		case "INVP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
-			riskCurrent += calculation.get_personalInfo().getBsa();
 			break;
 		default:
 			break;
 		}
-		
 
 		System.out.println("Sum at risk : " + riskCurrent);
-		
+
 		if (riskCurrent > 0) {
 
 			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "S", mediGrade);
@@ -210,9 +201,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	}
 
 	private Double calculateRickArpAsipAtrmEndMainlife(QuotationCalculation calculation) {
-		
+
 		BigDecimal sumAtRisk = new BigDecimal(0.0);
-		
+
 		ArrayList<Benifict> benifictListM = null;
 
 		if (calculation.get_riderDetails() != null) {
@@ -236,10 +227,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(0.5)));
 					break;
 				case "MFIBD":
-					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()));
+					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(0.5)))));
 					break;
 				case "MFIBDT":
-					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()));
+					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(0.5)))));
 					break;
 				default:
 					break;
@@ -413,10 +404,15 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 				}
 			}
 
-			List<MediTestGrid> grid = mediGridDao
-					.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
-							calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
-							riskCurrent, riskCurrent);
+			if (calculation.get_personalInfo().getSage() == null) {
+				return new ArrayList<>(new HashSet<>(mediTestList));
+			}
+
+				List<MediTestGrid> grid = mediGridDao
+						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+								calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
+								riskCurrent, riskCurrent);
+			
 
 			for (MediTestGrid mediTestGrid : grid) {
 				if (mediTestGrid.getMediGrade().equals(mediGrade)) {
