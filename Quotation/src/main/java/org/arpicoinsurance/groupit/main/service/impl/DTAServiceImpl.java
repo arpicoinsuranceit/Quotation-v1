@@ -204,8 +204,7 @@ public class DTAServiceImpl implements DTAService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(), quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
@@ -225,8 +224,10 @@ public class DTAServiceImpl implements DTAService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			
 			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);

@@ -207,7 +207,8 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp, false);
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);

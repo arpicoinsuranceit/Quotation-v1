@@ -137,8 +137,7 @@ public class ASIPServiceImpl implements ASIPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getFrequance());
+			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
@@ -154,7 +153,8 @@ public class ASIPServiceImpl implements ASIPService {
 			// quotationCalculation.get_personalInfo().getSgenger()!=null){
 			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
