@@ -187,9 +187,10 @@ public class ATRMServiceImpl implements ATRMService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(calculation));
 
-			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			// quotationCalculation.get_personalInfo().getSgenger()!=null){
-			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(calculation));
+			if(calculation.get_personalInfo().getSage()!=null &&
+				calculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(calculation));
+			}
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());

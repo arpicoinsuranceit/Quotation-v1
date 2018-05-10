@@ -160,9 +160,10 @@ public class ARPServiceImpl implements ARPService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			// quotationCalculation.get_personalInfo().getSgenger()!=null){
-			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			quotationCalculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			}
 
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
