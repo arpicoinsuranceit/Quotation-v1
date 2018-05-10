@@ -415,7 +415,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 			List<MediTestGrid> grid = mediGridDao
 					.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
-							calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getMage(),
+							calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
 							riskCurrent, riskCurrent);
 
 			for (MediTestGrid mediTestGrid : grid) {
