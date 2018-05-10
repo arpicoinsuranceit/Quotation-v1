@@ -149,9 +149,10 @@ public class ASIPServiceImpl implements ASIPService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			// quotationCalculation.get_personalInfo().getSgenger()!=null){
-			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			if(quotationCalculation.get_personalInfo().getSage()!=null &&
+				quotationCalculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			}
 
 			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
