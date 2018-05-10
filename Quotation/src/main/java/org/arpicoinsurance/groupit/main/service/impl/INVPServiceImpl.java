@@ -153,9 +153,10 @@ public class INVPServiceImpl implements INVPService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			// quotationCalculation.get_personalInfo().getSgenger()!=null){
-			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			 quotationCalculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			}
 
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),

@@ -225,9 +225,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			// if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			// quotationCalculation.get_personalInfo().getSgenger()!=null){
-			calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			if(quotationCalculation.get_personalInfo().getSage()!=null &&
+			 quotationCalculation.get_personalInfo().getSgenger()!=null){
+				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
+			}
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
