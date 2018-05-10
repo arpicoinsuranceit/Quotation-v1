@@ -412,6 +412,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 					}
 				}
 			}
+			
+			if (calculation.get_personalInfo().getSage() == null) {
+				return new ArrayList<>(new HashSet<>(mediTestList));
+			}
 
 			List<MediTestGrid> grid = mediGridDao
 					.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
