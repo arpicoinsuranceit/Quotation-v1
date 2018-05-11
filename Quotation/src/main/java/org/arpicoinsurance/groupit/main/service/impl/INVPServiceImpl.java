@@ -632,8 +632,8 @@ public class INVPServiceImpl implements INVPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(quotationDetails.getBaseSum());
-		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
 
