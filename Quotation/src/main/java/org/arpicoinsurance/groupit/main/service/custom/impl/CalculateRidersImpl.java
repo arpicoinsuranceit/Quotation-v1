@@ -836,7 +836,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			BigDecimal hrbic = hrbiService.calculateHRBI (age, valiedTermHRBIC , gender, ridsumasu, new Date(),
 					payFrequency, 1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, hrbic.doubleValue(), calResp);
-			calResp.setHrbic(hrbic.doubleValue());
+			Double resent =calResp.getHrbic() != null ?  calResp.getHrbic() : 0.0;
+			calResp.setHrbic(hrbic.doubleValue()+resent);
 			calResp.setAddBenif(calResp.getAddBenif() + hrbic.doubleValue());
 			calResp.setHrbicTerm(valiedTermHRBIC);
 			return calResp;
