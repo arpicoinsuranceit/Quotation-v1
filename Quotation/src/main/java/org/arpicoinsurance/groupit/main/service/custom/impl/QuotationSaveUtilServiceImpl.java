@@ -29,6 +29,7 @@ import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.service.rider.CIBCService;
 import org.arpicoinsurance.groupit.main.service.rider.HBCService;
+import org.arpicoinsurance.groupit.main.service.rider.HRBIService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,10 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 	@Autowired
 	private HBCService hbcService;
 
+	@Autowired
+	private HRBIService hrbiService;
+
+	
 	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
 
@@ -766,7 +771,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 										"HCBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 
-								BigDecimal hrbic = new BigDecimal(100);
+								BigDecimal hrbic = hrbiService.calculateHRBI(children.get_cAge(), valiedTerm, children.get_cTitle(), hrbi , new Date(), frequancy, 1.0, 1.0);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);

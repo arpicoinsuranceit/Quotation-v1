@@ -1346,9 +1346,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			benAddTable.startNewRow();
 		}
 
-		for (QuoBenf quoBenf : benefitsLife) {
-
-			if (benefitsLife != null) {
+		if (benefitsLife != null) {
+			for (QuoBenf quoBenf : benefitsLife) {
 
 				Cell abCell5 = new Cell();
 				abCell5.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
@@ -1364,12 +1363,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				benAddTable.startNewRow();
 
-			} else {
-
 			}
 
-		}
+		} else {
 
+		}
 		benAddTable.startNewRow();
 
 		// checking spouse having benefits
@@ -1384,10 +1382,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			benAddTable.startNewRow();
 		}
 
-		for (QuoBenf quoBenf : benefitsSpouse) {
-
-			if (benefitsSpouse != null) {
-
+		if (benefitsSpouse != null) {
+			for (QuoBenf quoBenf : benefitsSpouse) {
 				Cell abCell9 = new Cell();
 				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
 				benAddTable.addCell(abCell9);
@@ -1401,9 +1397,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				benAddTable.addCell(abCell11);
 
 				benAddTable.startNewRow();
-			} else {
-
 			}
+		} else {
 
 		}
 
@@ -1421,9 +1416,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		}
 
-		for (QuoChildBenef quoChild : benefitsChild) {
+		if (benefitsChild != null) {
 
-			if (benefitsChild != null) {
+			for (QuoChildBenef quoChild : benefitsChild) {
 				// Calculating Child Age
 				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -1461,10 +1456,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					benAddTable.startNewRow();
 
 				}
-
-			} else {
-
 			}
+
+		} else {
+
 		}
 
 		document.add(benAddTable);
@@ -3971,8 +3966,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
 					Cell abCell5 = new Cell();
-					abCell5.add(
-							new Paragraph("Monthly School Fee Expenses Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+					abCell5.add(new Paragraph("Monthly School Fee Expenses Benefit").setFontSize(9)
+							.setTextAlignment(TextAlignment.LEFT));
 					benAddTable.addCell(abCell5);
 					Cell abCell6 = new Cell();
 					abCell6.add(new Paragraph(
