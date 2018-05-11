@@ -45,8 +45,14 @@ public class Validation {
 
 					case "ATPB":
 						System.out.println("call ATPB");
-						if (validateInvpATBP().equals(0)) {
-							return "ATPB must be greater than or equal BSA and ATPB must be less than or equal (BSA x 10) and ATPB mod 25000 equal 0";
+						if (calculation.get_product().equals("ASFP")) {
+							if (validateASFPATBP().equals(0)) {
+								return "ATPB must be greater than or equal 500000 and ATPB must be less than or equal (500000 x 10) and ATPB mod 25000 equal 0";
+							}
+						} else {
+							if (validateInvpATBP().equals(0)) {
+								return "ATPB must be greater than or equal BSA and ATPB must be less than or equal (BSA x 10) and ATPB mod 25000 equal 0";
+							}
 						}
 						break;
 					case "SFPO":
@@ -460,6 +466,19 @@ public class Validation {
 
 	}
 
+	public Integer validateASFPATBP() {
+		if (benefitMap.containsKey("ATPB")) {
+			Benifict benifict = benefitMap.get("ATPB");
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa >= 500000 && rbsa <= 5000000 && rbsa % 25000 == 0) {
+				return 1;
+			}
+			return 0;
+
+		}
+		return 0;
+	}
+	
 	public Integer validateInvpATBP() {
 		if (benefitMap.containsKey("ATPB")) {
 			System.out.println("call atpb val method");
