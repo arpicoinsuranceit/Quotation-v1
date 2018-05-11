@@ -73,7 +73,7 @@ public class QuotationArpCalculationConroller {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validationInvp = new Validation(calculation);
-					if (validationInvp.validateAsipProd() == 1) {
+					if (validationInvp.validateArpProd() == 1) {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {
 
@@ -130,7 +130,7 @@ public class QuotationArpCalculationConroller {
 					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
-					if (validation.validateAsipProd() == 1) {
+					if (validation.validateArpProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
