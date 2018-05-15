@@ -1574,6 +1574,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				new Paragraph("Guranteed minimum dividend rate declared for " + calendar.get(Calendar.YEAR) + " - 9.0%")
 						.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
+		
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item7);
 
 		document.add(list);
 
@@ -2267,6 +2272,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
+		
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item7);
 
 		document.add(list);
 
@@ -2907,6 +2917,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
+		
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item7);
 
 		document.add(list);
 
@@ -3546,6 +3561,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
+		
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item7);
 
 		document.add(list);
 
@@ -4238,6 +4258,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				"If no claim has been made on the primary benefit during the policy term, total premium paid on the Primary Benefit (MSFB) premium will be refundered at the policy expiry date.")
 						.setFontSize(10).setFixedLeading(10).setFixedLeading(10));
 		list.add(item7);
+		
+		ListItem item8 = new ListItem();
+		item8.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item8);
 
 		document.add(list);
 
@@ -4951,6 +4976,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		ListItem item4 = new ListItem();
 		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item4);
+		
+		ListItem item5 = new ListItem();
+		item5.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item5);
 
 		document.add(list);
 

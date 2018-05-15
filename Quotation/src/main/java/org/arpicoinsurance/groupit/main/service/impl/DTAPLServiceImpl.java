@@ -301,6 +301,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
+		quotationDetails.setPolicyFee(450.00);
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

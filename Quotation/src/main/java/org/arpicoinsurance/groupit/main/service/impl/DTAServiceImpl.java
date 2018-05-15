@@ -304,7 +304,8 @@ public class DTAServiceImpl implements DTAService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
-
+		quotationDetails.setPolicyFee(450.00);
+		
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
