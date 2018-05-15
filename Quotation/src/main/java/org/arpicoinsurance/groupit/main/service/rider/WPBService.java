@@ -5,7 +5,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 
 public interface WPBService {
 	
-	BigDecimal calculateWPB(QuotationQuickCalResponse calResp) throws Exception;
+	BigDecimal calculateWPB(QuotationQuickCalResponse calResp, Double occuLoading) throws Exception;
 	
 	
 }

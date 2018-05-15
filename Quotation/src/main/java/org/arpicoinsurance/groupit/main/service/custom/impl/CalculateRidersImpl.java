@@ -464,6 +464,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 	public QuotationQuickCalResponse calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age,
 			String payFrequency, Integer term, Integer occupation_id, QuotationQuickCalResponse calResp,
 			Integer adultCount, Integer childCount, Double loan, Double inRate) throws Exception {
+		
+		System.out.println(occupation_id + " ////////////// ocu ID");
+		
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
 		Double ocuLoading = 1.0;
@@ -1028,9 +1031,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		case "WPB":
 			ocuLoading = oculoding.get("WPB");
+			System.out.println(ocuLoading + "   wpb oculoading");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
-			BigDecimal wpb = wpbService.calculateWPB(calResp);
+			System.out.println(ocuLoading + "   wpb oculoading");
+			BigDecimal wpb = wpbService.calculateWPB(calResp, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, wpb.doubleValue(), calResp);
 			calResp.setWpb(wpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpb.doubleValue());
@@ -1040,7 +1045,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			ocuLoading = oculoding.get("WPBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
-			BigDecimal wpbs = wpbsService.calculateWPBS(calResp);
+			BigDecimal wpbs = wpbsService.calculateWPBS(calResp, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, wpbs.doubleValue(), calResp);
 			calResp.setWpbs(wpbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpbs.doubleValue());

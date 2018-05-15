@@ -147,6 +147,7 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
 			
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+
 			//calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
