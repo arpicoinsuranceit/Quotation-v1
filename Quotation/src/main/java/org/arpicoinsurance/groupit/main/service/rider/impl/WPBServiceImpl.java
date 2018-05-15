@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WPBServiceImpl implements WPBService{
 
 	@Override
-	public BigDecimal calculateWPB(QuotationQuickCalResponse calResp) throws Exception {
+	public BigDecimal calculateWPB(QuotationQuickCalResponse calResp, Double occuLoading) throws Exception {
 		BigDecimal premiumWPB = new BigDecimal(0);
 		System.out.println(calResp.getBasicSumAssured() + " WPB SSSSSSSSSSSSSSSS");
 		System.out.println(calResp.getAtpb() + " WPB SSSSSSSSSSSSSSSS");
@@ -31,6 +31,7 @@ public class WPBServiceImpl implements WPBService{
 		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getCibc() == null ? 0.0 : calResp.getCibc()));
 		premiumWPB = premiumWPB.multiply(new BigDecimal(0.05)).setScale(0, RoundingMode.HALF_UP);
 		System.out.println("premiumWPB : "+premiumWPB.toString());
+		premiumWPB = premiumWPB.multiply(new BigDecimal(occuLoading)).setScale(0, RoundingMode.HALF_UP);
 		return premiumWPB;
 	}
 
