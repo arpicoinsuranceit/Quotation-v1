@@ -779,7 +779,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			*/
 			
 		case "HRBF":
-			ocuLoading = oculoding.get("HRBF");
+			ocuLoading = oculoding.get("HRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 			// Term calculation ///////
@@ -787,7 +787,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHRBF = rateCardHRBFDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHRBF = maxTermToBenefictHRBF > term ? term : maxTermToBenefictHRBF;
 			
-
+			System.out.println(ocuLoading + "   Occu Loading                HRBF");
 			//Integer valiedTermHRBF = 10;
 			
 			BigDecimal hrbf = null;
@@ -808,7 +808,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 			
 		case "HRBI":
-			ocuLoading = oculoding.get("HRBI");
+			ocuLoading = oculoding.get("HRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 			// Term calculation ///////
@@ -816,6 +816,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHRBI = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHRBI = maxTermToBenefictHRBI > term ? term : maxTermToBenefictHRBI;
 			
+			System.out.println(ocuLoading + "   Occu Loading                HRBI");
 
 			//Integer valiedTermHRBI = 10;
 			
@@ -828,7 +829,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 			
 		case "HRBIS":
-			ocuLoading = oculoding.get("HRBIS");
+			ocuLoading = oculoding.get("HRBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 			// Term calculation ///////
@@ -869,7 +870,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SHCBF":
-			ocuLoading = oculoding.get("SHCBF");
+			ocuLoading = oculoding.get("SUHRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 			// Term calculation ///////
