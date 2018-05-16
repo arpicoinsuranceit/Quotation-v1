@@ -103,17 +103,17 @@ public class Validation {
 						break;
 					case "MFIBD":
 						if (validateInvpMIFBD().equals(0)) {
-							return "MIFBD must be greater than 10,000 and less than 100,000";
+							return "MIFBD mod 1000 must be 0 and greater than 10,000 and less than 100,000";
 						}
 						break;
 					case "MFIBT":
 						if (validateInvpMIFBT().equals(0)) {
-							return "MIFBT must be greater than 10,000 and less than 100,000";
+							return "MIFBT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
 						}
 						break;
 					case "MFIBDT":
 						if (validateInvpMFIBDT().equals(0)) {
-							return "MFIBDT must be greater than 10,000 and less than 100,000";
+							return "MFIBDT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
 						}
 						break;
 					/*
@@ -584,7 +584,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBDT"))) {
 			Benifict benifict = benefitMap.get("MFIBD");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
 				return 1;
 			}
 		}
@@ -598,7 +598,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBDT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
 				return 1;
 			}
 		}
@@ -612,7 +612,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBDT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
 				return 1;
 			}
 		}
