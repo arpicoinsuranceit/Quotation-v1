@@ -704,6 +704,15 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictMFIBD = rateCardMFIBDDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBD = maxTermToBenefictMFIBD > term ? term : maxTermToBenefictMFIBD;
 
+			
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium());
+				calResp.setError("MFIBD MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
+			
+			
 			BigDecimal mfibd = mfibdService.calculateMFIBD(age, valiedTermMFIBD, new Date(), ridsumasu, payFrequency,
 					1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, mfibd.doubleValue(), calResp);
@@ -720,6 +729,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictMFIBT = rateCardMFIBTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBT = maxTermToBenefictMFIBT > term ? term : maxTermToBenefictMFIBT;
 
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium());
+				calResp.setError("MFIBT MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
+			
 			BigDecimal mfibt = mfibtService.calculateMFIBT(age, valiedTermMFIBT, new Date(), ridsumasu, payFrequency,
 					1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, mfibt.doubleValue(), calResp);
@@ -735,6 +751,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictMFIBDT = rateCardMFIBDTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBDT = maxTermToBenefictMFIBDT > term ? term : maxTermToBenefictMFIBDT;
 
+			if(ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
+				calResp.setErrorExist(true);
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium());
+				calResp.setError("MFIBDT MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				return calResp;
+			}
+			
 			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, valiedTermMFIBDT, new Date(), ridsumasu,
 					payFrequency, 1.0, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, mfibdt.doubleValue(), calResp);
