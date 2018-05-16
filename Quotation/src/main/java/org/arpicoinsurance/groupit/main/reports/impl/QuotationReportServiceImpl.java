@@ -10,8 +10,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.SheduleDao;
 import org.arpicoinsurance.groupit.main.dao.custom.MedicalRequirementsDaoCustom;
 import org.arpicoinsurance.groupit.main.helper.MedicalRequirementsHelper;
@@ -22,13 +24,16 @@ import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
+import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
@@ -55,6 +60,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 	@Autowired
 	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
+
+	// Getting Benf Combination
+	@Autowired
+	private BenefitsDao benefictDao;
+
 	// paymode switch case variable
 	String modeMethod;
 
@@ -147,8 +157,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -586,8 +596,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -1034,8 +1044,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -1233,7 +1243,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 630, 230);
+		DtlTable.setFixedPosition(400, 625, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -1311,158 +1321,549 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 450, 100, 100, 100, 100, 100, 100 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth3);
+		Cell abCellth4 = new Cell(0, 2);
+		abCellth4.setBorder(new SolidBorder(1));
+		abCellth4.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellth4);
 
 		benAddTable.startNewRow();
 
-		// checking main life benefits having or not
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		Cell abCellCA = new Cell();
+		abCellCA.setBorder(new SolidBorder(1));
+		abCellCA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCA);
+
+		Cell abCellCP = new Cell();
+		abCellCP.setBorder(new SolidBorder(1));
+		abCellCP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
 
-			benAddTable.startNewRow();
-		}
+			// Double ndc = 0.0;
 
-		if (benefitsLife != null) {
 			for (QuoBenf quoBenf : benefitsLife) {
 
-				Cell abCell5 = new Cell();
-				abCell5.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell5);
-				Cell abCell6 = new Cell();
-				abCell6.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell6);
-				Cell abCell7 = new Cell();
-				abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell7);
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-				benAddTable.startNewRow();
+				////////////////
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
+
+					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+
+				}
 
 			}
 
-		} else {
-
 		}
-		benAddTable.startNewRow();
 
-		// checking spouse having benefits
+		// checking Spouse Having Benefits
 		if (benefitsSpouse.isEmpty()) {
 
 		} else {
-			Cell abCell8 = new Cell(0, 3);
-			abCell8.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell8);
-
-			benAddTable.startNewRow();
-		}
-
-		if (benefitsSpouse != null) {
 			for (QuoBenf quoBenf : benefitsSpouse) {
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
-				Cell abCell11 = new Cell();
-				abCell11.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell11);
 
-				benAddTable.startNewRow();
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("ADBS") && (!quoBenf.getRiderCode().equalsIgnoreCase("SCB")
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEBS")))) {
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination")
+								.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+						}
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+
+				}
+
 			}
-		} else {
 
 		}
 
-		benAddTable.startNewRow();
-
+		// Checking Child having Benefits
 		if (benefitsChild.isEmpty()) {
 
 		} else {
-			Cell abCell12 = new Cell(0, 3);
-			abCell12.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell12);
 
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsChild != null) {
+			Double cibc = 0.0;
+			Double hbc = 0.0;
+			Double hcbic = 0.0;
 
 			for (QuoChildBenef quoChild : benefitsChild) {
-				// Calculating Child Age
-				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-				LocalDate dateOfBirthChild = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
-				LocalDate currentDate = LocalDate
-						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
-				long diffInYears = ChronoUnit.YEARS.between(dateOfBirthChild, currentDate);
-				diffInYears += 1;
-				String childAge = Long.toString(diffInYears);
-
-				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph(
-						"Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + '\t' + "Relationship : "
-								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age : " + childAge)
-										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
-										.setCharacterSpacing(1));
-				benAddTable.addCell(abCell13);
-				benAddTable.startNewRow();
-
-				// getting benefits of child
 				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
 
-					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell14);
-					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell15);
-					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell16);
-					benAddTable.startNewRow();
+					if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+						cibc = cibc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
+						hbc = hbc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+
+						hcbic = hcbic + quoChildBenef.getPremium();
+					}
+
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination").equals(
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+							if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+								benefitDetailMap.put("childPre", cibc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+								benefitDetailMap.put("childPre", hbc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+								benefitDetailMap.put("childPre", hcbic);
+
+							}
+						}
+
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoChildBenef.getBenfName());
+						benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+						if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+							benefitDetailMap.put("childPre", cibc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+							benefitDetailMap.put("childPre", hbc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							benefitDetailMap.put("childPre", hcbic);
+
+						}
+
+						benifList.add(benefitDetailMap);
+					}
 				}
 			}
 
-		} else {
+		}
+
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
+
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
+
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
+
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
+
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
+
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
+
+			Cell abCellcA = new Cell();
+
+			if (hashMap.get("childAmt") != null) {
+				Double cAmt = (Double) hashMap.get("childAmt");
+
+				abCellcA.add(
+						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			} else {
+				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			}
+
+			Cell abCellcP = new Cell();
+			if (hashMap.get("childPre") != null) {
+				Double cPre = (Double) hashMap.get("childPre");
+
+				abCellcP.add(
+						new Paragraph(formatter.format(cPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			} else {
+				abCellcP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			}
+
+			benAddTable.startNewRow();
 
 		}
 
 		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
+
+		// document.add(new Paragraph(""));
+
+		/// Ceate Additional Benefits table
+		float[] pointColumnWidths = { 470, 100, 100, 100, 100, 100, 100 };
+		Table addBenTable = new Table(pointColumnWidths);
+		addBenTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
+
+		// table headings
+		Cell abCellA = new Cell(2, 0);
+		abCellA.setBorder(new SolidBorder(1));
+		abCellA.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellA);
+
+		Cell abCellB = new Cell(0, 2);
+		abCellB.setBorder(new SolidBorder(1));
+		abCellB.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellB);
+
+		Cell abCellC = new Cell(0, 2);
+		abCellC.setBorder(new SolidBorder(1));
+		abCellC.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellC);
+
+		Cell abCellD = new Cell(0, 2);
+		abCellD.setBorder(new SolidBorder(1));
+		abCellD.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellD);
+
+		addBenTable.startNewRow();
+
+		Cell abCellE = new Cell();
+		abCellE.setBorder(new SolidBorder(1));
+		abCellE.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellE);
+
+		Cell abCellF = new Cell();
+		abCellF.setBorder(new SolidBorder(1));
+		abCellF.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellF);
+
+		Cell abCellG = new Cell();
+		abCellG.setBorder(new SolidBorder(1));
+		abCellG.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellG);
+
+		Cell abCellH = new Cell();
+		abCellH.setBorder(new SolidBorder(1));
+		abCellH.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellH);
+
+		Cell abCellI = new Cell();
+		abCellI.setBorder(new SolidBorder(1));
+		abCellI.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellI);
+
+		Cell abCellJ = new Cell();
+		abCellJ.setBorder(new SolidBorder(1));
+		abCellJ.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellJ);
+
+		addBenTable.startNewRow();
+
+		Double ndc = 0.0;
+		Double ndcp = 0.0;
+
+		Double ndcs = 0.0;
+		Double ndcsp = 0.0;
+
+		Double adb = 0.0;
+		Double adbp = 0.0;
+
+		Double adbs = 0.0;
+		Double adbsp = 0.0;
+
+		Double feb = 0.0;
+		Double febp = 0.0;
+
+		Double febs = 0.0;
+		Double febsp = 0.0;
+
+		if (benefitsLife.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoAddBenf : benefitsLife) {
+
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("L2")
+						|| (quoAddBenf.getRiderCode().equalsIgnoreCase("ATPB"))) {
+					ndc = ndc + quoAddBenf.getRiderSum();
+					ndcp = ndcp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("ADB")) {
+					adb = quoAddBenf.getRiderSum();
+					adbp = adbp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
+					feb = quoAddBenf.getRiderSum();
+					febp = febp + quoAddBenf.getPremium();
+
+				}
+
+			}
+		}
+
+		////////////////////////
+		if (benefitsSpouse.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoSpoBenf : benefitsSpouse) {
+
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("SCB")) {
+					ndcs = quoSpoBenf.getRiderSum();
+					ndcsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("ADBS")) {
+					adbs = quoSpoBenf.getRiderSum();
+					adbsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("FEBS")) {
+					febs = quoSpoBenf.getRiderSum();
+					febsp = quoSpoBenf.getPremium();
+
+				}
+
+			}
+
+		}
+
+		/////////////////
+		Cell abCelld1 = new Cell();
+		abCelld1.add(new Paragraph("Natural Death Cover").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld1);
+
+		Cell abCelld2 = new Cell();
+		abCelld2.add(new Paragraph(formatter.format(ndc)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld2);
+
+		Cell abCelld3 = new Cell();
+		abCelld3.add(new Paragraph(formatter.format(ndcp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld3);
+
+		Cell abCelld4 = new Cell();
+		abCelld4.add(new Paragraph(formatter.format(ndcs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld4);
+
+		Cell abCelld5 = new Cell();
+		abCelld5.add(new Paragraph(formatter.format(ndcsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld5);
+
+		Cell abCelld6 = new Cell();
+		abCelld6.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld6);
+
+		Cell abCelld7 = new Cell();
+		abCelld7.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld7);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld8 = new Cell();
+		abCelld8.add(new Paragraph("Accidental Death Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld8);
+
+		Cell abCelld9 = new Cell();
+		abCelld9.add(new Paragraph(formatter.format(adb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld9);
+
+		Cell abCelld10 = new Cell();
+		abCelld10.add(new Paragraph(formatter.format(adbp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld10);
+
+		Cell abCelld11 = new Cell();
+		abCelld11.add(new Paragraph(formatter.format(adbs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld11);
+
+		Cell abCelld12 = new Cell();
+		abCelld12.add(new Paragraph(formatter.format(adbsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld12);
+
+		Cell abCelld13 = new Cell();
+		abCelld13.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld13);
+
+		Cell abCelld14 = new Cell();
+		abCelld14.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld14);
+
+		///
+		addBenTable.startNewRow();
+
+		Cell abCelld15 = new Cell();
+		abCelld15.add(new Paragraph("Funeral Expenses").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld15);
+
+		Cell abCelld16 = new Cell();
+		abCelld16.add(new Paragraph(formatter.format(feb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld16);
+
+		Cell abCelld117 = new Cell();
+		abCelld117.add(new Paragraph(formatter.format(febp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld117);
+
+		Cell abCelld18 = new Cell();
+		abCelld18.add(new Paragraph(formatter.format(febs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld18);
+
+		Cell abCelld19 = new Cell();
+		abCelld19.add(new Paragraph(formatter.format(febsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld19);
+
+		Cell abCelld20 = new Cell();
+		abCelld20.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld20);
+
+		Cell abCelld21 = new Cell();
+		abCelld21.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld21);
+
+		document.add(addBenTable);
 
 		// Medical Requirements
 		try {
@@ -1480,7 +1881,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				document.add(new Paragraph(""));
 
 				// Medical Requirements Table
-				float[] pointColumnWidths6 = { 150, 150, 150 };
+				float[] pointColumnWidths6 = { 150, 100, 100 };
 				Table medReqTable = new Table(pointColumnWidths6);
 				medReqTable.setBorder(new SolidBorder(1));
 				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -1560,25 +1961,30 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph(
-				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
-						.setFontSize(10).setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(
+		item6.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item6);
+
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph(
+				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
+						.setFontSize(10).setFixedLeading(10));
+		list.add(item7);
+
+		ListItem item8 = new ListItem();
+		item8.add(
 				new Paragraph("Guranteed minimum dividend rate declared for " + calendar.get(Calendar.YEAR) + " - 9.0%")
 						.setFontSize(10).setFixedLeading(10));
-		list.add(item6);
-		
-		ListItem item7 = new ListItem();
-		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
-		list.add(item7);
+		list.add(item8);
 
 		document.add(list);
 
@@ -1691,8 +2097,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -2001,105 +2407,197 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(DtlTable);
 
 		document.add(new Paragraph("\n"));
-
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 500, 120, 120, 120, 120 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth3);
 
 		benAddTable.startNewRow();
 
-		////////// Checking main Life
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
 
-		}
-
-		benAddTable.startNewRow();
-
-		if (benefitsLife != null) {
+			// Double ndc = 0.0;
 
 			for (QuoBenf quoBenf : benefitsLife) {
 
-				Cell abCell8 = new Cell();
-				abCell8.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell8);
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-				benAddTable.startNewRow();
+				////////////////
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))) {
+
+					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+
+				}
 
 			}
 
 		}
 
-		benAddTable.startNewRow();
-
-		// checking spouse having benefits
+		// checking Spouse Having Benefits
 		if (benefitsSpouse.isEmpty()) {
 
 		} else {
-			Cell abCell11 = new Cell(0, 3);
-			abCell11.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell11);
+			for (QuoBenf quoBenf : benefitsSpouse) {
+
+				Integer isAvailable = 0;
+
+				for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+					if (benefitDetailMap.get("combination")
+							.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+						isAvailable = 1;
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
+					}
+				}
+
+				if (isAvailable == 0) {
+
+					HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+					benefitDetailMap.put("combination",
+							benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+					benefitDetailMap.put("benName", quoBenf.getBenfName());
+					benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+					benefitDetailMap.put("spousePre", quoBenf.getPremium());
+
+					benifList.add(benefitDetailMap);
+				}
+
+			}
+
+		}
+
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
+
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
+
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
+
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
+
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
+
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
 
 			benAddTable.startNewRow();
 
 		}
 
-		if (benefitsSpouse != null) {
-
-			for (QuoBenf quoBenf : benefitsSpouse) {
-
-				Cell abCell12 = new Cell();
-				abCell12.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell12);
-				Cell abCell13 = new Cell();
-				abCell13.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell13);
-				Cell abCell14 = new Cell();
-				abCell14.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell14);
-
-				benAddTable.startNewRow();
-			}
-
-		}
-
 		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
 
 		document.add(new Paragraph(""));
 
@@ -2161,6 +2659,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(scdTable);
+
 		// Medical Requirements
 		try {
 			java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
@@ -2177,7 +2676,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				document.add(new Paragraph(""));
 
 				// Medical Requirements Table
-				float[] pointColumnWidths7 = { 150, 150, 150 };
+				float[] pointColumnWidths7 = { 150, 100, 100 };
 				Table medReqTable = new Table(pointColumnWidths7);
 				medReqTable.setBorder(new SolidBorder(1));
 				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -2259,23 +2758,23 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph("Initial policy processing fee of Rs.450 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph(
+		item6.add(new Paragraph("Initial policy processing fee of Rs.450 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item6);
+
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph(
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
-		list.add(item6);
-		
-		ListItem item7 = new ListItem();
-		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
 		list.add(item7);
 
 		document.add(list);
@@ -2381,8 +2880,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -2575,7 +3074,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 630, 230);
+		DtlTable.setFixedPosition(400, 625, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -2655,157 +3154,541 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 470, 100, 100, 100, 100, 100, 100 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth3);
+		Cell abCellth4 = new Cell(0, 2);
+		abCellth4.setBorder(new SolidBorder(1));
+		abCellth4.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellth4);
 
 		benAddTable.startNewRow();
 
-		// checking main life benefits having or not
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		Cell abCellCA = new Cell();
+		abCellCA.setBorder(new SolidBorder(1));
+		abCellCA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCA);
+
+		Cell abCellCP = new Cell();
+		abCellCP.setBorder(new SolidBorder(1));
+		abCellCP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
-
-			benAddTable.startNewRow();
-		}
-
-		if (benefitsLife != null) {
 
 			for (QuoBenf quoBenf : benefitsLife) {
 
-				Cell abCell5 = new Cell();
-				abCell5.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell5);
-				Cell abCell6 = new Cell();
-				abCell6.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell6);
-				Cell abCell7 = new Cell();
-				abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell7);
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-				benAddTable.startNewRow();
+				////////////////
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
+
+					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+				}
 
 			}
 
 		}
-		benAddTable.startNewRow();
 
-		// checking spouse having benefits
-		if (benefitsLife.isEmpty()) {
+		// checking Spouse Having Benefits
+		if (benefitsSpouse.isEmpty()) {
 
 		} else {
-			Cell abCell8 = new Cell(0, 3);
-			abCell8.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell8);
-
-			benAddTable.startNewRow();
-		}
-
-		if (benefitsSpouse != null) {
-
 			for (QuoBenf quoBenf : benefitsSpouse) {
 
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
-				Cell abCell11 = new Cell();
-				abCell11.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell11);
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("ADBS") && (!quoBenf.getRiderCode().equalsIgnoreCase("SCB")
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEBS")))) {
 
-				benAddTable.startNewRow();
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+						if (benefitDetailMap.get("combination")
+								.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+						}
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+
 			}
-
-		} else {
 
 		}
 
-		benAddTable.startNewRow();
-
+		// Checking Child having Benefits
 		if (benefitsChild.isEmpty()) {
 
 		} else {
-			Cell abCell12 = new Cell(0, 3);
-			abCell12.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell12);
+			Double cibc = 0.0;
+			Double hbc = 0.0;
+			Double hcbic = 0.0;
 
-			benAddTable.startNewRow();
+			for (QuoChildBenef quoChild : benefitsChild) {
+
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
+					if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+						cibc = cibc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+
+						hbc = hbc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+
+						hcbic = hcbic + quoChildBenef.getPremium();
+					}
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination").equals(
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+							if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+								benefitDetailMap.put("childPre", cibc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+								benefitDetailMap.put("childPre", hbc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+								benefitDetailMap.put("childPre", hcbic);
+
+							}
+						}
+
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoChildBenef.getBenfName());
+						benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+						if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+							benefitDetailMap.put("childPre", cibc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+							benefitDetailMap.put("childPre", hbc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							benefitDetailMap.put("childPre", hcbic);
+
+						}
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+			}
 
 		}
 
-		if (benefitsChild != null) {
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
 
-			for (QuoChildBenef quoChild : benefitsChild) {
-				// Calculating Child Age
-				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
 
-				LocalDate dateOfBirthChild = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
-				LocalDate currentDate = LocalDate
-						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
-				long diffInYears = ChronoUnit.YEARS.between(dateOfBirthChild, currentDate);
-				diffInYears += 1;
-				String childAge = Long.toString(diffInYears);
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
 
-				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph(
-						"Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + '\t' + " Relationship : "
-								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age : " + childAge)
-										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
-										.setCharacterSpacing(1));
-				benAddTable.addCell(abCell13);
-				benAddTable.startNewRow();
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
 
-				// getting benefits of child
-				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
 
-					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell14);
-					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell15);
-					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell16);
-					benAddTable.startNewRow();
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
+
+			Cell abCellcA = new Cell();
+
+			if (hashMap.get("childAmt") != null) {
+				Double cAmt = (Double) hashMap.get("childAmt");
+
+				abCellcA.add(
+						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			} else {
+				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			}
+
+			Cell abCellcP = new Cell();
+			if (hashMap.get("childPre") != null) {
+				Double cPre = (Double) hashMap.get("childPre");
+
+				abCellcP.add(
+						new Paragraph(formatter.format(cPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			} else {
+				abCellcP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			}
+
+			benAddTable.startNewRow();
+		}
+
+		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
+
+		// document.add(new Paragraph(""));
+
+		/// Ceate Additional Benefits table
+		float[] pointColumnWidths = { 450, 100, 100, 100, 100, 100, 100 };
+		Table addBenTable = new Table(pointColumnWidths);
+		addBenTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
+
+		// table headings
+		Cell abCellA = new Cell(2, 0);
+		abCellA.setBorder(new SolidBorder(1));
+		abCellA.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellA);
+
+		Cell abCellB = new Cell(0, 2);
+		abCellB.setBorder(new SolidBorder(1));
+		abCellB.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellB);
+
+		Cell abCellC = new Cell(0, 2);
+		abCellC.setBorder(new SolidBorder(1));
+		abCellC.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellC);
+
+		Cell abCellD = new Cell(0, 2);
+		abCellD.setBorder(new SolidBorder(1));
+		abCellD.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellD);
+
+		addBenTable.startNewRow();
+
+		Cell abCellE = new Cell();
+		abCellE.setBorder(new SolidBorder(1));
+		abCellE.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellE);
+
+		Cell abCellF = new Cell();
+		abCellF.setBorder(new SolidBorder(1));
+		abCellF.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellF);
+
+		Cell abCellG = new Cell();
+		abCellG.setBorder(new SolidBorder(1));
+		abCellG.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellG);
+
+		Cell abCellH = new Cell();
+		abCellH.setBorder(new SolidBorder(1));
+		abCellH.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellH);
+
+		Cell abCellI = new Cell();
+		abCellI.setBorder(new SolidBorder(1));
+		abCellI.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellI);
+
+		Cell abCellJ = new Cell();
+		abCellJ.setBorder(new SolidBorder(1));
+		abCellJ.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellJ);
+
+		addBenTable.startNewRow();
+
+		Double ndc = 0.0;
+		Double ndcp = 0.0;
+
+		Double ndcs = 0.0;
+		Double ndcsp = 0.0;
+
+		Double adb = 0.0;
+		Double adbp = 0.0;
+
+		Double adbs = 0.0;
+		Double adbsp = 0.0;
+
+		Double feb = 0.0;
+		Double febp = 0.0;
+
+		Double febs = 0.0;
+		Double febsp = 0.0;
+
+		if (benefitsLife.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoAddBenf : benefitsLife) {
+
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("L2")
+						|| (quoAddBenf.getRiderCode().equalsIgnoreCase("ATPB"))) {
+					ndc = ndc + quoAddBenf.getRiderSum();
+					ndcp = ndcp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("ADB")) {
+					adb = quoAddBenf.getRiderSum();
+					adbp = adbp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
+					feb = quoAddBenf.getRiderSum();
+					febp = febp + quoAddBenf.getPremium();
 
 				}
 
 			}
 		}
-		document.add(benAddTable);
+
+		////////////////////////
+		if (benefitsSpouse.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoSpoBenf : benefitsSpouse) {
+
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("SCB")) {
+					ndcs = quoSpoBenf.getRiderSum();
+					ndcsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("ADBS")) {
+					adbs = quoSpoBenf.getRiderSum();
+					adbsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("FEBS")) {
+					febs = quoSpoBenf.getRiderSum();
+					febsp = quoSpoBenf.getPremium();
+
+				}
+
+			}
+
+		}
+
+		/////////////////
+		Cell abCelld1 = new Cell();
+		abCelld1.add(new Paragraph("Natural Death Cover").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld1);
+
+		Cell abCelld2 = new Cell();
+		abCelld2.add(new Paragraph(formatter.format(ndc)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld2);
+
+		Cell abCelld3 = new Cell();
+		abCelld3.add(new Paragraph(formatter.format(ndcp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld3);
+
+		Cell abCelld4 = new Cell();
+		abCelld4.add(new Paragraph(formatter.format(ndcs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld4);
+
+		Cell abCelld5 = new Cell();
+		abCelld5.add(new Paragraph(formatter.format(ndcsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld5);
+
+		Cell abCelld6 = new Cell();
+		abCelld6.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld6);
+
+		Cell abCelld7 = new Cell();
+		abCelld7.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld7);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld8 = new Cell();
+		abCelld8.add(new Paragraph("Accidental Death Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld8);
+
+		Cell abCelld9 = new Cell();
+		abCelld9.add(new Paragraph(formatter.format(adb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld9);
+
+		Cell abCelld10 = new Cell();
+		abCelld10.add(new Paragraph(formatter.format(adbp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld10);
+
+		Cell abCelld11 = new Cell();
+		abCelld11.add(new Paragraph(formatter.format(adbs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld11);
+
+		Cell abCelld12 = new Cell();
+		abCelld12.add(new Paragraph(formatter.format(adbsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld12);
+
+		Cell abCelld13 = new Cell();
+		abCelld13.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld13);
+
+		Cell abCelld14 = new Cell();
+		abCelld14.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld14);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld15 = new Cell();
+		abCelld15.add(new Paragraph("Funeral Expenses").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld15);
+
+		Cell abCelld16 = new Cell();
+		abCelld16.add(new Paragraph(formatter.format(feb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld16);
+
+		Cell abCelld117 = new Cell();
+		abCelld117.add(new Paragraph(formatter.format(febp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld117);
+
+		Cell abCelld18 = new Cell();
+		abCelld18.add(new Paragraph(formatter.format(febs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld18);
+
+		Cell abCelld19 = new Cell();
+		abCelld19.add(new Paragraph(formatter.format(febsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld19);
+
+		Cell abCelld20 = new Cell();
+		abCelld20.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld20);
+
+		Cell abCelld21 = new Cell();
+		abCelld21.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld21);
+
+		document.add(addBenTable);
 
 		// Medical Requirements
 		try {
@@ -2823,7 +3706,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				document.add(new Paragraph(""));
 
 				// Medical Requirements Table
-				float[] pointColumnWidths6 = { 150, 150, 150 };
+				float[] pointColumnWidths6 = { 150, 100, 100 };
 				Table medReqTable = new Table(pointColumnWidths6);
 				medReqTable.setBorder(new SolidBorder(1));
 				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -2904,23 +3787,23 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph(
+		item6.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item6);
+
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph(
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
-		list.add(item6);
-		
-		ListItem item7 = new ListItem();
-		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
 		list.add(item7);
 
 		document.add(list);
@@ -3025,8 +3908,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -3297,159 +4180,541 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 450, 100, 100, 100, 100, 100, 100 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth3);
+		Cell abCellth4 = new Cell(0, 2);
+		abCellth4.setBorder(new SolidBorder(1));
+		abCellth4.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellth4);
 
 		benAddTable.startNewRow();
 
-		// checking main life benefits having or not
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		Cell abCellCA = new Cell();
+		abCellCA.setBorder(new SolidBorder(1));
+		abCellCA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCA);
+
+		Cell abCellCP = new Cell();
+		abCellCP.setBorder(new SolidBorder(1));
+		abCellCP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
 
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
+			for (QuoBenf quoBenf : benefitsLife) {
 
-			benAddTable.startNewRow();
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-		}
+				////////////////
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
 
-		for (QuoBenf quoBenf : benefitsLife) {
+					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
 
-			if (benefitsLife != null) {
-
-				Cell abCell5 = new Cell();
-				abCell5.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell5);
-				Cell abCell6 = new Cell();
-				abCell6.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell6);
-				Cell abCell7 = new Cell();
-				abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell7);
-
-				benAddTable.startNewRow();
-
-			}
-		}
-
-		benAddTable.startNewRow();
-
-		// checking spouse having benefits
-		if (benefitsSpouse.isEmpty()) {
-
-		} else {
-			Cell abCell8 = new Cell(0, 3);
-			abCell8.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell8);
-
-			benAddTable.startNewRow();
-
-		}
-
-		for (QuoBenf quoBenf : benefitsSpouse) {
-
-			if (benefitsSpouse != null) {
-
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
-				Cell abCell11 = new Cell();
-				abCell11.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell11);
-
-				benAddTable.startNewRow();
-			}
-
-		}
-
-		benAddTable.startNewRow();
-
-		///////// Checking Child is Active
-		if (benefitsChild.isEmpty()) {
-
-		} else {
-			Cell abCell12 = new Cell(0, 3);
-			abCell12.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell12);
-
-			benAddTable.startNewRow();
-
-		}
-
-		for (QuoChildBenef quoChild : benefitsChild) {
-
-			if (benefitsChild != null) {
-				// Calculating Child Age
-				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-				LocalDate dateOfBirthChild = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
-				LocalDate currentDate = LocalDate
-						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
-				long diffInYears = ChronoUnit.YEARS.between(dateOfBirthChild, currentDate);
-				diffInYears += 1;
-				String childAge = Long.toString(diffInYears);
-
-				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph(
-						"Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + '\t' + " Relationship : "
-								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age : " + childAge)
-										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
-										.setCharacterSpacing(1));
-				benAddTable.addCell(abCell13);
-				benAddTable.startNewRow();
-
-				// loop again to get children benf
-				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
-					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell14);
-					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell15);
-					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell16);
-					benAddTable.startNewRow();
+						benifList.add(benefitDetailMap);
+					}
 				}
 
 			}
 
 		}
 
+		// checking Spouse Having Benefits
+		if (benefitsSpouse.isEmpty()) {
+
+		} else {
+			for (QuoBenf quoBenf : benefitsSpouse) {
+
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("ADBS") && (!quoBenf.getRiderCode().equalsIgnoreCase("SCB")
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEBS")))) {
+
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+						if (benefitDetailMap.get("combination")
+								.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+						}
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+
+			}
+
+		}
+
+		// Checking Child having Benefits
+		if (benefitsChild.isEmpty()) {
+
+		} else {
+			Double cibc = 0.0;
+			Double hbc = 0.0;
+			Double hcbic = 0.0;
+
+			for (QuoChildBenef quoChild : benefitsChild) {
+
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
+					if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+						cibc = cibc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+
+						hbc = hbc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+
+						hcbic = hcbic + quoChildBenef.getPremium();
+					}
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination").equals(
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+							if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+								benefitDetailMap.put("childPre", cibc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+								benefitDetailMap.put("childPre", hbc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+								benefitDetailMap.put("childPre", hcbic);
+
+							}
+						}
+
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoChildBenef.getBenfName());
+						benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+						if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+							benefitDetailMap.put("childPre", cibc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+							benefitDetailMap.put("childPre", hbc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							benefitDetailMap.put("childPre", hcbic);
+
+						}
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+			}
+
+		}
+
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
+
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
+
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
+
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
+
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
+
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
+
+			Cell abCellcA = new Cell();
+
+			if (hashMap.get("childAmt") != null) {
+				Double cAmt = (Double) hashMap.get("childAmt");
+
+				abCellcA.add(
+						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			} else {
+				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			}
+
+			Cell abCellcP = new Cell();
+			if (hashMap.get("childPre") != null) {
+				Double cPre = (Double) hashMap.get("childPre");
+
+				abCellcP.add(
+						new Paragraph(formatter.format(cPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			} else {
+				abCellcP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			}
+
+			benAddTable.startNewRow();
+		}
+
 		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
+
+		// document.add(new Paragraph(""));
+
+		/// Ceate Additional Benefits table
+		float[] pointColumnWidths = { 450, 100, 100, 100, 100, 100, 100 };
+		Table addBenTable = new Table(pointColumnWidths);
+		addBenTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
+
+		// table headings
+		Cell abCellA = new Cell(2, 0);
+		abCellA.setBorder(new SolidBorder(1));
+		abCellA.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellA);
+
+		Cell abCellB = new Cell(0, 2);
+		abCellB.setBorder(new SolidBorder(1));
+		abCellB.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellB);
+
+		Cell abCellC = new Cell(0, 2);
+		abCellC.setBorder(new SolidBorder(1));
+		abCellC.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellC);
+
+		Cell abCellD = new Cell(0, 2);
+		abCellD.setBorder(new SolidBorder(1));
+		abCellD.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellD);
+
+		addBenTable.startNewRow();
+
+		Cell abCellE = new Cell();
+		abCellE.setBorder(new SolidBorder(1));
+		abCellE.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellE);
+
+		Cell abCellF = new Cell();
+		abCellF.setBorder(new SolidBorder(1));
+		abCellF.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellF);
+
+		Cell abCellG = new Cell();
+		abCellG.setBorder(new SolidBorder(1));
+		abCellG.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellG);
+
+		Cell abCellH = new Cell();
+		abCellH.setBorder(new SolidBorder(1));
+		abCellH.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellH);
+
+		Cell abCellI = new Cell();
+		abCellI.setBorder(new SolidBorder(1));
+		abCellI.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellI);
+
+		Cell abCellJ = new Cell();
+		abCellJ.setBorder(new SolidBorder(1));
+		abCellJ.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellJ);
+
+		addBenTable.startNewRow();
+
+		Double ndc = 0.0;
+		Double ndcp = 0.0;
+
+		Double ndcs = 0.0;
+		Double ndcsp = 0.0;
+
+		Double adb = 0.0;
+		Double adbp = 0.0;
+
+		Double adbs = 0.0;
+		Double adbsp = 0.0;
+
+		Double feb = 0.0;
+		Double febp = 0.0;
+
+		Double febs = 0.0;
+		Double febsp = 0.0;
+
+		if (benefitsLife.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoAddBenf : benefitsLife) {
+
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("L2")
+						|| (quoAddBenf.getRiderCode().equalsIgnoreCase("ATPB"))) {
+					ndc = ndc + quoAddBenf.getRiderSum();
+					ndcp = ndcp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("ADB")) {
+					adb = quoAddBenf.getRiderSum();
+					adbp = adbp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
+					feb = quoAddBenf.getRiderSum();
+					febp = febp + quoAddBenf.getPremium();
+
+				}
+
+			}
+		}
+
+		////////////////////////
+		if (benefitsSpouse.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoSpoBenf : benefitsSpouse) {
+
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("SCB")) {
+					ndcs = quoSpoBenf.getRiderSum();
+					ndcsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("ADBS")) {
+					adbs = quoSpoBenf.getRiderSum();
+					adbsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("FEBS")) {
+					febs = quoSpoBenf.getRiderSum();
+					febsp = quoSpoBenf.getPremium();
+
+				}
+
+			}
+
+		}
+
+		/////////////////
+		Cell abCelld1 = new Cell();
+		abCelld1.add(new Paragraph("Natural Death Cover").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld1);
+
+		Cell abCelld2 = new Cell();
+		abCelld2.add(new Paragraph(formatter.format(ndc)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld2);
+
+		Cell abCelld3 = new Cell();
+		abCelld3.add(new Paragraph(formatter.format(ndcp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld3);
+
+		Cell abCelld4 = new Cell();
+		abCelld4.add(new Paragraph(formatter.format(ndcs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld4);
+
+		Cell abCelld5 = new Cell();
+		abCelld5.add(new Paragraph(formatter.format(ndcsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld5);
+
+		Cell abCelld6 = new Cell();
+		abCelld6.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld6);
+
+		Cell abCelld7 = new Cell();
+		abCelld7.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld7);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld8 = new Cell();
+		abCelld8.add(new Paragraph("Accidental Death Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld8);
+
+		Cell abCelld9 = new Cell();
+		abCelld9.add(new Paragraph(formatter.format(adb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld9);
+
+		Cell abCelld10 = new Cell();
+		abCelld10.add(new Paragraph(formatter.format(adbp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld10);
+
+		Cell abCelld11 = new Cell();
+		abCelld11.add(new Paragraph(formatter.format(adbs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld11);
+
+		Cell abCelld12 = new Cell();
+		abCelld12.add(new Paragraph(formatter.format(adbsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld12);
+
+		Cell abCelld13 = new Cell();
+		abCelld13.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld13);
+
+		Cell abCelld14 = new Cell();
+		abCelld14.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld14);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld15 = new Cell();
+		abCelld15.add(new Paragraph("Funeral Expenses").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld15);
+
+		Cell abCelld16 = new Cell();
+		abCelld16.add(new Paragraph(formatter.format(feb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld16);
+
+		Cell abCelld117 = new Cell();
+		abCelld117.add(new Paragraph(formatter.format(febp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld117);
+
+		Cell abCelld18 = new Cell();
+		abCelld18.add(new Paragraph(formatter.format(febs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld18);
+
+		Cell abCelld19 = new Cell();
+		abCelld19.add(new Paragraph(formatter.format(febsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld19);
+
+		Cell abCelld20 = new Cell();
+		abCelld20.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld20);
+
+		Cell abCelld21 = new Cell();
+		abCelld21.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld21);
+
+		document.add(addBenTable);
 
 		// Medical Requirements
 		try {
@@ -3467,7 +4732,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				document.add(new Paragraph(""));
 
 				// Medical Requirements Table
-				float[] pointColumnWidths6 = { 150, 150, 150 };
+				float[] pointColumnWidths6 = { 150, 100, 100 };
 				Table medReqTable = new Table(pointColumnWidths6);
 				medReqTable.setBorder(new SolidBorder(1));
 				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -3548,23 +4813,23 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees(LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph(
+		item6.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item6);
+
+		ListItem item7 = new ListItem();
+		item7.add(new Paragraph(
 				"In event of death by accident both Accident Cover and Natural Death Cover will be applicable.")
 						.setFontSize(10).setFixedLeading(10));
-		list.add(item6);
-		
-		ListItem item7 = new ListItem();
-		item7.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
 		list.add(item7);
 
 		document.add(list);
@@ -3668,8 +4933,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -3945,174 +5210,312 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 450, 100, 100, 100, 100, 100, 100 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold()
+				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth3);
+		Cell abCellth4 = new Cell(0, 2);
+		abCellth4.setBorder(new SolidBorder(1));
+		abCellth4.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth4);
 
 		benAddTable.startNewRow();
 
-		// checking main life benefits having or not
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		Cell abCellCA = new Cell();
+		abCellCA.setBorder(new SolidBorder(1));
+		abCellCA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCA);
+
+		Cell abCellCP = new Cell();
+		abCellCP.setBorder(new SolidBorder(1));
+		abCellCP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
 
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsLife != null) {
 			for (QuoBenf quoBenf : benefitsLife) {
 
-				if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
-					Cell abCell5 = new Cell();
-					abCell5.add(new Paragraph("Monthly School Fee Expenses Benefit").setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell5);
-					Cell abCell6 = new Cell();
-					abCell6.add(new Paragraph(
-							formatter.format(quoBenf.getRiderSum() / (12 * quotationDetails.getPolTerm())))
-									.setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell6);
-					Cell abCell7 = new Cell();
-					abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell7);
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-					benAddTable.startNewRow();
-				} else {
-					Cell abCell5 = new Cell();
-					abCell5.add(
-							new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell5);
-					Cell abCell6 = new Cell();
-					abCell6.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell6);
-					Cell abCell7 = new Cell();
-					abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell7);
+				if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+					benefitDetailMap.put("combination",
+							benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
 
-					benAddTable.startNewRow();
+					if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
+
+						Object aspMonthly = (Object) "Monthly School Fee Expenses Benefit";
+						benefitDetailMap.put("benName", aspMonthly);
+
+						Double schoolFee = (Double) quoBenf.getRiderSum() / (12 * quotationDetails.getPolTerm());
+						benefitDetailMap.put("mainAmt", schoolFee);
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+
+					} else {
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+						benifList.add(benefitDetailMap);
+					}
+
 				}
 
 			}
 
 		}
 
-		benAddTable.startNewRow();
-
-		// checking spouse having benefits
+		// checking Spouse Having Benefits
 		if (benefitsSpouse.isEmpty()) {
 
 		} else {
-			Cell abCell8 = new Cell(0, 3);
-			abCell8.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell8);
-
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsSpouse != null) {
-
 			for (QuoBenf quoBenf : benefitsSpouse) {
 
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
-				Cell abCell11 = new Cell();
-				abCell11.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell11);
+				Integer isAvailable = 0;
 
-				benAddTable.startNewRow();
-			}
-		}
+				for (HashMap<String, Object> benefitDetailMap : benifList) {
+					if (benefitDetailMap.get("combination")
+							.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+						isAvailable = 1;
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
+					}
+				}
 
-		benAddTable.startNewRow();
+				if (isAvailable == 0) {
 
-		if (benefitsChild.isEmpty()) {
+					HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-		} else {
-			Cell abCell12 = new Cell(0, 3);
-			abCell12.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell12);
+					benefitDetailMap.put("combination",
+							benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+					benefitDetailMap.put("benName", quoBenf.getBenfName());
+					benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+					benefitDetailMap.put("spousePre", quoBenf.getPremium());
 
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsChild != null) {
-
-			for (QuoChildBenef quoChild : benefitsChild) {
-				// Calculating Child Age
-				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-				LocalDate dateOfBirthChild = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
-				LocalDate currentDate = LocalDate
-						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
-				long diffInYears = ChronoUnit.YEARS.between(dateOfBirthChild, currentDate);
-				diffInYears += 1;
-				String childAge = Long.toString(diffInYears);
-
-				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph(
-						"Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + '\t' + " Relationship : "
-								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age :" + childAge)
-										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
-										.setCharacterSpacing(1));
-				benAddTable.addCell(abCell13);
-				benAddTable.startNewRow();
-
-				// loop again to get children benf
-				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
-					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell14);
-					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell15);
-					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell16);
-					benAddTable.startNewRow();
+					benifList.add(benefitDetailMap);
 				}
 
 			}
+
+		}
+
+		// Checking Child having Benefits
+		if (benefitsChild.isEmpty()) {
+
+		} else {
+			Double cibc = 0.0;
+			Double hbc = 0.0;
+			Double hcbic = 0.0;
+
+			for (QuoChildBenef quoChild : benefitsChild) {
+
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
+					if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+						cibc = cibc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+
+						hbc = hbc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+
+						hcbic = hcbic + quoChildBenef.getPremium();
+					}
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination").equals(
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+							if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+								benefitDetailMap.put("childPre", cibc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+								benefitDetailMap.put("childPre", hbc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+								benefitDetailMap.put("childPre", hcbic);
+
+							}
+						}
+
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoChildBenef.getBenfName());
+						benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+						if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+							benefitDetailMap.put("childPre", cibc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+							benefitDetailMap.put("childPre", hbc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							benefitDetailMap.put("childPre", hcbic);
+
+						}
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+			}
+
+		}
+
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
+
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
+
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
+
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
+
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
+
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
+
+			Cell abCellcA = new Cell();
+
+			if (hashMap.get("childAmt") != null) {
+				Double cAmt = (Double) hashMap.get("childAmt");
+
+				abCellcA.add(
+						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			} else {
+				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			}
+
+			Cell abCellcP = new Cell();
+			if (hashMap.get("childPre") != null) {
+				Double cPre = (Double) hashMap.get("childPre");
+
+				abCellcP.add(
+						new Paragraph(formatter.format(cPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			} else {
+				abCellcP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			}
+
+			benAddTable.startNewRow();
 		}
 
 		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
 
 		document.add(new Paragraph(""));
 		BigDecimal sfpo = new BigDecimal(0.0);
@@ -4186,20 +5589,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					medReqTable.addCell(mrqCell6);
 
 					if (benefitsSpouse.isEmpty()) {
+
 						Cell mrqCell7 = new Cell();
 						mrqCell7.add(new Paragraph("NR").setFontSize(9).setTextAlignment(TextAlignment.LEFT)
 								.setFixedLeading(10));
 						medReqTable.addCell(mrqCell7);
 
-						medReqTable.startNewRow();
 					} else {
+
 						Cell mrqCell7 = new Cell();
 						mrqCell7.add(new Paragraph(medicalReq.getSpouseStatus()).setFontSize(9)
 								.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 						medReqTable.addCell(mrqCell7);
-
-						medReqTable.startNewRow();
 					}
+
+					medReqTable.startNewRow();
 				}
 				document.add(medReqTable);
 
@@ -4238,31 +5642,36 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph("This is only a Quotation and not an Acceptance of Risk.").setFontSize(10)
-				.setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph(
-				"In the case of Death of the child and if no claim has been made on the primary benefit during the policy term, Total premium paid up to date on the Primary Benefit (MSFB) will be refundered.")
-						.setFontSize(10).setFixedLeading(10).setFixedLeading(10));
+		item6.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
 		list.add(item6);
 
 		ListItem item7 = new ListItem();
+		item7.add(new Paragraph("This is only a Quotation and not an Acceptance of Risk.").setFontSize(10)
+				.setFixedLeading(10));
+		list.add(item7);
+
+		ListItem item8 = new ListItem();
+		item8.add(new Paragraph(
+				"In the case of Death of the child and if no claim has been made on the primary benefit during the policy term, Total premium paid up to date on the Primary Benefit (MSFB) will be refundered.")
+						.setFontSize(10).setFixedLeading(10).setFixedLeading(10));
+		list.add(item8);
+
+		ListItem item9 = new ListItem();
 		// item7.setFixedPosition(20, 50, 450);
-		item7.add(new Paragraph(
+		item9.add(new Paragraph(
 				"If no claim has been made on the primary benefit during the policy term, total premium paid on the Primary Benefit (MSFB) premium will be refundered at the policy expiry date.")
 						.setFontSize(10).setFixedLeading(10).setFixedLeading(10));
-		list.add(item7);
-		
-		ListItem item8 = new ListItem();
-		item8.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
-		list.add(item8);
+		list.add(item9);
 
 		document.add(list);
 
@@ -4366,8 +5775,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
-				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
+				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -4656,160 +6065,556 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 		document.add(new Paragraph(""));
 
+		//////////////////////////// TEST OLD
+		//////////////////////////// FORMAT//////////////////////////////////////
+
 		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 450, 150, 150 };
+		float[] pointColumnWidths4 = { 470, 100, 100, 100, 100, 100, 100 };
 		Table benAddTable = new Table(pointColumnWidths4);
 		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-		Cell abCell1 = new Cell();
-		abCell1.setBorder(new SolidBorder(1));
-		abCell1.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		// table headings
+		Cell abCellth1 = new Cell(2, 0);
+		abCellth1.setBorder(new SolidBorder(1));
+		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell1);
-		Cell abCell2 = new Cell();
-		abCell2.setBorder(new SolidBorder(1));
-		abCell2.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth1);
+
+		Cell abCellth2 = new Cell(0, 2);
+		abCellth2.setBorder(new SolidBorder(1));
+		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell2);
-		Cell abCell3 = new Cell();
-		abCell3.setBorder(new SolidBorder(1));
-		abCell3.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+		benAddTable.addCell(abCellth2);
+		Cell abCellth3 = new Cell(0, 2);
+		abCellth3.setBorder(new SolidBorder(1));
+		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
-		benAddTable.addCell(abCell3);
+		benAddTable.addCell(abCellth3);
+		Cell abCellth4 = new Cell(0, 2);
+		abCellth4.setBorder(new SolidBorder(1));
+		abCellth4.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellth4);
 
 		benAddTable.startNewRow();
 
-		// checking main life benefits having or not
+		Cell abCellMA = new Cell();
+		abCellMA.setBorder(new SolidBorder(1));
+		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMA);
+
+		Cell abCellMP = new Cell();
+		abCellMP.setBorder(new SolidBorder(1));
+		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellMP);
+
+		Cell abCellSA = new Cell();
+		abCellSA.setBorder(new SolidBorder(1));
+		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSA);
+
+		Cell abCellSP = new Cell();
+		abCellSP.setBorder(new SolidBorder(1));
+		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellSP);
+
+		Cell abCellCA = new Cell();
+		abCellCA.setBorder(new SolidBorder(1));
+		abCellCA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCA);
+
+		Cell abCellCP = new Cell();
+		abCellCP.setBorder(new SolidBorder(1));
+		abCellCP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		benAddTable.addCell(abCellCP);
+
+		benAddTable.startNewRow();
+
+		// Getting a HashMap to an ArayList
+		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
-			Cell abCell4 = new Cell(0, 3);
-			abCell4.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell4);
-
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsLife != null) {
 
 			for (QuoBenf quoBenf : benefitsLife) {
 
-				if (!quoBenf.getRiderCode().equalsIgnoreCase("L1")) {
-					Cell abCell5 = new Cell();
-					abCell5.add(
-							new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell5);
-					Cell abCell6 = new Cell();
-					abCell6.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell6);
-					Cell abCell7 = new Cell();
-					abCell7.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell7);
+				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-					benAddTable.startNewRow();
+				////////////////
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
+
+					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+
+						if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
+
+							Object aspMonthly = (Object) "Monthly School Fee Expenses Benefit";
+							benefitDetailMap.put("benName", aspMonthly);
+
+							Double schoolFee = (Double) quoBenf.getRiderSum() / (12 * quotationDetails.getPolTerm());
+							benefitDetailMap.put("mainAmt", schoolFee);
+							benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+							benifList.add(benefitDetailMap);
+
+						} else {
+							benefitDetailMap.put("benName", quoBenf.getBenfName());
+							benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+							benifList.add(benefitDetailMap);
+						}
+					}
+
 				}
 
 			}
+
 		}
 
-		benAddTable.startNewRow();
-
-		// checking spouse having benefits
+		// checking Spouse Having Benefits
 		if (benefitsSpouse.isEmpty()) {
 
 		} else {
-			Cell abCell8 = new Cell(0, 3);
-			abCell8.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell8);
-
-			benAddTable.startNewRow();
-
-		}
-
-		if (benefitsSpouse != null) {
-
 			for (QuoBenf quoBenf : benefitsSpouse) {
 
-				Cell abCell9 = new Cell();
-				abCell9.add(new Paragraph(quoBenf.getBenfName()).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-				benAddTable.addCell(abCell9);
-				Cell abCell10 = new Cell();
-				abCell10.add(new Paragraph(formatter.format(quoBenf.getRiderSum())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell10);
-				Cell abCell11 = new Cell();
-				abCell11.add(new Paragraph(formatter.format(quoBenf.getPremium())).setFontSize(9)
-						.setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCell11);
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("ADBS") && (!quoBenf.getRiderCode().equalsIgnoreCase("SCB")
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEBS")))) {
 
-				benAddTable.startNewRow();
-			}
-		}
+					Integer isAvailable = 0;
 
-		benAddTable.startNewRow();
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+						if (benefitDetailMap.get("combination")
+								.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+						}
+					}
 
-		//// Cheking Children is active
-		if (benefitsChild.isEmpty()) {
+					if (isAvailable == 0) {
 
-		} else {
-			Cell abCell12 = new Cell(0, 3);
-			abCell12.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-					.setCharacterSpacing(1));
-			benAddTable.addCell(abCell12);
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-			benAddTable.startNewRow();
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoBenf.getBenfName());
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
 
-		}
-
-		if (benefitsChild != null) {
-
-			for (QuoChildBenef quoChild : benefitsChild) {
-				// Calculating Child Age
-				SimpleDateFormat dobFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-				LocalDate dateOfBirthChild = LocalDate.parse(dobFormat.format(quoChild.getChild().getChildDob()));
-				LocalDate currentDate = LocalDate
-						.parse(dobFormat.format(quotationDetails.getQuotationquotationCreateDate()));
-				long diffInYears = ChronoUnit.YEARS.between(dateOfBirthChild, currentDate);
-				diffInYears += 1;
-				String childAge = Long.toString(diffInYears);
-
-				Cell abCell13 = new Cell(0, 3);
-				abCell13.add(new Paragraph(
-						"Name : " + quoChild.getChild().getChildName() + '\t' + '\t' + '\t' + " Relationship : "
-								+ quoChild.getChild().getChildRelation() + '\t' + '\t' + '\t' + "Age : " + childAge)
-										.setFontSize(9).setBold().setTextAlignment(TextAlignment.LEFT)
-										.setCharacterSpacing(1));
-				benAddTable.addCell(abCell13);
-				benAddTable.startNewRow();
-
-				// loop again to get children benf
-				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
-					Cell abCell14 = new Cell();
-					abCell14.add(new Paragraph(quoChildBenef.getBenfName()).setFontSize(9)
-							.setTextAlignment(TextAlignment.LEFT));
-					benAddTable.addCell(abCell14);
-					Cell abCell15 = new Cell();
-					abCell15.add(new Paragraph(formatter.format(quoChildBenef.getRiderSum())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell15);
-					Cell abCell16 = new Cell();
-					abCell16.add(new Paragraph(formatter.format(quoChildBenef.getPremium())).setFontSize(9)
-							.setTextAlignment(TextAlignment.RIGHT));
-					benAddTable.addCell(abCell16);
-					benAddTable.startNewRow();
+						benifList.add(benefitDetailMap);
+					}
 				}
 
 			}
 
 		}
 
+		// Checking Child having Benefits
+		if (benefitsChild.isEmpty()) {
+
+		} else {
+			Double cibc = 0.0;
+			Double hbc = 0.0;
+			Double hcbic = 0.0;
+
+			for (QuoChildBenef quoChild : benefitsChild) {
+
+				for (QuoBenf quoChildBenef : quoChild.getBenfs()) {
+
+					if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+						cibc = cibc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+
+						hbc = hbc + quoChildBenef.getPremium();
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+
+						hcbic = hcbic + quoChildBenef.getPremium();
+					}
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination").equals(
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+							if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+								benefitDetailMap.put("childPre", cibc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+								benefitDetailMap.put("childPre", hbc);
+
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+								benefitDetailMap.put("childPre", hcbic);
+
+							}
+						}
+
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+						benefitDetailMap.put("combination",
+								benefictDao.findByRiderCode(quoChildBenef.getRiderCode()).getBenefictCombination());
+						benefitDetailMap.put("benName", quoChildBenef.getBenfName());
+						benefitDetailMap.put("childAmt", quoChildBenef.getRiderSum());
+
+						if (quoChildBenef.getRiderCode().equalsIgnoreCase("CIBC")) {
+							benefitDetailMap.put("childPre", cibc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
+							benefitDetailMap.put("childPre", hbc);
+
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							benefitDetailMap.put("childPre", hcbic);
+
+						}
+
+						benifList.add(benefitDetailMap);
+					}
+				}
+			}
+
+		}
+
+		// Getting Full Benf HashMap
+		for (HashMap<String, Object> hashMap : benifList) {
+
+			Cell abCellBenf = new Cell();
+			// Getting ALL Benf Name Combinattons
+			String p = (String) hashMap.get("benName");
+			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+			benAddTable.addCell(abCellBenf);
+
+			Cell abCellmA = new Cell();
+			if (hashMap.get("mainAmt") != null) {
+				Double mAmt = (Double) hashMap.get("mainAmt");
+				abCellmA.add(
+						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			} else {
+				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmA);
+			}
+
+			Cell abCellmP = new Cell();
+			if (hashMap.get("mainPre") != null) {
+				Double mPre = (Double) hashMap.get("mainPre");
+
+				abCellmP.add(
+						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			} else {
+				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellmP);
+			}
+
+			Cell abCellsA = new Cell();
+
+			if (hashMap.get("spouseAmt") != null) {
+				Double spAmt = (Double) hashMap.get("spouseAmt");
+
+				abCellsA.add(
+						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			} else {
+				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsA);
+			}
+
+			Cell abCellsP = new Cell();
+			if (hashMap.get("spousePre") != null) {
+				Double spPre = (Double) hashMap.get("spousePre");
+
+				abCellsP.add(
+						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			} else {
+				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellsP);
+			}
+
+			Cell abCellcA = new Cell();
+
+			if (hashMap.get("childAmt") != null) {
+				Double cAmt = (Double) hashMap.get("childAmt");
+
+				abCellcA.add(
+						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			} else {
+				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcA);
+			}
+
+			Cell abCellcP = new Cell();
+			if (hashMap.get("childPre") != null) {
+				Double cPre = (Double) hashMap.get("childPre");
+
+				abCellcP.add(
+						new Paragraph(formatter.format(cPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			} else {
+				abCellcP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+				benAddTable.addCell(abCellcP);
+			}
+
+			benAddTable.startNewRow();
+		}
+
 		document.add(benAddTable);
+
+		/////////////////////////// END OLD
+		/////////////////////////// FORMAT///////////////////////////////////////
+
+		// document.add(new Paragraph(""));
+
+		/// Ceate Additional Benefits table
+		float[] pointColumnWidths = { 470, 100, 100, 100, 100, 100, 100 };
+		Table addBenTable = new Table(pointColumnWidths);
+		addBenTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
+
+		// table headings
+		Cell abCellA = new Cell(2, 0);
+		abCellA.setBorder(new SolidBorder(1));
+		abCellA.add(new Paragraph("Additional Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellA);
+
+		Cell abCellB = new Cell(0, 2);
+		abCellB.setBorder(new SolidBorder(1));
+		abCellB.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellB);
+
+		Cell abCellC = new Cell(0, 2);
+		abCellC.setBorder(new SolidBorder(1));
+		abCellC.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellC);
+
+		Cell abCellD = new Cell(0, 2);
+		abCellD.setBorder(new SolidBorder(1));
+		abCellD.add(new Paragraph("Children").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellD);
+
+		addBenTable.startNewRow();
+
+		Cell abCellE = new Cell();
+		abCellE.setBorder(new SolidBorder(1));
+		abCellE.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellE);
+
+		Cell abCellF = new Cell();
+		abCellF.setBorder(new SolidBorder(1));
+		abCellF.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellF);
+
+		Cell abCellG = new Cell();
+		abCellG.setBorder(new SolidBorder(1));
+		abCellG.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellG);
+
+		Cell abCellH = new Cell();
+		abCellH.setBorder(new SolidBorder(1));
+		abCellH.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellH);
+
+		Cell abCellI = new Cell();
+		abCellI.setBorder(new SolidBorder(1));
+		abCellI.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellI);
+
+		Cell abCellJ = new Cell();
+		abCellJ.setBorder(new SolidBorder(1));
+		abCellJ.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		addBenTable.addCell(abCellJ);
+
+		addBenTable.startNewRow();
+
+		Double ndc = 0.0;
+		Double ndcp = 0.0;
+
+		Double ndcs = 0.0;
+		Double ndcsp = 0.0;
+
+		Double adb = 0.0;
+		Double adbp = 0.0;
+
+		Double adbs = 0.0;
+		Double adbsp = 0.0;
+
+		Double feb = 0.0;
+		Double febp = 0.0;
+
+		Double febs = 0.0;
+		Double febsp = 0.0;
+
+		if (benefitsLife.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoAddBenf : benefitsLife) {
+
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("L2")
+						|| (quoAddBenf.getRiderCode().equalsIgnoreCase("ATPB"))) {
+					ndc = ndc + quoAddBenf.getRiderSum();
+					ndcp = ndcp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("ADB")) {
+					adb = quoAddBenf.getRiderSum();
+					adbp = adbp + quoAddBenf.getPremium();
+
+				}
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
+					feb = quoAddBenf.getRiderSum();
+					febp = febp + quoAddBenf.getPremium();
+
+				}
+
+			}
+		}
+
+		////////////////////////
+		if (benefitsSpouse.isEmpty()) {
+
+		} else {
+
+			for (QuoBenf quoSpoBenf : benefitsSpouse) {
+
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("SCB")) {
+					ndcs = quoSpoBenf.getRiderSum();
+					ndcsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("ADBS")) {
+					adbs = quoSpoBenf.getRiderSum();
+					adbsp = quoSpoBenf.getPremium();
+
+				}
+				if (quoSpoBenf.getRiderCode().equalsIgnoreCase("FEBS")) {
+					febs = quoSpoBenf.getRiderSum();
+					febsp = quoSpoBenf.getPremium();
+
+				}
+
+			}
+
+		}
+
+		/////////////////
+		Cell abCelld1 = new Cell();
+		abCelld1.add(new Paragraph("Natural Death Cover").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld1);
+
+		Cell abCelld2 = new Cell();
+		abCelld2.add(new Paragraph(formatter.format(ndc)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld2);
+
+		Cell abCelld3 = new Cell();
+		abCelld3.add(new Paragraph(formatter.format(ndcp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld3);
+
+		Cell abCelld4 = new Cell();
+		abCelld4.add(new Paragraph(formatter.format(ndcs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld4);
+
+		Cell abCelld5 = new Cell();
+		abCelld5.add(new Paragraph(formatter.format(ndcsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld5);
+
+		Cell abCelld6 = new Cell();
+		abCelld6.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld6);
+
+		Cell abCelld7 = new Cell();
+		abCelld7.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld7);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld8 = new Cell();
+		abCelld8.add(new Paragraph("Accidental Death Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld8);
+
+		Cell abCelld9 = new Cell();
+		abCelld9.add(new Paragraph(formatter.format(adb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld9);
+
+		Cell abCelld10 = new Cell();
+		abCelld10.add(new Paragraph(formatter.format(adbp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld10);
+
+		Cell abCelld11 = new Cell();
+		abCelld11.add(new Paragraph(formatter.format(adbs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld11);
+
+		Cell abCelld12 = new Cell();
+		abCelld12.add(new Paragraph(formatter.format(adbsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld12);
+
+		Cell abCelld13 = new Cell();
+		abCelld13.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld13);
+
+		Cell abCelld14 = new Cell();
+		abCelld14.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld14);
+
+		addBenTable.startNewRow();
+
+		Cell abCelld15 = new Cell();
+		abCelld15.add(new Paragraph("Funeral Expenses").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		addBenTable.addCell(abCelld15);
+
+		Cell abCelld16 = new Cell();
+		abCelld16.add(new Paragraph(formatter.format(feb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld16);
+
+		Cell abCelld117 = new Cell();
+		abCelld117.add(new Paragraph(formatter.format(febp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld117);
+
+		Cell abCelld18 = new Cell();
+		abCelld18.add(new Paragraph(formatter.format(febs)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld18);
+
+		Cell abCelld19 = new Cell();
+		abCelld19.add(new Paragraph(formatter.format(febsp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld19);
+
+		Cell abCelld20 = new Cell();
+		abCelld20.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld20);
+
+		Cell abCelld21 = new Cell();
+		abCelld21.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+		addBenTable.addCell(abCelld21);
+
+		document.add(addBenTable);
 
 		document.add(new Paragraph("* Sum assured increase every year by 2.5%").setFontSize(10));
 		/*
@@ -4893,7 +6698,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				document.add(new Paragraph(""));
 
 				// Medical Requirements Table
-				float[] pointColumnWidths7 = { 150, 150, 150 };
+				float[] pointColumnWidths7 = { 150, 100, 100 };
 				Table medReqTable = new Table(pointColumnWidths7);
 				medReqTable.setBorder(new SolidBorder(1));
 				medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -4974,13 +6779,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
+		item4.add(new Paragraph("Abbrevations ; Y - Yes, R - Required, NR - Not Required").setFontSize(10)
+				.setFixedLeading(10));
 		list.add(item4);
-		
+
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(10).setFixedLeading(10));
+		item5.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item5);
+
+		ListItem item6 = new ListItem();
+		item6.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item6);
 
 		document.add(list);
 

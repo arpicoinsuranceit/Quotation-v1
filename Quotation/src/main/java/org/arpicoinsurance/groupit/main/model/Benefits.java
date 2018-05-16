@@ -17,6 +17,7 @@ public class Benefits implements Serializable{
 	private Integer benefitMinAge;
 	private Integer benefitMaxAge;
 	private String benefitType;
+	private String benefictCombination;
 	
 	private Date lockin_date;
 	private String benefitCreateBy;
@@ -115,4 +116,13 @@ public class Benefits implements Serializable{
 	public void setRiderCode(String riderCode) {
 		this.riderCode = riderCode;
 	}
+
+	public String getBenefictCombination() {
+		return benefictCombination;
+	}
+
+	public void setBenefictCombination(String benefictCombination) {
+		this.benefictCombination = benefictCombination;
+	}
+	
 }
