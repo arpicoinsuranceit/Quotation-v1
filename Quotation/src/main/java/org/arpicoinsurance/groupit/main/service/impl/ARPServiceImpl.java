@@ -189,6 +189,9 @@ public class ARPServiceImpl implements ARPService {
 	public BigDecimal calculateL2(int ocu, int age, int term, String rlfterm, double rebate, Date chedat, double bassum,
 			String payFrequency, QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 
+		calResp.setArp(true);
+		calResp.setPayTerm(rlfterm);
+		
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
