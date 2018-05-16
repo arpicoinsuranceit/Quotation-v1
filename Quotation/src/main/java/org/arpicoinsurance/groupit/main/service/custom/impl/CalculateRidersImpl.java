@@ -1027,7 +1027,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHBS = rateCardHBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHBS = maxTermToBenefictHBS > term ? term : maxTermToBenefictHBS;
 
-			BigDecimal hbs = hbsService.calculateHBS(28, valiedTermHBS, new Date(), ridsumasu, payFrequency, 1.0,
+			BigDecimal hbs = hbsService.calculateHBS(age, valiedTermHBS, new Date(), ridsumasu, payFrequency, 1.0,
 					ocuLoading);
 			calResp = setLodingDetails(ocuLoading, hbs.doubleValue(), calResp);
 			calResp.setHbs(hbs.doubleValue());

@@ -22,6 +22,15 @@ public class HBSServiceImpl implements HBSService{
 	@Override
 	public BigDecimal calculateHBS(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
+		
+		System.out.println("age : " + age);
+		System.out.println("term : " + term);
+		System.out.println("chedat : " + chedat);
+		System.out.println("ridsumasu : " + ridsumasu);
+		System.out.println("payFrequency : " + payFrequency);
+		System.out.println("relief : " + relief);
+		System.out.println("occupation_loding : " + occupation_loding);
+		
 		BigDecimal premiumHBS = new BigDecimal(0);
 		RateCardHB rateCardHB = rateCardHBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		System.out.println("HBS ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardHB.getRate());
