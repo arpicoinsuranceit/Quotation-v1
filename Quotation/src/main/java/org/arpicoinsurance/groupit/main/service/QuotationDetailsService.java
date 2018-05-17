@@ -1,7 +1,7 @@
 package org.arpicoinsurance.groupit.main.service;
 
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
-import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationDetailsService {
@@ -11,5 +11,7 @@ public interface QuotationDetailsService {
 	public EditQuotation editQuotationDetails(Integer qdId)throws Exception;
 	
 	QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception;
+	
+	public QuotationReceipt findQuotationDetailsForReceipt(Integer qdId)throws Exception;
 	
 }

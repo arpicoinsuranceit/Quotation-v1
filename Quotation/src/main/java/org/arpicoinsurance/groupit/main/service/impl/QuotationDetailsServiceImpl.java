@@ -17,6 +17,7 @@ import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
+import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -327,6 +328,20 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public QuotationReceipt findQuotationDetailsForReceipt(Integer qdId) throws Exception {
+		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
+		
+		QuotationReceipt quotationReceipt = new QuotationReceipt();
+		quotationReceipt.setAgentCode(details.getQuotationCreateBy());
+		quotationReceipt.setCustomerName(details.getCustomerDetails().getCustName());
+		quotationReceipt.setCustTitle(details.getCustomerDetails().getCustTitle());
+		quotationReceipt.setQuotationDetailId(details.getQdId());
+		quotationReceipt.setQuotationId(details.getQuotation().getId());
+		
+		return quotationReceipt;
 	}
 	
 	

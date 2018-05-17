@@ -793,7 +793,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHRBI = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHRBI = maxTermToBenefictHRBI > term ? term : maxTermToBenefictHRBI;
 			
-
 			//Integer valiedTermHRBI = 10;
 			
 			BigDecimal hrbi = hrbiService.calculateHRBI (age, valiedTermHRBI , gender, ridsumasu, new Date(),

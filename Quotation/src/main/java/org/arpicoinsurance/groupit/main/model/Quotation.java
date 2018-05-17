@@ -1,6 +1,8 @@
 package org.arpicoinsurance.groupit.main.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 
@@ -17,6 +20,8 @@ public class Quotation implements Serializable{
 	private String status;
 	private Products products;
 	private Users user;
+	
+	List<QuotationDetails> quotationDetails;
 	
 	public Quotation(){}
 
@@ -57,6 +62,15 @@ public class Quotation implements Serializable{
 
 	public void setUser(Users user) {
 		this.user = user;
+	}
+
+	@OneToMany(mappedBy = "quotation", targetEntity = QuotationDetails.class)
+	public List<QuotationDetails> getQuotationDetails() {
+		return quotationDetails;
+	}
+
+	public void setQuotationDetails(List<QuotationDetails> quotationDetails) {
+		this.quotationDetails = quotationDetails;
 	}
 
 
