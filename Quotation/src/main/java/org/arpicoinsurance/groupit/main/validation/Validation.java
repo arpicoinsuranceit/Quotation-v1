@@ -93,6 +93,7 @@ public class Validation {
 						break;
 					case "CIB":
 						System.out.println(calculation.get_product());
+						/////// for END
 						if (calculation.get_product().equals("END1")) {
 							if (validateCIBEND().equals(0)) {
 								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA";
@@ -104,6 +105,7 @@ public class Validation {
 						}
 						break;
 					case "FEB":
+						/////// for END
 						if (calculation.get_product().equals("END1")) {
 							if (validateENDFEB().equals(0)) {
 								return "FEB must be greater than or equal 10,000 and less than or equal 75,000 and less than or equal 10% of BSA";
@@ -198,6 +200,7 @@ public class Validation {
 						if (validateInvpSCIB().equals(2)) {
 							return "Please Select SCB before get SCIB";
 						}
+						 //////// validation END
 						if (calculation.get_product().equals("END1")) {
 							if (validateInvpSCIBEND().equals(0)) {
 								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000";
@@ -209,6 +212,7 @@ public class Validation {
 						}
 						break;
 					case "FEBS":
+						 //////// validation END
 						if (calculation.get_product().equals("END1")) {
 							if (validateENDFEBS().equals(0)) {
 								return "FEBS must be greater than or equal 10,000 and less than or equal 75,000 and less than or equal 10% of BSA less than FEB";
@@ -595,7 +599,7 @@ public class Validation {
 		return 0;
 
 	}
-
+	/////// for END
 	public Integer validateCIBEND() {
 		if (benefitMap.containsKey("CIB")) {
 			Double atpb = 0.0;
@@ -629,6 +633,7 @@ public class Validation {
 
 	}
 
+	/////// for END
 	public Integer validateENDFEB() {
 		if (benefitMap.containsKey("FEB")) {
 			Benifict benifict = benefitMap.get("FEB");
@@ -896,7 +901,7 @@ public class Validation {
 		return 0;
 
 	}
-
+    //////// validation END
 	public Integer validateInvpSCIBEND() {
 		System.out.println(benefitMap.get("CIBS").getSumAssured() + "aaaaaaaaaaaaaaaaaa");
 
@@ -935,7 +940,7 @@ public class Validation {
 		return 0;
 
 	}
-
+	//////// validation END
 	public Integer validateENDFEBS() {
 		if (benefitMap.containsKey("FEBS") && benefitMap.containsKey("FEB")) {
 			Benifict benifict = benefitMap.get("FEBS");
