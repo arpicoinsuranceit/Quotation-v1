@@ -50,11 +50,10 @@ public class QuotationEndCalculationController {
 				}
 			} else {
 				calResp.setErrorExist(true);
-				calResp.setError("Product");
+				calResp.setError("BSA must be Greater than or Equal 250000 and Age + Term must be Less than or Equal 70");
 			}
 			return calResp;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
