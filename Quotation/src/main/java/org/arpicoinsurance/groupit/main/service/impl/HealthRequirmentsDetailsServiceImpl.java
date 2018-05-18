@@ -64,7 +64,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = riskCurrent + new BigDecimal(calculation.get_personalInfo().getTerm())
 					.multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getMsfb())))
 					.doubleValue();
-			riskCurrent = riskCurrent/2;
+			riskCurrent = riskCurrent / 2;
 			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
 			break;
 		case "ASIP":
@@ -95,11 +95,11 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		}
 
+		ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "M", mediGrade);
+		ArrayList<String> medicalReports = new ArrayList<>();
+		details.put("reqListMain", medicalReqList);
 		if (riskCurrent > 0) {
 
-			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "M", mediGrade);
-
-			ArrayList<String> medicalReports = new ArrayList<>();
 			try {
 				for (String medCode : medicalReqList) {
 
@@ -109,11 +109,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 				}
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			details.put("sumAtRisk", riskCurrent);
-			details.put("reqListMain", medicalReqList);
 			details.put("reqRepoetsMain", medicalReports);
 
 		}
@@ -147,7 +145,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
 			break;
 		case "ASFP":
-			
+
 			break;
 		case "ASIP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
@@ -175,28 +173,22 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 		System.out.println("Sum at risk : " + riskCurrent);
 
-		if (riskCurrent > 0) {
+		ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "S", mediGrade);
+		ArrayList<String> medicalReports = new ArrayList<>();
 
-			ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "S", mediGrade);
+		try {
+			for (String medCode : medicalReqList) {
 
-			ArrayList<String> medicalReports = new ArrayList<>();
+				MedicalReq medicalReq = medicalReqDao.findOneByMedCode(medCode);
+				medicalReports.add(medicalReq.getMedName());
 
-			try {
-				for (String medCode : medicalReqList) {
-
-					MedicalReq medicalReq = medicalReqDao.findOneByMedCode(medCode);
-					medicalReports.add(medicalReq.getMedName());
-
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-			details.put("sumAtRisk", riskCurrent);
-			details.put("reqListMain", medicalReqList);
-			details.put("reqRepoetsMain", medicalReports);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
+		details.put("sumAtRisk", riskCurrent);
+		details.put("reqRepoetsMain", medicalReports);
+		details.put("reqListMain", medicalReqList);
 		return details;
 	}
 
@@ -227,10 +219,14 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(0.5)));
 					break;
 				case "MFIBD":
-					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(0.5)))));
+					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(
+							new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm())
+									.multiply(new BigDecimal(0.5)))));
 					break;
 				case "MFIBDT":
-					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm()).multiply(new BigDecimal(0.5)))));
+					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()).multiply(
+							new BigDecimal(12).multiply(new BigDecimal(calculation.get_personalInfo().getTerm())
+									.multiply(new BigDecimal(0.5)))));
 					break;
 				default:
 					break;
@@ -285,6 +281,8 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	private ArrayList<String> getHealthDetails(Double riskCurrent, QuotationCalculation calculation, String custType,
 			String mediGrade) {
 
+		System.out.println("called get health ???????????????????//////////////////////////");
+
 		ArrayList<String> mediTestList = new ArrayList<>();
 
 		if (custType.equalsIgnoreCase("M")) {
@@ -298,28 +296,47 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			boolean isShcbi = false;
 			boolean isShcbf = false;
 
+			Double shcb = 0.0;
+
 			boolean isHcbi = false;
 			boolean isHcbf = false;
+
+			Double hcb = 0.0;
+
 			if (benifictListM != null) {
 				for (Benifict benifict : benifictListM) {
+
+					System.out.println(benifict.getType()
+							+ "   main beneficts                                    /////////////////////");
+
 					switch (benifict.getType()) {
 					case "SUHRB":
 						isShcbi = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "SHCBI":
 						isShcbi = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "SHCBF":
 						isShcbf = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "HRB":
 						isHcbi = true;
+						hcb = benifict.getSumAssured();
+						break;
+					case "HRBI":
+						isHcbi = true;
+						hcb = benifict.getSumAssured();
 						break;
 					case "HCBI":
 						isHcbi = true;
+						hcb = benifict.getSumAssured();
 						break;
 					case "HCBF":
 						isHcbf = true;
+						hcb = benifict.getSumAssured();
 						break;
 
 					default:
@@ -344,16 +361,27 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			}
 
 			if (isShcbi || isShcbf) {
-				for (MediTestGrid mediTestGrid : grid) {
+
+				List<MediTestGrid> gridSHCBM = mediGridDao
+						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+								calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getMage(),
+								shcb, shcb);
+
+				for (MediTestGrid mediTestGrid : gridSHCBM) {
 					if (mediTestGrid.getMediGrade().equals("SHCB")) {
 						mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 					}
 				}
-
 			}
 
 			if (isHcbi || isHcbf) {
-				for (MediTestGrid mediTestGrid : grid) {
+				System.out.println("HCBI");
+				List<MediTestGrid> gridHCBM = mediGridDao
+						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+								calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getMage(), hcb,
+								hcb);
+
+				for (MediTestGrid mediTestGrid : gridHCBM) {
 					if (mediTestGrid.getMediGrade().equals("HCB")) {
 						mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 					}
@@ -372,30 +400,48 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			boolean isShcbi = false;
 			boolean isShcbf = false;
 
+			Double shcb = 0.0;
+
 			boolean isHcbi = false;
 			boolean isHcbf = false;
+
+			Double hcb = 0.0;
 
 			if (benifictListS != null) {
 
 				for (Benifict benifict : benifictListS) {
+
+					System.out.println(benifict.getType()
+							+ "   spouse beneficts                                    /////////////////////");
+
 					switch (benifict.getType()) {
 					case "SUHRBS":
 						isShcbi = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "SHCBIS":
 						isShcbi = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "SHCBFS":
 						isShcbf = true;
+						shcb = benifict.getSumAssured();
 						break;
 					case "HRBS":
 						isHcbi = true;
+						hcb = benifict.getSumAssured();
+						break;
+					case "HRBIS":
+						isHcbi = true;
+						hcb = benifict.getSumAssured();
 						break;
 					case "HCBIS":
 						isHcbi = true;
+						hcb = benifict.getSumAssured();
 						break;
 					case "HCBFS":
 						isHcbf = true;
+						hcb = benifict.getSumAssured();
 						break;
 
 					default:
@@ -408,21 +454,31 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 				return new ArrayList<>(new HashSet<>(mediTestList));
 			}
 
-				List<MediTestGrid> grid = mediGridDao
-						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
-								calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
-								riskCurrent, riskCurrent);
-			
+			List<MediTestGrid> grid = mediGridDao
+					.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+							calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
+							riskCurrent, riskCurrent);
 
 			for (MediTestGrid mediTestGrid : grid) {
+
 				if (mediTestGrid.getMediGrade().equals(mediGrade)) {
 					mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 				}
 			}
 
 			if (isShcbi || isShcbf) {
-				for (MediTestGrid mediTestGrid : grid) {
-					if (mediTestGrid.getMediGrade().equals("SHCBS")) {
+
+				System.out.println(shcb);
+				System.out.println(calculation.get_personalInfo().getSage());
+
+				List<MediTestGrid> gridSHCBM = mediGridDao
+						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+								calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
+								shcb, shcb);
+				System.out.println(gridSHCBM.size());
+				for (MediTestGrid mediTestGrid : gridSHCBM) {
+					if (mediTestGrid.getMediGrade().equals("SHCB")) {
+						System.out.println("SHCB");
 						mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 					}
 				}
@@ -430,8 +486,16 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			}
 
 			if (isHcbi || isHcbf) {
-				for (MediTestGrid mediTestGrid : grid) {
-					if (mediTestGrid.getMediGrade().equals("HCBS")) {
+
+				System.out.println(hcb);
+				System.out.println(calculation.get_personalInfo().getSage());
+
+				List<MediTestGrid> gridHCBM = mediGridDao
+						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
+								calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(), hcb,
+								hcb);
+				for (MediTestGrid mediTestGrid : gridHCBM) {
+					if (mediTestGrid.getMediGrade().equals("HCB")) {
 						mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 					}
 				}

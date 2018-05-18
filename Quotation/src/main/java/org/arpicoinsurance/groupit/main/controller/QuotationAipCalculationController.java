@@ -26,6 +26,8 @@ public class QuotationAipCalculationController {
 
 	@RequestMapping(value = "/aipCal", method = RequestMethod.POST)
 	public AIPCalResp calculateAIP(@RequestBody Plan plan) {
+		
+		System.out.println(plan.toString());
 
 		Double contribution = plan.get_bsa();
 		try {

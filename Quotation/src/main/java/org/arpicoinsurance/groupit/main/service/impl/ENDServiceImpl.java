@@ -153,6 +153,9 @@ public class ENDServiceImpl implements ENDService {
 
 			if(quotationCalculation.get_personalInfo().getSage()!=null &&
 			quotationCalculation.get_personalInfo().getSgenger()!=null){
+				
+				System.out.println("called spouse health");
+				
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			
 			}

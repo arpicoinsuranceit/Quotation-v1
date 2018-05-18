@@ -94,7 +94,6 @@ public class LoginController {
 			Integer day=getNewPwDayCount(users.getLogin().getLoginId());
 			return day;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

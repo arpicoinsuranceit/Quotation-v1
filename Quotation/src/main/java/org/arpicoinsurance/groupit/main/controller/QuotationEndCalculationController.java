@@ -27,6 +27,10 @@ public class QuotationEndCalculationController {
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
 	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
 
+		System.out.println("called");
+		
+		System.out.println(calculation.toString());
+		
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -59,7 +63,6 @@ public class QuotationEndCalculationController {
 	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
 	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		System.out.println(id);
 		String resp = "Fail";
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -76,7 +79,6 @@ public class QuotationEndCalculationController {
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
-						System.out.println(error + "ssssssssssss");
 						if (error.equals("No")) {
 
 							responseMap = endService.saveQuotation(calculation, _invpSaveQuotation, id);
@@ -113,11 +115,6 @@ public class QuotationEndCalculationController {
 	public HashMap<String, Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
-		System.out.println(userId);
-		System.out.println(qdId);
-		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
-
 		String resp = "Fail";
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -134,8 +131,6 @@ public class QuotationEndCalculationController {
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
-
-						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 						if (error.equals("No")) {
 

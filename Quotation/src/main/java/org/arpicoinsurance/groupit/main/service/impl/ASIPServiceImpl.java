@@ -2,7 +2,6 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
-import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
@@ -37,7 +35,6 @@ import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
-import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
@@ -57,7 +54,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional

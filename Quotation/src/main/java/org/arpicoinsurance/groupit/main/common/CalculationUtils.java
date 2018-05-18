@@ -88,7 +88,6 @@ public class CalculationUtils {
 	}
 
 	public Double getPolicyFee() {
-		// TODO Auto-generated method stub
 		return 300.00;
 	}
 	

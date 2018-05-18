@@ -31,7 +31,5 @@ public class OccupationController {
 			e.printStackTrace();
 		}
 		return null;
-		
-		
 	}
 }
