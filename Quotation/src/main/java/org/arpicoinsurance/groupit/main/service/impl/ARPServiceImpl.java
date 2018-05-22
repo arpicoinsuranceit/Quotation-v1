@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardSurenderDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -29,6 +30,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
+import org.arpicoinsurance.groupit.main.model.RateCardSurender;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -121,6 +123,9 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
+	
+	@Autowired
+	private RateCardSurenderDao rateCardSurenderDao;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
