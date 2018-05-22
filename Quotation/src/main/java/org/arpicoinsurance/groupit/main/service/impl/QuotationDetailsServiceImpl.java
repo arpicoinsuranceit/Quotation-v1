@@ -198,7 +198,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 								children.set_cDob(dateFormat1.format(child.getChildDob()));
 								children.set_cName(child.getChildName());
 								children.set_cNic(child.getChildNic());
-								children.set_cTitle(child.getChildRelation());
+								children.set_cTitle(child.getChildGender());
 								
 								childrenList.add(children);
 								

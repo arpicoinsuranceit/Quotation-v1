@@ -233,9 +233,9 @@ public class DTAServiceImpl implements DTAService {
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
-			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
-			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE = adminFee + tax;
+			//Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			Double tax = calculationUtils.getTaxAmount(tot);
+			Double extraOE = tax;
 
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);

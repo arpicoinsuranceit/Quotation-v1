@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,16 +22,13 @@ import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
-import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
@@ -61,7 +56,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Autowired
 	private MedicalRequirementsDaoCustom medicalRequirementsDaoCustom;
 
-	// Getting Benf Combination
+	// To get Benefit Combination
 	@Autowired
 	private BenefitsDao benefictDao;
 
@@ -1400,13 +1395,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		} else {
 
-			// Double ndc = 0.0;
-
 			for (QuoBenf quoBenf : benefitsLife) {
 
 				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
-				////////////////
 				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
 						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
 						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
@@ -1414,6 +1406,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
 						benefitDetailMap.put("combination",
 								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+
 						benefitDetailMap.put("benName", quoBenf.getBenfName());
 						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
 						benefitDetailMap.put("mainPre", quoBenf.getPremium());
@@ -1445,6 +1438,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
 							benefitDetailMap.put("spousePre", quoBenf.getPremium());
 						}
+
 					}
 
 					if (isAvailable == 0) {
@@ -1484,9 +1478,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
 						hbc = hbc + quoChildBenef.getPremium();
-					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+							|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 
 						hcbic = hcbic + quoChildBenef.getPremium();
+
 					}
 
 					Integer isAvailable = 0;
@@ -1504,7 +1500,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 								benefitDetailMap.put("childPre", hbc);
 
-							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+									|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
@@ -1527,7 +1524,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 							benefitDetailMap.put("childPre", hbc);
 
-						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+								|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 							benefitDetailMap.put("childPre", hcbic);
 
 						}
@@ -1545,16 +1543,30 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellBenf = new Cell();
 			// Getting ALL Benf Name Combinattons
 			String p = (String) hashMap.get("benName");
+			//System.out.println("combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + hashMap.get("combination"));
 			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
 			benAddTable.addCell(abCellBenf);
 
 			Cell abCellmA = new Cell();
 			if (hashMap.get("mainAmt") != null) {
-				Double mAmt = (Double) hashMap.get("mainAmt");
-				abCellmA.add(
-						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
+
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("WPB")) {
+					abCellmA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+
+				} else if (!comb.equalsIgnoreCase("WPB")) {
+
+					Double mAmt = (Double) hashMap.get("mainAmt");
+
+					abCellmA.add(
+							new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+				}
+
 			} else {
+
 				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
 			}
@@ -1574,11 +1586,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellsA = new Cell();
 
 			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
+				if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
+					abCellsA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else if (!comb.equalsIgnoreCase("WPB") || !comb.equalsIgnoreCase("HCBF")) {
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
 			} else {
 				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellsA);
@@ -1599,11 +1620,22 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellcA = new Cell();
 
 			if (hashMap.get("childAmt") != null) {
-				Double cAmt = (Double) hashMap.get("childAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellcA.add(
-						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellcA);
+				if (comb.equalsIgnoreCase("HCBF")) {
+
+					abCellcA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double cAmt = (Double) hashMap.get("childAmt");
+
+					abCellcA.add(
+							new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				}
+
 			} else {
 				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellcA);
@@ -2407,87 +2439,130 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(DtlTable);
 
 		document.add(new Paragraph("\n"));
-		document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
-		document.add(new Paragraph(""));
 
-		//////////////////////////// TEST OLD
-		//////////////////////////// FORMAT//////////////////////////////////////
-
-		// Create Additional Benefits Table
-		float[] pointColumnWidths4 = { 500, 120, 120, 120, 120 };
-		Table benAddTable = new Table(pointColumnWidths4);
-		benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
-
-		// table headings
-		Cell abCellth1 = new Cell(2, 0);
-		abCellth1.setBorder(new SolidBorder(1));
-		abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellth1);
-
-		Cell abCellth2 = new Cell(0, 2);
-		abCellth2.setBorder(new SolidBorder(1));
-		abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellth2);
-		Cell abCellth3 = new Cell(0, 2);
-		abCellth3.setBorder(new SolidBorder(1));
-		abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellth3);
-
-		benAddTable.startNewRow();
-
-		Cell abCellMA = new Cell();
-		abCellMA.setBorder(new SolidBorder(1));
-		abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellMA);
-
-		Cell abCellMP = new Cell();
-		abCellMP.setBorder(new SolidBorder(1));
-		abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellMP);
-
-		Cell abCellSA = new Cell();
-		abCellSA.setBorder(new SolidBorder(1));
-		abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellSA);
-
-		Cell abCellSP = new Cell();
-		abCellSP.setBorder(new SolidBorder(1));
-		abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
-				.setCharacterSpacing(1));
-		benAddTable.addCell(abCellSP);
-
-		benAddTable.startNewRow();
-
-		// Getting a HashMap to an ArayList
-		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
-
-		// Checking MainLife Having Benefits
-		if (benefitsLife.isEmpty()) {
-
+		if (benefitsLife.size() == 1) {
+			// System.out.println("sizeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 1" );
 		} else {
 
-			// Double ndc = 0.0;
+			document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
+			document.add(new Paragraph("")); 
 
-			for (QuoBenf quoBenf : benefitsLife) {
+			//////////////////////////// TEST OLD
+			//////////////////////////// FORMAT//////////////////////////////////////
 
-				HashMap<String, Object> benefitDetailMap = new HashMap<>();
+			// Create Additional Benefits Table
+			float[] pointColumnWidths4 = { 500, 120, 120, 120, 120 };
+			Table benAddTable = new Table(pointColumnWidths4);
+			benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
-				////////////////
-				if (!quoBenf.getRiderCode().equalsIgnoreCase("L2") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
-						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))) {
+			// table headings
+			Cell abCellth1 = new Cell(2, 0);
+			abCellth1.setBorder(new SolidBorder(1));
+			abCellth1.add(new Paragraph("Living Benefits").setFontSize(9).setBold()
+					.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
+			benAddTable.addCell(abCellth1);
 
-					if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+			Cell abCellth2 = new Cell(0, 2);
+			abCellth2.setBorder(new SolidBorder(1));
+			abCellth2.add(new Paragraph("Main Life").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellth2);
+			Cell abCellth3 = new Cell(0, 2);
+			abCellth3.setBorder(new SolidBorder(1));
+			abCellth3.add(new Paragraph("Spouse").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellth3);
+
+			benAddTable.startNewRow();
+
+			Cell abCellMA = new Cell();
+			abCellMA.setBorder(new SolidBorder(1));
+			abCellMA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellMA);
+
+			Cell abCellMP = new Cell();
+			abCellMP.setBorder(new SolidBorder(1));
+			abCellMP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellMP);
+
+			Cell abCellSA = new Cell();
+			abCellSA.setBorder(new SolidBorder(1));
+			abCellSA.add(new Paragraph("Amount").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellSA);
+
+			Cell abCellSP = new Cell();
+			abCellSP.setBorder(new SolidBorder(1));
+			abCellSP.add(new Paragraph("Premium").setFontSize(9).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(abCellSP);
+
+			benAddTable.startNewRow();
+
+			// Getting a HashMap to an ArayList
+			ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
+
+			// Checking MainLife Having Benefits
+			if (benefitsLife.isEmpty()) {
+
+			} else {
+
+				// Double ndc = 0.0;
+
+				for (QuoBenf quoBenf : benefitsLife) {
+
+					HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
+					////////////////
+					if (!quoBenf.getRiderCode().equalsIgnoreCase("L2")
+							&& (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+							&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))) {
+
+						if (benefictDao.findByRiderCode(quoBenf.getRiderCode()) != null) {
+							benefitDetailMap.put("combination",
+									benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
+							benefitDetailMap.put("benName", quoBenf.getBenfName());
+							benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("mainPre", quoBenf.getPremium());
+
+							benifList.add(benefitDetailMap);
+						}
+
+					}
+
+				}
+
+			}
+
+			// checking Spouse Having Benefits
+			if (benefitsSpouse.isEmpty()) {
+
+			} else {
+				for (QuoBenf quoBenf : benefitsSpouse) {
+
+					Integer isAvailable = 0;
+
+					for (HashMap<String, Object> benefitDetailMap : benifList) {
+
+						if (benefitDetailMap.get("combination")
+								.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
+							isAvailable = 1;
+							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+						}
+					}
+
+					if (isAvailable == 0) {
+
+						HashMap<String, Object> benefitDetailMap = new HashMap<>();
+
 						benefitDetailMap.put("combination",
 								benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
 						benefitDetailMap.put("benName", quoBenf.getBenfName());
-						benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
-						benefitDetailMap.put("mainPre", quoBenf.getPremium());
+						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
+						benefitDetailMap.put("spousePre", quoBenf.getPremium());
 
 						benifList.add(benefitDetailMap);
 					}
@@ -2496,110 +2571,79 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			}
 
-		}
+			// Getting Full Benf HashMap
+			for (HashMap<String, Object> hashMap : benifList) {
 
-		// checking Spouse Having Benefits
-		if (benefitsSpouse.isEmpty()) {
+				Cell abCellBenf = new Cell();
+				// Getting ALL Benf Name Combinattons
+				String p = (String) hashMap.get("benName");
+				abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+				benAddTable.addCell(abCellBenf);
 
-		} else {
-			for (QuoBenf quoBenf : benefitsSpouse) {
+				Cell abCellmA = new Cell();
+				if (hashMap.get("mainAmt") != null) {
 
-				Integer isAvailable = 0;
+					Double mAmt = (Double) hashMap.get("mainAmt");
+					abCellmA.add(
+							new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
 
-				for (HashMap<String, Object> benefitDetailMap : benifList) {
-
-					if (benefitDetailMap.get("combination")
-							.equals(benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination())) {
-						isAvailable = 1;
-						benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
-						benefitDetailMap.put("spousePre", quoBenf.getPremium());
-					}
+				} else {
+					abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
 				}
 
-				if (isAvailable == 0) {
+				Cell abCellmP = new Cell();
+				if (hashMap.get("mainPre") != null) {
+					Double mPre = (Double) hashMap.get("mainPre");
 
-					HashMap<String, Object> benefitDetailMap = new HashMap<>();
-
-					benefitDetailMap.put("combination",
-							benefictDao.findByRiderCode(quoBenf.getRiderCode()).getBenefictCombination());
-					benefitDetailMap.put("benName", quoBenf.getBenfName());
-					benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
-					benefitDetailMap.put("spousePre", quoBenf.getPremium());
-
-					benifList.add(benefitDetailMap);
+					abCellmP.add(
+							new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmP);
+				} else {
+					abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmP);
 				}
 
+				Cell abCellsA = new Cell();
+
+				if (hashMap.get("spouseAmt") != null) {
+
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else {
+					abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
+				Cell abCellsP = new Cell();
+				if (hashMap.get("spousePre") != null) {
+					Double spPre = (Double) hashMap.get("spousePre");
+
+					abCellsP.add(new Paragraph(formatter.format(spPre)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsP);
+				} else {
+					abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsP);
+				}
+
+				benAddTable.startNewRow();
+
 			}
+
+			document.add(benAddTable);
+
+			/////////////////////////// END OLD
+			/////////////////////////// FORMAT///////////////////////////////////////
+
+			document.add(new Paragraph(""));
 
 		}
-
-		// Getting Full Benf HashMap
-		for (HashMap<String, Object> hashMap : benifList) {
-
-			Cell abCellBenf = new Cell();
-			// Getting ALL Benf Name Combinattons
-			String p = (String) hashMap.get("benName");
-			abCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
-			benAddTable.addCell(abCellBenf);
-
-			Cell abCellmA = new Cell();
-			if (hashMap.get("mainAmt") != null) {
-				Double mAmt = (Double) hashMap.get("mainAmt");
-				abCellmA.add(
-						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
-			} else {
-				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
-			}
-
-			Cell abCellmP = new Cell();
-			if (hashMap.get("mainPre") != null) {
-				Double mPre = (Double) hashMap.get("mainPre");
-
-				abCellmP.add(
-						new Paragraph(formatter.format(mPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmP);
-			} else {
-				abCellmP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmP);
-			}
-
-			Cell abCellsA = new Cell();
-
-			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
-
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
-			} else {
-				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
-			}
-
-			Cell abCellsP = new Cell();
-			if (hashMap.get("spousePre") != null) {
-				Double spPre = (Double) hashMap.get("spousePre");
-
-				abCellsP.add(
-						new Paragraph(formatter.format(spPre)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsP);
-			} else {
-				abCellsP.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsP);
-			}
-
-			benAddTable.startNewRow();
-
-		}
-
-		document.add(benAddTable);
-
-		/////////////////////////// END OLD
-		/////////////////////////// FORMAT///////////////////////////////////////
-
-		document.add(new Paragraph(""));
 
 		document.add(new Paragraph("Schedule").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
 
@@ -3312,7 +3356,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
 						hbc = hbc + quoChildBenef.getPremium();
-					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+							|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 
 						hcbic = hcbic + quoChildBenef.getPremium();
 					}
@@ -3331,7 +3376,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 								benefitDetailMap.put("childPre", hbc);
 
-							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+									|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
@@ -3354,7 +3400,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 							benefitDetailMap.put("childPre", hbc);
 
-						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+								|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 							benefitDetailMap.put("childPre", hcbic);
 
 						}
@@ -3377,10 +3424,19 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			Cell abCellmA = new Cell();
 			if (hashMap.get("mainAmt") != null) {
-				Double mAmt = (Double) hashMap.get("mainAmt");
-				abCellmA.add(
-						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("WPB")) {
+					abCellmA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+
+				} else if (!comb.equalsIgnoreCase("WPB")) {
+					Double mAmt = (Double) hashMap.get("mainAmt");
+					abCellmA.add(
+							new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+				}
+
 			} else {
 				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
@@ -3401,11 +3457,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellsA = new Cell();
 
 			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
+				if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
+					abCellsA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else if (!comb.equalsIgnoreCase("WPB") || !comb.equalsIgnoreCase("HCBF")) {
+
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
 			} else {
 				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellsA);
@@ -3426,11 +3492,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellcA = new Cell();
 
 			if (hashMap.get("childAmt") != null) {
-				Double cAmt = (Double) hashMap.get("childAmt");
 
-				abCellcA.add(
-						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellcA);
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("HCBF")) {
+					abCellcA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double cAmt = (Double) hashMap.get("childAmt");
+
+					abCellcA.add(
+							new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+				}
+
 			} else {
 				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellcA);
@@ -4338,7 +4414,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
 						hbc = hbc + quoChildBenef.getPremium();
-					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+							|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 
 						hcbic = hcbic + quoChildBenef.getPremium();
 					}
@@ -4357,7 +4434,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 								benefitDetailMap.put("childPre", hbc);
 
-							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+									|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
@@ -4380,7 +4458,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 							benefitDetailMap.put("childPre", hbc);
 
-						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+								|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 							benefitDetailMap.put("childPre", hcbic);
 
 						}
@@ -4403,10 +4482,19 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			Cell abCellmA = new Cell();
 			if (hashMap.get("mainAmt") != null) {
-				Double mAmt = (Double) hashMap.get("mainAmt");
-				abCellmA.add(
-						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("WPB")) {
+					abCellmA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+
+				} else if (!comb.equalsIgnoreCase("WPB")) {
+					Double mAmt = (Double) hashMap.get("mainAmt");
+					abCellmA.add(
+							new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+				}
+
 			} else {
 				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
@@ -4427,11 +4515,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellsA = new Cell();
 
 			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
+				if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
+					abCellsA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else if (!comb.equalsIgnoreCase("WPB") || !comb.equalsIgnoreCase("HCBF")) {
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
 			} else {
 				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellsA);
@@ -4452,11 +4549,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellcA = new Cell();
 
 			if (hashMap.get("childAmt") != null) {
-				Double cAmt = (Double) hashMap.get("childAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellcA.add(
-						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellcA);
+				if (comb.equalsIgnoreCase("HCBF")) {
+					abCellcA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double cAmt = (Double) hashMap.get("childAmt");
+
+					abCellcA.add(
+							new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+				}
+
 			} else {
 				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellcA);
@@ -5130,7 +5236,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 625, 230);
+		DtlTable.setFixedPosition(400, 620, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -5373,7 +5479,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
 						hbc = hbc + quoChildBenef.getPremium();
-					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+							|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 
 						hcbic = hcbic + quoChildBenef.getPremium();
 					}
@@ -5392,7 +5499,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 								benefitDetailMap.put("childPre", hbc);
 
-							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+									|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
@@ -5415,7 +5523,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 							benefitDetailMap.put("childPre", hbc);
 
-						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+								|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 							benefitDetailMap.put("childPre", hcbic);
 
 						}
@@ -5442,6 +5551,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				abCellmA.add(
 						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
+
 			} else {
 				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
@@ -5462,11 +5572,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellsA = new Cell();
 
 			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
 
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("HCBF")) {
+					abCellsA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
 			} else {
 				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellsA);
@@ -5487,11 +5607,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellcA = new Cell();
 
 			if (hashMap.get("childAmt") != null) {
-				Double cAmt = (Double) hashMap.get("childAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellcA.add(
-						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellcA);
+				if (comb.equalsIgnoreCase("HCBF")) {
+					abCellcA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double cAmt = (Double) hashMap.get("childAmt");
+
+					abCellcA.add(
+							new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+				}
+
 			} else {
 				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellcA);
@@ -5968,7 +6097,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// creating Quotation Details Tables
 		float[] pointColumnWidths5 = { 80, 150 };
 		Table DtlTable = new Table(pointColumnWidths5);
-		DtlTable.setFixedPosition(400, 610, 230);
+		DtlTable.setFixedPosition(400, 605, 230);
 
 		Cell dlcell1 = new Cell();
 		dlcell1.setBorder(Border.NO_BORDER);
@@ -6238,7 +6367,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 
 						hbc = hbc + quoChildBenef.getPremium();
-					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+					} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+							|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 
 						hcbic = hcbic + quoChildBenef.getPremium();
 					}
@@ -6257,7 +6387,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 								benefitDetailMap.put("childPre", hbc);
 
-							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+							} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+									|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
@@ -6280,7 +6411,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HBC")) {
 							benefitDetailMap.put("childPre", hbc);
 
-						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC") || quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
+						} else if (quoChildBenef.getRiderCode().equalsIgnoreCase("HCBIC")
+								|| quoChildBenef.getRiderCode().equalsIgnoreCase("SHCBIC")) {
 							benefitDetailMap.put("childPre", hcbic);
 
 						}
@@ -6303,10 +6435,19 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			Cell abCellmA = new Cell();
 			if (hashMap.get("mainAmt") != null) {
-				Double mAmt = (Double) hashMap.get("mainAmt");
-				abCellmA.add(
-						new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellmA);
+				String comb = (String) hashMap.get("combination");
+
+				if (comb.equalsIgnoreCase("WPB")) {
+					abCellmA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+
+				} else if (!comb.equalsIgnoreCase("WPB")) {
+					Double mAmt = (Double) hashMap.get("mainAmt");
+					abCellmA.add(
+							new Paragraph(formatter.format(mAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellmA);
+				}
+
 			} else {
 				abCellmA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellmA);
@@ -6327,11 +6468,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellsA = new Cell();
 
 			if (hashMap.get("spouseAmt") != null) {
-				Double spAmt = (Double) hashMap.get("spouseAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellsA.add(
-						new Paragraph(formatter.format(spAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellsA);
+				if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
+					abCellsA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+
+				} else if (!comb.equalsIgnoreCase("WPB") || !comb.equalsIgnoreCase("HCBF")) {
+					Double spAmt = (Double) hashMap.get("spouseAmt");
+
+					abCellsA.add(new Paragraph(formatter.format(spAmt)).setFontSize(9)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellsA);
+				}
+
 			} else {
 				abCellsA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellsA);
@@ -6352,11 +6502,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			Cell abCellcA = new Cell();
 
 			if (hashMap.get("childAmt") != null) {
-				Double cAmt = (Double) hashMap.get("childAmt");
+				String comb = (String) hashMap.get("combination");
 
-				abCellcA.add(
-						new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
-				benAddTable.addCell(abCellcA);
+				if (comb.equalsIgnoreCase("HCBF")) {
+					abCellcA.add(new Paragraph("Applied").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+
+				} else if (!comb.equalsIgnoreCase("HCBF")) {
+					Double cAmt = (Double) hashMap.get("childAmt");
+
+					abCellcA.add(
+							new Paragraph(formatter.format(cAmt)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(abCellcA);
+				}
+
 			} else {
 				abCellcA.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
 				benAddTable.addCell(abCellcA);

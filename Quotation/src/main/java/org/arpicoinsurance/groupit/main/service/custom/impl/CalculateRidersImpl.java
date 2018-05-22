@@ -420,16 +420,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer childCount, Double inrate) throws Exception {
 
 		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
-<<<<<<< HEAD
-		//Integer term = payTerm;
-		calculateBenifPremium(type, bsa, gender, age, frequance, term, ocu, calResp, adultCount, childCount, bsa,
-				inrate);
-=======
+
 
 		calculateBenifPremium(type, bsa, gender, age, frequance, term, ocu, calResp, adultCount, childCount, bsa,
 				inrate);
 
->>>>>>> refs/remotes/origin/branch-113
 		return calResp;
 	}
 

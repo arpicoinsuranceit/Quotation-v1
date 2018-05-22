@@ -92,14 +92,30 @@ public class Validation {
 						}
 						break;
 					case "CIB":
-						if (validateInvpCIB().equals(0)) {
-							return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+						System.out.println(calculation.get_product());
+						/////// for END
+						if (calculation.get_product().equals("END1")) {
+							if (validateCIBEND().equals(0)) {
+								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+							}
+						} else {
+							if (validateInvpCIB().equals(0)) {
+								return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+							}
 						}
 						break;
 					case "FEB":
-						if (validateInvpFEB().equals(0)) {
-							return "FEB must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA";
+						/////// for END
+						if (calculation.get_product().equals("END1")) {
+							if (validateENDFEB().equals(0)) {
+								return "FEB must be greater than or equal 10,000 and less than or equal 75,000 and less than or equal 10% of BSA";
+							}
+						} else {
+							if (validateInvpFEB().equals(0)) {
+								return "FEB must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA";
+							}
 						}
+
 						break;
 					case "MFIBD":
 						if (validateInvpMIFBD().equals(0)) {
@@ -184,13 +200,27 @@ public class Validation {
 						if (validateInvpSCIB().equals(2)) {
 							return "Please Select SCB before get SCIB";
 						}
-						if (validateInvpSCIB().equals(0)) {
-							return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000";
+						 //////// validation END
+						if (calculation.get_product().equals("END1")) {
+							if (validateInvpSCIBEND().equals(0)) {
+								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000";
+							}
+						} else {
+							if (validateInvpSCIB().equals(0)) {
+								return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000";
+							}
 						}
 						break;
 					case "FEBS":
-						if (validateInvpFEBS().equals(0)) {
-							return "FEBS must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA less than FEB";
+						 //////// validation END
+						if (calculation.get_product().equals("END1")) {
+							if (validateENDFEBS().equals(0)) {
+								return "FEBS must be greater than or equal 10,000 and less than or equal 75,000 and less than or equal 10% of BSA less than FEB";
+							}
+						} else {
+							if (validateInvpFEBS().equals(0)) {
+								return "FEBS must be greater than or equal 25,000 and less than or equal 75,000 and less than or equal 10% of BSA less than FEB";
+							}
 						}
 						break;
 					case "HBS":
@@ -277,8 +307,14 @@ public class Validation {
 					String type = benifict.getType();
 					switch (type) {
 					case "CIBC":
-						if (validateInvpCIBC().equals(0)) {
-							return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000";
+						if (calculation.get_product().equals("END1")) {
+							if (validateENDCIBC().equals(0)) {
+								return "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000";
+							}
+						} else {
+							if (validateInvpCIBC().equals(0)) {
+								return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000";
+							}
 						}
 						break;
 					/*
@@ -439,7 +475,7 @@ public class Validation {
 	public Integer validateASFPABD() {
 		if (benefitMap.containsKey("ADB")) {
 			Benifict benifict = benefitMap.get("ADB");
-			Double bsa = calculation.get_personalInfo().getBsa();
+			//Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
 			if ((rbsa >= 500000 && rbsa <= 3000000 && rbsa % 25000 == 0)) {
 
@@ -478,7 +514,7 @@ public class Validation {
 		}
 		return 0;
 	}
-	
+
 	public Integer validateInvpATBP() {
 		if (benefitMap.containsKey("ATPB")) {
 			System.out.println("call atpb val method");
@@ -489,7 +525,6 @@ public class Validation {
 				return 1;
 			}
 			return 0;
-
 		}
 		return 0;
 	}
@@ -564,6 +599,26 @@ public class Validation {
 		return 0;
 
 	}
+	/////// for END
+	public Integer validateCIBEND() {
+		if (benefitMap.containsKey("CIB")) {
+			Double atpb = 0.0;
+			if (benefitMap.containsKey("ATPB")) {
+				atpb = benefitMap.get("ATPB").getSumAssured();
+			}
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double cib = benefitMap.get("CIB").getSumAssured();
+
+			if (cib <= (atpb + bsa) && cib <= 6000000 && cib >= 100000) {
+				return 1;
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
 
 	public Integer validateInvpFEB() {
 		if (benefitMap.containsKey("FEB")) {
@@ -578,13 +633,27 @@ public class Validation {
 
 	}
 
+	/////// for END
+	public Integer validateENDFEB() {
+		if (benefitMap.containsKey("FEB")) {
+			Benifict benifict = benefitMap.get("FEB");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double rbsa = benifict.getSumAssured();
+			if (rbsa >= 10000 && rbsa <= 75000 && rbsa <= (bsa * 0.1)) {
+				return 1;
+			}
+		}
+		return 0;
+
+	}
+
 	public Integer validateInvpMIFBD() {
 		if (benefitMap.containsKey("MFIBD") && (benefitMap.containsKey("MFIBT") && !benefitMap.get("MFIBT").isActive()
 				&& benefitMap.containsKey("MFIBDT") && !benefitMap.get("MFIBDT").isActive()
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBDT"))) {
 			Benifict benifict = benefitMap.get("MFIBD");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa % 1000 == 0) {
 				return 1;
 			}
 		}
@@ -598,7 +667,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBDT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa % 1000 == 0) {
 				return 1;
 			}
 		}
@@ -612,7 +681,7 @@ public class Validation {
 				|| !benefitMap.containsKey("MFIBT") && !benefitMap.containsKey("MFIBD"))) {
 			Benifict benifict = benefitMap.get("MFIBDT");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 10000 && rbsa <= 100000 && rbsa%1000 == 0) {
+			if (rbsa >= 10000 && rbsa <= 100000 && rbsa % 1000 == 0) {
 				return 1;
 			}
 		}
@@ -832,6 +901,31 @@ public class Validation {
 		return 0;
 
 	}
+    //////// validation END
+	public Integer validateInvpSCIBEND() {
+		System.out.println(benefitMap.get("CIBS").getSumAssured() + "aaaaaaaaaaaaaaaaaa");
+
+		if (benefitMap.get("BSAS") == null) {
+			return 2;
+		}
+
+		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
+			System.out.println("called");
+			Double scb = benefitMap.get("BSAS").getSumAssured();
+			Double cib = benefitMap.get("CIBS").getSumAssured();
+
+			System.out.println(scb);
+			System.out.println(cib);
+			if (cib <= scb && cib <= 6000000 && cib >= 100000) {
+				return 1;
+			}
+
+			return 0;
+
+		}
+		return 0;
+
+	}
 
 	public Integer validateInvpFEBS() {
 		if (benefitMap.containsKey("FEBS") && benefitMap.containsKey("FEB")) {
@@ -840,6 +934,20 @@ public class Validation {
 			Double rbsa = benifict.getSumAssured();
 			Double feb = benefitMap.get("FEB").getSumAssured();
 			if (rbsa >= 25000 && rbsa <= 75000 && rbsa <= (bsa * 0.1) && feb >= rbsa) {
+				return 1;
+			}
+		}
+		return 0;
+
+	}
+	//////// validation END
+	public Integer validateENDFEBS() {
+		if (benefitMap.containsKey("FEBS") && benefitMap.containsKey("FEB")) {
+			Benifict benifict = benefitMap.get("FEBS");
+			Double bsa = calculation.get_personalInfo().getBsa();
+			Double rbsa = benifict.getSumAssured();
+			Double feb = benefitMap.get("FEB").getSumAssured();
+			if (rbsa >= 10000 && rbsa <= 75000 && rbsa <= (bsa * 0.1) && feb >= rbsa) {
 				return 1;
 			}
 		}
@@ -861,8 +969,8 @@ public class Validation {
 
 	public Integer validateInvpHRBFS() {
 		if (benefitMap.containsKey("HRBFS") && benefitMap.containsKey("HRBF")) {
-			Double hrbf = benefitMap.get("HRBF").getSumAssured();
-			Double hrbfs = benefitMap.get("HRBFS").getSumAssured();
+			//Double hrbf = benefitMap.get("HRBF").getSumAssured();
+			//Double hrbfs = benefitMap.get("HRBFS").getSumAssured();
 			// if (hrbf.equals(hrbfs)) {
 			return 1;
 			// }
@@ -918,9 +1026,9 @@ public class Validation {
 		System.out.println(calculation.get_product() + "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
 		if (calculation.get_product() != null) {
 			Benifict cibc = benefitMap.get("CIBC");
-			Double bsa = calculation.get_personalInfo().getBsa();
+			//Double bsa = calculation.get_personalInfo().getBsa();
 			Double cibcBsa = cibc.getSumAssured();
-			Double atpbBsa = 0.0;
+			//Double atpbBsa = 0.0;
 
 			if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
 				return 1;
@@ -928,12 +1036,40 @@ public class Validation {
 		} else {
 			if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
 				Benifict cibc = benefitMap.get("CIBC");
-				Benifict atpb = benefitMap.get("ATPB");
-				Double bsa = calculation.get_personalInfo().getBsa();
+				//Benifict atpb = benefitMap.get("ATPB");
+				//Double bsa = calculation.get_personalInfo().getBsa();
 				Double cibcBsa = cibc.getSumAssured();
-				Double atpbBsa = atpb.getSumAssured();
+				//Double atpbBsa = atpb.getSumAssured();
 
 				if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
+					return 1;
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	public Integer validateENDCIBC() {
+		System.out.println(calculation.get_product() + "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
+		if (calculation.get_product() != null) {
+			Benifict cibc = benefitMap.get("CIBC");
+			//Double bsa = calculation.get_personalInfo().getBsa();
+			Double cibcBsa = cibc.getSumAssured();
+			//Double atpbBsa = 0.0;
+
+			if (cibcBsa >= 100000 && cibcBsa <= 1000000) {
+				return 1;
+			}
+		} else {
+			if (benefitMap.containsKey("ATPB") && benefitMap.containsKey("CIBC")) {
+				Benifict cibc = benefitMap.get("CIBC");
+				//Benifict atpb = benefitMap.get("ATPB");
+				//Double bsa = calculation.get_personalInfo().getBsa();
+				Double cibcBsa = cibc.getSumAssured();
+				//Double atpbBsa = atpb.getSumAssured();
+
+				if (cibcBsa >= 100000 && cibcBsa <= 1000000) {
 					return 1;
 				}
 			}
@@ -968,8 +1104,8 @@ public class Validation {
 
 	public Integer validateInvpHRBFC() {
 		if (benefitMap.containsKey("HRBFC") && benefitMap.containsKey("HRBF")) {
-			Double hrbf = benefitMap.get("HRBF").getSumAssured();
-			Double hrbfc = benefitMap.get("HRBFC").getSumAssured();
+			//Double hrbf = benefitMap.get("HRBF").getSumAssured();
+			//Double hrbfc = benefitMap.get("HRBFC").getSumAssured();
 			// if (hrbf.equals(hrbfc)) {
 			return 1;
 			// }
@@ -1103,3 +1239,4 @@ public class Validation {
 
 	}
 }
+
