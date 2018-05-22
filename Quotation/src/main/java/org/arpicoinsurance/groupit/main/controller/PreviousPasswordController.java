@@ -6,8 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.PreviousPassword;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.PreviousPasswordService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class PreviousPasswordController {
 	@Autowired
 	private UsersService usersService;
 	
+	@Autowired
+	private LogService logService;
 	
 	@RequestMapping(value="/password",method=RequestMethod.POST)
 	public String changePassword(@RequestBody Login login) {
@@ -76,10 +80,23 @@ public class PreviousPasswordController {
 			
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\nParameters : " + login.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("changePassword : PreviousPasswordController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 		
-		return null;
+		//return null;
 	}
 
 	//check password pattern

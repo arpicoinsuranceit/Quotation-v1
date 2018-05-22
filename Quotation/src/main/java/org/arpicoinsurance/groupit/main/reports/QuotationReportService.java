@@ -4,7 +4,6 @@ import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
-import com.itextpdf.layout.Document;
 
 public interface QuotationReportService {
 	

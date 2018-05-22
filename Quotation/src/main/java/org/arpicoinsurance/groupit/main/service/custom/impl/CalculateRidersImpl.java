@@ -289,7 +289,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 							for (Benifict benifict2 : _sRiders) {
 								if (benifict2.getType().equals("HRBFS")) {
 									adultCount += 1;
-									System.out.println(adultCount);
+									//System.out.println(adultCount);
 								}
 							}
 						}
@@ -323,8 +323,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			if (_sRiders != null) {
 
 				for (Benifict benifict : _sRiders) {
-					System.out.println(quotationCalculation.get_personalInfo().getTerm()
-							+ "?????????????????????????-------------------");
+					//System.out.println(quotationCalculation.get_personalInfo().getTerm()
+					//		+ "?????????????????????????-------------------");
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
 							benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
@@ -337,11 +337,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		if (quotationCalculation.get_personalInfo().getChildrens() != null
 				&& quotationCalculation.get_personalInfo().getChildrens().size() > 0) {
 			for (Children children : quotationCalculation.get_personalInfo().getChildrens()) {
-				System.out.println(children.get_cTitle() + "?????????????????????????????????????????????? title");
+				//System.out.println(children.get_cTitle() + "?????????????????????????????????????????????? title");
 				if (_cRiders != null) {
 					for (Benifict benifict : _cRiders) {
 						Integer term = 0;
-						System.out.println("product :" + quotationCalculation.get_product());
+						//System.out.println("product :" + quotationCalculation.get_product());
 						if (quotationCalculation.get_product().equals("ARP")) {
 							term = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
@@ -359,13 +359,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 						String benfName = benifict.getType();
 
-						System.out.println(term + ";;;;;;;;;;;;;;;;;; child");
+						//System.out.println(term + ";;;;;;;;;;;;;;;;;; child");
 
 						switch (benfName) {
 						case "CIBC":
 							if (children.is_cCibc()) {
-								System.out.println(children.get_cTitle()
-										+ "MALE FEMALE ???????????????????????????????????????????????????????????");
+								//System.out.println(children.get_cTitle()
+								//		+ "MALE FEMALE ???????????????????????????????????????????????????????????");
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
@@ -433,7 +433,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			String payFrequency, Integer term, Integer occupation_id, QuotationQuickCalResponse calResp,
 			Integer adultCount, Integer childCount, Double loan, Double inRate) throws Exception {
 
-		System.out.println(occupation_id + " ////////////// ocu ID");
+		//System.out.println(occupation_id + " ////////////// ocu ID");
 
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
@@ -456,7 +456,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal scb = scbService.calculateSCB(age, valiedTermSCB, new Date(), ridsumasu, payFrequency, relife,
 					ocuLoading);
@@ -480,7 +480,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, relife, ocuLoading);
 
@@ -518,7 +518,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, relife, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, adbs.doubleValue(), calResp);
@@ -528,8 +528,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "ATPB":
-			System.out.println("called/////////////////////////////////////////////////////");
-			System.out.println(ridsumasu);
+			//System.out.println("called/////////////////////////////////////////////////////");
+			//System.out.println(ridsumasu);
 			ocuLoading = oculoding.get("ATPB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -544,7 +544,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal atpb = atpbService.calculateATPB(age, valiedTermATPB, new Date(), ridsumasu, payFrequency,
 					relife, ocuLoading);
@@ -569,7 +569,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, valiedTermTPDASB, new Date(), ridsumasu,
 					payFrequency, relife, ocuLoading);
@@ -595,7 +595,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, valiedTermTPDASBS, new Date(), ridsumasu,
 					payFrequency, relife, ocuLoading);
@@ -617,7 +617,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, relife, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, tpdb.doubleValue(), calResp);
@@ -638,7 +638,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, relife, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, tpdbs.doubleValue(), calResp);
@@ -659,7 +659,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, relife, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, ppdb.doubleValue(), calResp);
@@ -679,7 +679,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, relife, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, ppdbs.doubleValue(), calResp);
@@ -702,7 +702,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal cib = cibService.calculateCIB(age, valiedTermCIB, new Date(), ridsumasu, payFrequency, relife,
 					ocuLoading);
@@ -725,7 +725,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal scib = scibService.calculateSCIB(age, valiedTermCIBS, new Date(), ridsumasu, payFrequency,
 					relife, ocuLoading);
@@ -752,7 +752,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal cibc = cibcService.calculateCIBC(age, valiedTermCIBC, new Date(), ridsumasu, payFrequency,
 					relife);
@@ -777,7 +777,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal feb = febService.calculateFEB(age, valiedTermFEB, new Date(), ridsumasu, payFrequency, relife,
 					ocuLoading);
@@ -802,7 +802,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal febs = febsService.calculateFEBS(age, valiedTermFEBS, new Date(), ridsumasu, payFrequency,
 					relife, ocuLoading);
@@ -827,7 +827,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			if (ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
 				calResp.setErrorExist(true);
@@ -859,7 +859,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			if (ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
 				calResp.setErrorExist(true);
@@ -890,7 +890,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			if (ridsumasu.doubleValue() > calResp.getBsaYearlyPremium()) {
 				calResp.setErrorExist(true);
@@ -932,9 +932,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
-			System.out.println(ocuLoading + "   Occu Loading                HRBF");
+			//System.out.println(ocuLoading + "   Occu Loading                HRBF");
 			// Integer valiedTermHRBF = 10;
 
 			BigDecimal hrbf = null;
@@ -970,9 +970,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
-			System.out.println(ocuLoading + "   Occu Loading                HRBI");
+			//System.out.println(ocuLoading + "   Occu Loading                HRBI");
 
 			// Integer valiedTermHRBI = 10;
 
@@ -1001,7 +1001,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal hrbis = hrbiService.calculateHRBI(age, valiedTermHRBIS, gender, ridsumasu, new Date(),
 					payFrequency, relife, ocuLoading);
@@ -1027,7 +1027,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			// Integer valiedTermHRBIC = 10;
 
@@ -1060,7 +1060,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal suhbf = shcbfService.calculateSHCBF(age, valiedTermSHCBF, ridsumasu, adultCount, childCount,
 					new Date(), payFrequency, relife, ocuLoading);
@@ -1085,7 +1085,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal suhrb = shcbiService.calculateSHCBI(age, gender, valiedTermSUHRB, ridsumasu, new Date(),
 					payFrequency, relife, ocuLoading);
@@ -1128,7 +1128,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal suhrbs = suhrbsService.calculateSUHRBS(age, gender, valiedTermSUHRBS, ridsumasu, new Date(),
 					payFrequency, relife, ocuLoading);
@@ -1173,7 +1173,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal suhrbc = suhrbcService.calculateSUHRBC(age, gender, valiedTermSUHRBC, ridsumasu, new Date(),
 					payFrequency, relife);
@@ -1226,7 +1226,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal hb = hbService.calculateHB(age, valiedTermHB, new Date(), ridsumasu, payFrequency, relife,
 					ocuLoading);
@@ -1252,7 +1252,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			BigDecimal hbs = hbsService.calculateHBS(age, valiedTermHBS, new Date(), ridsumasu, payFrequency, relife,
 					ocuLoading);
@@ -1280,7 +1280,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			// ** 21-age < term term = 21-age else term
 			BigDecimal hbc = hbcService.calculateHBC(valiedTermHBC, new Date(), ridsumasu, payFrequency, relife);
@@ -1292,10 +1292,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		case "WPB":
 			ocuLoading = oculoding.get("WPB");
-			System.out.println(ocuLoading + "   wpb oculoading");
+			//System.out.println(ocuLoading + "   wpb oculoading");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
-			System.out.println(ocuLoading + "   wpb oculoading");
+			//System.out.println(ocuLoading + "   wpb oculoading");
 			BigDecimal wpb = wpbService.calculateWPB(calResp, ocuLoading);
 			calResp = setLodingDetails(ocuLoading, wpb.doubleValue(), calResp);
 			calResp.setWpb(wpb.doubleValue());
@@ -1422,7 +1422,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		Double bsa = new BigDecimal(premium).divide(new BigDecimal(ocuLoading), RoundingMode.HALF_UP).doubleValue();
 
-		System.out.println("bsa for occu : " + bsa);
+		//System.out.println("bsa for occu : " + bsa);
 
 		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + bsa);
 		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + (premium - bsa));

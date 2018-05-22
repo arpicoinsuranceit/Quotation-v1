@@ -1,8 +1,11 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Rms_Sbu;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.Rms_SbuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +23,9 @@ public class Rms_SbuController {
 	@Autowired
 	private Rms_SbuService sbuService;
 	
+	@Autowired
+	private LogService logService;
+	
 	@RequestMapping("/test")
 	public String navSaveSbu() {
 		return "Success";
@@ -29,12 +35,25 @@ public class Rms_SbuController {
 	public Rms_Sbu navGetSbu(@PathVariable Integer id) {
 		try {
 			Rms_Sbu sbu=sbuService.getSbu(id);
-			System.out.println(sbu.getAddress());
+			//System.out.println(sbu.getAddress());
 			return sbu;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("navGetSbu : Rms_SbuController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 		
 	}
 	
@@ -47,9 +66,22 @@ public class Rms_SbuController {
 				return "409";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + rms_Sbu.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("navSaveSbu : Rms_SbuController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return "409";
+		//return "409";
 		
 	}
 	
@@ -58,9 +90,22 @@ public class Rms_SbuController {
 		try {
 			return sbuService.getAllSbu();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() );
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("navAllSbu : Rms_SbuController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 		
 	}
 	
@@ -74,9 +119,22 @@ public class Rms_SbuController {
 				return "409";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("navDeleteSbu : Rms_SbuController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return "409";
+		//return "409";
 		
 	}
 }

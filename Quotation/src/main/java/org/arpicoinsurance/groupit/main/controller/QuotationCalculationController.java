@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.arpicoinsurance.groupit.main.service.ATRMService;
-import org.arpicoinsurance.groupit.main.service.ENDService;
+import org.arpicoinsurance.groupit.main.model.Logs;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuotationCalculationController {
 
 	@Autowired
-	private ATRMService atrmService;
-	
-	@Autowired
-	private ENDService endService;
+	private LogService logService;
 	
 	@RequestMapping(value="/ageCal",method=RequestMethod.POST)
 	public Long calculateAge(@RequestBody String dob) {
@@ -32,16 +29,29 @@ public class QuotationCalculationController {
 			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String parsedDate = formatter.format(initDate);
-			System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
+			//System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
 			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
 		     LocalDate currentDate = LocalDate.now();
 		     long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 			return diffInYears+1;
 		
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n dob : " + dob);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateAge : QuotationCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 	
 	
@@ -125,7 +135,7 @@ public class QuotationCalculationController {
 	        int month = 0;
 	        if(nic.length() == 9){
 	            year = (1900 + Integer.parseInt(nic.substring(0,2)));
-	            System.out.println("---- "+nic);
+	            //System.out.println("---- "+nic);
 	            day = Integer.parseInt(nic.substring(2, 5));
 	        } else if(nic.length() == 12){
 	            year = Integer.parseInt(nic.substring(0,4));
@@ -169,13 +179,26 @@ public class QuotationCalculationController {
 	        map.put("DOB", birthday);
 	        map.put("Gender",getGender(nic));
 	        
-	        System.out.println(birthday);
+	       // System.out.println(birthday);
 	        return map;
 		
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + nic );
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateAgeFromNic : QuotationCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 
 

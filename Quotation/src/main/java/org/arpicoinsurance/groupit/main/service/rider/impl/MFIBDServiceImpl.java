@@ -24,7 +24,7 @@ public class MFIBDServiceImpl implements MFIBDService{
 			Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumMFIBD = new BigDecimal(0);
 		RateCardMFIBD rateCardMFIBD = rateCardMFIBDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("MFIBD ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardMFIBD.getRate());
+//		System.out.println("MFIBD ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardMFIBD.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@*@rider_sum_assured@/1000))*@relief@
 			premiumMFIBD = (new BigDecimal(rateCardMFIBD.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);		
@@ -33,7 +33,7 @@ public class MFIBDServiceImpl implements MFIBDService{
 			premiumMFIBD = ((new BigDecimal(rateCardMFIBD.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		premiumMFIBD = premiumMFIBD.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumMFIBD : "+premiumMFIBD.toString());
+//		System.out.println("premiumMFIBD : "+premiumMFIBD.toString());
 		return premiumMFIBD;
 	}
 

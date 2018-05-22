@@ -170,7 +170,7 @@ public class ASIPServiceImpl implements ASIPService {
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
-			System.out.println(calResp.getBasicSumAssured());
+//			System.out.println(calResp.getBasicSumAssured());
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -201,11 +201,11 @@ public class ASIPServiceImpl implements ASIPService {
 			}
 		}
 		BigDecimal premium = new BigDecimal(0);
-		System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " + paytrm);
+//		System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " + paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)
 		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP))
 				.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
-		System.out.println("premium : " + premium.toString());
+//		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
@@ -233,8 +233,8 @@ public class ASIPServiceImpl implements ASIPService {
 		BigDecimal fund_charge = new BigDecimal(fundcharat).setScale(2, BigDecimal.ROUND_HALF_UP);
 		BigDecimal interest_rate = new BigDecimal(intrat).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-		System.out.println("term : " + term + " fundcharat : " + fundcharat + " intrat : " + intrat + " paytrm : "
-				+ paytrm + " bassum : " + bassum + " bsapremium : " + bsapremium);
+//		System.out.println("term : " + term + " fundcharat : " + fundcharat + " intrat : " + intrat + " paytrm : "
+//				+ paytrm + " bassum : " + bassum + " bsapremium : " + bsapremium);
 		for (int i = 1; i <= term; ++i) {
 
 			// overidepara.put("current_year", String.valueOf(i));
@@ -301,8 +301,8 @@ public class ASIPServiceImpl implements ASIPService {
 
 		}
 
-		System.out.println("maturity " + intrat + " : " + total_amount.setScale(0, BigDecimal.ROUND_HALF_UP) + " ---- "
-				+ total_amount.toString());
+//		System.out.println("maturity " + intrat + " : " + total_amount.setScale(0, BigDecimal.ROUND_HALF_UP) + " ---- "
+//				+ total_amount.toString());
 		maturity = total_amount;
 		return maturity.setScale(0, BigDecimal.ROUND_UP);
 	}
@@ -473,7 +473,7 @@ public class ASIPServiceImpl implements ASIPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -697,7 +697,7 @@ public class ASIPServiceImpl implements ASIPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

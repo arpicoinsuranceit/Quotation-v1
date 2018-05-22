@@ -1,7 +1,11 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.OccupationServce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +20,9 @@ public class OccupationController {
 	@Autowired
 	private OccupationServce occupationService;
 	
+	@Autowired
+	private LogService logService;
+	
 	@RequestMapping(method=RequestMethod.GET, value="/occupation")
 	public ArrayList<Occupation> getAll(){
 		try {
@@ -28,8 +35,21 @@ public class OccupationController {
 			}
 			return occList; 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getAll : OccupationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 }

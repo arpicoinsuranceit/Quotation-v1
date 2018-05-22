@@ -199,7 +199,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 							qb.setRiderSum(quo_Benef_Details.getRiderSum());
 							qb.setRiderCode(quo_Benef_Details.getRierCode());
 							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
-							System.out.println(quo_Benef_Child_Details.getTerm()+"TTTTTTTTTT");
+//							System.out.println(quo_Benef_Child_Details.getTerm()+"TTTTTTTTTT");
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benfs.add(qb);
 							
@@ -216,7 +216,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 							qb.setRiderSum(quo_Benef_Details.getRiderSum());
 							qb.setRiderCode(quo_Benef_Details.getRierCode());
 							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
-							System.out.println(quo_Benef_Child_Details.getTerm());
+//							System.out.println(quo_Benef_Child_Details.getTerm());
 							qb.setPremium(quo_Benef_Child_Details.getPremium());
 							benflist.add(qb);
 							
@@ -235,7 +235,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		Set<Entry<String, QuoChildBenef>> benefs=childMap.entrySet();
 		
 		Gson gson = new Gson();
-		System.out.println(gson.toJson(childMap));
+//		System.out.println(gson.toJson(childMap));
 		
 		ArrayList<QuoChildBenef> childBenefList=new ArrayList<>();
 		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
@@ -256,11 +256,11 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 	public List<QuotationView> getQuo_Benef_DetailsByQuoDetailId(Integer id) throws Exception {
 		
 		Quotation quotation=quotationDao.findById(id);
-		System.out.println(quotation.getProducts().getProductCode());
+//		System.out.println(quotation.getProducts().getProductCode());
 		ArrayList<QuotationDetails> quotationDetails=(ArrayList<QuotationDetails>) getQuo_Benef_DetailsByQuoDetailId(quotation);
 		
 		ArrayList<QuotationView> viewQuotationDetailsList=new ArrayList<>();
-		System.out.println(quotationDetails.size());
+//		System.out.println(quotationDetails.size());
 		if(!quotationDetails.isEmpty() || quotationDetails != null) {
 			for (QuotationDetails quoDetails : quotationDetails) {
 				QuoCustomer customer=setCustomerDetails(quoDetails);
@@ -325,7 +325,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			viewQuotation.set_spouseBenefits(quotationView.getSpouseBenf());
 			editQuotation.get_plan().set_msfb(editQuotation.get_plan().get_bsa()/(editQuotation.get_plan().get_term()*12));
 			viewQuotation.set_plan(editQuotation.get_plan());
-			System.out.println(quotationView.getQuotationDate());
+//			System.out.println(quotationView.getQuotationDate());
 			
 			allQuotationList.add(viewQuotation);
 		}

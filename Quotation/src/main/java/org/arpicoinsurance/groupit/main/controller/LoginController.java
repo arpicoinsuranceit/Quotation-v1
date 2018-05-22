@@ -1,10 +1,13 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +35,34 @@ public class LoginController {
 	@Autowired
 	private UsersService usersService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public List<Login> getAllLogin() {
 		try {
 			List<Login> loginList=loginService.getAllLogin();
-			
 			return loginList;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getAllLogin : LoginController");
+			
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			
+			throw new RuntimeException(e.getMessage());
 		}
-		
-		return null;
+		//return null;
 	}
 	
 	@RequestMapping(value="/logOut",method=RequestMethod.GET)
@@ -52,10 +71,22 @@ public class LoginController {
 		try {
 			return "201";
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("logout : LoginController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		
-		return "409";
+		//return "409";
 	}
 	
 	@RequestMapping(value="/login/{id}",method=RequestMethod.GET)
@@ -65,10 +96,23 @@ public class LoginController {
 			
 			return login;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() +  ",\n Parameters : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getLogin : LoginController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 		
-		return null;
+		//return null;
 	}
 	
 	
@@ -81,10 +125,23 @@ public class LoginController {
 				return "409";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() +  ",\n Parameters : " + login.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("addLogin : LoginController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 		
-		return "409";
+		//return "409";
 	}
 	
 	@RequestMapping(value="/pwreset",method=RequestMethod.POST)
@@ -94,9 +151,22 @@ public class LoginController {
 			Integer day=getNewPwDayCount(users.getLogin().getLoginId());
 			return day;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() +  ",\n Parameters : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getPasswordResetDate : LoginController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 	
 	private Integer getNewPwDayCount(Integer loginId) {
@@ -116,28 +186,23 @@ public class LoginController {
 				count = -1;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() +  ",\n Parameters : " + loginId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getNewPwDayCount : LoginController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return count;
 	}
-	
-	/*public void saveData() {
-		ArrayList<Logs> logList=(ArrayList<Logs>) session.getAttribute("log_list");
-		
-		System.out.println(session.getId());
-		if(logList!=null) {
-			for (Logs logs : logList) {
-				try {
-					logService.saveLog(logs);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}else {
-			System.out.println("Null ");
-		}
-	}*/
-	
 
 }

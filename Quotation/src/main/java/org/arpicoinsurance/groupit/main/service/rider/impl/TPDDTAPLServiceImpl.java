@@ -29,6 +29,8 @@ public class TPDDTAPLServiceImpl implements TPDDTAPLService {
 
 			RateCardTPDDTA rateCardTPDDTA = rateCardTPDDTADao.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat, chedat, chedat, chedat);
 			System.out.println("rateCardTPDDTA : "+ rateCardTPDDTA.getRate());
+			System.out.println("age : "+ age);
+			System.out.println("term : "+ i);
 			
             //annuity for term
             double annuity = 1 + (intrat / 100);
@@ -63,7 +65,7 @@ public class TPDDTAPLServiceImpl implements TPDDTAPLService {
 
         }
 		premiumTPDDTAPL = premiumTPDDTAPL.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumTPDDTAPL : "+premiumTPDDTAPL.toString());
+//		System.out.println("premiumTPDDTAPL : "+premiumTPDDTAPL.toString());
 		return premiumTPDDTAPL;
 	}
 

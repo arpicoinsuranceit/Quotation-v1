@@ -21,14 +21,14 @@ public class JLBServiceImpl implements JLBService {
 	@Override
 	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)
 			throws Exception {
-		System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
+		//System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal premiumJLB = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
 
 			RateCardJLB rateCardJLB = rateCardJLBDao.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat, chedat, chedat, chedat);
-			System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
+			//System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
 			
             //annuity for term
             double annuity = 1 + (intrat / 100);
@@ -65,7 +65,7 @@ public class JLBServiceImpl implements JLBService {
 		
 		
 		premiumJLB = premiumJLB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumJLB : "+premiumJLB.toString());
+		//System.out.println("premiumJLB : "+premiumJLB.toString());
 		return premiumJLB;
 	}
 

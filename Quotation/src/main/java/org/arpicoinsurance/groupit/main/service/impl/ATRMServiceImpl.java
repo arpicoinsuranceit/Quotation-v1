@@ -131,13 +131,13 @@ public class ATRMServiceImpl implements ATRMService {
 				rate = 1.0;
 			}
 		}
-		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
+//		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardATRM rateCardATRM = rateCardATRMDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
+//		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardATRM.getRate())
@@ -151,18 +151,18 @@ public class ATRMServiceImpl implements ATRMService {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
-		System.out.println("premium : " + premium.toString());
+//		System.out.println("premium : " + premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
-		System.out.println(calculation.get_personalInfo().getMgenger());
-
-		System.out.println(calculation.get_personalInfo().getMgenger()
-				+ "/////////////////////////////////////////////////////////////");
-		System.out.println(calculation.get_personalInfo().getSgenger()
-				+ "/////////////////////////////////////////////////////////////");
+//		System.out.println(calculation.get_personalInfo().getMgenger());
+//
+//		System.out.println(calculation.get_personalInfo().getMgenger()
+//				+ "/////////////////////////////////////////////////////////////");
+//		System.out.println(calculation.get_personalInfo().getSgenger()
+//				+ "/////////////////////////////////////////////////////////////");
 
 		CalculationUtils calculationUtils = null;
 		try {
@@ -370,7 +370,7 @@ public class ATRMServiceImpl implements ATRMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -589,7 +589,7 @@ public class ATRMServiceImpl implements ATRMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

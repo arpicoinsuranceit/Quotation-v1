@@ -144,12 +144,12 @@ public class PersonalInfo {
 	public String toString() {
 		
 		String childrenString = "children : ";
-		
-		if(childrens != null) {
-		
-		for (Children children : childrens) {
-			childrenString+= children.toString();
-		}
+
+		if (childrens != null) {
+
+			for (Children children : childrens) {
+				childrenString += children.toString();
+			}
 		}
 		
 		return "PersonalInfo [mage=" + mage + ", mgenger=" + mgenger + ", mocu=" + mocu + ", sage=" + sage

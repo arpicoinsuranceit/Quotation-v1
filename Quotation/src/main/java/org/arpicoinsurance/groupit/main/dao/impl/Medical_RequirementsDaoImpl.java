@@ -7,13 +7,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.sql.DataSource;
 
 import org.arpicoinsurance.groupit.main.dao.custom.MedicalRequirementsDaoCustom;
-import org.arpicoinsurance.groupit.main.dao.custom.MedicalRequirementsHelperRowMapper;
 import org.arpicoinsurance.groupit.main.helper.MedicalRequirementsHelper;
-import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

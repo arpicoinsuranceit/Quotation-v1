@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuoDetails;
-import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
-import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
@@ -32,8 +31,9 @@ public class QuotationController {
 	@Autowired
 	private QuotationDetailsService quoDetailsService;
 	
+	
 	@Autowired
-	private HealthRequirmentsService healthReqService;
+	private LogService logService;
 	
 	@RequestMapping(value="/quotation/{id}",method=RequestMethod.GET)
 	public Quotation getQuotation(@PathVariable Integer id) {
@@ -41,10 +41,23 @@ public class QuotationController {
 			Quotation quotation=quotationService.getQuotation(id);
 			return quotation;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getQuotation : QuotationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 		
-		return null;
+		//return null;
 	}
 	
 	@RequestMapping(value="/quo",method=RequestMethod.POST)
@@ -53,9 +66,22 @@ public class QuotationController {
 		try {
 			return quotationService.getQuotationDetails(userId);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getQuotation : QuotationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 	
 	@RequestMapping(value="/quotationDetails",method=RequestMethod.POST)
@@ -65,9 +91,22 @@ public class QuotationController {
 			EditQuotation quoDetails= quoDetailsService.editQuotationDetails(qdId);
 			return quoDetails;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("Get QuotationDetail By id");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 	
 	@RequestMapping(value="/product",method=RequestMethod.POST)
@@ -77,14 +116,27 @@ public class QuotationController {
 			QuotationDetails quoDetails= quoDetailsService.findQuotationDetails(qdId);
 			return quoDetails.getQuotation().getProducts().getProductCode();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("Get Product");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
+		//return null;
 	}
 	
 	@RequestMapping(value="/findQuotation",method=RequestMethod.POST)
 	public HashMap<String, String> findQuotationToPrint(@RequestBody String id) {
-		System.out.println("Find Quotation Called..." + id);
+		//System.out.println("Find Quotation Called..." + id);
 		Integer qdId=Integer.valueOf(id);
 		HashMap<String, String> map=new HashMap<>();
 		
@@ -107,7 +159,20 @@ public class QuotationController {
 				map.put("status", "0");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("Find Quotation to Print");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 		return map;
 	}

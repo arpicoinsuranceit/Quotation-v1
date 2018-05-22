@@ -33,9 +33,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	@Override
 	public HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation) {
 
-		System.out.println("called mainlife");
-
-		System.out.println(calculation.get_personalInfo().getBsa());
+//		System.out.println("called mainlife");
+//
+//		System.out.println(calculation.get_personalInfo().getBsa());
 
 		HashMap<String, Object> details = new HashMap<>();
 
@@ -171,7 +171,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		}
 
-		System.out.println("Sum at risk : " + riskCurrent);
+//		System.out.println("Sum at risk : " + riskCurrent);
 
 		ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "S", mediGrade);
 		ArrayList<String> medicalReports = new ArrayList<>();
@@ -281,7 +281,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	private ArrayList<String> getHealthDetails(Double riskCurrent, QuotationCalculation calculation, String custType,
 			String mediGrade) {
 
-		System.out.println("called get health ???????????????????//////////////////////////");
+//		System.out.println("called get health ???????????????????//////////////////////////");
 
 		ArrayList<String> mediTestList = new ArrayList<>();
 
@@ -306,8 +306,8 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			if (benifictListM != null) {
 				for (Benifict benifict : benifictListM) {
 
-					System.out.println(benifict.getType()
-							+ "   main beneficts                                    /////////////////////");
+//					System.out.println(benifict.getType()
+//							+ "   main beneficts                                    /////////////////////");
 
 					switch (benifict.getType()) {
 					case "SUHRB":
@@ -345,14 +345,14 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 				}
 			}
 
-			System.out.println("mage " + calculation.get_personalInfo().getMage());
-			System.out.println(riskCurrent);
+//			System.out.println("mage " + calculation.get_personalInfo().getMage());
+//			System.out.println(riskCurrent);
 			List<MediTestGrid> grid = mediGridDao
 					.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
 							calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getMage(),
 							riskCurrent, riskCurrent);
 
-			System.out.println(grid.size());
+//			System.out.println(grid.size());
 
 			for (MediTestGrid mediTestGrid : grid) {
 				if (mediTestGrid.getMediGrade().equals(mediGrade)) {
@@ -375,7 +375,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			}
 
 			if (isHcbi || isHcbf) {
-				System.out.println("HCBI");
+//				System.out.println("HCBI");
 				List<MediTestGrid> gridHCBM = mediGridDao
 						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
 								calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getMage(), hcb,
@@ -411,8 +411,8 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 				for (Benifict benifict : benifictListS) {
 
-					System.out.println(benifict.getType()
-							+ "   spouse beneficts                                    /////////////////////");
+//					System.out.println(benifict.getType()
+//							+ "   spouse beneficts                                    /////////////////////");
 
 					switch (benifict.getType()) {
 					case "SUHRBS":
@@ -468,17 +468,17 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 			if (isShcbi || isShcbf) {
 
-				System.out.println(shcb);
-				System.out.println(calculation.get_personalInfo().getSage());
+//				System.out.println(shcb);
+//				System.out.println(calculation.get_personalInfo().getSage());
 
 				List<MediTestGrid> gridSHCBM = mediGridDao
 						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(
 								calculation.get_personalInfo().getSage(), calculation.get_personalInfo().getSage(),
 								shcb, shcb);
-				System.out.println(gridSHCBM.size());
+//				System.out.println(gridSHCBM.size());
 				for (MediTestGrid mediTestGrid : gridSHCBM) {
 					if (mediTestGrid.getMediGrade().equals("SHCB")) {
-						System.out.println("SHCB");
+//						System.out.println("SHCB");
 						mediTestList.addAll(Arrays.asList(mediTestGrid.getTests().split(",")));
 					}
 				}
@@ -487,8 +487,8 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 			if (isHcbi || isHcbf) {
 
-				System.out.println(hcb);
-				System.out.println(calculation.get_personalInfo().getSage());
+//				System.out.println(hcb);
+//				System.out.println(calculation.get_personalInfo().getSage());
 
 				List<MediTestGrid> gridHCBM = mediGridDao
 						.findByAgeFromLessThanEqualAndAgeToGreaterThanEqualAndSumAssuredFromLessThanEqualAndSumAssuredToGreaterThanEqual(

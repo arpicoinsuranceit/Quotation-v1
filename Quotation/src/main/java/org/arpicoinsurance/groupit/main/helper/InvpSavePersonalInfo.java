@@ -33,6 +33,21 @@ public class InvpSavePersonalInfo {
 	public void set_plan(Plan _plan) {
 		this._plan = _plan;
 	}
+	@Override
+	public String toString() {
+		
+		String childrenString = "";
+
+		if (_childrenList != null) {
+
+			for (Children children : _childrenList) {
+				childrenString += children.toString();
+			}
+		}
+		
+		return "InvpSavePersonalInfo [_mainlife=" + _mainlife.toString() + ", _spouse=" + _spouse.toString() + ", _childrenList="
+				+ childrenString + ", _plan=" + _plan.toString() + "]";
+	}
 	
 	
 }
