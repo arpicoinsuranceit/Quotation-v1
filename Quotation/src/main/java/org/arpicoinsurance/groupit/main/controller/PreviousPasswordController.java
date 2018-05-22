@@ -13,6 +13,8 @@ import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.PreviousPasswordService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +35,8 @@ public class PreviousPasswordController {
 	private LogService logService;
 	
 	@RequestMapping(value="/password",method=RequestMethod.POST)
-	public String changePassword(@RequestBody Login login) {
+	public ResponseEntity<Object> changePassword(@RequestBody Login login) {
+		String resp = "";
 		try {
 			if(isPasswordMatchToPattern(login)) {
 				Users users=usersService.getUser(login.getLocks());
@@ -62,22 +65,23 @@ public class PreviousPasswordController {
 						password.setLogin(users.getLogin());
 						
 						if(previousPasswordService.savePassword(password,login2)) {
-							return "Success";
+							resp = "Success";
 						}else {
-							return "fail";
+							resp = "fail";
 						}
 						
 					}else {
-						return "Used";
+						resp = "Used";
 					}
 				}else {
-					return "Current Pw";
+					resp = "Current Pw";
 				}
 				
 			}else {
-				return "Pw Not Match";
+				resp = "Pw Not Match";
 			}
 			
+			return new ResponseEntity<Object>(resp , HttpStatus.OK);
 			
 		} catch (Exception e) {
 			Logs logs = new Logs();
@@ -93,7 +97,7 @@ public class PreviousPasswordController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			throw new RuntimeException(e.getMessage());
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		//return null;

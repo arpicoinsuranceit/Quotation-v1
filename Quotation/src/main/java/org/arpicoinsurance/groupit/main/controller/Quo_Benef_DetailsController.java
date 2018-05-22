@@ -10,6 +10,8 @@ import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.arpicoinsurance.groupit.main.service.SheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,12 +48,12 @@ public class Quo_Benef_DetailsController {
 	}*/
 	
 	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
-	public ArrayList<ViewQuotation> viewQuotationDetails(@RequestBody String id) {
+	public ResponseEntity<Object> viewQuotationDetails(@RequestBody String id) {
 		try {
 			//System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetails(quoId);
-			return detailList;
+			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
 			
 		} catch (Exception e) {
 			Logs logs = new Logs();
@@ -67,17 +69,17 @@ public class Quo_Benef_DetailsController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			throw new RuntimeException(e.getMessage());
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		//return null;
 	}
 	
 	@RequestMapping(value="/scheduledetails/{id}",method=RequestMethod.GET)
-	public ArrayList<Shedule> viewQuotationDetails(@PathVariable Integer id) {
+	public ResponseEntity<Object> viewQuotationDetails(@PathVariable Integer id) {
 		try {
 			ArrayList<Shedule> sheduleList=(ArrayList<Shedule>) sheduleService.findByQuotationDetails(id);
-			return sheduleList;
+			return new ResponseEntity<Object>(sheduleList , HttpStatus.OK);
 			
 		} catch (Exception e) {
 			Logs logs = new Logs();
@@ -93,7 +95,7 @@ public class Quo_Benef_DetailsController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			throw new RuntimeException(e.getMessage());
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		//return null;

@@ -7,6 +7,8 @@ import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.reports.ItextReports;
 import org.arpicoinsurance.groupit.main.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +27,10 @@ public class ReportController {
 	private LogService logService;
 	
 	@RequestMapping(value="/printQuotation/{id}",method=RequestMethod.GET,produces = "application/pdf")
-	public byte[] getQuotationByUserId(@PathVariable Integer id) {
+	public ResponseEntity<Object> getQuotationByUserId(@PathVariable Integer id) {
 		try {
 			Integer quoId=Integer.valueOf(id);
-			
-			return itextReport.createQuotationReport(quoId);
+			return new ResponseEntity<Object>(itextReport.createQuotationReport(quoId), HttpStatus.OK);
 			
 		} catch (Exception e) {
 			Logs logs = new Logs();
@@ -45,7 +46,7 @@ public class ReportController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			throw new RuntimeException(e.getMessage());
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		//return null;
