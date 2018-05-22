@@ -517,7 +517,7 @@ public class Validation {
 
 	public Integer validateInvpATBP() {
 		if (benefitMap.containsKey("ATPB")) {
-			System.out.println("call atpb val method");
+			//System.out.println("call atpb val method");
 			Benifict benifict = benefitMap.get("ATPB");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
