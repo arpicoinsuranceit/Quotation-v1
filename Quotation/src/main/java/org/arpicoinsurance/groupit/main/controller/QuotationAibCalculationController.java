@@ -3,15 +3,17 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.PersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.QuoAibCalResp;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.service.AIBService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +27,11 @@ public class QuotationAibCalculationController {
 	@Autowired
 	private AIBService aibService;
 
+	@Autowired
+	private LogService logService;
+
 	@RequestMapping(value = "/aibCal", method = RequestMethod.POST)
-	public QuoAibCalResp calculateAIB(@RequestBody PersonalInfo personalInfo) {
+	public ResponseEntity<Object> calculateAIB(@RequestBody PersonalInfo personalInfo) {
 		try {
 			BigDecimal bsa = aibService.calculateAIBMaturaty(2, 0.0, 0.0, 100.0, personalInfo.getBsa(), new Date(),
 					"S");
@@ -37,18 +42,31 @@ public class QuotationAibCalculationController {
 			QuoAibCalResp resp = new QuoAibCalResp();
 			resp.setExtraOe(adminFee + tax);
 			resp.setMaturaty(bsa.doubleValue());
-			return resp;
+			return new ResponseEntity<Object>(resp, HttpStatus.OK);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + personalInfo.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateAIB : QuotationAibCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return null;
+		//return null;
 	}
 
 	@RequestMapping(value = "/quoAibsave/{id}", method = RequestMethod.POST)
-	public HashMap<String, Object> saveInvp(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable Integer id) {
-		System.out.println(id);
-		String resp = "Fail";
+	public ResponseEntity<Object> saveAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,
+			@PathVariable Integer id) {
+		// System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		try {
@@ -63,21 +81,35 @@ public class QuotationAibCalculationController {
 				responseMap.replace("status", "User can't be identify");
 
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuiotation : "
+					+ _invpSaveQuotation.toString() + ", id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("saveAib : QuotationAibCalculationController");
+			logs.setUserId(id);
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 
 		}
 
-		return responseMap;
+		
 	}
 
 	@RequestMapping(value = "/quoAibEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public HashMap<String, Object> editAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation, @PathVariable("userId") Integer userId,
-			@PathVariable("qdId") Integer qdId) {
-		
-		String resp = "Fail";
+	public ResponseEntity<Object> editAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		try {
@@ -96,13 +128,28 @@ public class QuotationAibCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationInvpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuiotation : "
+					+ _invpSaveQuotation.toString() + ", userId : " + userId + ", quotationDetailId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editAib : QuotationAibCalculationController");
+			logs.setUserId(userId);
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 
 		}
 
-		return responseMap;
+		
 	}
 }

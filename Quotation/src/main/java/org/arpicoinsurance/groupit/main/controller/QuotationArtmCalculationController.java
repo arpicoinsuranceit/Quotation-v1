@@ -8,7 +8,6 @@ import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.service.ARTMService;
-import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,7 +27,7 @@ public class QuotationArtmCalculationController {
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public AIPCalResp calculateATRM (@RequestBody Plan plan) {
 		
-		System.out.println("call artm");
+		//System.out.println("call artm");
 		Validation validation = new Validation();
 		String valError = validation.validateArtm(plan);
 		if(valError.equals("ok")) {

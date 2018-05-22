@@ -25,8 +25,6 @@ import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardASFPDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardINVPDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -55,7 +53,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -106,12 +103,6 @@ public class ASFPServiceImpl implements ASFPService {
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
 	@Autowired
-	private RateCardINVPDao rateCardINVPDao;
-
-	@Autowired
-	private RateCardATFESCDao rateCardATFESCDao;
-
-	@Autowired
 	private MedicalDetailsDao medicalDetailsDao;
 
 	@Autowired
@@ -135,7 +126,7 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
-		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
+//		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L10");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -152,7 +143,7 @@ public class ASFPServiceImpl implements ASFPService {
 		RateCardASFP rateCardASFP = rateCardASFPDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		System.out.println("rateCardASFP : " + rateCardASFP.getRate());
+//		System.out.println("rateCardASFP : " + rateCardASFP.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardASFP.getRate())
@@ -161,7 +152,7 @@ public class ASFPServiceImpl implements ASFPService {
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
-		System.out.println("premium : " + premium.toString());
+//		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
@@ -175,10 +166,10 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL2(int term, double msfb) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-		System.out.println("term : " + term + " msfb : " + msfb);
+//		System.out.println("term : " + term + " msfb : " + msfb);
 		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0,
 				RoundingMode.HALF_UP);
-		System.out.println("maturity : " + maturity.toString());
+//		System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -191,8 +182,8 @@ public class ASFPServiceImpl implements ASFPService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			System.out.println(quotationCalculation.get_personalInfo().getMsfb()
-					+ " quotationCalculation.get_personalInfo().getMsfb()");
+//			System.out.println(quotationCalculation.get_personalInfo().getMsfb()
+//					+ " quotationCalculation.get_personalInfo().getMsfb()");
 			BigDecimal bsa = calculateL2(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getMsfb());
 
@@ -248,8 +239,6 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer id) throws Exception {
-
-		CalculationUtils calculationUtils = new CalculationUtils();
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
@@ -432,7 +421,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -479,7 +468,6 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-		CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -512,7 +500,6 @@ public class ASFPServiceImpl implements ASFPService {
 			return responseMap;
 		}
 
-		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -676,7 +663,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

@@ -280,7 +280,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		plan.setRetAge(details.getRetirmentAge());
 		plan.set_payingterm(details.getPaingTerm());
 		
-		System.out.println("paing term " + details.getPaingTerm());
+//		System.out.println("paing term " + details.getPaingTerm());
 		
 		switch (details.getPayMode()) {
 		case "M":

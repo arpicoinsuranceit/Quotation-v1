@@ -1,14 +1,16 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.helper.HelperLogin;
 import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.security.JwtGenerator;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.LoginService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class TokenController {
 
 	@Autowired
 	private LoginDao loginDao;
+	
+	@Autowired
+	private LogService logService;
 
 	private JwtGenerator generator;
 
@@ -99,7 +104,20 @@ public class TokenController {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + logins.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("loginToSystem : TokenController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return null;
@@ -127,14 +145,27 @@ public class TokenController {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + logins.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("checkPwAndUserName : TokenController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return null;
 	}
 
 	// check password pattern
-	private boolean isPasswordMatchToPattern(Login login) {
+/*	private boolean isPasswordMatchToPattern(Login login) {
 		String regex = "(?=.*\\d)(?=.*[A-Za-z]).{8,}";
 		
 		//^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
@@ -144,7 +175,7 @@ public class TokenController {
 		Matcher matcher = pattern.matcher(login.getPassword());
 
 		return matcher.matches();
-	}
+	}*/
 
 	private Integer getNewPwDayCount(Integer loginId) {
 		Integer dayCount = 0;
@@ -163,7 +194,20 @@ public class TokenController {
 				count = -1;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + loginId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getNewPwDayCount : TokenController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return count;

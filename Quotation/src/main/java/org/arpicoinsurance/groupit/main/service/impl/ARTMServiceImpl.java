@@ -14,7 +14,6 @@ import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardAIPDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
@@ -40,8 +39,6 @@ public class ARTMServiceImpl implements ARTMService{
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
-	@Autowired
-	private RateCardAIPDao rateCardAIPDao;
 
 	@Autowired
 	private UsersDao userdao;

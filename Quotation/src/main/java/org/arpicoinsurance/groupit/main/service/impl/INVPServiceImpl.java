@@ -131,7 +131,7 @@ public class INVPServiceImpl implements INVPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			System.out.println("Invp Frequency : " + quotationCalculation.get_personalInfo().getFrequance());
+//			System.out.println("Invp Frequency : " + quotationCalculation.get_personalInfo().getFrequance());
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
@@ -209,7 +209,7 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println("Pay Trm :" + paytrm);
+//		System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 
@@ -230,13 +230,13 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println("age : " + age);
-		System.out.println("term : " + term);
-		System.out.println("intrat : " + intrat);
-		System.out.println("paytrm : " + paytrm);
-		System.out.println("Sumasu : " + rateCardINVP.getSumasu());
-		System.out.println("SumRate : " + rateCardINVP.getSumasu());
-		System.out.println("Rate : " + rateCardINVP.getRate());
+//		System.out.println("age : " + age);
+//		System.out.println("term : " + term);
+//		System.out.println("intrat : " + intrat);
+//		System.out.println("paytrm : " + paytrm);
+//		System.out.println("Sumasu : " + rateCardINVP.getSumasu());
+//		System.out.println("SumRate : " + rateCardINVP.getSumasu());
+//		System.out.println("Rate : " + rateCardINVP.getRate());
 
 		maturity = (new BigDecimal(rateCardINVP.getRate()).divide(new BigDecimal(rateCardINVP.getSumasu()), 20,
 				RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)).setScale(0, RoundingMode.HALF_UP);
@@ -277,7 +277,7 @@ public class INVPServiceImpl implements INVPService {
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
 		mainLifeDetail.setCustomer(mainlife);
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob() + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
+//		System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob() + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
 
 		Customer spouse = null;
 		if (_invpSaveQuotation.get_personalInfo().get_spouse() != null
@@ -427,7 +427,7 @@ public class INVPServiceImpl implements INVPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -481,11 +481,11 @@ public class INVPServiceImpl implements INVPService {
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		System.out.println("age : " + age + " term : " + term + " BSA premium : " + premium + " paytrm : " + paytrm
-				+ " Rate : " + rateCardATFESC.getRate());
+//		System.out.println("age : " + age + " term : " + term + " BSA premium : " + premium + " paytrm : " + paytrm
+//				+ " Rate : " + rateCardATFESC.getRate());
 		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
 				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
-		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
+//		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
 		return lifpos;
 	}
 
@@ -676,7 +676,7 @@ public class INVPServiceImpl implements INVPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

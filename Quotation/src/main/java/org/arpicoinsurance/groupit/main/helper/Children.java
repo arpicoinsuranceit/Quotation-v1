@@ -89,4 +89,11 @@ public class Children {
 		this._cHrbfc = _cHrbfc;
 	}
 	
+	@Override
+	public String toString() {
+		return "Children [_cActive=" + _cActive + ", _cName=" + _cName + ", _cDob=" + _cDob + ", _cAge=" + _cAge
+				+ ", _cNic=" + _cNic + ", _cTitle=" + _cTitle + ", _cSuhrbc=" + _cSuhrbc + ", _cCibc=" + _cCibc
+				+ ", _cHbc=" + _cHbc + ", _cHrbic=" + _cHrbic + ", _cHrbfc=" + _cHrbfc + "]";
+	}
+	
 }

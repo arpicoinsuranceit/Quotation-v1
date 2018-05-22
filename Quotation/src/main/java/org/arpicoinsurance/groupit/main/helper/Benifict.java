@@ -30,4 +30,10 @@ public class Benifict {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	@Override
+	public String toString() {
+		return "Benifict [active=" + active + ", premium=" + premium + ", sumAssured=" + sumAssured + ", type=" + type
+				+ "]";
+	}
 }

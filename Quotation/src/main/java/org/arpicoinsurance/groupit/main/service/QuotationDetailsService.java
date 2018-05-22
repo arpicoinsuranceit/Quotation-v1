@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.service;
 
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
-import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationDetailsService {

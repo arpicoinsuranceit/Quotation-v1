@@ -1,15 +1,18 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ENDService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +26,17 @@ public class QuotationEndCalculationController {
 
 	@Autowired
 	private ENDService endService;
+	
+	@Autowired
+	private LogService logService;
 
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
-	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 
+		//System.out.println("called");
+		
+		//System.out.println(calculation.toString());
+		
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -38,7 +48,7 @@ public class QuotationEndCalculationController {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return calRespPost;
+						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
 					}
 				} else {
 					calResp.setErrorExist(true);
@@ -46,21 +56,31 @@ public class QuotationEndCalculationController {
 				}
 			} else {
 				calResp.setErrorExist(true);
-				calResp.setError("Product");
+				calResp.setError("BSA must be Greater than or Equal 250000 and Age + Term must be Less than or Equal 70");
 			}
-			return calResp;
+			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return null;
+		//return null;
 	}
 
 	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
-	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> saveEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		System.out.println(id);
-		String resp = "Fail";
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 
@@ -76,7 +96,6 @@ public class QuotationEndCalculationController {
 					validation = new Validation(calculation);
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
-						System.out.println(error + "ssssssssssss");
 						if (error.equals("No")) {
 
 							responseMap = endService.saveQuotation(calculation, _invpSaveQuotation, id);
@@ -85,7 +104,7 @@ public class QuotationEndCalculationController {
 							responseMap.replace("status", error);
 						}
 					} else {
-						responseMap.replace("status", "Error at product");
+						responseMap.replace("status", "BSA must be Greater than or Equal 250000 and Age + Term must be Less than or Equal 70");
 					}
 				} else {
 					responseMap.replace("status", "Incomplete");
@@ -94,9 +113,22 @@ public class QuotationEndCalculationController {
 				responseMap.replace("status", "User can't be identify");
 
 			}
-
+			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationEndCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("saveEnd : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -105,20 +137,12 @@ public class QuotationEndCalculationController {
 				validation = null;
 			}
 		}
-
-		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoEndEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public HashMap<String, Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
-		System.out.println(userId);
-		System.out.println(qdId);
-		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
-
-		String resp = "Fail";
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -135,14 +159,12 @@ public class QuotationEndCalculationController {
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
 
-						System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
 						if (error.equals("No")) {
 
 							responseMap = endService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
 							
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
 						responseMap.replace("status", "Error at product");
@@ -154,9 +176,22 @@ public class QuotationEndCalculationController {
 				responseMap.replace("status", "User can't be identify");
 
 			}
-
+			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationEndCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editEnd : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -165,8 +200,6 @@ public class QuotationEndCalculationController {
 				validation = null;
 			}
 		}
-
-		return responseMap;
 	}
 
 }

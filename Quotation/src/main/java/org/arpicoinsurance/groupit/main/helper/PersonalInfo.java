@@ -140,6 +140,27 @@ public class PersonalInfo {
 		this.sPreviousSumAtRisk = sPreviousSumAtRisk;
 	}
 
+	@Override
+	public String toString() {
+		
+		String childrenString = "children : ";
+
+		if (childrens != null) {
+
+			for (Children children : childrens) {
+				childrenString += children.toString();
+			}
+		}
+		
+		return "PersonalInfo [mage=" + mage + ", mgenger=" + mgenger + ", mocu=" + mocu + ", sage=" + sage
+				+ ", sgenger=" + sgenger + ", socu=" + socu + ", term=" + term + ", payingterm=" + payingterm
+				+ ", frequance=" + frequance + ", bsa=" + bsa + ", intrate=" + intrate + ", msfb=" + msfb
+				+ ", mPreviousSumAtRisk=" + mPreviousSumAtRisk + ", sPreviousSumAtRisk=" + sPreviousSumAtRisk
+				+ ", childrens=" + childrens + "]" + childrenString;
+	}
+	
+	
+
 		
 }
 

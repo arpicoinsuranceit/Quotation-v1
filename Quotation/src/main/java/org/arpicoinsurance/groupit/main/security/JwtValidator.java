@@ -23,7 +23,7 @@ public class JwtValidator {
 		jwtLogin.setUserId(Integer.parseInt((String) claims.get("loginId")));
 		jwtLogin.setUserFullName((String) claims.get("password"));
 		}catch (Exception e) {
-			System.out.println(e);
+			//System.out.println(e);
 		}
 		
 		return jwtLogin;

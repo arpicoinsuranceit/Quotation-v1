@@ -168,4 +168,13 @@ public class Rms_Sbu implements Serializable{
 	public void setLockin_date(Date lockin_date) {
 		this.lockin_date = lockin_date;
 	}
+
+	@Override
+	public String toString() {
+		return "Rms_Sbu [sbuId=" + sbuId + ", sbu_Code=" + sbu_Code + ", sbu_Name=" + sbu_Name + ", sbu_S_Name="
+				+ sbu_S_Name + ", address=" + address + ", city=" + city + ", tel=" + tel + ", telx=" + telx + ", fax="
+				+ fax + ", tax_no=" + tax_no + ", email=" + email + ", active=" + active + ", createBy=" + createBy
+				+ ", createdate=" + createdate + ", modifyBy=" + modifyBy + ", modifydate=" + modifydate
+				+ ", lockin_date=" + lockin_date + "]";
+	}
 }

@@ -21,14 +21,14 @@ public class TPDDTAServiceImpl implements TPDDTAService {
 	@Override
 	public BigDecimal calculateTPDDTA(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)
 			throws Exception {
-		System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
+//		System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal premiumTPDDTA = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
 
 			RateCardTPDDTA rateCardTPDDTA = rateCardTPDDTADao.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat, chedat, chedat, chedat);
-			System.out.println("rateCardTPDDTA : "+ rateCardTPDDTA.getRate());
+//			System.out.println("rateCardTPDDTA : "+ rateCardTPDDTA.getRate());
 			
             //annuity for term
             double annuity = 1 + (intrat / 100);
@@ -63,7 +63,7 @@ public class TPDDTAServiceImpl implements TPDDTAService {
 
         }
 		premiumTPDDTA = premiumTPDDTA.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumTPDDTA : "+premiumTPDDTA.toString());
+//		System.out.println("premiumTPDDTA : "+premiumTPDDTA.toString());
 		return premiumTPDDTA;
 	}
 

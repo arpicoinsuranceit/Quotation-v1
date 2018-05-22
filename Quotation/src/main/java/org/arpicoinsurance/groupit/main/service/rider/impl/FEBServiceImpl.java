@@ -24,7 +24,7 @@ public class FEBServiceImpl implements FEBService{
 			Double relief, double occupation_loding) throws Exception {
 		BigDecimal premiumFEB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		System.out.println("FEB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());
+		//System.out.println("FEB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@*@rider_sum_assured@/1000))*@relief@
 			premiumFEB = (new BigDecimal(rateCardATFESC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);		
@@ -34,7 +34,7 @@ public class FEBServiceImpl implements FEBService{
 		}
 		
 		premiumFEB = premiumFEB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumFEB : "+premiumFEB.toString());
+		//System.out.println("premiumFEB : "+premiumFEB.toString());
 		return premiumFEB;
 	}
 

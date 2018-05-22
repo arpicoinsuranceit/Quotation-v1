@@ -114,6 +114,14 @@ public class Login implements Serializable{
 	public void setModifydate(Date modifydate) {
 		this.modifydate = modifydate;
 	}
+
+	@Override
+	public String toString() {
+		return "Login [loginId=" + loginId + ", userName=" + userName + ", password=" + password + ", lastLog="
+				+ lastLog + ", failCount=" + failCount + ", locks=" + locks + ", inactiveDate=" + inactiveDate
+				+ ", createBy=" + createBy + ", createdate=" + createdate + ", modifyBy=" + modifyBy + ", modifydate="
+				+ modifydate + "]";
+	}
 	
 	
 }

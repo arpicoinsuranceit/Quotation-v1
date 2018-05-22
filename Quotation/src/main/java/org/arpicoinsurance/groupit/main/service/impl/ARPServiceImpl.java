@@ -9,7 +9,6 @@ import java.util.HashMap;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardSurenderDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -30,7 +29,6 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
-import org.arpicoinsurance.groupit.main.model.RateCardSurender;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -54,7 +52,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -70,9 +67,6 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardARPDao rateCardARPDao;
-
-	@Autowired
-	private RateCardSurenderDao rateCardSurenderDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -168,7 +162,7 @@ public class ARPServiceImpl implements ARPService {
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 
-			System.out.println(calResp.getBasicSumAssured());
+//			System.out.println(calResp.getBasicSumAssured());
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -211,17 +205,17 @@ public class ARPServiceImpl implements ARPService {
 			}
 		}
 
-		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " rebate : " + rebate
-				+ " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
+//		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " rebate : " + rebate
+//				+ " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
-		System.out.println("rateCardARP : " + rateCardEND.getRate());
+//		System.out.println("rateCardARP : " + rateCardEND.getRate());
 		RateCardARP rateCardARP = rateCardARPDao
 				.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, rlfterm,
 						chedat, chedat, chedat, chedat);
-		System.out.println("rateCardARPRelief : " + rateCardARP.getRate());
+//		System.out.println("rateCardARPRelief : " + rateCardARP.getRate());
 
 		if (payFrequency.equalsIgnoreCase("S")) {
 			// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)) *@relief@
@@ -242,14 +236,14 @@ public class ARPServiceImpl implements ARPService {
 											RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARP.getRate()))
 													.setScale(0, RoundingMode.HALF_UP);
 		}
-		System.out.println("premium : " + premium.toString());
+//		System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
-			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-			System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
+//			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+//			System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+//			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
 		return occuLodingPremium;
@@ -259,11 +253,11 @@ public class ARPServiceImpl implements ARPService {
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 		// @sum_assured@ + ((@sum_assured@*0.025)*@term@)
 		BigDecimal maturity = new BigDecimal(0);
-		System.out.println("term : " + term + " bassum : " + bassum);
+//		System.out.println("term : " + term + " bassum : " + bassum);
 		maturity = (new BigDecimal(bassum)
 				.add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term)))))
 						.setScale(0, RoundingMode.HALF_UP);
-		System.out.println("maturity : " + maturity.toString());
+//		System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -433,7 +427,7 @@ public class ARPServiceImpl implements ARPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -658,7 +652,7 @@ public class ARPServiceImpl implements ARPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

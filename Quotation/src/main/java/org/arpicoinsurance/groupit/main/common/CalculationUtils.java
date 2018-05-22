@@ -83,24 +83,33 @@ public class CalculationUtils {
 	}
 	
 	public double getTaxAmount(double bassum) {
-		System.out.println(bassum + "bassum at tax");
+		//System.out.println(bassum + "bassum at tax");
 		return new BigDecimal(0.002).multiply(new BigDecimal(bassum)).setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 	public Double getPolicyFee() {
-		// TODO Auto-generated method stub
 		return 300.00;
 	}
 	
 	public Double addRebatetoBSAPremium(double rebate, BigDecimal premium) throws Exception {
-		System.out.println("rebate : " + rebate);
+		//System.out.println("rebate : " + rebate);
 		BigDecimal rebateRate = new BigDecimal(1)
 				.subtract((new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)));
-		System.out.println("rebateRate : " + rebateRate.doubleValue());
+		//System.out.println("rebateRate : " + rebateRate.doubleValue());
 		premium = premium.multiply(rebateRate).setScale(0, RoundingMode.HALF_UP);
 		return premium.doubleValue();
 	}
 	
+	
+	public Double getFndMngRate (Double contribution) {
+		if(contribution >= 2000000) {
+			return .15;
+		}else if(contribution >= 1000000) {
+			return .17;
+		}else {
+			return .2;
+		}
+	}
 	
 	
 }

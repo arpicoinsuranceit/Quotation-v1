@@ -1,14 +1,17 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ATRMService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,15 +25,18 @@ public class QuotationAtrmCalculationController {
 
 	@Autowired
 	private ATRMService atrmService;
+	
+	@Autowired
+	private LogService logService;
 
 	private double totPre = 0.0;
 
 	@RequestMapping(value = "/quoAtrmCal", method = RequestMethod.POST)
-	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		// System.out.println(calculation);
-		System.out.println(calculation.get_personalInfo().getSgenger() + "***************************");
+		//System.out.println(calculation.get_personalInfo().getSgenger() + "***************************");
 
-		System.out.println(calculation.get_personalInfo().getMgenger() + "************************************");
+		//System.out.println(calculation.get_personalInfo().getMgenger() + "************************************");
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -43,7 +49,7 @@ public class QuotationAtrmCalculationController {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return calRespPost;
+						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
 					}
 				} else {
 					calResp.setErrorExist(true);
@@ -53,19 +59,30 @@ public class QuotationAtrmCalculationController {
 				calResp.setErrorExist(true);
 				calResp.setError("Product");
 			}
-			return calResp;
+			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationAtrmCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return null;
+		//return null;
 	}
 
 	@RequestMapping(value = "/quoAtrmsave/{id}", method = RequestMethod.POST)
-	public HashMap<String, Object> saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		System.out.print(_invpSaveQuotation.get_product() + " pppppppppppppppppppppppppppppppppppppp");
-		String resp = "Fail";
+		
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -99,9 +116,22 @@ public class QuotationAtrmCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-
+			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationAtrmCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString() + ", id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("saveAtrm : QuotationAtrmCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -110,20 +140,18 @@ public class QuotationAtrmCalculationController {
 				validation = null;
 			}
 		}
-
-		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoAtrmEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public HashMap<String, Object> editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
-		System.out.println(userId);
-		System.out.println(qdId);
-		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
-
-		String resp = "Fail";
+		/*
+		*System.out.println(userId);
+		*System.out.println(qdId);
+		*System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		*System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
+		*/
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -158,9 +186,22 @@ public class QuotationAtrmCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-
+			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationAtrmCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString() + ", userId : " + userId + ", qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editAtrm : QuotationAtrmCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -170,7 +211,6 @@ public class QuotationAtrmCalculationController {
 			}
 		}
 
-		return responseMap;
 	}
 
 }
