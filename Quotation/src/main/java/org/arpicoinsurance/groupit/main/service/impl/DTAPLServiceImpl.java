@@ -262,6 +262,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 
 		Products products = productDao.findByProductCode("DTAPL");
 		Users user = userDao.findOne(id);
@@ -441,6 +445,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 		
 		if(productDao.findByProductCode("DTAPL").getActive() == 0 ) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
 

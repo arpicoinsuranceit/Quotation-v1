@@ -263,6 +263,11 @@ public class DTAServiceImpl implements DTAService {
 		Quotation quo =null;
 		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+		
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(id);
@@ -447,6 +452,10 @@ public class DTAServiceImpl implements DTAService {
 			return responseMap;
 		}
 		
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 		
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);
