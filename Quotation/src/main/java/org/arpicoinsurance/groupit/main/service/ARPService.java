@@ -3,9 +3,11 @@ package org.arpicoinsurance.groupit.main.service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.helper.SurrenderValHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public interface ARPService {
@@ -14,7 +16,7 @@ public interface ARPService {
 	
 	BigDecimal calculateMaturity(int term, double bassum) throws Exception;
 	
-	HashMap<String, Object> calculateSurrendervals(int age, int term, String rlfterm, double bassum, String payFrequency, double total_premium) throws Exception;
+	List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlfterm, double bassum, String payFrequency, double total_premium) throws Exception;
 	
 	QuotationQuickCalResponse getCalcutatedArp (QuotationCalculation calculation) throws Exception;
 	
