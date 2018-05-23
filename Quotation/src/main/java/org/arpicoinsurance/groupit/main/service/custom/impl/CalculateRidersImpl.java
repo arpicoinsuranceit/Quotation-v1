@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardCIBCDao;
@@ -247,6 +248,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 	@Autowired
 	private RateCardHRBIDao rateCardHRBIDao;
+	
+	@Autowired
+	private BenefitsDao benefictDao;
 
 	@Override
 	public QuotationQuickCalResponse getRiders(QuotationCalculation quotationCalculation,
@@ -443,6 +447,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 		Double ocuLoading = 1.0;
 		switch (type) {
 		case "BSAS":
+			
+			if(benefictDao.findByRiderCode("SCB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SCB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
+			
 			ocuLoading = oculoding.get("SCB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -470,6 +481,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "ADB":
+			if(benefictDao.findByRiderCode("ADB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("ADB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("ADB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -493,6 +509,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SFPO":
+			if(benefictDao.findByRiderCode("SFPO").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SFPO under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SFPO");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -508,6 +529,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "ADBS":
+			if(benefictDao.findByRiderCode("ADBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("ADBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("ADBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -531,6 +557,12 @@ public class CalculateRidersImpl implements CalculateRiders {
 		case "ATPB":
 			// System.out.println("called/////////////////////////////////////////////////////");
 			// System.out.println(ridsumasu);
+			
+			if(benefictDao.findByRiderCode("ATPB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("ATPB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("ATPB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -556,6 +588,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDASB":
+			if(benefictDao.findByRiderCode("TPDASB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDASB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDASB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -581,6 +618,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDASBS":
+			if(benefictDao.findByRiderCode("TPDASBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDASBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDASBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -607,6 +649,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDB":
+			if(benefictDao.findByRiderCode("TPDB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -628,6 +675,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDBS":
+			if(benefictDao.findByRiderCode("TPDBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -649,6 +701,12 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "PPDB":
+			
+			if(benefictDao.findByRiderCode("PPDB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("PPDB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("PPDB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -669,6 +727,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setPpdbTerm(term);
 			return calResp;
 		case "PPDBS":
+			if(benefictDao.findByRiderCode("PPDBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("PPDBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("PPDBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -689,6 +752,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setPpdbsTerm(term);
 			return calResp;
 		case "CIB":
+			if(benefictDao.findByRiderCode("CIB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("CIB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("CIB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -713,6 +781,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setCibTerm(valiedTermCIB);
 			return calResp;
 		case "CIBS":
+			if(benefictDao.findByRiderCode("SCIB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SCIB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SCIB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -737,6 +810,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "CIBC":
+			if(benefictDao.findByRiderCode("CIBC").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("CIBC under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("CIBC");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -764,6 +842,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "FEB":
+			if(benefictDao.findByRiderCode("FEB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("FEB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("FEB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -789,6 +872,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "FEBS":
+			if(benefictDao.findByRiderCode("FEBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("FEBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("FEBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -814,6 +902,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "MFIBD":
+			if(benefictDao.findByRiderCode("MFIBD").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("MFIBD under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("MFIBD");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -846,6 +939,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "MFIBT":
+			if(benefictDao.findByRiderCode("MFIBT").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("MFIBT under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("MFIBT");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -877,6 +975,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setMifdtTerm(valiedTermMFIBT);
 			return calResp;
 		case "MFIBDT":
+			if(benefictDao.findByRiderCode("MFIBDT").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("MFIBDT under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("MFIBDT");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -918,6 +1021,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "HRBF":
+			if(benefictDao.findByRiderCode("HCBF").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HCBF under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -956,6 +1064,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HRBI":
+			if(benefictDao.findByRiderCode("HCBI").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HCBI under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -986,6 +1099,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HRBIS":
+			if(benefictDao.findByRiderCode("HCBIS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HCBIS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HRBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1013,6 +1131,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HRBIC":
+			if(benefictDao.findByRiderCode("HCBIC").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HCBIC under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HRBIC");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1042,6 +1165,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SHCBF":
+			if(benefictDao.findByRiderCode("SHCBF").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SHCBF under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SUHRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1072,6 +1200,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SUHRB":
+			if(benefictDao.findByRiderCode("SHCBI").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SHCBI under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SUHRB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1115,6 +1248,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "SUHRBS":
+			if(benefictDao.findByRiderCode("SHCBIS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SHCBIS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SUHRBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1160,6 +1298,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "SUHRBC":
+			if(benefictDao.findByRiderCode("SHCBIC").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("SHCBIC under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("SUHRBC");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1206,6 +1349,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "HB":
+			if(benefictDao.findByRiderCode("HB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1239,6 +1387,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HBS":
+			if(benefictDao.findByRiderCode("HBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1264,6 +1417,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HBC":
+			if(benefictDao.findByRiderCode("HBC").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("HBC under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("HBC");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1292,6 +1450,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "WPB":
+			if(benefictDao.findByRiderCode("WPB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("WPB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("WPB");
 			// System.out.println(ocuLoading + " wpb oculoading");
 			if (ocuLoading == null)
@@ -1304,6 +1467,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setWpbTerm(term);
 			return calResp;
 		case "WPBS":
+			if(benefictDao.findByRiderCode("WPBS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("WPBS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("WPBS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1315,6 +1483,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "JLB":
+			if(benefictDao.findByRiderCode("JLB").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("JLB under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("JLB");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1330,6 +1503,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "JLBPL":
+			if(benefictDao.findByRiderCode("JLBPL").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("JLBPL under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("JLBPL");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1346,6 +1524,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDDTA":
+			if(benefictDao.findByRiderCode("TPDDTA").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDDTA under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDDTA");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1362,6 +1545,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDDTAS":
+			if(benefictDao.findByRiderCode("TPDDTAS").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDDTAS under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDDTAS");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1378,6 +1566,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDDTAPL":
+			if(benefictDao.findByRiderCode("TPDDTAPL").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDDTAPL under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDDTAPL");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
@@ -1394,6 +1587,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "TPDDTASPL":
+			if(benefictDao.findByRiderCode("TPDDTASPL").getActive() == 0) {
+				calResp.setErrorExist(true);
+				calResp.setError("TPDDTASPL under Maintenance, Please untick or reload page");
+				return calResp;
+			}
 			ocuLoading = oculoding.get("TPDDTASPL");
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
