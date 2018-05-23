@@ -772,8 +772,11 @@ public class ARPServiceImpl implements ARPService {
 	public List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
 
-		System.out.println("age : " + age + " term : " + term + " rlf_term : " + rlf_term + " bassum : "
-				+ " payFrequency : " + payFrequency + " total_premium : " + total_premium);
+		/*
+		 * System.out.println("age : " + age + " term : " + term + " rlf_term : " +
+		 * rlf_term + " bassum : " + " payFrequency : " + payFrequency +
+		 * " total_premium : " + total_premium);
+		 */
 
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;

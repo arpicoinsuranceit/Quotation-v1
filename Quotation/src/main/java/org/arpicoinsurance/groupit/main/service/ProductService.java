@@ -1,4 +1,4 @@
-package org.arpicoinsurance.groupit.main.service.impl;
+package org.arpicoinsurance.groupit.main.service;
 
 import java.util.List;
 

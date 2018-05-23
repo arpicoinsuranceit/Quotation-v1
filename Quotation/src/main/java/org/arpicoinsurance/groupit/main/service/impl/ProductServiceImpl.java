@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.model.Products;
+import org.arpicoinsurance.groupit.main.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

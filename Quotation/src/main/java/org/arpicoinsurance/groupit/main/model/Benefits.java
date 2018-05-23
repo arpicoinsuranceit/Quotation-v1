@@ -19,6 +19,8 @@ public class Benefits implements Serializable{
 	private String benefitType;
 	private String benefictCombination;
 	
+	private Integer active;
+	
 	private Date lockin_date;
 	private String benefitCreateBy;
 	private Date benefitCreateDate;
@@ -123,6 +125,14 @@ public class Benefits implements Serializable{
 
 	public void setBenefictCombination(String benefictCombination) {
 		this.benefictCombination = benefictCombination;
+	}
+
+	public Integer getActive() {
+		return active;
+	}
+
+	public void setActive(Integer active) {
+		this.active = active;
 	}
 	
 }
