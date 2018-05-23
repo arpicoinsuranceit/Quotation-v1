@@ -254,6 +254,11 @@ public class INVPServiceImpl implements INVPService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("INVP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -498,6 +503,11 @@ public class INVPServiceImpl implements INVPService {
 		Quotation quo = null;
 		
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("INVP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 		
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {

@@ -287,6 +287,11 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
+		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -520,6 +525,11 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {

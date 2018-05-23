@@ -255,6 +255,11 @@ public class DTAServiceImpl implements DTAService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		Quotation quo =null;
 		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
@@ -436,6 +441,12 @@ public class DTAServiceImpl implements DTAService {
 		Quotation quo = null;
 		
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);

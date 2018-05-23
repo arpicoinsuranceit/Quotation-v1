@@ -87,6 +87,11 @@ public class ARTMServiceImpl implements ARTMService{
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("ARTM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		try {
 			
 			calculationUtils = new CalculationUtils();
@@ -282,6 +287,11 @@ public class ARTMServiceImpl implements ARTMService{
 		
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ARTM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 		
 		try {
 			

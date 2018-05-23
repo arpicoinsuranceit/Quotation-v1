@@ -216,6 +216,11 @@ public class ATRMServiceImpl implements ATRMService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ATRM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		if (calResp.isErrorExist()) {
@@ -423,6 +428,12 @@ public class ATRMServiceImpl implements ATRMService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ATRM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		if (calResp.isErrorExist()) {
