@@ -3,10 +3,13 @@ package org.arpicoinsurance.groupit.main.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Surrendervals implements Serializable{
@@ -102,7 +105,9 @@ public class Surrendervals implements Serializable{
 	public void setPolyer(Integer polyer) {
 		this.polyer = polyer;
 	}
-
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "quotationDetail_id", nullable = false)
 	public QuotationDetails getQuotationDetails() {
 		return quotationDetails;
 	}

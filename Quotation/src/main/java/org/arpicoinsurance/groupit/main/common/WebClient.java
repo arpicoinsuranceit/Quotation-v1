@@ -18,7 +18,6 @@ public class WebClient {
 			return result;
 
 		}catch (Exception e) {
-			//System.out.println("call web catch");
 			e.printStackTrace();
 			return null;
 
