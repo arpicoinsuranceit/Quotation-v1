@@ -273,7 +273,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(cusTable);
 
 		// creating Quotation Details Tables
-		float[] pointColumnWidths5 = { 80, 150 };
+		float[] pointColumnWidths5 = { 100, 100 };
 		Table DtlTable = new Table(pointColumnWidths5);
 		DtlTable.setFixedPosition(400, 490, 230);// top bottom width
 
@@ -353,7 +353,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Cell dlcell7 = new Cell();
 		dlcell7.setBorder(Border.NO_BORDER);
-		dlcell7.add(new Paragraph("Admin Fee/Tax").setFontSize(10).setTextAlignment(TextAlignment.LEFT)
+		dlcell7.add(new Paragraph("Admin Fee / Cess").setFontSize(10).setTextAlignment(TextAlignment.LEFT)
 				.setFixedLeading(10));
 		DtlTable.addCell(dlcell7);
 		Cell dlcell8 = new Cell();
