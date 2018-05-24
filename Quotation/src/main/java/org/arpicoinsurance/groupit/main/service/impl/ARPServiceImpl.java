@@ -123,7 +123,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
-	
+
 	@Autowired
 	private RateCardSurenderDao rateCardSurenderDao;
 
@@ -136,6 +136,7 @@ public class ARPServiceImpl implements ARPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			// System.out.println(rebate + " : rebate");
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
@@ -167,22 +168,20 @@ public class ARPServiceImpl implements ARPService {
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 
-//			System.out.println(calResp.getBasicSumAssured());
+			// System.out.println(calResp.getBasicSumAssured());
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
-			
-			calculateSurrendervals(
-					quotationCalculation.get_personalInfo().getMage(), 
-					quotationCalculation.get_personalInfo().getTerm(), 
-					quotationCalculation.get_personalInfo().getPayingterm(), 
-					quotationCalculation.get_personalInfo().getBsa(), 
-					quotationCalculation.get_personalInfo().getFrequance(), 
-					calResp.getTotPremium());
-					
+
+			calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
+					quotationCalculation.get_personalInfo().getTerm(),
+					quotationCalculation.get_personalInfo().getPayingterm(),
+					quotationCalculation.get_personalInfo().getBsa(),
+					quotationCalculation.get_personalInfo().getFrequance(), calResp.getTotPremium());
+
 			return calResp;
 
 		} finally {
@@ -210,17 +209,18 @@ public class ARPServiceImpl implements ARPService {
 			}
 		}
 
-//		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " rebate : " + rebate
-//				+ " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
+		// System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " +
+		// term + " rebate : " + rebate
+		// + " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
-//		System.out.println("rateCardARP : " + rateCardEND.getRate());
+		// System.out.println("rateCardARP : " + rateCardEND.getRate());
 		RateCardARP rateCardARP = rateCardARPDao
 				.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, rlfterm,
 						chedat, chedat, chedat, chedat);
-//		System.out.println("rateCardARPRelief : " + rateCardARP.getRate());
+		// System.out.println("rateCardARPRelief : " + rateCardARP.getRate());
 
 		if (payFrequency.equalsIgnoreCase("S")) {
 			// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)) *@relief@
@@ -241,14 +241,16 @@ public class ARPServiceImpl implements ARPService {
 											RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARP.getRate()))
 													.setScale(0, RoundingMode.HALF_UP);
 		}
-//		System.out.println("premium : " + premium.toString());
+		// System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
-//			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-//			System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
+			// System.out.println(calResp.getWithoutLoadingTot() +
+			// "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+			// System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-//			System.out.println(calResp.getWithoutLoadingTot() + "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+			// System.out.println(calResp.getWithoutLoadingTot() +
+			// "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
 		return occuLodingPremium;
@@ -258,11 +260,11 @@ public class ARPServiceImpl implements ARPService {
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 		// @sum_assured@ + ((@sum_assured@*0.025)*@term@)
 		BigDecimal maturity = new BigDecimal(0);
-//		System.out.println("term : " + term + " bassum : " + bassum);
+		// System.out.println("term : " + term + " bassum : " + bassum);
 		maturity = (new BigDecimal(bassum)
 				.add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term)))))
 						.setScale(0, RoundingMode.HALF_UP);
-//		System.out.println("maturity : " + maturity.toString());
+		// System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -432,7 +434,7 @@ public class ARPServiceImpl implements ARPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -657,7 +659,7 @@ public class ARPServiceImpl implements ARPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -703,9 +705,11 @@ public class ARPServiceImpl implements ARPService {
 	@Override
 	public HashMap<String, Object> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
-		
-		System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+" bassum : "+" payFrequency : "+payFrequency+" total_premium : "+total_premium);	
-		
+
+		// System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+"
+		// bassum : "+" payFrequency : "+payFrequency+" total_premium :
+		// "+total_premium);
+
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;
 		BigDecimal mature_benifit = calculateMaturity(term, bassum);
@@ -720,11 +724,11 @@ public class ARPServiceImpl implements ARPService {
 		int polyer = 0;
 		int payment_frequency = new CalculationUtils().getPayterm(payFrequency);
 		BigDecimal isum_assure = new BigDecimal(0);
-		
+
 		for (int i = 1; i <= term; i++) {
 			int ageIncrement = (age + i);
 			BigDecimal prm_per_year = new BigDecimal(0);
-			
+
 			if (!(rlf_term.equalsIgnoreCase("S"))) {
 				int rlfterm = Integer.parseInt(rlf_term);
 				if (i <= rlfterm) {
@@ -757,9 +761,11 @@ public class ARPServiceImpl implements ARPService {
 						RateCardSurender rateCardSurender = rateCardSurenderDao
 								.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(ageIncrement,
 										balance_term, new Date(), new Date(), new Date(), new Date());
-						//System.out.println("Rate : "+rateCardSurender != null ? rateCardSurender.getRate() : 0);
-						surrender_val = (paidup_val.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+						// System.out.println("Rate : "+rateCardSurender != null ?
+						// rateCardSurender.getRate() : 0);
+						surrender_val = (paidup_val
+								.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+										.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 					}
 				} else {
 					polyer = i;
@@ -779,19 +785,22 @@ public class ARPServiceImpl implements ARPService {
 					RateCardSurender rateCardSurender = rateCardSurenderDao
 							.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(ageIncrement,
 									balance_term, new Date(), new Date(), new Date(), new Date());
-					//System.out.println(rateCardSurender);
-					//System.out.println("ageIncrement : "+ageIncrement+" balance_term : "+balance_term);
-					//System.out.println("Rate : "+(rateCardSurender == null ? 0 : rateCardSurender.getRate()));
-					surrender_val = (paidup_val.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-							.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+					// System.out.println(rateCardSurender);
+					// System.out.println("ageIncrement : "+ageIncrement+" balance_term :
+					// "+balance_term);
+					// System.out.println("Rate : "+(rateCardSurender == null ? 0 :
+					// rateCardSurender.getRate()));
+					surrender_val = (paidup_val
+							.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+									.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 				}
 			} else {
 				polyer = i;
 				paid_term = i;
 				balance_term = term - i;
 				tot_prm_paid = new BigDecimal(0);
-				if(i==1) {
-					isum_assure = new BigDecimal(bassum); 
+				if (i == 1) {
+					isum_assure = new BigDecimal(bassum);
 				}
 				/* Increase Sum Assured */
 				// (((((@sum_assured@)*0.025)))+@isum_assure@)
@@ -806,23 +815,27 @@ public class ARPServiceImpl implements ARPService {
 				RateCardSurender rateCardSurender = rateCardSurenderDao
 						.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(ageIncrement,
 								balance_term, new Date(), new Date(), new Date(), new Date());
-				//System.out.println("Rate : "+rateCardSurender != null ? rateCardSurender.getRate() : 0);
-				surrender_val = (paidup_val.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-						.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+				// System.out.println("Rate : "+rateCardSurender != null ?
+				// rateCardSurender.getRate() : 0);
+				surrender_val = (paidup_val
+						.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 			}
 
-			System.out.println("polyer : " + String.valueOf(polyer));
-			System.out.println("padtrm : " + String.valueOf(paid_term));
-			System.out.println("toptrm : " + term);
-			System.out.println("isumas : " + isum_assure.doubleValue());
-			System.out.println("paidup : " + paidup_val.doubleValue());
-			System.out.println("surrnd : " + surrender_val.doubleValue());
-			System.out.println("mature : " + mature_benifit.doubleValue());
-			System.out.println("prmpyr : " + prm_per_year.doubleValue());
-			System.out.println("prmpad : " + tot_prm_paid.doubleValue());
+			/*
+			 * System.out.println("polyer : " + String.valueOf(polyer));
+			 * System.out.println("padtrm : " + String.valueOf(paid_term));
+			 * System.out.println("toptrm : " + term); System.out.println("isumas : " +
+			 * isum_assure.doubleValue()); System.out.println("paidup : " +
+			 * paidup_val.doubleValue()); System.out.println("surrnd : " +
+			 * surrender_val.doubleValue()); System.out.println("mature : " +
+			 * mature_benifit.doubleValue()); System.out.println("prmpyr : " +
+			 * prm_per_year.doubleValue()); System.out.println("prmpad : " +
+			 * tot_prm_paid.doubleValue());
+			 */
 
 		}
-		
+
 		return null;
 	}
 

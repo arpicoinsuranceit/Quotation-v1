@@ -134,6 +134,7 @@ public class ASIPServiceImpl implements ASIPService {
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			//System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),

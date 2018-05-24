@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
@@ -11,6 +12,7 @@ import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.service.AIPService;
 import org.arpicoinsurance.groupit.main.service.LogService;
+import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,17 +35,33 @@ public class QuotationAipCalculationController {
 
 	@RequestMapping(value = "/aipCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAIP(@RequestBody Plan plan) throws Exception {
-
+		CalculationUtils calUtil = new CalculationUtils();
 		// System.out.println(plan.toString());
 
+		Validation validation = new Validation();
+
+		String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
+
+		if (!message.equals("ok")) {
+			
+			AIPCalResp aipCalResp = new AIPCalResp();
+			aipCalResp.setError(message);
+			aipCalResp.setErrorExist(true);
+			return new ResponseEntity<Object>(aipCalResp, HttpStatus.OK);
+		}
+
 		Double contribution = plan.get_bsa();
+		Double fundMrate = calUtil.getFndMngRate(contribution);
+
+		//System.out.println(fundMrate);
+
 		try {
-			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.0, contribution,
+			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), plan.get_frequance(), false, true);
-			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 10.0, contribution,
-					new Date(), plan.get_frequance(), false, false);
-			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 11.0, contribution,
-					new Date(), plan.get_frequance(), false, false);
+			AIPCalResp aipCalResp11 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 10.0,
+					contribution, new Date(), plan.get_frequance(), false, false);
+			AIPCalResp aipCalResp12 = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 11.0,
+					contribution, new Date(), plan.get_frequance(), false, false);
 
 			aipCalResp.setMaturaty10(aipCalResp11.getMaturaty());
 			aipCalResp.setMaturaty12(aipCalResp12.getMaturaty());
@@ -66,15 +84,35 @@ public class QuotationAipCalculationController {
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
+		} finally {
+			if (validation != null)
+				validation = null;
 		}
-//		 return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/aipshedule", method = RequestMethod.POST)
 	public ResponseEntity<Object> loadSheduleAIP(@RequestBody Plan plan) {
+
+		Validation validation = new Validation();
+
+		String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
+
+		if (!message.equals("ok")) {
+			AIPCalResp aipCalResp = new AIPCalResp();
+			aipCalResp.setError(message);
+			aipCalResp.setErrorExist(true);
+			return new ResponseEntity<Object>(aipCalResp, HttpStatus.OK);
+		}
+
+		CalculationUtils calUtil = new CalculationUtils();
+
 		Double contribution = plan.get_bsa();
+		Double fundMrate = calUtil.getFndMngRate(contribution);
+
+		//System.out.println(fundMrate);
 		try {
-			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, 0.2, 9.0, contribution,
+			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), plan.get_frequance(), true, false);
 
 			ArrayList<AipCalShedule> aipCalSchedule = (ArrayList<AipCalShedule>) aipCalResp.getAipCalShedules();
@@ -99,6 +137,9 @@ public class QuotationAipCalculationController {
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} finally {
+			if (validation != null)
+				validation = null;
 		}
 		// return null;
 	}
@@ -108,19 +149,24 @@ public class QuotationAipCalculationController {
 			@PathVariable Integer id) {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
+
+		Validation validation = new Validation();
+		String message = "Error";
+		if (_invpSaveQuotation != null) {
+			message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
+					_invpSaveQuotation.get_plan().get_frequance(), _invpSaveQuotation.get_plan().get_bsa(),
+					_invpSaveQuotation.get_plan().get_term());
+
+		}
+		if (!message.equals("ok")) {
+			responseMap.replace("status", message);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
+		}
+
 		try {
 			if (id != null) {
-				if (_invpSaveQuotation != null) {
-
-					if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-							+ _invpSaveQuotation.get_plan().get_term()) <= 100) {
-
-						responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
-					} else {
-						responseMap.replace("status", "Term is too large for Mainlife age");
-					}
-				}
-			}
+				responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
+			} 
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 
 		} catch (Exception e) {
@@ -141,9 +187,10 @@ public class QuotationAipCalculationController {
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
-
+			if (validation != null)
+				validation = null;
 		}
-		
+
 	}
 
 	@RequestMapping(value = "/quoAipEdit/{userId}/{qdId}", method = RequestMethod.POST)
@@ -151,24 +198,27 @@ public class QuotationAipCalculationController {
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
+
+		Validation validation = new Validation();
+		String message = "Error";
+		if (_invpSaveQuotation != null) {
+			message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
+					_invpSaveQuotation.get_plan().get_frequance(), _invpSaveQuotation.get_plan().get_bsa(),
+					_invpSaveQuotation.get_plan().get_term());
+
+		}
+		if (!message.equals("ok")) {
+			responseMap.replace("status", message);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
+		}
+
 		try {
 			if (userId != null) {
 				if (qdId != null) {
-					if (_invpSaveQuotation != null) {
-						if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge())
-								+ _invpSaveQuotation.get_plan().get_term()) <= 100) {
-							/*
-							 * if ((Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()) +
-							 * _invpSaveQuotation.get_plan().get_term()) <= 70) {
-							 */
-							responseMap = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
-						} else {
-							responseMap.replace("status", "Term is too large for Mainlife age");
-						}
-					}
+					responseMap = aipService.editQuotation(_invpSaveQuotation, userId, qdId);
 				}
 			}
-			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED); 
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation :"
@@ -187,8 +237,9 @@ public class QuotationAipCalculationController {
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
-
+			if (validation != null)
+				validation = null;
 		}
-		
+
 	}
 }
