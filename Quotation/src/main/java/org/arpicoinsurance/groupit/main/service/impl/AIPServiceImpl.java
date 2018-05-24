@@ -278,7 +278,7 @@ public class AIPServiceImpl implements AIPService {
 
 			Double fundMrate = calculationUtils.getFndMngRate(contribution);
 
-			System.out.println(fundMrate);
+			//System.out.println(fundMrate);
 
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
@@ -503,7 +503,7 @@ public class AIPServiceImpl implements AIPService {
 
 			Double fundMrate = calculationUtils.getFndMngRate(contribution);
 
-			System.out.println(fundMrate);
+			//System.out.println(fundMrate);
 
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);

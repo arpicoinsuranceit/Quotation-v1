@@ -171,6 +171,7 @@ public class ATRMServiceImpl implements ATRMService {
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
+			//System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),
 					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,

@@ -53,7 +53,7 @@ public class QuotationAipCalculationController {
 		Double contribution = plan.get_bsa();
 		Double fundMrate = calUtil.getFndMngRate(contribution);
 
-		System.out.println(fundMrate);
+		//System.out.println(fundMrate);
 
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
@@ -110,7 +110,7 @@ public class QuotationAipCalculationController {
 		Double contribution = plan.get_bsa();
 		Double fundMrate = calUtil.getFndMngRate(contribution);
 
-		System.out.println(fundMrate);
+		//System.out.println(fundMrate);
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), plan.get_frequance(), true, false);

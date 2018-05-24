@@ -135,6 +135,7 @@ public class INVPServiceImpl implements INVPService {
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
+			//System.out.println(rebate + " : rebate");
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),

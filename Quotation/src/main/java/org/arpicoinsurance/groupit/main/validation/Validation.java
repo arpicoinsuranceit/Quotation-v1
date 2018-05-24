@@ -1247,12 +1247,6 @@ public class Validation {
 	}
 	
 	public String validateAIP(Integer age, String frequance, Double contribution , Integer term) {
-		System.out.println(age);
-		System.out.println(frequance);
-		System.out.println(contribution);
-		System.out.println(term);
-		System.out.println("age : "+age+" frequance : "+frequance+" contribution : "+contribution+" term :"+ term);
-		
 		if(age <= 70) {
 			if(age + term <= 75) {
 				if(frequance.equals("S")){
