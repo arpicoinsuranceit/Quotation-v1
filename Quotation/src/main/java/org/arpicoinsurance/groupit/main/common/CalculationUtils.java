@@ -102,12 +102,12 @@ public class CalculationUtils {
 	
 	
 	public Double getFndMngRate (Double contribution) {
-		if(contribution >= 2000000) {
-			return .15;
-		}else if(contribution >= 1000000) {
-			return .17;
+		if(contribution > 2000000) {
+			return 0.05;
+		}else if(contribution > 1000000) {
+			return 0.08;
 		}else {
-			return .2;
+			return 0.1;
 		}
 	}
 	

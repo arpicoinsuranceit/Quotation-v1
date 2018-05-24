@@ -1245,5 +1245,46 @@ public class Validation {
 		}
 
 	}
+	
+	public String validateAIP(Integer age, String frequance, Double contribution , Integer term) {
+		System.out.println(age);
+		System.out.println(frequance);
+		System.out.println(contribution);
+		System.out.println(term);
+		System.out.println("age : "+age+" frequance : "+frequance+" contribution : "+contribution+" term :"+ term);
+		
+		if(age <= 70) {
+			if(age + term <= 75) {
+				if(frequance.equals("S")){
+					if(age > 45) {
+						if(contribution >= 100000) {
+							return "ok";
+						}else {
+							return "Contribution Must be Minimum 100000";
+						}
+					}else {
+						if(contribution >= 50000) {
+							return "ok";
+						}else {
+							return "Contribution Must be Minimum 50000";
+						}
+					}
+				}else {
+					if(contribution >= 500) {
+						return "ok";
+					}else {
+						return "Contribution Must be Minimum 3000";
+					}
+				}
+			}else {
+				return "Age + Term must be Less Than or Equal 75";
+			}
+		}else {
+			return "Age must be Less Than or Equal 70";
+		}
+
+	}
+
+	
 }
 
