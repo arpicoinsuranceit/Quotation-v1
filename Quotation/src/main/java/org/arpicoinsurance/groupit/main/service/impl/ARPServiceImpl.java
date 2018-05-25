@@ -183,20 +183,11 @@ public class ARPServiceImpl implements ARPService {
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
 
-<<<<<<< HEAD
-=======
 			calResp.setSurrenderValHelpers(calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), (tot + extraOE)));
-
->>>>>>> refs/remotes/origin/branch-117
-			calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getPayingterm(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					quotationCalculation.get_personalInfo().getFrequance(), calResp.getTotPremium());
 
 			return calResp;
 
@@ -766,14 +757,10 @@ public class ARPServiceImpl implements ARPService {
 	public List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
 
-<<<<<<< HEAD
 		// System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+"
 		// bassum : "+" payFrequency : "+payFrequency+" total_premium :
 		// "+total_premium);
-=======
-		System.out.println("age : " + age + " term : " + term + " rlf_term : " + rlf_term + " bassum : "
-				+ " payFrequency : " + payFrequency + " total_premium : " + total_premium);
->>>>>>> refs/remotes/origin/branch-117
+
 
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;
@@ -790,11 +777,8 @@ public class ARPServiceImpl implements ARPService {
 		int payment_frequency = new CalculationUtils().getPayterm(payFrequency);
 		BigDecimal isum_assure = new BigDecimal(0);
 
-<<<<<<< HEAD
-=======
 		List<SurrenderValHelper> surrenderValHelpers = new ArrayList<>();
 
->>>>>>> refs/remotes/origin/branch-117
 		for (int i = 1; i <= term; i++) {
 			int ageIncrement = (age + i);
 			BigDecimal prm_per_year = new BigDecimal(0);
@@ -892,8 +876,7 @@ public class ARPServiceImpl implements ARPService {
 								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 			}
 
-<<<<<<< HEAD
-=======
+
 			SurrenderValHelper helper = new SurrenderValHelper();
 			helper.setPolyer(String.valueOf(polyer));
 			helper.setPadtrm(String.valueOf(paid_term));
@@ -907,7 +890,6 @@ public class ARPServiceImpl implements ARPService {
 
 			surrenderValHelpers.add(helper);
 
->>>>>>> refs/remotes/origin/branch-117
 			/*
 			 * System.out.println("polyer : " + String.valueOf(polyer));
 			 * System.out.println("padtrm : " + String.valueOf(paid_term));
@@ -922,11 +904,9 @@ public class ARPServiceImpl implements ARPService {
 
 		}
 
-<<<<<<< HEAD
-		return null;
-=======
+
 		return surrenderValHelpers;
->>>>>>> refs/remotes/origin/branch-117
+
 	}
 
 }
