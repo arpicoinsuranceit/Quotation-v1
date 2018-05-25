@@ -7,6 +7,8 @@ public class QuotationReceipt {
 	private String customerName;
 	private String CustTitle;
 	private String agentCode;
+	private String productCode; 
+	private String productName; 
 	
 	public Integer getQuotationId() {
 		return QuotationId;
@@ -37,5 +39,17 @@ public class QuotationReceipt {
 	}
 	public void setAgentCode(String agentCode) {
 		this.agentCode = agentCode;
+	}
+	public String getProductCode() {
+		return productCode;
+	}
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 }

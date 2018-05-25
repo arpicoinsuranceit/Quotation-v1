@@ -340,7 +340,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		quotationReceipt.setCustTitle(details.getCustomerDetails().getCustTitle());
 		quotationReceipt.setQuotationDetailId(details.getQdId());
 		quotationReceipt.setQuotationId(details.getQuotation().getId());
-		
+		quotationReceipt.setProductCode(details.getQuotation().getProducts().getProductCode());
+		quotationReceipt.setProductName(details.getQuotation().getProducts().getProductName());
 		return quotationReceipt;
 	}
 	
