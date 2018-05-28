@@ -45,17 +45,16 @@ public class HRBFServiceImpl implements HRBFService {
 		// "+rateCardHRBF.getRate());
 		if (payFrequency.equalsIgnoreCase("S")) {
 			// ((@rate@) *@relief@)
-			premiumHRBF = new BigDecimal(rateCardHRBF.getRate()).multiply(new BigDecimal(relief)).setScale(0,
-					RoundingMode.HALF_UP);
+			premiumHRBF = new BigDecimal(rateCardHRBF.getRate()).multiply(new BigDecimal(relief));
 		} else {
 			// ((@rate@/@payment_frequency@) *@relief@)
 			premiumHRBF = (new BigDecimal(rateCardHRBF.getRate())
 					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+							.multiply(new BigDecimal(relief));
 		}
 
 		// Added for HCB Discount
-		premiumHRBF = premiumHRBF.multiply(new BigDecimal(rateCardHCBDIS.getRate()));
+		premiumHRBF = premiumHRBF.multiply(new BigDecimal(rateCardHCBDIS.getRate())).setScale(0, RoundingMode.HALF_UP);
 
 		premiumHRBF = premiumHRBF.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// System.out.println("premiumHRBI : "+premiumHRBF.toString());
