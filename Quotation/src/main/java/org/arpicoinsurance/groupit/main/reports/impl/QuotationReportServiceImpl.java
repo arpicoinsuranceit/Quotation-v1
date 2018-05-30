@@ -522,11 +522,16 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating a Special Notes List
 		List list = new List(ListNumberingType.DECIMAL);
 		list.setFontSize(10);
-		ListItem item1 = new ListItem();
+		/*ListItem item1 = new ListItem();
 		item1.add(new Paragraph("This is an indicative quote only and is valid for 30 days from date of issue.")
 				.setFontSize(10).setFixedLeading(10));
-		list.add(item1);
+		list.add(item1);*/
 
+		ListItem item1 = new ListItem();
+		item1.add(new Paragraph("This is an indicative quote only and is valid for 31 May 2018.")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item1);
+		
 		ListItem item2 = new ListItem();
 		item2.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(10).setFixedLeading(10));
 		list.add(item2);
@@ -536,6 +541,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setFontSize(10).setFixedLeading(10));
 		list.add(item3);
 
+		
 		document.add(list);
 
 		document.add(new Paragraph("\n"));

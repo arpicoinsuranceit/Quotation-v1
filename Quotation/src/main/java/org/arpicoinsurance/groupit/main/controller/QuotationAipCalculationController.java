@@ -51,7 +51,7 @@ public class QuotationAipCalculationController {
 		}
 
 		Double contribution = plan.get_bsa();
-		Double fundMrate = calUtil.getFndMngRate(contribution);
+		Double fundMrate = calUtil.getFndMngRate(contribution,plan.get_frequance());
 
 		//System.out.println(fundMrate);
 
@@ -108,7 +108,7 @@ public class QuotationAipCalculationController {
 		CalculationUtils calUtil = new CalculationUtils();
 
 		Double contribution = plan.get_bsa();
-		Double fundMrate = calUtil.getFndMngRate(contribution);
+		Double fundMrate = calUtil.getFndMngRate(contribution,plan.get_frequance());
 
 		//System.out.println(fundMrate);
 		try {
