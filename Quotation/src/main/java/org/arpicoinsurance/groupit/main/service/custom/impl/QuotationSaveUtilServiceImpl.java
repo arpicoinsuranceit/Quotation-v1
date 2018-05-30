@@ -91,7 +91,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 
 				spouseDetail = new CustomerDetails();
 				spouseDetail.setCustName(get_personalInfo.get_spouse().get_sName());
-				spouseDetail.setCustCivilStatus("Married");
+				spouseDetail.setCustCivilStatus("M");
 				spouseDetail.setCustCreateBy(user.getUser_Name());
 				spouseDetail.setCustCreateDate(new Date());
 				spouseDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_spouse().get_sDob()));

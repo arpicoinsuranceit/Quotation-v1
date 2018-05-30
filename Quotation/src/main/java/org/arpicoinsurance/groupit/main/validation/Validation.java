@@ -1267,7 +1267,7 @@ public class Validation {
 					if(contribution >= 500) {
 						return "ok";
 					}else {
-						return "Contribution Must be Minimum 3000";
+						return "Contribution Must be Minimum 500";
 					}
 				}
 			}else {
