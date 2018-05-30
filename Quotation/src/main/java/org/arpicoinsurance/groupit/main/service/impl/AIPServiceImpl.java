@@ -276,7 +276,7 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution);
+			Double fundMrate = calculationUtils.getFndMngRate(contribution, _invpSaveQuotation.get_plan().get_frequance());
 
 			//System.out.println(fundMrate);
 
@@ -501,7 +501,7 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution);
+			Double fundMrate = calculationUtils.getFndMngRate(contribution, _invpSaveQuotation.get_plan().get_frequance());
 
 			//System.out.println(fundMrate);
 
