@@ -335,6 +335,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 		
 		QuotationReceipt quotationReceipt = new QuotationReceipt();
+		quotationReceipt.setBranchCode(details.getQuotation().getUser().getBranch().getBranch_Code());
 		quotationReceipt.setAgentCode(details.getQuotationCreateBy());
 		quotationReceipt.setCustomerName(details.getCustomerDetails().getCustName());
 		quotationReceipt.setCustTitle(details.getCustomerDetails().getCustTitle());

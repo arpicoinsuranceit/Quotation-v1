@@ -9,6 +9,7 @@ public class QuotationReceipt {
 	private String agentCode;
 	private String productCode; 
 	private String productName; 
+	private String branchCode;
 	
 	public Integer getQuotationId() {
 		return QuotationId;
@@ -51,5 +52,11 @@ public class QuotationReceipt {
 	}
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+	public String getBranchCode() {
+		return branchCode;
+	}
+	public void setBranchCode(String branchCode) {
+		this.branchCode = branchCode;
 	}
 }

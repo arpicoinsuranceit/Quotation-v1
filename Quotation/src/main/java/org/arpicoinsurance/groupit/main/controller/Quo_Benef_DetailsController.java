@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
@@ -54,18 +53,7 @@ public class Quo_Benef_DetailsController {
 		return null;
 	}
 	
-	@RequestMapping(value="/getQuoDetail",method=RequestMethod.POST)
-	public ViewQuotation viewQuotation(@RequestParam("qdId") Integer qdId,@RequestParam("qId") Integer qId) {
-		try {
-			ViewQuotation viewQuo=quoBenefDetailService.getQuotationDetail(qdId, qId);
-			return viewQuo;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
+	
 	
 	@RequestMapping(value="/scheduledetails/{id}",method=RequestMethod.GET)
 	public ArrayList<Shedule> viewQuotationDetails(@PathVariable Integer id) {
