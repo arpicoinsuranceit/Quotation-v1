@@ -40,8 +40,10 @@ public class QuotationAipCalculationController {
 
 		Validation validation = new Validation();
 
-		String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
+		//String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
 
+		String message = "ok";
+		
 		if (!message.equals("ok")) {
 			
 			AIPCalResp aipCalResp = new AIPCalResp();
