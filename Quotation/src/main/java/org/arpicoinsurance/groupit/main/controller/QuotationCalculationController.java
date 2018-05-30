@@ -35,6 +35,14 @@ public class QuotationCalculationController {
 			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
 			LocalDate currentDate = LocalDate.now();
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+			if(diffInYears == 0) {
+				long diffInMonth = ChronoUnit.MONTHS.between(dateOfBirth, currentDate);
+				
+				if(diffInMonth<6) {
+					return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
+				}
+				//System.out.println(diffInMonth);
+			}
 			diffInYears = diffInYears + 1;
 			return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
 		} catch (Exception e) {
