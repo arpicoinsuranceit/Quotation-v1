@@ -40,9 +40,9 @@ public class QuotationAipCalculationController {
 
 		Validation validation = new Validation();
 
-		//String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
+		String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
 
-		String message = "ok";
+		//String message = "ok";
 		
 		if (!message.equals("ok")) {
 			
@@ -98,9 +98,9 @@ public class QuotationAipCalculationController {
 
 		Validation validation = new Validation();
 
-		//String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
+		String message = validation.validateAIP(plan.getAge(), plan.get_frequance(), plan.get_bsa(), plan.get_term());
 
-		String message = "ok";
+		//String message = "ok";
 		
 		if (!message.equals("ok")) {
 			AIPCalResp aipCalResp = new AIPCalResp();
@@ -157,10 +157,10 @@ public class QuotationAipCalculationController {
 		Validation validation = new Validation();
 		String message = "Error";
 		if (_invpSaveQuotation != null) {
-			/*message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
+			message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
 					_invpSaveQuotation.get_plan().get_frequance(), _invpSaveQuotation.get_plan().get_bsa(),
-					_invpSaveQuotation.get_plan().get_term());*/
-			 message = "ok";
+					_invpSaveQuotation.get_plan().get_term());
+			 //message = "ok";
 		}
 		if (!message.equals("ok")) {
 			responseMap.replace("status", message);
@@ -206,10 +206,10 @@ public class QuotationAipCalculationController {
 		Validation validation = new Validation();
 		String message = "Error";
 		if (_invpSaveQuotation != null) {
-			/*message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
+			message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
 					_invpSaveQuotation.get_plan().get_frequance(), _invpSaveQuotation.get_plan().get_bsa(),
-					_invpSaveQuotation.get_plan().get_term());*/
-			 message = "ok";
+					_invpSaveQuotation.get_plan().get_term());
+			// message = "ok";
 		}
 		if (!message.equals("ok")) {
 			responseMap.replace("status", message);

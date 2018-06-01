@@ -96,7 +96,6 @@ public class CalculationUtils {
 		// System.out.println("rebate : " + rebate);
 		BigDecimal rebateRate = (new BigDecimal(1)
 				.subtract((new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP))));
-		// System.out.println("rebateRate : " + rebateRate.doubleValue());
 		premium = premium.multiply(rebateRate).setScale(0, RoundingMode.HALF_UP);
 		return premium.doubleValue();
 	}
