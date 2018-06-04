@@ -87,8 +87,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		    mainLife.set_mSmoking("No");
 		    mainLife.set_mTitle(customerDetails.getCustTitle());
 		    mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
-		    
-		    
+		    mainLife.set_occuCode(customerDetails.getOccupation().getOcupationCode());
+		    mainLife.set_mCustCode(customerDetails.getCustomer().getCustCode());
 		    if(details.getSpouseDetails() != null) {
 		    	CustomerDetails spouseDetails=details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
@@ -106,7 +106,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			    spouse.set_sNic(spouseDetails.getCustNic());
 			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 			    spouse.set_sTitle(spouseDetails.getCustTitle());
-			    
+			    spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
 			    
 		    }else {
 		    	spouse.set_sActive(false);
@@ -314,6 +314,14 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			break;
 		}
 		
+		plan.setPolicyFee(details.getPolicyFee());
+		plan.setAdminFee(details.getAdminFee());
+		plan.setTax(plan.getAdminFee());
+		plan.setGrsprm(plan.get_bsaTotal() - (plan.getAdminFee() + plan.getPolicyFee() + plan.getTax()));
+		plan.setSumatRiskMain(details.getSumAtRiskMain());
+		plan.setSumatRiskSpouse(details.getSumAtRiskSpouse());
+		plan.setInvPos(details.getInvestmentPos());
+		plan.setLifePos(details.getLifePos());
 		return plan;
 	}
 

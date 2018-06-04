@@ -13,6 +13,7 @@ public class MainLife {
 	private String _mOccupation;
 	private String _mCivilStatus;
 	private String _mCustCode;
+	private String _occuCode;
 	
 	public String get_mTitle() {
 		return _mTitle;
@@ -85,5 +86,11 @@ public class MainLife {
 	}
 	public void set_mCustCode(String _mCustCode) {
 		this._mCustCode = _mCustCode;
+	}
+	public String get_occuCode() {
+		return _occuCode;
+	}
+	public void set_occuCode(String _occuCode) {
+		this._occuCode = _occuCode;
 	}
 }

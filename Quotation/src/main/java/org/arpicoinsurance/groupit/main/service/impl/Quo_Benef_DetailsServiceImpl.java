@@ -377,11 +377,11 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 				viewQuotation.set_children(editQuotation.get_children());
 				viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
 
-				if (editQuotation.get_mainlife().get_mGender().equals("F")) {
+				/*if (editQuotation.get_mainlife().get_mGender().equals("F")) {
 					editQuotation.get_mainlife().set_mGender("Female");
 				} else {
 					editQuotation.get_mainlife().set_mGender("Male");
-				}
+				}*/
 
 				if (editQuotation.get_spouse().get_sAge() != null && editQuotation.get_spouse().get_sName() != null) {
 					if (editQuotation.get_spouse().get_sGender().equals("F")) {
