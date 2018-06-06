@@ -1,5 +1,7 @@
 package org.arpicoinsurance.groupit.main.helper;
 
+import java.util.List;
+
 public class MainLife {
 	private String _mTitle;
 	private String _mName;

@@ -2,10 +2,12 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.helper.MediTestReceiptHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
 import org.arpicoinsurance.groupit.main.model.Shedule;
+import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationReceiptService;
@@ -30,6 +32,9 @@ public class QuotationReceiptController {
 	
 	@Autowired
 	private Quo_Benef_DetailsService quoBenefDetailService;
+	
+	@Autowired
+	private HealthRequirmentsService healthRequirmentsService;
 	
 	@Autowired
 	private SheduleService sheduleService;
@@ -77,6 +82,16 @@ public class QuotationReceiptController {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	@RequestMapping(value="/getMediDetails",method=RequestMethod.POST)
+	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@RequestParam("qdId") Integer qdId){
+		try {
+			return healthRequirmentsService.getMediTestByQuoDetails(qdId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
