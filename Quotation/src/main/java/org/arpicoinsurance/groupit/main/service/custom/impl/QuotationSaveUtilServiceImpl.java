@@ -904,6 +904,24 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			mat3.setBenefit(benefitsDao.findByRiderCode("L9"));
 			benefictList.add(mat3);
 			break;
+			
+			
+		case "ARTM":
+			mat1.setRierCode("L6");
+			mat1.setBenefit(benefitsDao.findByRiderCode("L14"));
+			mat1.setRiderPremium(calResp.getPensionPremium1());
+			benefictList.add(mat1);
+
+			mat2.setRierCode("L8");
+			mat2.setRiderPremium(calResp.getPensionPremium2());
+			mat2.setBenefit(benefitsDao.findByRiderCode("L15"));
+			benefictList.add(mat2);
+
+			mat3.setRierCode("L9");
+			mat3.setRiderPremium(calResp.getPensionPremium3());
+			mat3.setBenefit(benefitsDao.findByRiderCode("L16"));
+			benefictList.add(mat3);
+			break;
 
 		case "AIB":
 			mat1.setRierCode("IAIB");

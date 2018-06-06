@@ -47,7 +47,7 @@ public class QuotationArtmCalculationController {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					
-					
+					calResp = artmService.getCalcutatedARTM(calculation);
 					
 					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
