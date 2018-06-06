@@ -100,7 +100,11 @@ public class Validation {
 							if (validateCIBEND().equals(0)) {
 								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 							}
-						} else {
+						} else if (calculation.get_product().equals("ARTM")) {
+							if (validateCIBARTM().equals(0)) {
+								return "CIB must be greater than 100,000 and less than 1,000,000";
+							}
+						}else {
 							if (validateInvpCIB().equals(0)) {
 								return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 							}
@@ -618,6 +622,19 @@ public class Validation {
 
 			return 0;
 
+		}
+		return 0;
+
+	}
+	
+	/////// for ARTM
+	public Integer validateCIBARTM() {
+		if (benefitMap.containsKey("CIB")) {
+			Double cib = benefitMap.get("CIB").getSumAssured();
+			if (cib <= 1000000 && cib >= 100000) {
+				return 1;
+			}
+			return 0;
 		}
 		return 0;
 
@@ -1227,20 +1244,20 @@ public class Validation {
 		return 0;
 	}
 
-	public String validateArtm(Plan plan) {
+	public String validateArtm( QuotationCalculation calculation) {
 
-		if (plan.getRetAge() >= 40 && plan.getRetAge() <= 65) {
+		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
-			if (plan.getPensionPaingTerm() == 10 || plan.getPensionPaingTerm() == 15
-					|| plan.getPensionPaingTerm() == 20) {
-				Integer paingTerm = Integer.parseInt(plan.get_payingterm());
-				if (paingTerm >= 10 && paingTerm <= 47 || plan.get_frequance().equals("S")) {
-					if (paingTerm <= (plan.getRetAge() - plan.getAge()) || plan.get_frequance().equals("S")) {
+			if (calculation.get_personalInfo().getPensionPaingTerm() == 10 || calculation.get_personalInfo().getPensionPaingTerm() == 15
+					|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
+				Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
+				if (paingTerm >= 10 && paingTerm <= 47 || calculation.get_personalInfo().getFrequance().equals("S")) {
+					if (paingTerm <= (calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage()) || calculation.get_personalInfo().getFrequance().equals("S")) {
 
 						return "ok";
 
 					} else {
-						return "Pension Paying Max Term must " + (plan.getRetAge() - plan.getAge());
+						return "Pension Paying Max Term must " + (calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage());
 					}
 				} else {
 					return "Pension Paying Term must between 10 and 47";

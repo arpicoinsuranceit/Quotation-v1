@@ -1,15 +1,22 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
 import org.arpicoinsurance.groupit.main.helper.AipCalShedule;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.Plan;
+import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
+import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.service.ARTMService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,32 +31,65 @@ public class QuotationArtmCalculationController {
 	@Autowired
 	private ARTMService artmService;
 	
+	@Autowired
+	private LogService logService;
+	
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
-	public AIPCalResp calculateATRM (@RequestBody Plan plan) {
+	public ResponseEntity<Object> calculateATRM (@RequestBody QuotationCalculation calculation) {
 		
-		//System.out.println("call artm");
-		Validation validation = new Validation();
-		String valError = validation.validateArtm(plan);
-		if(valError.equals("ok")) {
-			try {
-				return artmService.calculateARTMMaturaty(plan, 1.0, false, true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				AIPCalResp aipCalResp = new AIPCalResp();
-				aipCalResp.setError("Error At calculation");
-				
-				return aipCalResp;
-				
-			}
-		}else {
-			AIPCalResp aipCalResp = new AIPCalResp();
-			aipCalResp.setError(valError);
+		try {
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			
-			return aipCalResp;
+			//System.out.println("call artm");
+			Validation validation = new Validation(calculation);
+			String valError = validation.validateArtm(calculation);
+			if(valError.equals("ok")) {
+				String error = validation.validateBenifict();
+				if (error.equals("No")) {
+					
+					
+					
+					if (calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
+					}
+				} else {
+					calResp.setErrorExist(true);
+					calResp.setError(error);
+				}
+			}else {
+				calResp.setError(valError);
+				calResp.setErrorExist(true);
+			}
+			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
+		
 	}
-	@RequestMapping(value = "/artmshedule", method = RequestMethod.POST)
+	
+	
+	
+	
+	
+	/*@RequestMapping(value = "/artmshedule", method = RequestMethod.POST)
 	public ArrayList<AipCalShedule> loadSheduleATRM (@RequestBody Plan plan) {
 		
 		Validation validation = new Validation();
@@ -109,7 +149,8 @@ public class QuotationArtmCalculationController {
 
 		}
 		return responseMap;
-	}
+	}*/
+	
 
 	
 }
