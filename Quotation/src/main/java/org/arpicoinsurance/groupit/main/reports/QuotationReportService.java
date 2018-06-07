@@ -7,6 +7,8 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationReportService {
 	
+	
+	
 	byte[] createAIPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 	
 	byte[] createAIBReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
