@@ -71,7 +71,7 @@ public class QuotationArtmCalculationController {
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("calculateQuotation : QuotationEndCalculationController");
+			logs.setOperation("calculateQuotation : QuotationARTMCalculationController");
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
@@ -85,6 +85,57 @@ public class QuotationArtmCalculationController {
 		
 		
 	}
+	
+	@RequestMapping(value = "/artmSchedule", method = RequestMethod.POST)
+	public ResponseEntity<Object> calculateScheduleATRM (@RequestBody QuotationCalculation calculation) {
+		
+		try {
+			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
+			
+			Validation validation = new Validation(calculation);
+			String valError = validation.validateArtm(calculation);
+			if(valError.equals("ok")) {
+				String error = validation.validateBenifict();
+				if (error.equals("No")) {
+					
+					calResp = artmService.getCalcutatedARTM(calculation, true);
+					
+					if (calResp.isErrorExist()) {
+						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+						calRespPost.setError(calResp.getError());
+						calRespPost.setErrorExist(true);
+						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
+					}
+				} else {
+					calResp.setErrorExist(true);
+					calResp.setError(error);
+				}
+			}else {
+				calResp.setError(valError);
+				calResp.setErrorExist(true);
+			}
+			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationARTMCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
 	
 	@RequestMapping(value = "/artmSavequo/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveARTM(@RequestBody InvpSaveQuotation _invpSaveQuotation,
@@ -126,7 +177,7 @@ public class QuotationArtmCalculationController {
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " id : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("saveEnd : QuotationEndCalculationController");
+			logs.setOperation("saveEnd : QuotationARTMCalculationController");
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
@@ -188,7 +239,7 @@ public class QuotationArtmCalculationController {
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("editEnd : QuotationEndCalculationController");
+			logs.setOperation("editEnd : QuotationARTMCalculationController");
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
