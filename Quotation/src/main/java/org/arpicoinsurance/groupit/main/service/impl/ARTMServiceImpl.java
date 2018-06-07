@@ -324,7 +324,7 @@ public class ARTMServiceImpl implements ARTMService{
 
 			///////////////////// Add Maturity //////////////////
 
-			benef_DetailsList = quotationSaveUtilService.addMaturity("END1", benef_DetailsList, calResp,
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ARTM", benef_DetailsList, calResp,
 					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
 
 			///////////////////// Done Add Maturity //////////////////
