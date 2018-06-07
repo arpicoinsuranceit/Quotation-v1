@@ -45,7 +45,7 @@ public class Medical_RequirementsDaoImpl implements MedicalRequirementsDaoCustom
 					"select x.med_name,if(max(x.main)=1,'R','NR') main,if(max(x.spouse)=1,'R','NR') spouse from (  "
 							+ "select r.med_name,if(d.cust_status='main',1,0) main,   "
 							+ "if(d.cust_status='spouse',1,0) spouse,d.medical_req_id  "
-							+"from medical_details d inner join medical_req r on d.medical_req_id=r.id "
+							+ "from medical_details d inner join medical_req r on d.medical_req_id=r.id "
 							+ "where d.quotation_detail_id=? ) x group by x.medical_req_id",
 					args.toArray(), new ResultSetExtractor<List<MedicalRequirementsHelper>>() {
 

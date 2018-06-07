@@ -5,14 +5,17 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardSurenderDao;
+import org.arpicoinsurance.groupit.main.dao.SurrendervalDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.helper.SurrenderValHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.ChildDao;
@@ -31,6 +34,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.model.RateCardEND;
 import org.arpicoinsurance.groupit.main.model.RateCardSurender;
+import org.arpicoinsurance.groupit.main.model.Surrendervals;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -126,6 +130,9 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardSurenderDao rateCardSurenderDao;
+	
+	@Autowired
+	private SurrendervalDao surrenderValDao;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
@@ -176,11 +183,11 @@ public class ARPServiceImpl implements ARPService {
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
 
-			calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
+			calResp.setSurrenderValHelpers(calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					quotationCalculation.get_personalInfo().getFrequance(), calResp.getTotPremium());
+					quotationCalculation.get_personalInfo().getFrequance(), (tot + extraOE)));
 
 			return calResp;
 
@@ -396,7 +403,9 @@ public class ARPServiceImpl implements ARPService {
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
-
+		
+		List<Surrendervals> surrendervalsList = new ArrayList<>();
+		
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
@@ -423,6 +432,25 @@ public class ARPServiceImpl implements ARPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
+			
+			for (SurrenderValHelper surrenderValHelper : calResp.getSurrenderValHelpers()) {
+				Surrendervals surrendervals = new Surrendervals();
+				surrendervals.setCreateBy(user.getUserCode());
+				surrendervals.setCreatedate(new Date());
+				surrendervals.setIsumas(surrenderValHelper.getIsumas());
+				surrendervals.setMature(surrenderValHelper.getMature());
+				surrendervals.setPadtrm(Integer.parseInt(surrenderValHelper.getPadtrm()));
+				surrendervals.setPaidup(surrenderValHelper.getPaidup());
+				surrendervals.setPolyer(Integer.parseInt(surrenderValHelper.getPolyer()));
+				surrendervals.setPrmpad(surrenderValHelper.getPrmpad());
+				surrendervals.setPrmpyr(surrenderValHelper.getPrmpyr());
+				surrendervals.setQuotationDetails(quoDetails);
+				surrendervals.setSurrnd(surrenderValHelper.getSurrnd());
+				
+				surrendervalsList.add(surrendervals);
+			}
+			
+			surrenderValDao.save(surrendervalsList);
 
 			/////////// Add Maturity///////////////////////
 
@@ -621,6 +649,9 @@ public class ARPServiceImpl implements ARPService {
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
+		
+		List<Surrendervals> surrendervalsList = new ArrayList<>();
+		
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -648,6 +679,26 @@ public class ARPServiceImpl implements ARPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+			
+			
+			for (SurrenderValHelper surrenderValHelper : calResp.getSurrenderValHelpers()) {
+				Surrendervals surrendervals = new Surrendervals();
+				surrendervals.setCreateBy(user.getUserCode());
+				surrendervals.setCreatedate(new Date());
+				surrendervals.setIsumas(surrenderValHelper.getIsumas());
+				surrendervals.setMature(surrenderValHelper.getMature());
+				surrendervals.setPadtrm(Integer.parseInt(surrenderValHelper.getPadtrm()));
+				surrendervals.setPaidup(surrenderValHelper.getPaidup());
+				surrendervals.setPolyer(Integer.parseInt(surrenderValHelper.getPolyer()));
+				surrendervals.setPrmpad(surrenderValHelper.getPrmpad());
+				surrendervals.setPrmpyr(surrenderValHelper.getPrmpyr());
+				surrendervals.setQuotationDetails(quoDetails);
+				surrendervals.setSurrnd(surrenderValHelper.getSurrnd());
+				
+				surrendervalsList.add(surrendervals);
+			}
+			
+			surrenderValDao.save(surrendervalsList);
 
 			/////////// Add Maturity///////////////////////
 
@@ -703,12 +754,13 @@ public class ARPServiceImpl implements ARPService {
 	}
 
 	@Override
-	public HashMap<String, Object> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
+	public List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
 
 		// System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+"
 		// bassum : "+" payFrequency : "+payFrequency+" total_premium :
 		// "+total_premium);
+
 
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;
@@ -724,6 +776,8 @@ public class ARPServiceImpl implements ARPService {
 		int polyer = 0;
 		int payment_frequency = new CalculationUtils().getPayterm(payFrequency);
 		BigDecimal isum_assure = new BigDecimal(0);
+
+		List<SurrenderValHelper> surrenderValHelpers = new ArrayList<>();
 
 		for (int i = 1; i <= term; i++) {
 			int ageIncrement = (age + i);
@@ -822,6 +876,20 @@ public class ARPServiceImpl implements ARPService {
 								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 			}
 
+
+			SurrenderValHelper helper = new SurrenderValHelper();
+			helper.setPolyer(String.valueOf(polyer));
+			helper.setPadtrm(String.valueOf(paid_term));
+			helper.setToptrm(term);
+			helper.setIsumas(isum_assure.doubleValue());
+			helper.setPaidup(paidup_val.doubleValue());
+			helper.setSurrnd(surrender_val.doubleValue());
+			helper.setMature(mature_benifit.doubleValue());
+			helper.setPrmpyr(prm_per_year.doubleValue());
+			helper.setPrmpad(tot_prm_paid.doubleValue());
+
+			surrenderValHelpers.add(helper);
+
 			/*
 			 * System.out.println("polyer : " + String.valueOf(polyer));
 			 * System.out.println("padtrm : " + String.valueOf(paid_term));
@@ -836,7 +904,9 @@ public class ARPServiceImpl implements ARPService {
 
 		}
 
-		return null;
+
+		return surrenderValHelpers;
+
 	}
 
 }

@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
@@ -226,6 +227,8 @@ public class QuotationQuickCalResponse {
 	
 	private boolean isArp = false;
 	private String payTerm; 
+	
+	private List<SurrenderValHelper> surrenderValHelpers = null;
 	
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
@@ -1181,6 +1184,12 @@ public class QuotationQuickCalResponse {
 	}
 	public void setPayTerm(String payTerm) {
 		this.payTerm = payTerm;
+	}
+	public List<SurrenderValHelper> getSurrenderValHelpers() {
+		return surrenderValHelpers;
+	}
+	public void setSurrenderValHelpers(List<SurrenderValHelper> surrenderValHelpers) {
+		this.surrenderValHelpers = surrenderValHelpers;
 	}
 	
 	
