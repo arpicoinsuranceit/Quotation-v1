@@ -220,6 +220,11 @@ public class QuotationQuickCalResponse {
 	private HashMap<String, Object> mainLifeHealthReq = null;
 	private HashMap<String, Object> spouseHealthReq = null;
 	
+	private Double pensionPremium1 = 0.0;
+	private Double pensionPremium2 = 0.0;
+	private Double pensionPremium3 = 0.0;
+	
+	
 	private boolean isArp = false;
 	private String payTerm; 
 	
@@ -1149,6 +1154,24 @@ public class QuotationQuickCalResponse {
 	}
 	public void setSpouseHealthReq(HashMap<String, Object> spouseHealthReq) {
 		this.spouseHealthReq = spouseHealthReq;
+	}
+	public Double getPensionPremium1() {
+		return pensionPremium1;
+	}
+	public void setPensionPremium1(Double pensionPremium1) {
+		this.pensionPremium1 = pensionPremium1;
+	}
+	public Double getPensionPremium2() {
+		return pensionPremium2;
+	}
+	public void setPensionPremium2(Double pensionPremium2) {
+		this.pensionPremium2 = pensionPremium2;
+	}
+	public Double getPensionPremium3() {
+		return pensionPremium3;
+	}
+	public void setPensionPremium3(Double pensionPremium3) {
+		this.pensionPremium3 = pensionPremium3;
 	}
 	public boolean isArp() {
 		return isArp;
