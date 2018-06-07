@@ -13,7 +13,6 @@ import org.arpicoinsurance.groupit.main.dao.MediGridDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.MediTestGrid;
 import org.arpicoinsurance.groupit.main.model.MedicalReq;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
@@ -91,6 +90,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
 			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
+		case "ARTM":
+			riskCurrent = 0.0;
+			break;
 		default:
 			break;
 		}
@@ -98,7 +100,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		ArrayList<String> medicalReqList = getHealthDetails(riskCurrent, calculation, "M", mediGrade);
 		ArrayList<String> medicalReports = new ArrayList<>();
 		details.put("reqListMain", medicalReqList);
-		if (riskCurrent > 0) {
+		//if (riskCurrent > 0) {
 
 			try {
 				for (String medCode : medicalReqList) {
@@ -114,7 +116,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			details.put("sumAtRisk", riskCurrent);
 			details.put("reqRepoetsMain", medicalReports);
 
-		}
+		//}
 
 		return details;
 	}
@@ -166,6 +168,9 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			break;
 		case "INVP":
 			riskCurrent += calculateRickArpAsipAtrmEndSpouse(calculation);
+			break;
+		case "ARTM":
+			riskCurrent = 0.0;
 			break;
 		default:
 			break;
