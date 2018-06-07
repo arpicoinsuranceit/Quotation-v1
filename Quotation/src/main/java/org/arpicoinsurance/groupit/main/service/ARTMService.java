@@ -20,11 +20,11 @@ public interface ARTMService {
 	HashMap<String, Object> editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId) throws Exception;
 	*/
 	
-	BigDecimal pensionPremium()throws Exception;
+	BigDecimal pensionPremium(boolean printShedule, QuotationQuickCalResponse calResp)throws Exception;
 	
 	BigDecimal calculateMaturity()throws Exception;
 
-	QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation)throws Exception;
+	QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule)throws Exception;
 	
 	HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -30,6 +31,7 @@ import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
+import org.arpicoinsurance.groupit.main.model.PensionShedule;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -105,9 +107,20 @@ public class ARTMServiceImpl implements ARTMService{
 	public BigDecimal calculateMaturity() throws Exception {
 		return new BigDecimal(1000000);
 	}
+	
+	@Override
+	public BigDecimal pensionPremium(boolean printShedule, QuotationQuickCalResponse calResp) throws Exception {
+		
+		if(printShedule) {
+			List<PensionShedule> pensionShedules = new ArrayList<>();
+		}
+		
+		return new BigDecimal(250000.00);
+	}
+	
 
 	@Override
-	public QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation) throws Exception {
+	public QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule) throws Exception {
 		
 		CalculationUtils calculationUtils = null;
 		try {
@@ -128,9 +141,9 @@ public class ARTMServiceImpl implements ARTMService{
 			calResp.setAt8(calculateMaturity().doubleValue());
 			calResp.setAt10(calculateMaturity().doubleValue());
 
-			calResp.setPensionPremium1(pensionPremium().doubleValue());
-			calResp.setPensionPremium2(pensionPremium().doubleValue());
-			calResp.setPensionPremium3(pensionPremium().doubleValue());
+			calResp.setPensionPremium1(pensionPremium(printShedule, calResp).doubleValue());
+			calResp.setPensionPremium2(pensionPremium(printShedule, calResp).doubleValue());
+			calResp.setPensionPremium3(pensionPremium(printShedule, calResp).doubleValue());
 			
 			
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
@@ -157,7 +170,7 @@ public class ARTMServiceImpl implements ARTMService{
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		QuotationQuickCalResponse calResp = getCalcutatedARTM(calculation);
+		QuotationQuickCalResponse calResp = getCalcutatedARTM(calculation, true);
 
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -389,7 +402,7 @@ public class ARTMServiceImpl implements ARTMService{
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
-		QuotationQuickCalResponse calResp = getCalcutatedARTM(calculation);
+		QuotationQuickCalResponse calResp = getCalcutatedARTM(calculation, true);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
@@ -605,11 +618,6 @@ public class ARTMServiceImpl implements ARTMService{
 		return responseMap;
 	}
 
-	@Override
-	public BigDecimal pensionPremium() throws Exception {
-		
-		return new BigDecimal(250000.00);
-	}
 	
 	
 	

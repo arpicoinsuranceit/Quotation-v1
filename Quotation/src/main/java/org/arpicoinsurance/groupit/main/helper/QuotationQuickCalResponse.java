@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.model.PensionShedule;
+
 public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
 	private Double extraOE= 0.00;
@@ -229,6 +231,8 @@ public class QuotationQuickCalResponse {
 	private String payTerm; 
 	
 	private List<SurrenderValHelper> surrenderValHelpers = null;
+	
+	private List<PensionShedule> pensionShedules  = null;
 	
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
@@ -1190,6 +1194,12 @@ public class QuotationQuickCalResponse {
 	}
 	public void setSurrenderValHelpers(List<SurrenderValHelper> surrenderValHelpers) {
 		this.surrenderValHelpers = surrenderValHelpers;
+	}
+	public List<PensionShedule> getPensionShedules() {
+		return pensionShedules;
+	}
+	public void setPensionShedules(List<PensionShedule> pensionShedules) {
+		this.pensionShedules = pensionShedules;
 	}
 	
 	
