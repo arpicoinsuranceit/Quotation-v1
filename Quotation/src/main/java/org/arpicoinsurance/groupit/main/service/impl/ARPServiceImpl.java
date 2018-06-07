@@ -143,6 +143,7 @@ public class ARPServiceImpl implements ARPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			// System.out.println(rebate + " : rebate");
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
@@ -187,12 +188,6 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getPayingterm(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), (tot + extraOE)));
-
-			calculateSurrendervals(quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getPayingterm(),
-					quotationCalculation.get_personalInfo().getBsa(),
-					quotationCalculation.get_personalInfo().getFrequance(), calResp.getTotPremium());
 
 			return calResp;
 
@@ -762,8 +757,10 @@ public class ARPServiceImpl implements ARPService {
 	public List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
 
-		System.out.println("age : " + age + " term : " + term + " rlf_term : " + rlf_term + " bassum : "
-				+ " payFrequency : " + payFrequency + " total_premium : " + total_premium);
+		// System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+"
+		// bassum : "+" payFrequency : "+payFrequency+" total_premium :
+		// "+total_premium);
+
 
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;
@@ -879,6 +876,7 @@ public class ARPServiceImpl implements ARPService {
 								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 			}
 
+
 			SurrenderValHelper helper = new SurrenderValHelper();
 			helper.setPolyer(String.valueOf(polyer));
 			helper.setPadtrm(String.valueOf(paid_term));
@@ -906,7 +904,9 @@ public class ARPServiceImpl implements ARPService {
 
 		}
 
+
 		return surrenderValHelpers;
+
 	}
 
 }

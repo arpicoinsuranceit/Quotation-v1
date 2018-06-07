@@ -38,7 +38,7 @@ public class QuotationInvpCalculationController {
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();
 
-				// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+				 //System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 70) {
 					if (error.equals("No")) {
 						calResp = invpService.getCalcutatedInvp(calculation);

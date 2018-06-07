@@ -207,7 +207,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-
+			//System.out.println(rebate + " : rebate");
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
