@@ -450,6 +450,9 @@ public class ARTMServiceImpl implements ARTMService{
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		quotationDetails1.setRetirmentAge(calculation.get_personalInfo().getRetAge());
+		quotationDetails1.setPensionTerm(calculation.get_personalInfo().getPensionPaingTerm());
+		
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
