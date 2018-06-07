@@ -295,11 +295,12 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			EditQuotation editQuotation=quotationDetailsService.editQuotationDetails(quotationView.getQuoDetailId());
 			ViewQuotation viewQuotation=new ViewQuotation();
 			
+			
 			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
 			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
 			viewQuotation.setProductName(quotation.getProducts().getProductName());
 			viewQuotation.setQuotationId(quotation.getId());
-			viewQuotation.setQuotationDate(quotationView.getQuotationDate());
+			viewQuotation.setQuotationDate(new SimpleDateFormat("EEE, d MMM yyyy").format(quotationView.getQuotationDate()));
 			viewQuotation.set_children(editQuotation.get_children());
 			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
 			
