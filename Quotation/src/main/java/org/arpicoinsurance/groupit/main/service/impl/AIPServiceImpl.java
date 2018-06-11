@@ -76,6 +76,8 @@ public class AIPServiceImpl implements AIPService {
 			throws Exception {
 
 		// throw new RuntimeException("Just Message");
+		
+		
 
 		AIPCalResp aipCalResp = null;
 		ArrayList<AipCalShedule> aipCalShedules = null;
@@ -270,6 +272,11 @@ public class AIPServiceImpl implements AIPService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		try {
 			calculationUtils = new CalculationUtils();
@@ -486,6 +493,7 @@ public class AIPServiceImpl implements AIPService {
 		// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
 		// System.out.println(_invpSaveQuotation.get_plan().get_term());
 
+		
 		CalculationUtils calculationUtils = null;
 		Products products = null;
 		Customer customer = null;
@@ -496,6 +504,12 @@ public class AIPServiceImpl implements AIPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 		QuotationDetails quotationDetails = null;
+		
+		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		try {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");

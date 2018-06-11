@@ -17,6 +17,8 @@ public class Products implements Serializable{
 	private Integer priductMinAge;
 	private Integer priductMaxAge;
 	
+	private Integer active;
+	
 	private Date lockin_date;
 	private String productCreateBy;
 	private Date productCreateDate;
@@ -65,6 +67,14 @@ public class Products implements Serializable{
 
 	public void setPriductMaxAge(Integer priductMaxAge) {
 		this.priductMaxAge = priductMaxAge;
+	}
+
+	public Integer getActive() {
+		return active;
+	}
+
+	public void setActive(Integer active) {
+		this.active = active;
 	}
 
 	public Date getLockin_date() {

@@ -254,7 +254,18 @@ public class DTAPLServiceImpl implements DTAPLService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("DTAPL").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
+		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 
 		Products products = productDao.findByProductCode("DTAPL");
 		Users user = userDao.findOne(id);
@@ -431,8 +442,18 @@ public class DTAPLServiceImpl implements DTAPLService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("DTAPL").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 
-		Products products = productDao.findByProductCode("DTA");
+
+		Products products = productDao.findByProductCode("DTAPL");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

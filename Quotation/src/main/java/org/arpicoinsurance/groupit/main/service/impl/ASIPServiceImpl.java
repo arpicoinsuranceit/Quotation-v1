@@ -314,6 +314,11 @@ public class ASIPServiceImpl implements ASIPService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
@@ -527,6 +532,11 @@ public class ASIPServiceImpl implements ASIPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
