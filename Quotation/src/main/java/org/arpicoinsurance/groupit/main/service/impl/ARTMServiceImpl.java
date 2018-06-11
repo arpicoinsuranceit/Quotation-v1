@@ -470,6 +470,7 @@ public class ARTMServiceImpl implements ARTMService{
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 

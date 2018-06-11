@@ -33,6 +33,10 @@ public class ItextReportsimpl implements ItextReports {
 		QuotationView quotationView = quoBenefDetailService.getQuo_Benef_DetailByQuoDetailId(quotationDetails);
 		QuoCustomer quoCustomer = setCustomerDetails(quotationDetails);
 
+		if(quotationDetails.getQuotation().getStatus().equals("recal")) {
+			return null;
+		}
+		
 		if (quotationView != null) {
 
 			if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("AIP")) {

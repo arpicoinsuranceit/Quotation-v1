@@ -20,7 +20,7 @@ public interface QuotationService {
 	
 	List <Quotation> getAllQuotation() throws Exception;
 	
-	List <Quotation> getQuotationByUserId(Users users,String status) throws Exception;
+	List <Quotation> getQuotationByUserId(Users users,List<String> status) throws Exception;
 
 	ArrayList<QuoDetails> getQuotationDetails(Integer id) throws Exception;
 

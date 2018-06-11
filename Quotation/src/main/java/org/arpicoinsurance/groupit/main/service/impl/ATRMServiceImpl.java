@@ -494,7 +494,7 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-
+		quotation.setStatus("active");
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
