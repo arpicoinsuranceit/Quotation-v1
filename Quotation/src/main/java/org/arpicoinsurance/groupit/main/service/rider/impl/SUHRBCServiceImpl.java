@@ -21,8 +21,6 @@ public class SUHRBCServiceImpl implements SUHRBCService {
 	@Autowired
 	private RateCardSUHRBDao rateCardSUHRBDao;
 
-	@Autowired
-	private RateCardHCBDISDao rateCardHCBDISDao;
 
 	@Override
 	public BigDecimal calculateSUHRBC(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
@@ -37,9 +35,7 @@ public class SUHRBCServiceImpl implements SUHRBCService {
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(
 						age, age, age, age, sex, term, ridsumasu, chedat, chedat);
-		RateCardHCBDIS rateCardHCBDIS = rateCardHCBDISDao
-				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
-						age, age, age, age, chedat, chedat, chedat, chedat);
+
 		// System.out.println("Rate : "+rateCardHRB.getRate());
 		// System.out.println("Rate : "+rateCardHCBDIS.getRate());
 		// System.out.println("SUHRBC age : "+age+" sex : "+sex+" ridsumasu :
@@ -56,8 +52,6 @@ public class SUHRBCServiceImpl implements SUHRBCService {
 							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}
 
-		// Added for HCB Discount
-		premiumSUHRBC = premiumSUHRBC.multiply(new BigDecimal(rateCardHCBDIS.getRate()));
 
 		// System.out.println("premiumSUHRBC : "+premiumSUHRBC.toString());
 		return premiumSUHRBC;

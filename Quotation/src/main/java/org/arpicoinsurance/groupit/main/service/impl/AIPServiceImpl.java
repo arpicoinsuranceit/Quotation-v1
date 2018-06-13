@@ -86,17 +86,17 @@ public class AIPServiceImpl implements AIPService {
 
 			CalculationUtils calculationUtils = new CalculationUtils();
 			BigDecimal maturity = new BigDecimal(0);
-			BigDecimal open_fund = new BigDecimal("0");
-			BigDecimal fund_amount = new BigDecimal("0");
-			BigDecimal balance_bfi = new BigDecimal("0");
-			BigDecimal interest_annum = new BigDecimal("0");
-			BigDecimal balance_bmf = new BigDecimal("0");
-			BigDecimal mgt_fees = new BigDecimal("0");
-			BigDecimal close_bal = new BigDecimal("0");
+			BigDecimal open_fund = new BigDecimal(0);
+			BigDecimal fund_amount = new BigDecimal(0);
+			BigDecimal balance_bfi = new BigDecimal(0);
+			BigDecimal interest_annum = new BigDecimal(0);
+			BigDecimal balance_bmf = new BigDecimal(0);
+			BigDecimal mgt_fees = new BigDecimal(0);
+			BigDecimal close_bal = new BigDecimal(0);
 			BigDecimal premium = new BigDecimal(contribution.doubleValue());
-			BigDecimal total_amount = new BigDecimal("0");
-			BigDecimal cum_premium = new BigDecimal("0");
-			BigDecimal com_premium = new BigDecimal("0");
+			BigDecimal total_amount = new BigDecimal(0);
+			BigDecimal cum_premium = new BigDecimal(0);
+			BigDecimal com_premium = new BigDecimal(0);
 			BigDecimal management_fee = new BigDecimal(fundmarat.doubleValue());
 			BigDecimal interest_rate = new BigDecimal(intrat.doubleValue());
 			BigDecimal adb_rate = new BigDecimal(adbrat.doubleValue());
@@ -150,8 +150,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("M")) {
 					fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
@@ -163,8 +163,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("H")) {
 					if (i % 6 == 0) {
@@ -172,8 +172,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("Y")) {
 					if (i % 12 == 0) {
@@ -181,8 +181,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				}
 
@@ -283,7 +283,8 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution, _invpSaveQuotation.get_plan().get_frequance());
+
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
 
 			//System.out.println(fundMrate);
 
@@ -515,7 +516,7 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution, _invpSaveQuotation.get_plan().get_frequance());
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
 
 			//System.out.println(fundMrate);
 

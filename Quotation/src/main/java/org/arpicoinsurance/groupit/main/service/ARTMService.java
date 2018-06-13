@@ -22,7 +22,11 @@ public interface ARTMService {
 	
 	BigDecimal pensionPremium()throws Exception;
 	
-	BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp)throws Exception;
+//<<<<<<< HEAD
+	BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp, QuotationCalculation calculation, String divRate)throws Exception;
+//=======
+//	BigDecimal calculateMaturity(Integer poltrm, Integer paytrm, String paymod, Date chedat, Double contribution, String pracod)throws Exception;
+//>>>>>>> refs/remotes/origin/branch-120
 
 	QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule)throws Exception;
 	

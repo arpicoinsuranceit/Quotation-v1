@@ -1283,7 +1283,7 @@ public class Validation {
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
 			if(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa() >= 36000 ) {
-				if(!(calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() >= 250000)) {
+				if((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() <= 250000)) {
 					return "Contribution must be greater than or equal 250000";
 				}	
 				

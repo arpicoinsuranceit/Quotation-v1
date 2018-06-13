@@ -94,18 +94,15 @@ public class CalculationUtils {
 
 	public Double addRebatetoBSAPremium(double rebate, BigDecimal premium) throws Exception {
 
-		//System.out.println("rebate : " + rebate);
 		BigDecimal rebateRate = (new BigDecimal(1)
 				.subtract((new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP))));
-		//System.out.println("rebateRate : " + rebateRate.doubleValue());
 
 		premium = premium.multiply(rebateRate).setScale(0, RoundingMode.HALF_UP);
 		return premium.doubleValue();
 	}
 
-	public Double getFndMngRate(Double contribution, String freq) {
-		
-		if (freq.equals("S")) {
+	public Double getFndMngRate(Double contribution, String paymod) {
+		if (paymod.equalsIgnoreCase("S")) {
 			if (contribution > 2000000) {
 				return 0.05;
 			} else if (contribution > 1000000) {
@@ -116,6 +113,7 @@ public class CalculationUtils {
 		} else {
 			return 0.2;
 		}
+
 	}
 
 }
