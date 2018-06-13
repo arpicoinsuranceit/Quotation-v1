@@ -7,5 +7,7 @@ public interface WPBService {
 	
 	BigDecimal calculateWPB(QuotationQuickCalResponse calResp, Double occuLoading) throws Exception;
 	
+	BigDecimal calculateARTMWPB(QuotationQuickCalResponse calResp, Double occuloading) throws Exception;
+	
 	
 }

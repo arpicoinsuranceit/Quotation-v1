@@ -35,4 +35,13 @@ public class WPBServiceImpl implements WPBService{
 		return premiumWPB;
 	}
 
+	@Override
+	public BigDecimal calculateARTMWPB(QuotationQuickCalResponse calResp, Double occuloading) throws Exception {
+		// ((@Contribution@*5)/100))
+		BigDecimal premiumWPB = new BigDecimal(0);
+		premiumWPB = ((new BigDecimal(calResp.getBasicSumAssured()).multiply(new BigDecimal(5))).divide(new BigDecimal(100))).setScale(0, RoundingMode.HALF_UP);
+		premiumWPB = premiumWPB.multiply(new BigDecimal(occuloading)).setScale(0, RoundingMode.HALF_UP);
+		return premiumWPB;
+	}
+
 }
