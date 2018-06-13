@@ -33,7 +33,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	public HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation) {
 
 //		System.out.println("called mainlife");
-//
+//+
 //		System.out.println(calculation.get_personalInfo().getBsa());
 
 		HashMap<String, Object> details = new HashMap<>();

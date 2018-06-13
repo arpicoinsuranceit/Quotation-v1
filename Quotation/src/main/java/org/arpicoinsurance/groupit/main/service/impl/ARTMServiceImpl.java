@@ -275,7 +275,7 @@ public class ARTMServiceImpl implements ARTMService{
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		benef_Details.setBenefit(benefitsDao.findOne(21));
+		/*benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
@@ -304,6 +304,7 @@ public class ARTMServiceImpl implements ARTMService{
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
+		*/
 //
 //		for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
 //			System.out.println("");
@@ -518,7 +519,7 @@ public class ARTMServiceImpl implements ARTMService{
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
-		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+		/*Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 		benef_Details.setBenefit(benefitsDao.findOne(21));
 		benef_Details.setRierCode("L2");
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
@@ -547,7 +548,7 @@ public class ARTMServiceImpl implements ARTMService{
 		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
-		benef_DetailsList.add(benef_Details);
+		benef_DetailsList.add(benef_Details);*/
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);
