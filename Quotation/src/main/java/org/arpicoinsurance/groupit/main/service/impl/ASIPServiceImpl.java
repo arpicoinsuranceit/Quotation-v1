@@ -220,16 +220,16 @@ public class ASIPServiceImpl implements ASIPService {
 	public BigDecimal calculateMaturity(int age, int term, double fundcharat, double intrat, Date chedat, double bassum,
 			double bsapremium, int paytrm) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-		BigDecimal open_fund = new BigDecimal("0");
-		BigDecimal fund_amount = new BigDecimal("0");
-		BigDecimal dividend_income = new BigDecimal("0");
-		BigDecimal mortality_charges = new BigDecimal("0");
-		BigDecimal fund_managment_charge = new BigDecimal("0");
-		BigDecimal close_bal = new BigDecimal("0");
+		BigDecimal open_fund = new BigDecimal(0);
+		BigDecimal fund_amount = new BigDecimal(0);
+		BigDecimal dividend_income = new BigDecimal(0);
+		BigDecimal mortality_charges = new BigDecimal(0);
+		BigDecimal fund_managment_charge = new BigDecimal(0);
+		BigDecimal close_bal = new BigDecimal(0);
 
 		BigDecimal premium = new BigDecimal(bsapremium);
 		BigDecimal basicsumasu = new BigDecimal(bassum);
-		BigDecimal total_amount = new BigDecimal("0");
+		BigDecimal total_amount = new BigDecimal(0);
 
 		BigDecimal fund_charge = new BigDecimal(fundcharat).setScale(2, BigDecimal.ROUND_HALF_UP);
 		BigDecimal interest_rate = new BigDecimal(intrat).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -314,6 +314,11 @@ public class ASIPServiceImpl implements ASIPService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
@@ -527,6 +532,11 @@ public class ASIPServiceImpl implements ASIPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedASIP(calculation);
 		if (calResp.isErrorExist()) {
@@ -586,6 +596,7 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 

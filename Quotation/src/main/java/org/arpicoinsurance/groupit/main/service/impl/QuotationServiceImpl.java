@@ -59,8 +59,8 @@ public class QuotationServiceImpl implements QuotationService{
 	}
 
 	@Override
-	public List<Quotation> getQuotationByUserId(Users user,String status) throws Exception {
-		return quotationDao.findByUserAndStatusOrderByIdDesc(user, status);
+	public List<Quotation> getQuotationByUserId(Users user,List<String> status) throws Exception {
+		return quotationDao.findByUserAndStatusInOrderByIdDesc(user, status);
 	}
 	
 	@Override
@@ -68,8 +68,12 @@ public class QuotationServiceImpl implements QuotationService{
 		
 		Users users=usersDao.findOne(id);
 		
+		List<String> status = new ArrayList<>();
+		status.add("active");
+		status.add("recal");
+		
 		if(users!=null) {
-			ArrayList<Quotation> quoList=(ArrayList<Quotation>) getQuotationByUserId(users, "active");
+			ArrayList<Quotation> quoList=(ArrayList<Quotation>) getQuotationByUserId(users, status);
 			if(quoList!=null) {
 				ArrayList<QuoDetails> quoDetailsList = new ArrayList<>();
 				for (Quotation quotation : quoList) {

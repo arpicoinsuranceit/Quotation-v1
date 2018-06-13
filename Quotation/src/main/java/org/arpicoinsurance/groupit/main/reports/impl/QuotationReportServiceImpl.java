@@ -618,7 +618,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		ListItem item1 = new ListItem();
 		item1.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(9).setFixedLeading(2));
 		list.add(item1);
-
+/*
+		ListItem item1 = new ListItem();
+		item1.add(new Paragraph("This is an indicative quote only and is valid for 31 May 2018.")
+				.setFontSize(10).setFixedLeading(10));
+		list.add(item1);
+		*/
 		ListItem item2 = new ListItem();
 		item2.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
 				.setFontSize(9).setFixedLeading(2));
@@ -629,6 +634,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setFontSize(9).setFixedLeading(2));
 		list.add(item3);
 
+		
 		document.add(list);
 
 		document.add(new Paragraph("This is a system generated report and therefore does not require a signature.")

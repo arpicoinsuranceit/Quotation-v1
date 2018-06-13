@@ -245,6 +245,12 @@ public class ENDServiceImpl implements ENDService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
+		if(productDao.findByProductCode("END1").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
+		
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 
 		if (calResp.isErrorExist()) {
@@ -475,6 +481,11 @@ public class ENDServiceImpl implements ENDService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("END1").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -533,7 +544,7 @@ public class ENDServiceImpl implements ENDService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-
+		quotation.setStatus("active");
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails1.setCustomerDetails(mainLifeDetail);

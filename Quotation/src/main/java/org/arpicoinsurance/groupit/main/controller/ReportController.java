@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.controller;
 
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.reports.ItextReports;
@@ -32,7 +33,15 @@ public class ReportController {
 		
 		try {
 			Integer quoId=Integer.valueOf(id);
-			return new ResponseEntity<Object>(itextReport.createQuotationReport(quoId), HttpStatus.OK);
+			byte [] pdf = itextReport.createQuotationReport(quoId);
+			ResponseEntity<Object> responseEntity = null;
+			
+			if(pdf == null) {
+				responseEntity = new ResponseEntity<Object>(null, HttpStatus.METHOD_NOT_ALLOWED);
+			}else {
+				responseEntity = new ResponseEntity<Object>(pdf, HttpStatus.OK);
+			}
+			return responseEntity;
 			
 		} catch (Exception e) {
 			Logs logs = new Logs();

@@ -166,6 +166,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 				quotationDetails.setSumAtRiskSpouse(0.0);
 			}
 			quotationDetails.setQuotationquotationCreateDate(new Date());
+			quotationDetails.setPremium(calResp.getBasicSumAssured());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
 				//System.out.println(calResp.getBasicSumAssured());
@@ -264,6 +265,12 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 
 					switch (type) {
 
+					case "L2":
+						benef_Details.setRiderPremium(calResp.getL2());
+						benef_Details.setRiderTerm(calResp.getL2term());
+						benef_Details.setRierCode(type);
+						benef_DetailList.add(benef_Details);
+						break;
 					case "ADB":
 						benef_Details.setRiderPremium(calResp.getAdb());
 						benef_Details.setRiderTerm(calResp.getAdbTerm());
@@ -907,17 +914,17 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			
 			
 		case "ARTM":
-			mat1.setRierCode("L6");
+			mat1.setRierCode("L14");
 			mat1.setBenefit(benefitsDao.findByRiderCode("L14"));
 			mat1.setRiderPremium(calResp.getPensionPremium1());
 			benefictList.add(mat1);
 
-			mat2.setRierCode("L8");
+			mat2.setRierCode("L15");
 			mat2.setRiderPremium(calResp.getPensionPremium2());
 			mat2.setBenefit(benefitsDao.findByRiderCode("L15"));
 			benefictList.add(mat2);
 
-			mat3.setRierCode("L9");
+			mat3.setRierCode("L16");
 			mat3.setRiderPremium(calResp.getPensionPremium3());
 			mat3.setBenefit(benefitsDao.findByRiderCode("L16"));
 			benefictList.add(mat3);

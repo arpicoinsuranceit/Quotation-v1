@@ -20,9 +20,6 @@ public class SHCBIServiceImpl implements SHCBIService {
 	@Autowired
 	private RateCardSUHRBDao rateCardSUHRBDao;
 
-	@Autowired
-	private RateCardHCBDISDao rateCardHCBDISDao;
-
 	@Override
 	public BigDecimal calculateSHCBI(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
 			String payFrequency, Double relief, double occupation_loding) throws Exception {
@@ -30,9 +27,7 @@ public class SHCBIServiceImpl implements SHCBIService {
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(
 						age, age, age, age, sex, term, ridsumasu, chedat, chedat);
-		RateCardHCBDIS rateCardHCBDIS = rateCardHCBDISDao
-				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
-						age, age, age, age, chedat, chedat, chedat, chedat);
+	
 		// System.out.println("Rate : "+rateCardSUHRB.getRate());
 		// System.out.println("Rate : "+rateCardHCBDIS.getRate());
 		// System.out.println("SUHRB age : "+age+" sex : "+sex+" ridsumasu :
@@ -49,8 +44,6 @@ public class SHCBIServiceImpl implements SHCBIService {
 							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}
 
-		// Added for HCB Discount
-		premiumSUHRB = premiumSUHRB.multiply(new BigDecimal(rateCardHCBDIS.getRate()));
 
 		premiumSUHRB = premiumSUHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// System.out.println("premiumSUHRB : "+premiumSUHRB.toString());

@@ -17,6 +17,9 @@ public class QuotationQuickCalResponse {
 	
 	
 	private Double l2=0.00;
+	private Integer l2term=0;
+	private Double l2Sum=0.00;
+	
 	private Double at6= 0.00;
 	private Double at8= 0.00;
 	private Double at10= 0.00;
@@ -281,6 +284,18 @@ public class QuotationQuickCalResponse {
 	}
 	public void setL2(Double l2) {
 		this.l2 = l2;
+	}
+	public Double getL2Sum() {
+		return l2Sum;
+	}
+	public void setL2Sum(Double l2Sum) {
+		this.l2Sum = l2Sum;
+	}
+	public Integer getL2term() {
+		return l2term;
+	}
+	public void setL2term(Integer l2term) {
+		this.l2term = l2term;
 	}
 	public Double getAt6() {
 		return at6;

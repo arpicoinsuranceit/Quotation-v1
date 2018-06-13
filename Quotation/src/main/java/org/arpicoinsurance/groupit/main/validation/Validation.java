@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.validation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -10,6 +11,8 @@ import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public class Validation {
 
+	private CalculationUtils calculationUtils = new CalculationUtils();
+	
 	private QuotationCalculation calculation;
 
 	HashMap<String, Benifict> benefitMap = new HashMap<>();
@@ -52,6 +55,14 @@ public class Validation {
 						} else {
 							if (validateInvpATBP().equals(0)) {
 								return "ATPB must be greater than or equal BSA and ATPB must be less than or equal (BSA x 10) and ATPB mod 25000 equal 0";
+							}
+						}
+						break;
+					case "L2":
+						// System.out.println("call ATPB");
+						if (calculation.get_product().equals("ARTM")) {
+							if (validateARTML2().equals(0)) {
+								return "L2 must be Greater than or Equal 100,000 and Less than or Equal 1,000,000";
 							}
 						}
 						break;
@@ -102,9 +113,15 @@ public class Validation {
 							}
 						} else if (calculation.get_product().equals("ARTM")) {
 							if (validateCIBARTM().equals(0)) {
-								return "CIB must be greater than 100,000 and less than 1,000,000";
+								return "Internal Error";
 							}
-						}else {
+							if (validateCIBARTM().equals(2)) {
+								return "Please get L2 for get This Benefict";
+							}
+							if (validateCIBARTM().equals(3)) {
+								return "CIB mest Greater than or Equal to L2 and Less than or Equal to 10 times of L2 and Less than or Equal 6,000,000";
+							}
+						} else {
 							if (validateInvpCIB().equals(0)) {
 								return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
 							}
@@ -535,6 +552,16 @@ public class Validation {
 		return 0;
 	}
 
+	public Integer validateARTML2() {
+		if (benefitMap.containsKey("L2")) {
+			Benifict benifict = benefitMap.get("L2");
+			if(benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	public Integer validateInvpTPDASB() {
 		if (benefitMap.containsKey("TPDASB") && benefitMap.containsKey("ADB")) {
 			Benifict tpdasb = benefitMap.get("TPDASB");
@@ -626,15 +653,22 @@ public class Validation {
 		return 0;
 
 	}
-	
+
 	/////// for ARTM
 	public Integer validateCIBARTM() {
 		if (benefitMap.containsKey("CIB")) {
-			Double cib = benefitMap.get("CIB").getSumAssured();
-			if (cib <= 1000000 && cib >= 100000) {
-				return 1;
+			if (benefitMap.containsKey("L2")) {
+				Double cib = benefitMap.get("CIB").getSumAssured();
+				Double l2 = benefitMap.get("L2").getSumAssured();
+				if (cib <= l2 * 10 && cib >= l2 && l2 < 6000000) {
+					return 1;
+				}
+				return 3;
+
+			} else {
+				return 2;
 			}
-			return 0;
+
 		}
 		return 0;
 
@@ -1244,27 +1278,42 @@ public class Validation {
 		return 0;
 	}
 
-	public String validateArtm( QuotationCalculation calculation) {
+	public String validateArtm(QuotationCalculation calculation) {
 
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
-			if (calculation.get_personalInfo().getPensionPaingTerm() == 10 || calculation.get_personalInfo().getPensionPaingTerm() == 15
-					|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
-				Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
-				if (paingTerm >= 10 && paingTerm <= 47 || calculation.get_personalInfo().getFrequance().equals("S")) {
-					if (paingTerm <= (calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage()) || calculation.get_personalInfo().getFrequance().equals("S")) {
+			System.out.println(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa());
+			if(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa() >= 36000 ) {
+				if((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() < 250000)) {
+					return "Contribution must be greater than or equal 250000";
+				}	
+				
+				if (calculation.get_personalInfo().getPensionPaingTerm() == 10
+						|| calculation.get_personalInfo().getPensionPaingTerm() == 15
+						|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
+					Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
+					if (paingTerm >= 10 && paingTerm <= 47 || calculation.get_personalInfo().getFrequance().equals("S")) {
+						if (paingTerm <= (calculation.get_personalInfo().getRetAge()
+								- calculation.get_personalInfo().getMage())
+								|| calculation.get_personalInfo().getFrequance().equals("S")) {
 
-						return "ok";
+							return "ok";
 
+						} else {
+							return "Pension Paying Max Term must " + (calculation.get_personalInfo().getRetAge()
+									- calculation.get_personalInfo().getMage());
+						}
 					} else {
-						return "Pension Paying Max Term must " + (calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage());
+						return "Pension Paying Term must between 10 and 47";
 					}
 				} else {
-					return "Pension Paying Term must between 10 and 47";
+					return "Pension Pension Paying Term must be 10, 15 or 20";
 				}
-			} else {
-				return "Pension Pension Paying Term must be 10, 15 or 20";
+				
+			}else {
+				return "Yearly Contribution  must be greater than or equal 36000";
 			}
+			
 		} else {
 			return "Retirement Age must between 60 and 40";
 		}

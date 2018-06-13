@@ -282,6 +282,11 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
+		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -515,6 +520,11 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
@@ -574,6 +584,7 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -756,11 +767,6 @@ public class ARPServiceImpl implements ARPService {
 	@Override
 	public List<SurrenderValHelper> calculateSurrendervals(int age, int term, String rlf_term, double bassum,
 			String payFrequency, double total_premium) throws Exception {
-
-		// System.out.println("age : "+age+" term : "+term+" rlf_term : "+rlf_term+"
-		// bassum : "+" payFrequency : "+payFrequency+" total_premium :
-		// "+total_premium);
-
 
 		// (((@sum_assured@*0.025)*@term@)+@sum_assured@)
 		int surrender_year = 3;

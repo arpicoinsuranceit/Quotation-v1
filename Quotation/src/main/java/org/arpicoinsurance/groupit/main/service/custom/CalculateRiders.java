@@ -8,10 +8,11 @@ public interface CalculateRiders {
 	QuotationQuickCalResponse getRiders(QuotationCalculation quotationCalculation, QuotationQuickCalResponse calResp) throws Exception;
 	
 	QuotationQuickCalResponse calculateMainlifeRiders(Integer age, String type, Integer payTerm, Double bsa, String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp,
-		 Integer adultCount, Integer childCount, Double inrate) throws Exception;
+		 Integer adultCount, Integer childCount, Double inrate, String productCode) throws Exception;
 	
 	QuotationQuickCalResponse calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age, String payFrequency,
-			Integer term, Integer occupation_id, QuotationQuickCalResponse calResp, Integer adultCount, Integer childCount, Double loan, Double inRate)
+			Integer term, Integer occupation_id, QuotationQuickCalResponse calResp, Integer adultCount, Integer childCount, Double loan, Double inRate,
+			String productCode)
 			throws Exception ;
 	
 	

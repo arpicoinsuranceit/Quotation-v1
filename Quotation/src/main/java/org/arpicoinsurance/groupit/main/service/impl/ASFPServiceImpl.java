@@ -242,6 +242,11 @@ public class ASFPServiceImpl implements ASFPService {
 			Integer id) throws Exception {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ASFP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		Nominee nominee = null;
 
@@ -469,11 +474,16 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-
+		
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
+		if(productDao.findByProductCode("ASFP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
 		if (calResp.getTotPremium() < 1250) {
 			calResp.setErrorExist(true);
@@ -552,6 +562,7 @@ public class ASFPServiceImpl implements ASFPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 

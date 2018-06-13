@@ -8,4 +8,6 @@ public interface WPBSService {
 	BigDecimal calculateWPBS(QuotationQuickCalResponse calResp, Double Occuloading) throws Exception;
 	
 	
+	
+	
 }
