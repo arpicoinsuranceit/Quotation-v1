@@ -34,6 +34,17 @@ public class QuotationArtmCalculationController {
 	@Autowired
 	private LogService logService;
 	
+	@RequestMapping(value = "/artmCalTest", method = RequestMethod.GET)
+	public String calTest() {
+		try {
+			artmService.calculateMaturity(37,15, "M", new Date(), 15000.00,"divrat2");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateATRM (@RequestBody QuotationCalculation calculation) {
 		
