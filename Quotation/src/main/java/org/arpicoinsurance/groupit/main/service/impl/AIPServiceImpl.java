@@ -330,6 +330,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			quotationDetails.setCustomerDetails(customerDetails);
+			quotationDetails.setPremium(_invpSaveQuotation.get_plan().get_bsa());
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
@@ -564,6 +565,8 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setCustomerDetails(customerDetails);
 			Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 			quotationDetails.setTaxAmount(tax);
+
+			quotationDetails.setPremium(_invpSaveQuotation.get_plan().get_bsa());
 			switch (frequance) {
 			case "M":
 

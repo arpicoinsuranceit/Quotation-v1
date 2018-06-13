@@ -113,7 +113,7 @@ public class Validation {
 							}
 						} else if (calculation.get_product().equals("ARTM")) {
 							if (validateCIBARTM().equals(0)) {
-								return "Inteenal Error";
+								return "Internal Error";
 							}
 							if (validateCIBARTM().equals(2)) {
 								return "Please get L2 for get This Benefict";
@@ -660,7 +660,7 @@ public class Validation {
 			if (benefitMap.containsKey("L2")) {
 				Double cib = benefitMap.get("CIB").getSumAssured();
 				Double l2 = benefitMap.get("L2").getSumAssured();
-				if (cib <= l2 * 2 && cib >= l2 && l2 < 6000000) {
+				if (cib <= l2 * 10 && cib >= l2 && l2 < 6000000) {
 					return 1;
 				}
 				return 3;
@@ -1282,8 +1282,9 @@ public class Validation {
 
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
+			System.out.println(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa());
 			if(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa() >= 36000 ) {
-				if((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() <= 250000)) {
+				if((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() < 250000)) {
 					return "Contribution must be greater than or equal 250000";
 				}	
 				

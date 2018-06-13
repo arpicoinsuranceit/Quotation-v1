@@ -53,6 +53,8 @@ public class QuotationDetails implements Serializable{
 	private String quotationModifyBy;
 	private Date quotationModifyDate;
 	
+	private Double premium = 0.0;
+	
 	private List<Surrendervals> surrenderValueList;
 	public QuotationDetails() {}
 
@@ -326,6 +328,14 @@ public class QuotationDetails implements Serializable{
 
 	public void setQuotationCreateDate(Date quotationCreateDate) {
 		this.quotationCreateDate = quotationCreateDate;
+	}
+
+	public Double getPremium() {
+		return premium;
+	}
+
+	public void setPremium(Double premium) {
+		this.premium = premium;
 	}
 
 	@OneToMany(mappedBy="quotationDetails",targetEntity=Surrendervals.class)

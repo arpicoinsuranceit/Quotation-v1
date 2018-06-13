@@ -455,8 +455,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 		switch (type) {
 		
 		case "L2":
-			
+			System.out.println("L2");
 			if(productCode.equalsIgnoreCase("ARTM")) {
+				
+				System.out.println("call L2");
+				
 				if(benefictDao.findByRiderCode("L2").getActive() == 0) {
 					calResp.setErrorExist(true);
 					calResp.setError("L2 under Maintenance, Please untick or reload page");
@@ -467,17 +470,18 @@ public class CalculateRidersImpl implements CalculateRiders {
 				if (ocuLoading == null)
 					ocuLoading = 1.0;
 
-				Integer maxTermToBenefictL2 = rateCardArtmDeathDao.findFirstByOrderByTermDesc().getTerm();
-				Integer valiedTermL2 = maxTermToBenefictL2 > term ? term : maxTermToBenefictL2;
+				//Integer maxTermToBenefictL2 = rateCardArtmDeathDao.findFirstByOrderByTermDesc().getTerm();
+				Integer valiedTermL2 =  term;
 
 				
 				BigDecimal l2 = l2service.calculateL2(ridsumasu, valiedTermL2, age, payFrequency, ocuLoading);
 
 				calResp = setLodingDetails(ocuLoading, l2.doubleValue(), calResp);
 
-				calResp.setBsas(l2.doubleValue());
+				calResp.setL2(l2.doubleValue());
+				calResp.setL2Sum(ridsumasu);
 				calResp.setAddBenif(calResp.getAddBenif() + l2.doubleValue());
-				calResp.setBsasTerm(valiedTermL2);
+				calResp.setL2term(valiedTermL2);
 			}
 			
 			return calResp;
@@ -1497,7 +1501,12 @@ public class CalculateRidersImpl implements CalculateRiders {
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 			// System.out.println(ocuLoading + " wpb oculoading");
-			BigDecimal wpb = wpbService.calculateWPB(calResp, ocuLoading);
+			BigDecimal wpb = null;
+			if(productCode.equalsIgnoreCase("ARTM")) {
+				wpb = wpbService.calculateARTMWPB(calResp, ocuLoading);
+			}else {
+				wpb = wpbService.calculateWPB(calResp, ocuLoading);
+			}
 			calResp = setLodingDetails(ocuLoading, wpb.doubleValue(), calResp);
 			calResp.setWpb(wpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpb.doubleValue());
