@@ -309,26 +309,29 @@ public class ARTMServiceImpl implements ARTMService {
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
 						"A", chedat, chedat, chedat, chedat);
 		System.out.println("repaymentRate : " + repaymentRate.getDobval());
-		
+
 		RateCardProductVar repaymentExpences = rateCardProductVarDao
-				  .findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat
-				  ("ARTM", "repexp", "A", chedat, chedat, chedat, chedat);
-				  System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
+						"A", chedat, chedat, chedat, chedat);
+		System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
 
 		double reprate = (1.0D - Math.pow(
-				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(12))).divide(new BigDecimal(100)))
-						.add(new BigDecimal(1))).doubleValue(),
+				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10, BigDecimal.ROUND_HALF_UP))
+						.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)).add(new BigDecimal(1)))
+								.doubleValue(),
 				(12 * calculation.get_personalInfo().getPensionPaingTerm() * -1)))
-				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(12))).divide(new BigDecimal(100)))
-						.add(new BigDecimal(1))).doubleValue();
-		System.out.println("closingFundAmount : "+closingFundAmount+" reprate : "+reprate);
+				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
+						BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
+								.doubleValue();
+		System.out.println("closingFundAmount : " + closingFundAmount + " reprate : " + reprate);
 		// TODO calculate premium
-		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate));
-		
-		double repexp = new BigDecimal(1).subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
-		System.out.println("pensionPremium : "+pensionPremium+" repexp : "+repexp);
+		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate), 6, BigDecimal.ROUND_HALF_UP);
+
+		double repexp = new BigDecimal(1)
+				.subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
+		System.out.println("pensionPremium : " + pensionPremium + " repexp : " + repexp);
 		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
-		System.out.println("pensionPremium : "+pensionPremium);
+		System.out.println("pensionPremium : " + pensionPremium);
 		return pensionPremium.setScale(0, BigDecimal.ROUND_HALF_UP);
 	}
 
