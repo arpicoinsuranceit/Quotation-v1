@@ -37,15 +37,18 @@ public class ItextReportsimpl implements ItextReports {
 
 			if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("AIP")) {
 				return quotationReportService.createAIPReport(quotationDetails, quotationView, quoCustomer);
+				//return quotationReportService.createARTMReport(quotationDetails, quotationView, quoCustomer);
 
 			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("AIB")) {
 				return quotationReportService.createAIBReport(quotationDetails, quotationView, quoCustomer);
 
-			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("INVP")
-					|| (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ASIP"))) {
+			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("INVP")){
 				return quotationReportService.createINVPReport(quotationDetails, quotationView, quoCustomer);
 
-			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTA")
+			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ASIP")){
+				return quotationReportService.createASIPReport(quotationDetails, quotationView, quoCustomer);
+
+			}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTA")
 					|| (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL"))) {
 				return quotationReportService.createDTAReport(quotationDetails, quotationView, quoCustomer);
 
@@ -60,7 +63,10 @@ public class ItextReportsimpl implements ItextReports {
 
 			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ARP")) {
 				return quotationReportService.createARPReport(quotationDetails, quotationView, quoCustomer);
-			}
+			
+			}//else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ARTM")) {
+				//return quotationReportService.createARTMReport(quotationDetails, quotationView, quoCustomer);
+			//}
 
 		}
 
