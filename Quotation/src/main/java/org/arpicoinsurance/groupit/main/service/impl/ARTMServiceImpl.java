@@ -125,25 +125,29 @@ public class ARTMServiceImpl implements ARTMService {
 	private RateCardProductVarDao rateCardProductVarDao;
 
 	@Override
-	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp, QuotationCalculation calculation, String divrat) throws Exception {
+	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp,
+			QuotationCalculation calculation, String divrat) throws Exception {
 		Integer poltrm = calculation.get_personalInfo().getTerm();
-		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("S") ? 1 : Integer.parseInt(calculation.get_personalInfo().getPayingterm());
+		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("S") ? 1
+				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
 		String paymod = calculation.get_personalInfo().getFrequance();
 		Date chedat = new Date();
 		Double contribution = calculation.get_personalInfo().getBsa();
-		if(printShedule) {
+		if (printShedule) {
 			List<PensionShedule> pensionShedules = new ArrayList<>();
-			
-			//TODO Insert values for schedule
-			
-			calResp.setPensionShedules(pensionShedules);
-			
-		}
-		
-		/*return new BigDecimal(1000000);
 
-		public BigDecimal calculateMaturity(Integer poltrm, Integer paytrm, String paymod, Date chedat, Double contribution, String divrat)
-			throws Exception {*/
+			// TODO Insert values for schedule
+
+			calResp.setPensionShedules(pensionShedules);
+
+		}
+
+		/*
+		 * return new BigDecimal(1000000);
+		 * 
+		 * public BigDecimal calculateMaturity(Integer poltrm, Integer paytrm, String
+		 * paymod, Date chedat, Double contribution, String divrat) throws Exception {
+		 */
 
 		System.out.println("Start Data : " + poltrm + " " + paymod + " " + contribution + " " + chedat);
 		System.out.println(divrat);
@@ -156,15 +160,16 @@ public class ARTMServiceImpl implements ARTMService {
 						"A", chedat, chedat, chedat, chedat);
 		System.out.println("dividentRate : " + dividentRate.getDobval());
 		/*
-		RateCardProductVar repaymentRate = rateCardProductVarDao
-				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
-						"A", chedat, chedat, chedat, chedat);
-		System.out.println("repaymentRate : " + repaymentRate.getDobval());
-		*/
-		RateCardProductVar repaymentExpences = rateCardProductVarDao
-				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
-						"A", chedat, chedat, chedat, chedat);
-		System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+		 * RateCardProductVar repaymentRate = rateCardProductVarDao
+		 * .findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat
+		 * ("ARTM", reprat, "A", chedat, chedat, chedat, chedat);
+		 * System.out.println("repaymentRate : " + repaymentRate.getDobval());
+		 * 
+		 * RateCardProductVar repaymentExpences = rateCardProductVarDao
+		 * .findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat
+		 * ("ARTM", "repexp", "A", chedat, chedat, chedat, chedat);
+		 * System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+		 */
 
 		BigDecimal contributionAmount = new BigDecimal(0);
 		BigDecimal commision = new BigDecimal(0);
@@ -291,24 +296,45 @@ public class ARTMServiceImpl implements ARTMService {
 
 		}
 
-		return closingFundAmount;
-//>>>>>>> refs/remotes/origin/branch-120
+		return closingFundAmount.setScale(0, BigDecimal.ROUND_HALF_UP);
+
 	}
-	
-	@Override
-	public BigDecimal pensionPremium() throws Exception {
-		
-		
-		// TODO calculate premium
-		
-		
-		return new BigDecimal(250000.00);
-	}
-	
 
 	@Override
-	public QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule) throws Exception {
+	public BigDecimal pensionPremium(QuotationCalculation calculation, String reprat, Double closingFundAmount)
+			throws Exception {
+		Date chedat = new Date();
+		BigDecimal pensionPremium = new BigDecimal(0);
+		RateCardProductVar repaymentRate = rateCardProductVarDao
+				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
+						"A", chedat, chedat, chedat, chedat);
+		System.out.println("repaymentRate : " + repaymentRate.getDobval());
 		
+		RateCardProductVar repaymentExpences = rateCardProductVarDao
+				  .findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat
+				  ("ARTM", "repexp", "A", chedat, chedat, chedat, chedat);
+				  System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+
+		double reprate = (1.0D - Math.pow(
+				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(12))).divide(new BigDecimal(100)))
+						.add(new BigDecimal(1))).doubleValue(),
+				(12 * calculation.get_personalInfo().getPensionPaingTerm() * -1)))
+				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(12))).divide(new BigDecimal(100)))
+						.add(new BigDecimal(1))).doubleValue();
+		System.out.println("closingFundAmount : "+closingFundAmount+" reprate : "+reprate);
+		// TODO calculate premium
+		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate));
+		
+		double repexp = new BigDecimal(1).subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
+		System.out.println("pensionPremium : "+pensionPremium+" repexp : "+repexp);
+		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
+		System.out.println("pensionPremium : "+pensionPremium);
+		return pensionPremium.setScale(0, BigDecimal.ROUND_HALF_UP);
+	}
+
+	@Override
+	public QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule)
+			throws Exception {
 
 		CalculationUtils calculationUtils = null;
 		try {
@@ -324,21 +350,24 @@ public class ARTMServiceImpl implements ARTMService {
 					&& calculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(calculation));
 			}
-//<<<<<<< HEAD
-			
-			calResp.setAt6(calculateMaturity(printShedule, calResp, calculation,"divrat1").doubleValue());
-			calResp.setAt8(calculateMaturity(printShedule, calResp, calculation,"divrat2").doubleValue());
-			calResp.setAt10(calculateMaturity(printShedule, calResp, calculation,"divrat3").doubleValue());
-//=======
+			// <<<<<<< HEAD
 
-			//calResp.setAt6(calculateMaturity(37,15, "M", new Date(), 15000.00,"divrat1").doubleValue());
-			//calResp.setAt8(calculateMaturity(37,15, "M", new Date(), 15000.00,"divrat2").doubleValue());
-			//calResp.setAt10(calculateMaturity(37,15, "M", new Date(), 15000.00,"divrat3").doubleValue());
-//>>>>>>> refs/remotes/origin/branch-120
+			calResp.setAt6(calculateMaturity(printShedule, calResp, calculation, "divrat1").doubleValue());
+			calResp.setAt8(calculateMaturity(printShedule, calResp, calculation, "divrat2").doubleValue());
+			calResp.setAt10(calculateMaturity(printShedule, calResp, calculation, "divrat3").doubleValue());
+			// =======
 
-			calResp.setPensionPremium1(pensionPremium().doubleValue());
-			calResp.setPensionPremium2(pensionPremium().doubleValue());
-			calResp.setPensionPremium3(pensionPremium().doubleValue());
+			// calResp.setAt6(calculateMaturity(37,15, "M", new Date(),
+			// 15000.00,"divrat1").doubleValue());
+			// calResp.setAt8(calculateMaturity(37,15, "M", new Date(),
+			// 15000.00,"divrat2").doubleValue());
+			// calResp.setAt10(calculateMaturity(37,15, "M", new Date(),
+			// 15000.00,"divrat3").doubleValue());
+			// >>>>>>> refs/remotes/origin/branch-120
+
+			calResp.setPensionPremium1(pensionPremium(calculation, "reprat1", calResp.getAt6()).doubleValue());
+			calResp.setPensionPremium2(pensionPremium(calculation, "reprat2", calResp.getAt8()).doubleValue());
+			calResp.setPensionPremium3(pensionPremium(calculation, "reprat3", calResp.getAt10()).doubleValue());
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
@@ -415,7 +444,7 @@ public class ARTMServiceImpl implements ARTMService {
 
 		quotationDetails.setRetirmentAge(calculation.get_personalInfo().getRetAge());
 		quotationDetails.setPensionTerm(calculation.get_personalInfo().getPensionPaingTerm());
-		
+
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails.setSpouseDetails(spouseDetail);
@@ -455,53 +484,42 @@ public class ARTMServiceImpl implements ARTMService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
-		//Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+		// Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		/*benef_Details.setBenefit(benefitsDao.findOne(21));
-		benef_Details.setRierCode("L2");
-		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
-		benef_Details.setQuo_Benef_CreateDate(new Date());
-		benef_Details.setQuotationDetails(quotationDetails);
-		switch (quotationDetails.getPayMode()) {
-		case "M":
-			benef_Details.setRiderPremium(quotationDetails.getPremiumMonth());
-			break;
-		case "Q":
-			benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
-			break;
-		case "H":
-			benef_Details.setRiderPremium(quotationDetails.getPremiumHalf());
-			break;
-		case "Y":
-			benef_Details.setRiderPremium(quotationDetails.getPremiumYear());
-			break;
-		case "S":
-			benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
-			break;
-
-		default:
-			break;
-		}
-		benef_Details.setRiderSum(quotationDetails.getBaseSum());
-		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
-
-		benef_DetailsList.add(benef_Details);
-<<<<<<< HEAD
-		*/
-//
-//		for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
-//			System.out.println("");
-//			System.out.println(quo_Benef_Details.toString());
-//			System.out.println("");
-//		}
-//=======
+		/*
+		 * benef_Details.setBenefit(benefitsDao.findOne(21));
+		 * benef_Details.setRierCode("L2");
+		 * benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		 * benef_Details.setQuo_Benef_CreateDate(new Date());
+		 * benef_Details.setQuotationDetails(quotationDetails); switch
+		 * (quotationDetails.getPayMode()) { case "M":
+		 * benef_Details.setRiderPremium(quotationDetails.getPremiumMonth()); break;
+		 * case "Q": benef_Details.setRiderPremium(quotationDetails.getPremiumQuater());
+		 * break; case "H":
+		 * benef_Details.setRiderPremium(quotationDetails.getPremiumHalf()); break; case
+		 * "Y": benef_Details.setRiderPremium(quotationDetails.getPremiumYear()); break;
+		 * case "S": benef_Details.setRiderPremium(quotationDetails.getPremiumSingle());
+		 * break;
+		 * 
+		 * default: break; } benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		 * benef_Details.setRiderTerm(quotationDetails.getPolTerm());
+		 * 
+		 * benef_DetailsList.add(benef_Details); <<<<<<< HEAD
+		 */
 		//
 		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
 		// System.out.println("");
 		// System.out.println(quo_Benef_Details.toString());
 		// System.out.println("");
 		// }
-//>>>>>>> refs/remotes/origin/branch-120
+		// =======
+		//
+		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
+		// System.out.println("");
+		// System.out.println(quo_Benef_Details.toString());
+		// System.out.println("");
+		// }
+		// >>>>>>> refs/remotes/origin/branch-120
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -598,14 +616,13 @@ public class ARTMServiceImpl implements ARTMService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-		
-		
+
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedARTM(calculation, true);
 
 		if (calResp.isErrorExist()) {
@@ -671,7 +688,7 @@ public class ARTMServiceImpl implements ARTMService {
 
 		quotationDetails1.setRetirmentAge(calculation.get_personalInfo().getRetAge());
 		quotationDetails1.setPensionTerm(calculation.get_personalInfo().getPensionPaingTerm());
-		
+
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -713,36 +730,28 @@ public class ARTMServiceImpl implements ARTMService {
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
 				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
 
-		/*Quo_Benef_Details benef_Details = new Quo_Benef_Details();
-		benef_Details.setBenefit(benefitsDao.findOne(21));
-		benef_Details.setRierCode("L2");
-		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
-		benef_Details.setQuo_Benef_CreateDate(new Date());
-		benef_Details.setQuotationDetails(quotationDetails1);
-		switch (quotationDetails1.getPayMode()) {
-		case "M":
-			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
-			break;
-		case "Q":
-			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
-			break;
-		case "H":
-			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
-			break;
-		case "Y":
-			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
-			break;
-		case "S":
-			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
-			break;
-
-		default:
-			break;
-		}
-		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
-		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
-
-		benef_DetailsList.add(benef_Details);*/
+		/*
+		 * Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+		 * benef_Details.setBenefit(benefitsDao.findOne(21));
+		 * benef_Details.setRierCode("L2");
+		 * benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+		 * benef_Details.setQuo_Benef_CreateDate(new Date());
+		 * benef_Details.setQuotationDetails(quotationDetails1); switch
+		 * (quotationDetails1.getPayMode()) { case "M":
+		 * benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth()); break;
+		 * case "Q":
+		 * benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater()); break;
+		 * case "H": benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+		 * break; case "Y":
+		 * benef_Details.setRiderPremium(quotationDetails1.getPremiumYear()); break;
+		 * case "S":
+		 * benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle()); break;
+		 * 
+		 * default: break; } benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		 * benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
+		 * 
+		 * benef_DetailsList.add(benef_Details);
+		 */
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -822,394 +831,394 @@ public class ARTMServiceImpl implements ARTMService {
 		responseMap.put("status", "Success");
 		responseMap.put("code", quo.getId().toString());
 		return responseMap;
-	
+
 	}
 
 }
 
-	/*
-	 * @Override public QuotationQuickCalResponse
-	 * getCalcutatedARTM(QuotationCalculation calculation) throws Exception {
-	 * 
-	 * CalculationUtils calculationUtils = null; try {
-	 * 
-	 * QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
-	 * calculationUtils = new CalculationUtils(); /// Calculate Rebate Premium ///
-	 * //Double rebate =
-	 * calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
-	 * //System.out.println(rebate + " : rebate"); /// Calculate BSA Premium ///
-	 * //BigDecimal bsaYearly =
-	 * calculateL2(quotationCalculation.get_personalInfo().getMocu(), //
-	 * quotationCalculation.get_personalInfo().getMage(), //
-	 * quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(), //
-	 * quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
-	 * 
-	 * 
-	 * //BigDecimal bsaPremium =
-	 * calculateL2(quotationCalculation.get_personalInfo().getMocu(), //
-	 * quotationCalculation.get_personalInfo().getMage(), //
-	 * quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(), //
-	 * quotationCalculation.get_personalInfo().getBsa(), //
-	 * calculationUtils.getPayterm(quotationCalculation.get_personalInfo().
-	 * getFrequance()), calResp, true);
-	 * 
-	 * 
-	 * BigDecimal bsaPremium = new
-	 * BigDecimal(calculation.get_personalInfo().getBsa());
-	 * 
-	 * calResp.setBasicSumAssured(bsaPremium.doubleValue());
-	 * 
-	 * 
-	 * //calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
-	 * 
-	 * calResp = calculateriders.getRiders(calculation, calResp);
-	 * 
-	 * calResp.setMainLifeHealthReq(healthRequirmentsService.
-	 * getSumAtRiskDetailsMainLife(calculation));
-	 * 
-	 * if(calculation.get_personalInfo().getSage()!=null &&
-	 * calculation.get_personalInfo().getSgenger()!=null){
-	 * calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse
-	 * (calculation)); }
-	 * 
-	 * 
-	 * calResp.setAt6(calculateMaturity().doubleValue());
-	 * calResp.setAt8(calculateMaturity().doubleValue());
-	 * calResp.setAt10(calculateMaturity().doubleValue());
-	 * 
-	 * calResp.setPensionPremium1(pensionPremium().doubleValue());
-	 * calResp.setPensionPremium2(pensionPremium().doubleValue());
-	 * calResp.setPensionPremium3(pensionPremium().doubleValue());
-	 * 
-	 * 
-	 * Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif(); Double
-	 * adminFee =
-	 * calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
-	 * Double tax = calculationUtils.getTaxAmount(tot + adminFee); Double extraOE =
-	 * adminFee + tax; calResp.setExtraOE(extraOE); calResp.setTotPremium(tot +
-	 * extraOE);
-	 * 
-	 * return calResp;
-	 * 
-	 * } finally { if (calculationUtils != null) { calculationUtils = null; } } }
-	 */
+/*
+ * @Override public QuotationQuickCalResponse
+ * getCalcutatedARTM(QuotationCalculation calculation) throws Exception {
+ * 
+ * CalculationUtils calculationUtils = null; try {
+ * 
+ * QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
+ * calculationUtils = new CalculationUtils(); /// Calculate Rebate Premium ///
+ * //Double rebate =
+ * calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
+ * //System.out.println(rebate + " : rebate"); /// Calculate BSA Premium ///
+ * //BigDecimal bsaYearly =
+ * calculateL2(quotationCalculation.get_personalInfo().getMocu(), //
+ * quotationCalculation.get_personalInfo().getMage(), //
+ * quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(), //
+ * quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
+ * 
+ * 
+ * //BigDecimal bsaPremium =
+ * calculateL2(quotationCalculation.get_personalInfo().getMocu(), //
+ * quotationCalculation.get_personalInfo().getMage(), //
+ * quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(), //
+ * quotationCalculation.get_personalInfo().getBsa(), //
+ * calculationUtils.getPayterm(quotationCalculation.get_personalInfo().
+ * getFrequance()), calResp, true);
+ * 
+ * 
+ * BigDecimal bsaPremium = new
+ * BigDecimal(calculation.get_personalInfo().getBsa());
+ * 
+ * calResp.setBasicSumAssured(bsaPremium.doubleValue());
+ * 
+ * 
+ * //calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
+ * 
+ * calResp = calculateriders.getRiders(calculation, calResp);
+ * 
+ * calResp.setMainLifeHealthReq(healthRequirmentsService.
+ * getSumAtRiskDetailsMainLife(calculation));
+ * 
+ * if(calculation.get_personalInfo().getSage()!=null &&
+ * calculation.get_personalInfo().getSgenger()!=null){
+ * calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse
+ * (calculation)); }
+ * 
+ * 
+ * calResp.setAt6(calculateMaturity().doubleValue());
+ * calResp.setAt8(calculateMaturity().doubleValue());
+ * calResp.setAt10(calculateMaturity().doubleValue());
+ * 
+ * calResp.setPensionPremium1(pensionPremium().doubleValue());
+ * calResp.setPensionPremium2(pensionPremium().doubleValue());
+ * calResp.setPensionPremium3(pensionPremium().doubleValue());
+ * 
+ * 
+ * Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif(); Double
+ * adminFee =
+ * calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
+ * Double tax = calculationUtils.getTaxAmount(tot + adminFee); Double extraOE =
+ * adminFee + tax; calResp.setExtraOE(extraOE); calResp.setTotPremium(tot +
+ * extraOE);
+ * 
+ * return calResp;
+ * 
+ * } finally { if (calculationUtils != null) { calculationUtils = null; } } }
+ */
 
-	/*
-	 * 
-	 * @Override public AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat,
-	 * boolean shedule, boolean isAddOccuLoading) throws Exception { AIPCalResp
-	 * aipCalResp = new AIPCalResp(); aipCalResp.setMaturaty(100.00);/// set
-	 * maturity 1 aipCalResp.setMaturaty10(110.00);/// set maturity 2
-	 * aipCalResp.setMaturaty12(120.00);/// set maturity 3
-	 * aipCalResp.setExtraOe(50.00); aipCalResp.setAipCalShedules(null);/// set cal
-	 * schedule if 'schedule' is true.. return aipCalResp; }
-	 * 
-	 * @Override public HashMap<String, Object> saveQuotation(InvpSavePersonalInfo
-	 * _invpSaveQuotation, Integer id) throws Exception { CalculationUtils
-	 * calculationUtils = null; Products products = null; Customer customer = null;
-	 * Users user = null; Occupation occupation = null; CustomerDetails
-	 * customerDetails = null; Quotation quotation = null; QuotationDetails
-	 * quotationDetails = null;
-	 * 
-	 * Quotation quo = null; HashMap<String, Object> responseMap = new HashMap<>();
-	 * 
-	 * try {
-	 * 
-	 * calculationUtils = new CalculationUtils(); products =
-	 * productDao.findByProductCode("ARTM");
-	 * 
-	 * Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-	 * 
-	 * AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(),
-	 * 0.0, false, true);
-	 * 
-	 * occupation = occupationDao
-	 * .findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().
-	 * get_mOccupation()));
-	 * 
-	 * Double adminFee =
-	 * calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
-	 * 
-	 * Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
-	 * 
-	 * customer = new Customer(); user = userdao.findOne(id);
-	 * 
-	 * customer.setCustModifyBy(user.getUserCode()); customer.setCustModifyDate(new
-	 * Date()); customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
-	 * 
-	 * customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
-	 * customerDetails.setCustomer(customer); quotation = new Quotation();
-	 * quotation.setProducts(products); quotation.setStatus("active");
-	 * quotation.setUser(user);
-	 * 
-	 * quotationDetails = new QuotationDetails();
-	 * quotationDetails.setQuotation(quotation);
-	 * quotationDetails.setAdminFee(adminFee);
-	 * quotationDetails.setQuotationModifyBy(user.getUserCode());
-	 * quotationDetails.setQuotationModifyDate(new Date());
-	 * quotationDetails.setBaseSum(0.0); quotationDetails.setInterestRate(10.0);
-	 * quotationDetails.setTaxAmount(tax); String frequance =
-	 * _invpSaveQuotation.get_plan().get_frequance();
-	 * quotationDetails.setPayMode(frequance);
-	 * quotationDetails.setRetirmentAge(_invpSaveQuotation.get_plan().getRetAge());
-	 * quotationDetails.setPensionTerm(_invpSaveQuotation.get_plan().
-	 * getPensionPaingTerm());
-	 * quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
-	 * quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-	 * quotationDetails.setPaingTerm(_invpSaveQuotation.get_plan().get_payingterm())
-	 * ; quotationDetails.setQuotationCreateBy(user.getUserCode());
-	 * quotationDetails.setQuotationquotationCreateDate(new Date());
-	 * quotationDetails.setCustomerDetails(customerDetails);
-	 * 
-	 * switch (frequance) { case "M":
-	 * quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "Q":
-	 * quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "H":
-	 * quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "Y":
-	 * quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "S":
-	 * quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break;
-	 * 
-	 * default: break; }
-	 * 
-	 * quotationDetails.setQuotationCreateBy(user.getUserCode());
-	 * quotationDetails.setQuotationquotationCreateDate(new Date());
-	 * 
-	 * ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
-	 * 
-	 * if (customerDao.save(customer) != null) { if
-	 * (customerDetailsDao.save(customerDetails) != null) { quo =
-	 * quotationDao.save(quotation); if (quo != null) { QuotationDetails quoDetails
-	 * = quotationDetailsDao.save(quotationDetails);
-	 * 
-	 * /////////// Add Maturity///////////////////////
-	 * 
-	 * Quo_Benef_Details mat1 = new Quo_Benef_Details(); mat1.setRiderPremium(0.0);
-	 * mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat1.setRiderSum(calValues.getMaturaty());
-	 * mat1.setQuotationDetails(quoDetails); mat1.setRierCode("L14");
-	 * mat1.setBenefit(benefitsDao.findByRiderCode("L14")); benefictList.add(mat1);
-	 * 
-	 * Quo_Benef_Details mat2 = new Quo_Benef_Details(); mat2.setRiderPremium(0.0);
-	 * mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat2.setRiderSum(calValues.getMaturaty10());
-	 * mat2.setQuotationDetails(quoDetails); mat2.setRierCode("L15");
-	 * mat2.setBenefit(benefitsDao.findByRiderCode("L15")); benefictList.add(mat2);
-	 * 
-	 * Quo_Benef_Details mat3 = new Quo_Benef_Details(); mat3.setRiderPremium(0.0);
-	 * mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat3.setRiderSum(calValues.getMaturaty12());
-	 * mat3.setQuotationDetails(quoDetails); mat3.setRierCode("L16");
-	 * mat3.setBenefit(benefitsDao.findByRiderCode("L16")); benefictList.add(mat3);
-	 * 
-	 * ///////////////////////////// END ADD MATURITY////////////////////////
-	 * 
-	 * if (quoDetails != null) { if (quoBenifDetailDao.save(benefictList) != null) {
-	 * responseMap.put("status", "Success"); responseMap.put("code",
-	 * quo.getId().toString());
-	 * 
-	 * return responseMap; } else { responseMap.put("status",
-	 * "Error at saving Maturity"); return responseMap; }
-	 * 
-	 * } else { responseMap.put("status", "Error at Quotation Detail Saving");
-	 * return responseMap; }
-	 * 
-	 * } else { responseMap.put("status", "Error at Quotation Saving"); return
-	 * responseMap; } } else { responseMap.put("status",
-	 * "Error at Customer Details Saving"); return responseMap; } } else {
-	 * responseMap.put("status", "Error at Customer Saving"); return responseMap; }
-	 * 
-	 * 
-	 * } finally { if (calculationUtils != null) { calculationUtils = null; } if
-	 * (products != null) { products = null; } if (customer != null) { customer =
-	 * null; } if (user != null) { user = null; } if (occupation != null) {
-	 * occupation = null; } if (customerDetails != null) { customerDetails = null; }
-	 * if (quotation != null) { quotation = null; } if (quotationDetails != null) {
-	 * quotationDetails = null; } }
-	 * 
-	 * }
-	 * 
-	 * @Override public HashMap<String, Object> editQuotation(InvpSavePersonalInfo
-	 * _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
-	 * CalculationUtils calculationUtils = null; Products products = null; Customer
-	 * customer = null; Users user = null; Occupation occupation = null;
-	 * CustomerDetails customerDetails = null; Quotation quotation = null;
-	 * QuotationDetails quotationDetails = null;
-	 * 
-	 * Quotation quo = null; HashMap<String, Object> responseMap = new HashMap<>();
-	 * 
-	 * try {
-	 * 
-	 * calculationUtils = new CalculationUtils(); products =
-	 * productDao.findByProductCode("ARTM");
-	 * 
-	 * Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-	 * 
-	 * AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(),
-	 * 0.0, false, true);
-	 * 
-	 * occupation = occupationDao
-	 * .findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().
-	 * get_mOccupation()));
-	 * 
-	 * Double adminFee =
-	 * calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
-	 * 
-	 * Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
-	 * 
-	 * QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
-	 * 
-	 * customer = details.getCustomerDetails().getCustomer();
-	 * 
-	 * user = userdao.findOne(userId);
-	 * 
-	 * customer.setCustModifyBy(user.getUserCode()); customer.setCustModifyDate(new
-	 * Date()); customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
-	 * 
-	 * customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
-	 * customerDetails.setCustomer(customer); quotation = details.getQuotation();
-	 * quotation.setProducts(products); quotation.setStatus("active");
-	 * quotation.setUser(user);
-	 * 
-	 * quotationDetails = new QuotationDetails();
-	 * quotationDetails.setQuotation(quotation);
-	 * quotationDetails.setAdminFee(adminFee);
-	 * quotationDetails.setQuotationModifyBy(user.getUserCode());
-	 * quotationDetails.setQuotationModifyDate(new Date());
-	 * quotationDetails.setBaseSum(0.0); quotationDetails.setInterestRate(10.0);
-	 * quotationDetails.setTaxAmount(tax); String frequance =
-	 * _invpSaveQuotation.get_plan().get_frequance();
-	 * quotationDetails.setPayMode(frequance);
-	 * quotationDetails.setRetirmentAge(_invpSaveQuotation.get_plan().getRetAge());
-	 * quotationDetails.setPensionTerm(_invpSaveQuotation.get_plan().
-	 * getPensionPaingTerm());
-	 * quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
-	 * quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-	 * quotationDetails.setPaingTerm(_invpSaveQuotation.get_plan().get_payingterm())
-	 * ; quotationDetails.setQuotationCreateBy(user.getUserCode());
-	 * quotationDetails.setQuotationquotationCreateDate(new Date());
-	 * quotationDetails.setCustomerDetails(customerDetails);
-	 * 
-	 * switch (frequance) { case "M":
-	 * quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "Q":
-	 * quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "H":
-	 * quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "Y":
-	 * quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break; case "S":
-	 * quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
-	 * quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() +
-	 * adminFee + tax);
-	 * 
-	 * break;
-	 * 
-	 * default: break; }
-	 * 
-	 * quotationDetails.setQuotationCreateBy(user.getUserCode());
-	 * quotationDetails.setQuotationquotationCreateDate(new Date());
-	 * 
-	 * ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
-	 * 
-	 * if (customerDao.save(customer) != null) { if
-	 * (customerDetailsDao.save(customerDetails) != null) { quo =
-	 * quotationDao.save(quotation); if (quo != null) { QuotationDetails quoDetails
-	 * = quotationDetailsDao.save(quotationDetails);
-	 * 
-	 * /////////// Add Maturity///////////////////////
-	 * 
-	 * Quo_Benef_Details mat1 = new Quo_Benef_Details(); mat1.setRiderPremium(0.0);
-	 * mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat1.setRiderSum(calValues.getMaturaty());
-	 * mat1.setQuotationDetails(quoDetails); mat1.setRierCode("L14");
-	 * mat1.setBenefit(benefitsDao.findByRiderCode("L14")); benefictList.add(mat1);
-	 * 
-	 * Quo_Benef_Details mat2 = new Quo_Benef_Details(); mat2.setRiderPremium(0.0);
-	 * mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat2.setRiderSum(calValues.getMaturaty10());
-	 * mat2.setQuotationDetails(quoDetails); mat2.setRierCode("L15");
-	 * mat2.setBenefit(benefitsDao.findByRiderCode("L15")); benefictList.add(mat2);
-	 * 
-	 * Quo_Benef_Details mat3 = new Quo_Benef_Details(); mat3.setRiderPremium(0.0);
-	 * mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
-	 * mat3.setRiderSum(calValues.getMaturaty12());
-	 * mat3.setQuotationDetails(quoDetails); mat3.setRierCode("L16");
-	 * mat3.setBenefit(benefitsDao.findByRiderCode("L16")); benefictList.add(mat3);
-	 * 
-	 * ///////////////////////////// END ADD MATURITY////////////////////////
-	 * 
-	 * if (quoDetails != null) { if (quoBenifDetailDao.save(benefictList) != null) {
-	 * responseMap.put("status", "Success"); responseMap.put("code",
-	 * quo.getId().toString());
-	 * 
-	 * return responseMap; } else { responseMap.put("status",
-	 * "Error at saving Maturity"); return responseMap; }
-	 * 
-	 * } else { responseMap.put("status", "Error at Quotation Detail Saving");
-	 * return responseMap; }
-	 * 
-	 * } else { responseMap.put("status", "Error at Quotation Saving"); return
-	 * responseMap; } } else { responseMap.put("status",
-	 * "Error at Customer Details Saving"); return responseMap; } } else {
-	 * responseMap.put("status", "Error at Customer Saving"); return responseMap; }
-	 * 
-	 * 
-	 * } finally { if (calculationUtils != null) { calculationUtils = null; } if
-	 * (products != null) { products = null; } if (customer != null) { customer =
-	 * null; } if (user != null) { user = null; } if (occupation != null) {
-	 * occupation = null; } if (customerDetails != null) { customerDetails = null; }
-	 * if (quotation != null) { quotation = null; } if (quotationDetails != null) {
-	 * quotationDetails = null; } }
-	 * 
-	 * }
-	 * 
-	 * private CustomerDetails getCustomerDetail(Occupation occupation,
-	 * InvpSavePersonalInfo get_personalInfo, Users user) { CustomerDetails
-	 * mainLifeDetail = null; try { mainLifeDetail = new CustomerDetails();
-	 * mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
-	 * mainLifeDetail.setCustCivilStatus(get_personalInfo.get_mainlife().
-	 * get_mCivilStatus()); mainLifeDetail.setCustCreateBy(user.getUser_Name());
-	 * mainLifeDetail.setCustCreateDate(new Date()); mainLifeDetail.setCustDob(new
-	 * DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
-	 * mainLifeDetail.setCustEmail(get_personalInfo.get_mainlife().get_mEmail());
-	 * mainLifeDetail.setCustGender(get_personalInfo.get_mainlife().get_mGender());
-	 * mainLifeDetail.setCustNic(get_personalInfo.get_mainlife().get_mNic());
-	 * mainLifeDetail.setCustTel(get_personalInfo.get_mainlife().get_mMobile());
-	 * mainLifeDetail.setCustTitle(get_personalInfo.get_mainlife().get_mTitle());
-	 * mainLifeDetail.setOccupation(occupation);
-	 * 
-	 * return mainLifeDetail; } finally { if (mainLifeDetail != null) {
-	 * mainLifeDetail = null; } } }
-	 */
-//>>>>>>> refs/remotes/origin/branch-120
+/*
+ * 
+ * @Override public AIPCalResp calculateARTMMaturaty(Plan plan, Double intrat,
+ * boolean shedule, boolean isAddOccuLoading) throws Exception { AIPCalResp
+ * aipCalResp = new AIPCalResp(); aipCalResp.setMaturaty(100.00);/// set
+ * maturity 1 aipCalResp.setMaturaty10(110.00);/// set maturity 2
+ * aipCalResp.setMaturaty12(120.00);/// set maturity 3
+ * aipCalResp.setExtraOe(50.00); aipCalResp.setAipCalShedules(null);/// set cal
+ * schedule if 'schedule' is true.. return aipCalResp; }
+ * 
+ * @Override public HashMap<String, Object> saveQuotation(InvpSavePersonalInfo
+ * _invpSaveQuotation, Integer id) throws Exception { CalculationUtils
+ * calculationUtils = null; Products products = null; Customer customer = null;
+ * Users user = null; Occupation occupation = null; CustomerDetails
+ * customerDetails = null; Quotation quotation = null; QuotationDetails
+ * quotationDetails = null;
+ * 
+ * Quotation quo = null; HashMap<String, Object> responseMap = new HashMap<>();
+ * 
+ * try {
+ * 
+ * calculationUtils = new CalculationUtils(); products =
+ * productDao.findByProductCode("ARTM");
+ * 
+ * Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+ * 
+ * AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(),
+ * 0.0, false, true);
+ * 
+ * occupation = occupationDao
+ * .findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().
+ * get_mOccupation()));
+ * 
+ * Double adminFee =
+ * calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
+ * 
+ * Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
+ * 
+ * customer = new Customer(); user = userdao.findOne(id);
+ * 
+ * customer.setCustModifyBy(user.getUserCode()); customer.setCustModifyDate(new
+ * Date()); customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
+ * 
+ * customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+ * customerDetails.setCustomer(customer); quotation = new Quotation();
+ * quotation.setProducts(products); quotation.setStatus("active");
+ * quotation.setUser(user);
+ * 
+ * quotationDetails = new QuotationDetails();
+ * quotationDetails.setQuotation(quotation);
+ * quotationDetails.setAdminFee(adminFee);
+ * quotationDetails.setQuotationModifyBy(user.getUserCode());
+ * quotationDetails.setQuotationModifyDate(new Date());
+ * quotationDetails.setBaseSum(0.0); quotationDetails.setInterestRate(10.0);
+ * quotationDetails.setTaxAmount(tax); String frequance =
+ * _invpSaveQuotation.get_plan().get_frequance();
+ * quotationDetails.setPayMode(frequance);
+ * quotationDetails.setRetirmentAge(_invpSaveQuotation.get_plan().getRetAge());
+ * quotationDetails.setPensionTerm(_invpSaveQuotation.get_plan().
+ * getPensionPaingTerm());
+ * quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
+ * quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+ * quotationDetails.setPaingTerm(_invpSaveQuotation.get_plan().get_payingterm())
+ * ; quotationDetails.setQuotationCreateBy(user.getUserCode());
+ * quotationDetails.setQuotationquotationCreateDate(new Date());
+ * quotationDetails.setCustomerDetails(customerDetails);
+ * 
+ * switch (frequance) { case "M":
+ * quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "Q":
+ * quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "H":
+ * quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "Y":
+ * quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "S":
+ * quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break;
+ * 
+ * default: break; }
+ * 
+ * quotationDetails.setQuotationCreateBy(user.getUserCode());
+ * quotationDetails.setQuotationquotationCreateDate(new Date());
+ * 
+ * ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+ * 
+ * if (customerDao.save(customer) != null) { if
+ * (customerDetailsDao.save(customerDetails) != null) { quo =
+ * quotationDao.save(quotation); if (quo != null) { QuotationDetails quoDetails
+ * = quotationDetailsDao.save(quotationDetails);
+ * 
+ * /////////// Add Maturity///////////////////////
+ * 
+ * Quo_Benef_Details mat1 = new Quo_Benef_Details(); mat1.setRiderPremium(0.0);
+ * mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat1.setRiderSum(calValues.getMaturaty());
+ * mat1.setQuotationDetails(quoDetails); mat1.setRierCode("L14");
+ * mat1.setBenefit(benefitsDao.findByRiderCode("L14")); benefictList.add(mat1);
+ * 
+ * Quo_Benef_Details mat2 = new Quo_Benef_Details(); mat2.setRiderPremium(0.0);
+ * mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat2.setRiderSum(calValues.getMaturaty10());
+ * mat2.setQuotationDetails(quoDetails); mat2.setRierCode("L15");
+ * mat2.setBenefit(benefitsDao.findByRiderCode("L15")); benefictList.add(mat2);
+ * 
+ * Quo_Benef_Details mat3 = new Quo_Benef_Details(); mat3.setRiderPremium(0.0);
+ * mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat3.setRiderSum(calValues.getMaturaty12());
+ * mat3.setQuotationDetails(quoDetails); mat3.setRierCode("L16");
+ * mat3.setBenefit(benefitsDao.findByRiderCode("L16")); benefictList.add(mat3);
+ * 
+ * ///////////////////////////// END ADD MATURITY////////////////////////
+ * 
+ * if (quoDetails != null) { if (quoBenifDetailDao.save(benefictList) != null) {
+ * responseMap.put("status", "Success"); responseMap.put("code",
+ * quo.getId().toString());
+ * 
+ * return responseMap; } else { responseMap.put("status",
+ * "Error at saving Maturity"); return responseMap; }
+ * 
+ * } else { responseMap.put("status", "Error at Quotation Detail Saving");
+ * return responseMap; }
+ * 
+ * } else { responseMap.put("status", "Error at Quotation Saving"); return
+ * responseMap; } } else { responseMap.put("status",
+ * "Error at Customer Details Saving"); return responseMap; } } else {
+ * responseMap.put("status", "Error at Customer Saving"); return responseMap; }
+ * 
+ * 
+ * } finally { if (calculationUtils != null) { calculationUtils = null; } if
+ * (products != null) { products = null; } if (customer != null) { customer =
+ * null; } if (user != null) { user = null; } if (occupation != null) {
+ * occupation = null; } if (customerDetails != null) { customerDetails = null; }
+ * if (quotation != null) { quotation = null; } if (quotationDetails != null) {
+ * quotationDetails = null; } }
+ * 
+ * }
+ * 
+ * @Override public HashMap<String, Object> editQuotation(InvpSavePersonalInfo
+ * _invpSaveQuotation, Integer userId, Integer qdId) throws Exception {
+ * CalculationUtils calculationUtils = null; Products products = null; Customer
+ * customer = null; Users user = null; Occupation occupation = null;
+ * CustomerDetails customerDetails = null; Quotation quotation = null;
+ * QuotationDetails quotationDetails = null;
+ * 
+ * Quotation quo = null; HashMap<String, Object> responseMap = new HashMap<>();
+ * 
+ * try {
+ * 
+ * calculationUtils = new CalculationUtils(); products =
+ * productDao.findByProductCode("ARTM");
+ * 
+ * Double contribution = _invpSaveQuotation.get_plan().get_bsa();
+ * 
+ * AIPCalResp calValues = calculateARTMMaturaty(_invpSaveQuotation.get_plan(),
+ * 0.0, false, true);
+ * 
+ * occupation = occupationDao
+ * .findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().
+ * get_mOccupation()));
+ * 
+ * Double adminFee =
+ * calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
+ * 
+ * Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
+ * 
+ * QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
+ * 
+ * customer = details.getCustomerDetails().getCustomer();
+ * 
+ * user = userdao.findOne(userId);
+ * 
+ * customer.setCustModifyBy(user.getUserCode()); customer.setCustModifyDate(new
+ * Date()); customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
+ * 
+ * customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+ * customerDetails.setCustomer(customer); quotation = details.getQuotation();
+ * quotation.setProducts(products); quotation.setStatus("active");
+ * quotation.setUser(user);
+ * 
+ * quotationDetails = new QuotationDetails();
+ * quotationDetails.setQuotation(quotation);
+ * quotationDetails.setAdminFee(adminFee);
+ * quotationDetails.setQuotationModifyBy(user.getUserCode());
+ * quotationDetails.setQuotationModifyDate(new Date());
+ * quotationDetails.setBaseSum(0.0); quotationDetails.setInterestRate(10.0);
+ * quotationDetails.setTaxAmount(tax); String frequance =
+ * _invpSaveQuotation.get_plan().get_frequance();
+ * quotationDetails.setPayMode(frequance);
+ * quotationDetails.setRetirmentAge(_invpSaveQuotation.get_plan().getRetAge());
+ * quotationDetails.setPensionTerm(_invpSaveQuotation.get_plan().
+ * getPensionPaingTerm());
+ * quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
+ * quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
+ * quotationDetails.setPaingTerm(_invpSaveQuotation.get_plan().get_payingterm())
+ * ; quotationDetails.setQuotationCreateBy(user.getUserCode());
+ * quotationDetails.setQuotationquotationCreateDate(new Date());
+ * quotationDetails.setCustomerDetails(customerDetails);
+ * 
+ * switch (frequance) { case "M":
+ * quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "Q":
+ * quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "H":
+ * quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "Y":
+ * quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break; case "S":
+ * quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
+ * quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() +
+ * adminFee + tax);
+ * 
+ * break;
+ * 
+ * default: break; }
+ * 
+ * quotationDetails.setQuotationCreateBy(user.getUserCode());
+ * quotationDetails.setQuotationquotationCreateDate(new Date());
+ * 
+ * ArrayList<Quo_Benef_Details> benefictList = new ArrayList<>();
+ * 
+ * if (customerDao.save(customer) != null) { if
+ * (customerDetailsDao.save(customerDetails) != null) { quo =
+ * quotationDao.save(quotation); if (quo != null) { QuotationDetails quoDetails
+ * = quotationDetailsDao.save(quotationDetails);
+ * 
+ * /////////// Add Maturity///////////////////////
+ * 
+ * Quo_Benef_Details mat1 = new Quo_Benef_Details(); mat1.setRiderPremium(0.0);
+ * mat1.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat1.setRiderSum(calValues.getMaturaty());
+ * mat1.setQuotationDetails(quoDetails); mat1.setRierCode("L14");
+ * mat1.setBenefit(benefitsDao.findByRiderCode("L14")); benefictList.add(mat1);
+ * 
+ * Quo_Benef_Details mat2 = new Quo_Benef_Details(); mat2.setRiderPremium(0.0);
+ * mat2.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat2.setRiderSum(calValues.getMaturaty10());
+ * mat2.setQuotationDetails(quoDetails); mat2.setRierCode("L15");
+ * mat2.setBenefit(benefitsDao.findByRiderCode("L15")); benefictList.add(mat2);
+ * 
+ * Quo_Benef_Details mat3 = new Quo_Benef_Details(); mat3.setRiderPremium(0.0);
+ * mat3.setRiderTerm(_invpSaveQuotation.get_plan().get_term());
+ * mat3.setRiderSum(calValues.getMaturaty12());
+ * mat3.setQuotationDetails(quoDetails); mat3.setRierCode("L16");
+ * mat3.setBenefit(benefitsDao.findByRiderCode("L16")); benefictList.add(mat3);
+ * 
+ * ///////////////////////////// END ADD MATURITY////////////////////////
+ * 
+ * if (quoDetails != null) { if (quoBenifDetailDao.save(benefictList) != null) {
+ * responseMap.put("status", "Success"); responseMap.put("code",
+ * quo.getId().toString());
+ * 
+ * return responseMap; } else { responseMap.put("status",
+ * "Error at saving Maturity"); return responseMap; }
+ * 
+ * } else { responseMap.put("status", "Error at Quotation Detail Saving");
+ * return responseMap; }
+ * 
+ * } else { responseMap.put("status", "Error at Quotation Saving"); return
+ * responseMap; } } else { responseMap.put("status",
+ * "Error at Customer Details Saving"); return responseMap; } } else {
+ * responseMap.put("status", "Error at Customer Saving"); return responseMap; }
+ * 
+ * 
+ * } finally { if (calculationUtils != null) { calculationUtils = null; } if
+ * (products != null) { products = null; } if (customer != null) { customer =
+ * null; } if (user != null) { user = null; } if (occupation != null) {
+ * occupation = null; } if (customerDetails != null) { customerDetails = null; }
+ * if (quotation != null) { quotation = null; } if (quotationDetails != null) {
+ * quotationDetails = null; } }
+ * 
+ * }
+ * 
+ * private CustomerDetails getCustomerDetail(Occupation occupation,
+ * InvpSavePersonalInfo get_personalInfo, Users user) { CustomerDetails
+ * mainLifeDetail = null; try { mainLifeDetail = new CustomerDetails();
+ * mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
+ * mainLifeDetail.setCustCivilStatus(get_personalInfo.get_mainlife().
+ * get_mCivilStatus()); mainLifeDetail.setCustCreateBy(user.getUser_Name());
+ * mainLifeDetail.setCustCreateDate(new Date()); mainLifeDetail.setCustDob(new
+ * DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
+ * mainLifeDetail.setCustEmail(get_personalInfo.get_mainlife().get_mEmail());
+ * mainLifeDetail.setCustGender(get_personalInfo.get_mainlife().get_mGender());
+ * mainLifeDetail.setCustNic(get_personalInfo.get_mainlife().get_mNic());
+ * mainLifeDetail.setCustTel(get_personalInfo.get_mainlife().get_mMobile());
+ * mainLifeDetail.setCustTitle(get_personalInfo.get_mainlife().get_mTitle());
+ * mainLifeDetail.setOccupation(occupation);
+ * 
+ * return mainLifeDetail; } finally { if (mainLifeDetail != null) {
+ * mainLifeDetail = null; } } }
+ */
+// >>>>>>> refs/remotes/origin/branch-120
