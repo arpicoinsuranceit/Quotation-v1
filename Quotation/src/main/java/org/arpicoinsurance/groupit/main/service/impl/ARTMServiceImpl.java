@@ -129,8 +129,9 @@ public class ARTMServiceImpl implements ARTMService {
 	@Override
 	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp,
 			QuotationCalculation calculation, String divrat) throws Exception {
+		
 		Integer poltrm = calculation.get_personalInfo().getTerm();
-		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("00") ? 1
+		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("0") ? poltrm
 				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
 		String paymod = calculation.get_personalInfo().getFrequance();
 		Date chedat = new Date();
@@ -153,7 +154,7 @@ public class ARTMServiceImpl implements ARTMService {
 		 * paymod, Date chedat, Double contribution, String divrat) throws Exception {
 		 */
 
-		//System.out.println("Start Data : " + poltrm + " " + paymod + " " + contribution + " " + chedat + " " + paytrm);
+		System.out.println("Start Data : " + poltrm + " " + paymod + " " + contribution + " " + chedat + " " + paytrm);
 		//System.out.println(divrat);
 		CommisionRatePara commisionRatePara = new CommisionRatePara("ARTM", paytrm, paytrm);
 		HashMap<String, Double> commisionRate = null;
@@ -275,7 +276,7 @@ public class ARTMServiceImpl implements ARTMService {
 						BigDecimal.ROUND_HALF_UP);
 				
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				pensionShedule.setExpenses(expenses.setScale(0, RoundingMode.HALF_UP).doubleValue());
+				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setCommisionPayable(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				//System.out.println("expenses : " + expenses);
 
@@ -286,7 +287,7 @@ public class ARTMServiceImpl implements ARTMService {
 				
 				pensionShedule.setCommisionPayable(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				pensionShedule.setExpenses(expenses.setScale(0, RoundingMode.HALF_UP).doubleValue());
+				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
 			
@@ -393,9 +394,9 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 			// <<<<<<< HEAD
 
-			calResp.setAt6(calculateMaturity(printShedule, calResp, calculation, "divrat1").doubleValue());
+			calResp.setAt6(calculateMaturity(false, calResp, calculation, "divrat1").doubleValue());
 			calResp.setAt8(calculateMaturity(printShedule, calResp, calculation, "divrat2").doubleValue());
-			calResp.setAt10(calculateMaturity(printShedule, calResp, calculation, "divrat3").doubleValue());
+			calResp.setAt10(calculateMaturity(false, calResp, calculation, "divrat3").doubleValue());
 
 			calResp.setPensionPremium1(pensionPremium(calculation, "reprat1", calResp.getAt6()).doubleValue());
 			calResp.setPensionPremium2(pensionPremium(calculation, "reprat2", calResp.getAt8()).doubleValue());
