@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
-import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.ChildDao;
 import org.arpicoinsurance.groupit.main.dao.CustChildDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
@@ -195,7 +194,7 @@ public class ARTMServiceImpl implements ARTMService {
 				rateCardARTMProfit = rateCardARTMProfitDao
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
-				System.out.println("rateCardARTMProfit : " + rateCardARTMProfit.getRate());
+				//System.out.println("rateCardARTMProfit : " + rateCardARTMProfit.getRate());
 			}
 
 			if (paytrm >= polyear) {
@@ -261,20 +260,20 @@ public class ARTMServiceImpl implements ARTMService {
 				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
-			System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
-					+ " Expenses : " + expenses);
-			System.out.println("closingFundAmount : " + closingFundAmount);
+			//System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
+			//		+ " Expenses : " + expenses);
+			//System.out.println("closingFundAmount : " + closingFundAmount);
 			profit = closingFundAmount
 					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP))).setScale(2, BigDecimal.ROUND_HALF_UP);
-			System.out.println("profit : " + profit);
+			//System.out.println("profit : " + profit);
 
 			creditedFundAmount = contributionAmount.subtract(commision).subtract(expenses).subtract(profit).setScale(4,
 					BigDecimal.ROUND_HALF_UP);
-			System.out.println("creditedFundAmount : " + creditedFundAmount);
+			//System.out.println("creditedFundAmount : " + creditedFundAmount);
 
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
-			System.out.println("amountBeforeInterest : " + amountBeforeInterest);
+			//System.out.println("amountBeforeInterest : " + amountBeforeInterest);
 
 			double intrat = Math.pow(
 					1.0D + new BigDecimal(dividentRate.getDobval()).divide(new BigDecimal("100")).doubleValue(),
@@ -284,9 +283,9 @@ public class ARTMServiceImpl implements ARTMService {
 
 			interest = amountBeforeInterest.multiply(new BigDecimal(intrat)).setScale(4, BigDecimal.ROUND_HALF_UP);
 
-			System.out.println("interest : " + interest);
+			//System.out.println("interest : " + interest);
 			closingFundAmount = amountBeforeInterest.add(interest).setScale(4, BigDecimal.ROUND_HALF_UP);
-			System.out.println("closingFundAmount : " + closingFundAmount);
+			//System.out.println("closingFundAmount : " + closingFundAmount);
 
 			pensionShedule.setAge(calculation.get_personalInfo().getMage() + (polyear - 1));
 			pensionShedule.setPolicyYear(polyear);
@@ -318,12 +317,12 @@ public class ARTMServiceImpl implements ARTMService {
 		RateCardProductVar repaymentRate = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
 						"A", chedat, chedat, chedat, chedat);
-		System.out.println("repaymentRate : " + repaymentRate.getDobval());
+		//System.out.println("repaymentRate : " + repaymentRate.getDobval());
 
 		RateCardProductVar repaymentExpences = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
 						"A", chedat, chedat, chedat, chedat);
-		System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+		//System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
 
 		double reprate = (1.0D - Math.pow(
 				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10, BigDecimal.ROUND_HALF_UP))
@@ -333,15 +332,15 @@ public class ARTMServiceImpl implements ARTMService {
 				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
 						BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 								.doubleValue();
-		System.out.println("closingFundAmount : " + closingFundAmount + " reprate : " + reprate);
+		//System.out.println("closingFundAmount : " + closingFundAmount + " reprate : " + reprate);
 		// TODO calculate premium
 		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate), 6, BigDecimal.ROUND_HALF_UP);
 
 		double repexp = new BigDecimal(1)
 				.subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
-		System.out.println("pensionPremium : " + pensionPremium + " repexp : " + repexp);
+		//System.out.println("pensionPremium : " + pensionPremium + " repexp : " + repexp);
 		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
-		System.out.println("pensionPremium : " + pensionPremium);
+		//System.out.println("pensionPremium : " + pensionPremium);
 		return pensionPremium.setScale(0, BigDecimal.ROUND_HALF_UP);
 	}
 
