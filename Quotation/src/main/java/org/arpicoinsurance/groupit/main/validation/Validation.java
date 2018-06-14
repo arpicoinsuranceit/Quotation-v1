@@ -1280,6 +1280,9 @@ public class Validation {
 
 	public String validateArtm(QuotationCalculation calculation) {
 
+		if(!benefitMap.containsKey("L2")) {
+			return "L2 is required";
+		}
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
 			System.out.println(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa());

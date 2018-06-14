@@ -319,7 +319,7 @@ public class ARTMServiceImpl implements ARTMService {
 			
 			pensionShedule.setAge(calculation.get_personalInfo().getMage() + (polyear -1));
 			pensionShedule.setPolicyYear(polyear);
-			pensionShedule.setMonth((i % 12)+1);
+			pensionShedule.setMonth(i+1);
 			pensionShedule.setContingencyProfitLoading(profit.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setAmountCreditedToFund(creditedFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setFundBalanceBeforeInterest(amountBeforeInterest.setScale(2, RoundingMode.HALF_UP).doubleValue());
