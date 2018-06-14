@@ -129,6 +129,7 @@ public class ARTMServiceImpl implements ARTMService {
 	@Override
 	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp,
 			QuotationCalculation calculation, String divrat) throws Exception {
+		
 		Integer poltrm = calculation.get_personalInfo().getTerm();
 		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("0") ? poltrm
 				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
@@ -140,10 +141,6 @@ public class ARTMServiceImpl implements ARTMService {
 
 		// TODO Insert values for schedule
 
-		// System.out.println("Start Data : " + poltrm + " " + paymod + " " +
-		// contribution + " " + chedat + " " + paytrm);
-		// System.out.println(divrat);
-		System.out.println("***********************************");
 		CommisionRatePara commisionRatePara = new CommisionRatePara("ARTM", paytrm, paytrm);
 		HashMap<String, Double> commisionRate = null;
 		RateCardARTMProfit rateCardARTMProfit = null;
