@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.Date;
-import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.arpicoinsurance.groupit.main.dao.LoginDao;
 import org.arpicoinsurance.groupit.main.model.Login;

@@ -45,7 +45,6 @@ import org.arpicoinsurance.groupit.main.service.rider.HBSService;
 import org.arpicoinsurance.groupit.main.service.rider.HBService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBFService;
 import org.arpicoinsurance.groupit.main.service.rider.HRBIService;
-import org.arpicoinsurance.groupit.main.service.rider.HRBService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBPLService;
 import org.arpicoinsurance.groupit.main.service.rider.JLBService;
 import org.arpicoinsurance.groupit.main.service.rider.L2Service;

@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ViewQuotation {
 	private String productCode;

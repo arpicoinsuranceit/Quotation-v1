@@ -1,8 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.Date;
-import java.util.List;
-
 import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.ProductService;

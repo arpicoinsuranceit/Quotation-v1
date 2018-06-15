@@ -50,7 +50,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional

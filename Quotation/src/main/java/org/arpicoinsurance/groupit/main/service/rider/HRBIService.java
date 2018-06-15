@@ -3,7 +3,6 @@ package org.arpicoinsurance.groupit.main.service.rider;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.springframework.stereotype.Service;
 
 public interface HRBIService {
 
