@@ -28,6 +28,8 @@ public class ReportController {
 	
 	@RequestMapping(value="/printQuotation/{id}",method=RequestMethod.GET,produces = "application/pdf")
 	public ResponseEntity<Object> getQuotationByUserId(@PathVariable Integer id) {
+		System.out.println("ddddddddddddddddddddddd" + id);
+		
 		try {
 			Integer quoId=Integer.valueOf(id);
 			byte [] pdf = itextReport.createQuotationReport(quoId);

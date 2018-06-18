@@ -7,11 +7,15 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationReportService {
 	
+	
+	
 	byte[] createAIPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 	
 	byte[] createAIBReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 	
 	byte[] createINVPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
+
+	byte[] createASIPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 
 	byte[] createDTAReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 
@@ -22,6 +26,9 @@ public interface QuotationReportService {
 	byte[] createASFPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 
 	byte[] createARPReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
+
+	byte[] createARTMReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
+
 
 	
 }

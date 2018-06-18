@@ -12,6 +12,7 @@ public class RateCardARTMProfit {
     private String id;
     private Integer polyerto;
     private Integer polyerfrom;
+    private String paymod;
     private Double rate;
     private Date strdat;
     private Date enddat;
@@ -65,6 +66,12 @@ public class RateCardARTMProfit {
 	}
 	public void setCreadt(Date creadt) {
 		this.creadt = creadt;
+	}
+	public String getPaymod() {
+		return paymod;
+	}
+	public void setPaymod(String paymod) {
+		this.paymod = paymod;
 	}
 
 }
