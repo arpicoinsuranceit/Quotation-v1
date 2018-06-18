@@ -91,7 +91,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
 			break;
 		case "ARTM":
-			riskCurrent = 0.0;
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
 			break;
 		default:
 			break;
@@ -214,6 +214,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 				String type = benifict.getType();
 
 				switch (type) {
+
+				case "L2":
+					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()));
+					break;
 				case "ATPB":
 					sumAtRisk = sumAtRisk.add(new BigDecimal(benifict.getSumAssured()));
 					break;
