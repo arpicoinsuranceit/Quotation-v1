@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.arpicoinsurance.groupit.main.helper.MediTestReceiptHelper;
@@ -82,17 +83,25 @@ public class QuotationReceiptController {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return new ArrayList<Shedule>();
 	}
 	
 	@RequestMapping(value="/getMediDetails",method=RequestMethod.POST)
 	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@RequestParam("qdId") Integer qdId){
+		
+		System.out.println("called medi");
+		
 		try {
-			return healthRequirmentsService.getMediTestByQuoDetails(qdId);
+			List<MediTestReceiptHelper> list =  healthRequirmentsService.getMediTestByQuoDetails(qdId);
+			
+			System.out.println("aa");
+			list.forEach(e -> System.out.println(e.toString()));
+			
+			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ArrayList<MediTestReceiptHelper>();
 	}
 	
 }

@@ -470,7 +470,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			
 			
 		}
-		return null;
+		return mediTestReceiptHelpers;
 	}
 
 }
