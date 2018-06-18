@@ -64,7 +64,6 @@ public class QuotationController {
 		try {
 			return new ResponseEntity<Object>(quotationService.getQuotationDetails(userId), HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
 			logs.setDate(new Date());

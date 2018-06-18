@@ -81,7 +81,7 @@ public class QuotationServiceImpl implements QuotationService{
 			if(quoList!=null) {
 				ArrayList<QuoDetails> quoDetailsList = new ArrayList<>();
 				for (Quotation quotation : quoList) {
-					LocalDateTime currentTime=LocalDateTime.now();
+					LocalDate currentTime=LocalDate.now();
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					
 					QuoDetails details=new QuoDetails();
