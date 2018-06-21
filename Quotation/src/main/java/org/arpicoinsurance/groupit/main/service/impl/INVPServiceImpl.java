@@ -52,7 +52,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -136,7 +135,7 @@ public class INVPServiceImpl implements INVPService {
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
-			 System.out.println(rebate + " : rebate");
+			System.out.println(rebate + " : rebate");
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
@@ -147,10 +146,10 @@ public class INVPServiceImpl implements INVPService {
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false, rebate);
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false, 1);
 
-			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
-			 bsaPremium));
+		//System.out.println(bsaYearly);
+			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -215,8 +214,11 @@ public class INVPServiceImpl implements INVPService {
 						chedat, chedat, chedat, chedat);
 		// System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
-				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
-						.multiply((new BigDecimal(1).subtract((new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP))))).setScale(0, RoundingMode.HALF_UP);
+				.multiply(new BigDecimal(bassum)))
+						.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
+						.multiply((new BigDecimal(1).subtract(
+								(new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))))
+						.setScale(0, RoundingMode.HALF_UP);
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
@@ -259,12 +261,11 @@ public class INVPServiceImpl implements INVPService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		
-		if(productDao.findByProductCode("INVP").getActive() == 0 ) {
+		if (productDao.findByProductCode("INVP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -513,12 +514,11 @@ public class INVPServiceImpl implements INVPService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		
-		if(productDao.findByProductCode("INVP").getActive() == 0 ) {
+		if (productDao.findByProductCode("INVP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");

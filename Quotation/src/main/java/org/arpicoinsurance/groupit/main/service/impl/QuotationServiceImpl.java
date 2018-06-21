@@ -1,5 +1,9 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -77,15 +81,26 @@ public class QuotationServiceImpl implements QuotationService{
 			if(quoList!=null) {
 				ArrayList<QuoDetails> quoDetailsList = new ArrayList<>();
 				for (Quotation quotation : quoList) {
+					LocalDate currentTime=LocalDate.now();
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					
 					QuoDetails details=new QuoDetails();
 					details.setQuotationNum(quotation.getId());
 					QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+					String parsedDate = formatter.format(quotationDetails.getQuotationCreateDate());
+					
+					LocalDate quotationCreateTime=LocalDate.parse(parsedDate);
+					
+					long datediff=ChronoUnit.DAYS.between(quotationCreateTime, currentTime);
 					details.setCustomerName(quotationDetails.getCustomerDetails().getCustName());
 					details.setCustomerNic(quotationDetails.getCustomerDetails().getCustNic());
 					details.setBranchCode(quotation.getUser().getBranch().getBranch_Code());
 					details.setProductCode(quotation.getProducts().getProductCode());
 					
-					quoDetailsList.add(details);
+					if(datediff <= 60) {
+						quoDetailsList.add(details);
+					}
+					
 				}
 				
 				return quoDetailsList;

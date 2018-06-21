@@ -127,16 +127,15 @@ public class ARTMServiceImpl implements ARTMService {
 
 	@Override
 	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp,
-			QuotationCalculation calculation, String divrat) throws Exception {
-		
+			QuotationCalculation calculation, String divrat, List<PensionShedule> pensionShedules, Integer level)
+			throws Exception {
+
 		Integer poltrm = calculation.get_personalInfo().getTerm();
 		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("0") ? poltrm
 				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
 		String paymod = calculation.get_personalInfo().getFrequance();
 		Date chedat = new Date();
 		Double contribution = calculation.get_personalInfo().getBsa();
-
-		List<PensionShedule> pensionShedules = new ArrayList<>();
 
 		// TODO Insert values for schedule
 
@@ -194,7 +193,7 @@ public class ARTMServiceImpl implements ARTMService {
 				rateCardARTMProfit = rateCardARTMProfitDao
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
-				//System.out.println("rateCardARTMProfit : " + rateCardARTMProfit.getRate());
+				// System.out.println("rateCardARTMProfit : " + rateCardARTMProfit.getRate());
 			}
 
 			if (paytrm >= polyear) {
@@ -248,32 +247,34 @@ public class ARTMServiceImpl implements ARTMService {
 
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
-				pensionShedule.setCommisionPayable(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
+				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 
 			} else {
 				contributionAmount = new BigDecimal(0);
 				commision = new BigDecimal(0);
 				expenses = new BigDecimal(0);
 
-				pensionShedule.setCommisionPayable(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
+				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
-			//System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
-			//		+ " Expenses : " + expenses);
-			//System.out.println("closingFundAmount : " + closingFundAmount);
+			// System.out.println("contributionAmount : " + contributionAmount + " commision
+			// : " + commision
+			// + " Expenses : " + expenses);
+			// System.out.println("closingFundAmount : " + closingFundAmount);
 			profit = closingFundAmount
 					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
-							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP))).setScale(2, BigDecimal.ROUND_HALF_UP);
-			//System.out.println("profit : " + profit);
+							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
+					.setScale(2, BigDecimal.ROUND_HALF_UP);
+			// System.out.println("profit : " + profit);
 
 			creditedFundAmount = contributionAmount.subtract(commision).subtract(expenses).subtract(profit).setScale(4,
 					BigDecimal.ROUND_HALF_UP);
-			//System.out.println("creditedFundAmount : " + creditedFundAmount);
+			// System.out.println("creditedFundAmount : " + creditedFundAmount);
 
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
-			//System.out.println("amountBeforeInterest : " + amountBeforeInterest);
+			// System.out.println("amountBeforeInterest : " + amountBeforeInterest);
 
 			double intrat = Math.pow(
 					1.0D + new BigDecimal(dividentRate.getDobval()).divide(new BigDecimal("100")).doubleValue(),
@@ -283,27 +284,56 @@ public class ARTMServiceImpl implements ARTMService {
 
 			interest = amountBeforeInterest.multiply(new BigDecimal(intrat)).setScale(4, BigDecimal.ROUND_HALF_UP);
 
-			//System.out.println("interest : " + interest);
+			// System.out.println("interest : " + interest);
 			closingFundAmount = amountBeforeInterest.add(interest).setScale(4, BigDecimal.ROUND_HALF_UP);
-			//System.out.println("closingFundAmount : " + closingFundAmount);
+			// System.out.println("closingFundAmount : " + closingFundAmount);
 
-			pensionShedule.setAge(calculation.get_personalInfo().getMage() + (polyear - 1));
-			pensionShedule.setPolicyYear(polyear);
-			pensionShedule.setMonth(i + 1);
-			pensionShedule.setContingencyProfitLoading(profit.setScale(2, RoundingMode.HALF_UP).doubleValue());
-			pensionShedule.setAmountCreditedToFund(creditedFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
-			pensionShedule
-					.setFundBalanceBeforeInterest(amountBeforeInterest.setScale(2, RoundingMode.HALF_UP).doubleValue());
-			pensionShedule.setInterestPerAnnumForPolicyHolder(interest.setScale(2, RoundingMode.HALF_UP).doubleValue());
-			pensionShedule.setClosingFundBalanace(closingFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
+			pensionShedule.setPolyer(polyear);
+			Integer month = i + 1;
+			pensionShedule.setMonth(month);
+			pensionShedule.setProfit(profit.setScale(2, RoundingMode.HALF_UP).doubleValue());
+			pensionShedule.setAmtcrtfnd(creditedFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
+			pensionShedule.setFndBeforeInt(amountBeforeInterest.setScale(2, RoundingMode.HALF_UP).doubleValue());
 
-			pensionShedules.add(pensionShedule);
+			
+			
+			switch (level) {
+			case 1:
+				pensionShedule.setIntRat1(interest.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				pensionShedule.setClsFnd1(closingFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				pensionShedules.add(pensionShedule);
+				break;
+			case 2:
+				for (PensionShedule pensionShedule2 : pensionShedules) {
+					if (pensionShedule2.getMonth().equals(month)) {
+						pensionShedule2.setIntRat2(interest.setScale(2, RoundingMode.HALF_UP).doubleValue());
+						pensionShedule2.setClsFnd2(closingFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
+					}
+				}
+				
+
+				break;
+			case 3:
+				for (PensionShedule pensionShedule2 : pensionShedules) {
+					if (pensionShedule2.getMonth().equals(month)) {
+						pensionShedule2.setIntRat3(interest.setScale(2, RoundingMode.HALF_UP).doubleValue());
+						pensionShedule2.setClsFnd3(closingFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
+					}
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+
+			
 
 		}
 
-		if (printShedule) {
-			calResp.setPensionShedules(pensionShedules);
-		}
+		/*
+		 * if (printShedule) { calResp.setPensionShedules(pensionShedules); }
+		 */
 
 		return closingFundAmount.setScale(0, BigDecimal.ROUND_HALF_UP);
 
@@ -317,12 +347,12 @@ public class ARTMServiceImpl implements ARTMService {
 		RateCardProductVar repaymentRate = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
 						"A", chedat, chedat, chedat, chedat);
-		//System.out.println("repaymentRate : " + repaymentRate.getDobval());
+		// System.out.println("repaymentRate : " + repaymentRate.getDobval());
 
 		RateCardProductVar repaymentExpences = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
 						"A", chedat, chedat, chedat, chedat);
-		//System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+		// System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
 
 		double reprate = (1.0D - Math.pow(
 				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10, BigDecimal.ROUND_HALF_UP))
@@ -332,15 +362,17 @@ public class ARTMServiceImpl implements ARTMService {
 				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
 						BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 								.doubleValue();
-		//System.out.println("closingFundAmount : " + closingFundAmount + " reprate : " + reprate);
+		// System.out.println("closingFundAmount : " + closingFundAmount + " reprate : "
+		// + reprate);
 		// TODO calculate premium
 		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate), 6, BigDecimal.ROUND_HALF_UP);
 
 		double repexp = new BigDecimal(1)
 				.subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
-		//System.out.println("pensionPremium : " + pensionPremium + " repexp : " + repexp);
+		// System.out.println("pensionPremium : " + pensionPremium + " repexp : " +
+		// repexp);
 		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
-		//System.out.println("pensionPremium : " + pensionPremium);
+		// System.out.println("pensionPremium : " + pensionPremium);
 		return pensionPremium.setScale(0, BigDecimal.ROUND_HALF_UP);
 	}
 
@@ -364,9 +396,17 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 			// <<<<<<< HEAD
 
-			calResp.setAt6(calculateMaturity(false, calResp, calculation, "divrat1").doubleValue());
-			calResp.setAt8(calculateMaturity(printShedule, calResp, calculation, "divrat2").doubleValue());
-			calResp.setAt10(calculateMaturity(false, calResp, calculation, "divrat3").doubleValue());
+			List<PensionShedule> pensionShedules = new ArrayList<>();
+
+			calResp.setAt6(calculateMaturity(false, calResp, calculation, "divrat1", pensionShedules, 1).doubleValue());
+			calResp.setAt8(
+					calculateMaturity(printShedule, calResp, calculation, "divrat2", pensionShedules, 2).doubleValue());
+			calResp.setAt10(
+					calculateMaturity(false, calResp, calculation, "divrat3", pensionShedules, 3).doubleValue());
+
+			if (printShedule) {
+				calResp.setPensionShedules(pensionShedules);
+			}
 
 			calResp.setPensionPremium1(pensionPremium(calculation, "reprat1", calResp.getAt6()).doubleValue());
 			calResp.setPensionPremium2(pensionPremium(calculation, "reprat2", calResp.getAt8()).doubleValue());

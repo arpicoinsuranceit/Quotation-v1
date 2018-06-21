@@ -24,7 +24,6 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
-import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -51,7 +50,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -135,9 +133,9 @@ public class ENDServiceImpl implements ENDService {
 			/// Calculate BSA Premium ///
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
-
+			//System.out.println(bsaYearly);
 			
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),

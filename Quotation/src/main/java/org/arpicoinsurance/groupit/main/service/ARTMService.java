@@ -1,15 +1,13 @@
 package org.arpicoinsurance.groupit.main.service;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
-import org.arpicoinsurance.groupit.main.helper.AIPCalResp;
-import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
-import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.PensionShedule;
 
 public interface ARTMService {
 	
@@ -22,7 +20,7 @@ public interface ARTMService {
 	
 	BigDecimal pensionPremium(QuotationCalculation calculation, String reprat, Double closingFundAmount)throws Exception;
 	
-	BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp, QuotationCalculation calculation, String divRate)throws Exception;
+	BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp, QuotationCalculation calculation, String divRate, List<PensionShedule> pensionShedules, Integer level)throws Exception;
 
 
 	QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule)throws Exception;

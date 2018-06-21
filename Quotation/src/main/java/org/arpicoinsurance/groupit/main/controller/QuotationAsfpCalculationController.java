@@ -22,11 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 public class QuotationAsfpCalculationController {
-	
 
 	@Autowired
 	private ASFPService asfpService;
-	
+
 	@Autowired
 	private LogService logService;
 
@@ -34,7 +33,7 @@ public class QuotationAsfpCalculationController {
 
 	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		//System.out.println(calculation.get_personalInfo().getMgenger());
+		// System.out.println(calculation.get_personalInfo().getMgenger());
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -78,13 +77,13 @@ public class QuotationAsfpCalculationController {
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		//return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		//System.out.println(id);
+		// System.out.println(id);
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -105,8 +104,12 @@ public class QuotationAsfpCalculationController {
 
 							// if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1))
 							// {
-							responseMap = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
-
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							} else {
+								responseMap.replace("status", error);
+							}
 							// }else {
 							/// resp = "Total Premium times frequency must be greater than 1250 times
 							// frequency";
@@ -128,7 +131,8 @@ public class QuotationAsfpCalculationController {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation" + _invpSaveQuotation.toString() + ", id : " + id);
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation"
+					+ _invpSaveQuotation.toString() + ", id : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("saveAsfp : QuotationAsfpCalculationController");
@@ -156,7 +160,7 @@ public class QuotationAsfpCalculationController {
 	@RequestMapping(value = "/quoAsfpEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
-		//System.out.println(qdId);
+		// System.out.println(qdId);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -174,7 +178,7 @@ public class QuotationAsfpCalculationController {
 						if (error.equals("No")) {
 
 							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-							
+
 						} else {
 							responseMap.replace("status", error);
 						}
@@ -191,7 +195,8 @@ public class QuotationAsfpCalculationController {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation" + _invpSaveQuotation.toString() + ", userId : " + userId + ", qdId : " + qdId);
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation"
+					+ _invpSaveQuotation.toString() + ", userId : " + userId + ", qdId : " + qdId);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("editAsfp : QuotationAsfpCalculationController");

@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardARTMExpencesDao;
 import org.arpicoinsurance.groupit.main.model.RateCardARTMDeath;
 import org.arpicoinsurance.groupit.main.service.rider.L2Service;
 import org.springframework.beans.factory.annotation.Autowired;

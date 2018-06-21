@@ -160,13 +160,20 @@ public class QuotationAipCalculationController {
 			message = validation.validateAIP(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()),
 					_invpSaveQuotation.get_plan().get_frequance(), _invpSaveQuotation.get_plan().get_bsa(),
 					_invpSaveQuotation.get_plan().get_term());
-			 //message = "ok";
+			 
 		}
-		if (!message.equals("ok")) {
+		if (!message.equalsIgnoreCase("ok")) {
 			responseMap.replace("status", message);
-			return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
 		}
+		
+		message = validation.saveEditValidations(_invpSaveQuotation);
 
+		if (!message.equalsIgnoreCase("ok")) {
+			responseMap.replace("status", message);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		
 		try {
 			if (id != null) {
 				responseMap = aipService.saveQuotation(_invpSaveQuotation, id);
@@ -216,6 +223,13 @@ public class QuotationAipCalculationController {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
 		}
 
+		message = validation.saveEditValidations(_invpSaveQuotation);
+
+		if (!message.equalsIgnoreCase("ok")) {
+			responseMap.replace("status", message);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		
 		try {
 			if (userId != null) {
 				if (qdId != null) {

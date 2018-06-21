@@ -157,6 +157,8 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getPayingterm(), 1, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), "Y", calResp, false);
 
+			//System.out.println(bsaYearly);
+			
 			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
 			// bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());

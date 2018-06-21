@@ -2,7 +2,6 @@ package org.arpicoinsurance.groupit.main.controller;
 
 
 import java.util.Date;
-import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.reports.ItextReports;
