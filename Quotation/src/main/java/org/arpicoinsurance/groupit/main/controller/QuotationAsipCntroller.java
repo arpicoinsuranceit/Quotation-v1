@@ -45,9 +45,9 @@ public class QuotationAsipCntroller {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
+						return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
 					}
-					return new ResponseEntity<Object> (calResp, HttpStatus.OK);
+					return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 				} else {
 					calResp.setErrorExist(true);
 					calResp.setError(error);
@@ -56,7 +56,7 @@ public class QuotationAsipCntroller {
 				calResp.setErrorExist(true);
 				calResp.setError("Product");
 			}
-			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
+			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 
 		} catch (Exception e) {
 			Logs logs = new Logs();
@@ -72,7 +72,7 @@ public class QuotationAsipCntroller {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		// return null;
 	}
@@ -96,9 +96,12 @@ public class QuotationAsipCntroller {
 					if (validationInvp.validateAsipProd() == 1) {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {
-
-							responseMap = asipService.saveQuotation(calculation, _invpSaveQuotation, id);
-
+							error = validationInvp.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = asipService.saveQuotation(calculation, _invpSaveQuotation, id);
+							} else {
+								responseMap.replace("status", error);
+							}
 						} else {
 							responseMap.replace("status", error);
 						}
@@ -111,7 +114,7 @@ public class QuotationAsipCntroller {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString()
@@ -128,7 +131,7 @@ public class QuotationAsipCntroller {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -167,9 +170,12 @@ public class QuotationAsipCntroller {
 						String error = validation.validateBenifict();
 
 						if (error.equals("No")) {
-
-							responseMap = asipService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = asipService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							} else {
+								responseMap.replace("status", error);
+							}
 						} else {
 							responseMap.replace("status", error);
 						}
@@ -182,7 +188,7 @@ public class QuotationAsipCntroller {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString()
@@ -199,7 +205,7 @@ public class QuotationAsipCntroller {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;

@@ -2,16 +2,22 @@ package org.arpicoinsurance.groupit.main.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
+import org.arpicoinsurance.groupit.main.helper.Children;
+import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
+import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
+import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 
 public class Validation {
 
 	private CalculationUtils calculationUtils = new CalculationUtils();
-	
+
 	private QuotationCalculation calculation;
 
 	HashMap<String, Benifict> benefitMap = new HashMap<>();
@@ -24,6 +30,66 @@ public class Validation {
 		this.calculation = calculation;
 		loadBeneficts();
 
+	}
+
+	public String saveEditValidations(InvpSavePersonalInfo InvpSavePersonalInfo) {
+
+		MainLife life = InvpSavePersonalInfo.get_mainlife();
+
+		if (life != null) {
+			if (life.get_mName() == null || !(life.get_mName().length() > 0)) {
+				return "Main Life Name can't be null";
+			}
+			if (life.get_mDob() == null || !(life.get_mDob().length() > 0)) {
+				return "Main Life DOB can't be null";
+			}
+			if (life.get_mMobile() == null || !(life.get_mMobile().length() > 0)) {
+				return "Main Life Mobile can't be null";
+			}
+			if (life.get_mOccupation() == null || !(life.get_mOccupation().length() > 0)) {
+				return "Main Life Occupation can't be null";
+			}
+			if (life.get_mGender() == null || !(life.get_mGender().length() > 0)) {
+				return "Main Life Gender can't be null";
+			}
+		} else {
+			return "Main Life Can't be null";
+		}
+
+		Spouse spouse = InvpSavePersonalInfo.get_spouse();
+		if (spouse != null) {
+			if (spouse.is_sActive()) {
+				if (spouse.get_sDob() == null || !(spouse.get_sDob().length() > 0)) {
+					return "Spouse DOB can't be null";
+				}
+				if (spouse.get_sName() == null || !(spouse.get_sName().length() > 0)) {
+					return "Spouse Name can't be null";
+				}
+				if (spouse.get_sGender() == null || !(spouse.get_sGender().length() > 0)) {
+					return "Spouse Gender can't be null";
+				}
+				if (spouse.get_sOccupation() == null || !(spouse.get_sOccupation().length() > 0)) {
+					return "Spouse Occupation can't be null";
+				}
+			}
+		}
+
+		List<Children> childrens = InvpSavePersonalInfo.get_childrenList();
+
+		if (childrens != null && childrens.size() > 0) {
+			for (Children children : childrens) {
+				if (children.is_cActive()) {
+					if (children.get_cName() == null || !(children.get_cName().length() > 0)) {
+						return "Children name can't be null";
+					}
+					if(children.get_cDob() == null || !(children.get_cDob().length() > 0 )) {
+						return "Children DOB can't be null";
+					}
+				}
+			}	
+		}
+
+		return "ok";
 	}
 
 	public boolean InvpPostValidation(QuotationQuickCalResponse calResp) {
@@ -554,7 +620,7 @@ public class Validation {
 	public Integer validateARTML2() {
 		if (benefitMap.containsKey("L2")) {
 			Benifict benifict = benefitMap.get("L2");
-			if(benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000) {
+			if (benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000) {
 				return 1;
 			}
 		}
@@ -1279,22 +1345,26 @@ public class Validation {
 
 	public String validateArtm(QuotationCalculation calculation) {
 
-		if(!benefitMap.containsKey("L2")) {
+		if (!benefitMap.containsKey("L2")) {
 			return "L2 is required";
 		}
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
 
-			System.out.println(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa());
-			if(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()) * calculation.get_personalInfo().getBsa() >= 36000 ) {
-				if((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") && calculation.get_personalInfo().getBsa() < 250000)) {
+			System.out.println(calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())
+					* calculation.get_personalInfo().getBsa());
+			if (calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())
+					* calculation.get_personalInfo().getBsa() >= 36000) {
+				if ((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S")
+						&& calculation.get_personalInfo().getBsa() < 250000)) {
 					return "Contribution must be greater than or equal 250000";
-				}	
-				
+				}
+
 				if (calculation.get_personalInfo().getPensionPaingTerm() == 10
 						|| calculation.get_personalInfo().getPensionPaingTerm() == 15
 						|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
 					Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
-					if (paingTerm >= 10 && paingTerm <= 47 || calculation.get_personalInfo().getFrequance().equals("S")) {
+					if (paingTerm >= 10 && paingTerm <= 47
+							|| calculation.get_personalInfo().getFrequance().equals("S")) {
 						if (paingTerm <= (calculation.get_personalInfo().getRetAge()
 								- calculation.get_personalInfo().getMage())
 								|| calculation.get_personalInfo().getFrequance().equals("S")) {
@@ -1311,11 +1381,11 @@ public class Validation {
 				} else {
 					return "Pension Pension Paying Term must be 10, 15 or 20";
 				}
-				
-			}else {
+
+			} else {
 				return "Yearly Contribution  must be greater than or equal 36000";
 			}
-			
+
 		} else {
 			return "Retirement Age must between 60 and 40";
 		}

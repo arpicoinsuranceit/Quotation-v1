@@ -72,12 +72,11 @@ public class QuotationArpCalculationConroller {
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		//return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/quoArpsave/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Object> saveArp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable Integer id) {
+	public ResponseEntity<Object> saveArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
 		// System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -94,7 +93,13 @@ public class QuotationArpCalculationConroller {
 					if (validationInvp.validateArpProd() == 1) {
 						String error = validationInvp.validateBenifict();
 						if (error.equals("No")) {
-							responseMap = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
+							error = validationInvp.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
+							} else {
+								responseMap.replace("status", error);
+							}
+
 						} else {
 							responseMap.replace("status", error);
 						}
@@ -110,7 +115,8 @@ public class QuotationArpCalculationConroller {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " id : " + id);
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " id : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("saveArp : QuotationArpCalculationConroller");
@@ -161,9 +167,13 @@ public class QuotationArpCalculationConroller {
 					if (validation.validateArpProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
 
-							responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-
+								responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							} else {
+								responseMap.replace("status", error);
+							}
 						} else {
 							responseMap.replace("status", error);
 						}
@@ -180,7 +190,8 @@ public class QuotationArpCalculationConroller {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId );
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("editArp : QuotationArpCalculationConroller");
