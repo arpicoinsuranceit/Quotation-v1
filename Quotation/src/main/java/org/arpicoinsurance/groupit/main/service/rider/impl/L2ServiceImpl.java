@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMExpencesDao;
 import org.arpicoinsurance.groupit.main.model.RateCardARTMDeath;
@@ -28,14 +29,23 @@ public class L2ServiceImpl implements L2Service {
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
 		BigDecimal premiumL2 = new BigDecimal(0);
-		
-		System.out.println(rateCardARTMDeath.getRate() + " ////////////////////// artm");
 
-		// ((@rate@/12) *(@rider_sum_assured@)/1000))
-		premiumL2 = (new BigDecimal(rateCardARTMDeath.getRate()).divide(new BigDecimal(12), 6, RoundingMode.HALF_UP))
-				.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)))
-				.setScale(4, BigDecimal.ROUND_HALF_UP);
-	
+		// System.out.println(rateCardARTMDeath.getRate() + " //////////////////////
+		// artm");
+		if (payFrequency.equalsIgnoreCase("S")) {
+			// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))*@term@
+			premiumL2 = ((new BigDecimal(rateCardARTMDeath.getRate())
+					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+							.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)))
+							.multiply(new BigDecimal(term))).setScale(4, BigDecimal.ROUND_HALF_UP);
+		} else {
+			// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))
+			premiumL2 = (new BigDecimal(rateCardARTMDeath.getRate())
+					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+							.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)))
+							.setScale(4, BigDecimal.ROUND_HALF_UP);
+		}
+
 		premiumL2 = premiumL2.multiply(new BigDecimal(occupation_loding)).setScale(0, BigDecimal.ROUND_HALF_UP);
 		return premiumL2;
 	}

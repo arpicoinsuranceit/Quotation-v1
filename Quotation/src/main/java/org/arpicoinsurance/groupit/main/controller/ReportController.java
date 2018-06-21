@@ -44,6 +44,7 @@ public class ReportController {
 			return responseEntity;
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + id);
 			logs.setDate(new Date());

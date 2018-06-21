@@ -7677,7 +7677,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Override
 	public byte[] createARPReport(QuotationDetails quotationDetails, QuotationView quotationView,
 			QuoCustomer quoCustomer) throws Exception {
-
+		//System.out.println("8888888888");
 		String mainLifeOcc = quotationDetails.getCustomerDetails().getOccupation().getOcupationName();
 		String mainLifeOccupation = "";
 
