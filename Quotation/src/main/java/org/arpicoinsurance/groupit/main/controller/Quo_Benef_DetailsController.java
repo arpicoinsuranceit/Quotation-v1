@@ -76,6 +76,35 @@ public class Quo_Benef_DetailsController {
 		//return null;
 	}
 	
+	@RequestMapping(value="/quodetailsView",method=RequestMethod.POST)
+	public ResponseEntity<Object> viewQuotationDetailsView(@RequestBody String id) {
+		try {
+			//System.out.println(id);
+			Integer quoId=Integer.valueOf(id);
+			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetailsView(quoId);
+			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
+			
+		} catch (Exception e) { 
+			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\nParameters : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("viewQuotationDetails(String) : Quo_Benef_DetailsController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//return null;
+	}
+	
 	@RequestMapping(value="/scheduledetails/{id}",method=RequestMethod.GET)
 	public ResponseEntity<Object> viewQuotationDetails(@PathVariable Integer id) {
 		try {
