@@ -27,7 +27,7 @@ public class ReportController {
 	private LogService logService;
 	
 	@RequestMapping(value="/printQuotation/{id}",method=RequestMethod.GET,produces = "application/pdf")
-	public ResponseEntity<Object> getQuotationByUserId(@PathVariable Integer id) {
+	public ResponseEntity<Object> getQuotationByQuoDetailId(@PathVariable Integer id) {
 		System.out.println("ddddddddddddddddddddddd" + id);
 		
 		try {
@@ -43,11 +43,12 @@ public class ReportController {
 			return responseEntity;
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("getQuotationByUserId : ReportController");
+			logs.setOperation("getQuotationByQuoDetailId : ReportController");
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {

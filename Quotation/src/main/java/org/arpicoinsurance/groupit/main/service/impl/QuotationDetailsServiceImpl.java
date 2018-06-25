@@ -69,7 +69,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			
 			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
-		    LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+		    LocalDate currentDate = LocalDate.now();
 		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 		    diffInYears+=1;
 		    String age=Long.toString(diffInYears);
@@ -327,6 +327,80 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception {
+		QuotationDetails details=findQuotationDetails(qdId);
+		EditQuotation editQuotation=new EditQuotation();
+		MainLife mainLife=new MainLife();
+		Spouse spouse=new Spouse();
+		if(details != null) {
+			CustomerDetails customerDetails=details.getCustomerDetails();
+			mainLife.set_mName(customerDetails.getCustName());
+			
+			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
+		    LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+			//LocalDate currentDate = LocalDate.now();
+		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+		    diffInYears+=1;
+		    String age=Long.toString(diffInYears);
+		    
+		    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
+		    
+		    mainLife.set_mAge(age);
+		    mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
+		    mainLife.set_mEmail(customerDetails.getCustEmail());
+		    mainLife.set_mGender(customerDetails.getCustGender());
+		    mainLife.set_mMobile(customerDetails.getCustTel());
+		    mainLife.set_mNic(customerDetails.getCustNic());
+		    mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
+		    mainLife.set_mSmoking("No");
+		    mainLife.set_mTitle(customerDetails.getCustTitle());
+		    mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
+		    
+		    
+		    if(details.getSpouseDetails() != null) {
+		    	CustomerDetails spouseDetails=details.getSpouseDetails();
+				spouse.set_sName(spouseDetails.getCustName());
+				
+				LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(spouseDetails.getCustDob()));
+			    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+			    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+			    sdiffInYears+=1;
+			    String sage=Long.toString(sdiffInYears);
+			    
+				spouse.set_sActive(true);
+			    spouse.set_sAge(sage);
+			    spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
+			    spouse.set_sGender(spouseDetails.getCustGender());
+			    spouse.set_sNic(spouseDetails.getCustNic());
+			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
+			    spouse.set_sTitle(spouseDetails.getCustTitle());
+			    
+			    
+		    }else {
+		    	spouse.set_sActive(false);
+		    }
+		}
+		
+		
+		
+		editQuotation.set_mainlife(mainLife);
+		editQuotation.set_spouse(spouse);
+		editQuotation.set_plan(getPlanDetails(details));
+		
+		List<Nominee> nominees = nomineeDao.findByQuotationDetails(details);
+		if(nominees.size()>0) {
+			editQuotation.get_plan().set_nomineeName(nominees.get(0).getNomineeName());
+			editQuotation.get_plan().set_nomineeAge(nominees.get(0).getAge());
+			editQuotation.get_plan().set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
+			editQuotation.get_plan().set_nomoneeRelation(nominees.get(0).getRelation());
+		}
+		
+		//return editQuotation;
+		return getBenefitsAndChildDetails(details,editQuotation);
 	}
 	
 	

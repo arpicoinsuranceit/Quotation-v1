@@ -86,7 +86,35 @@ public class QuotationController {
 	public ResponseEntity<Object> getQuotationDetailsById(@RequestBody String id) {
 		Integer qdId = Integer.valueOf(id);
 		try {
+			System.out.println("testtttttttttttt");
 			EditQuotation quoDetails = quoDetailsService.editQuotationDetails(qdId);
+			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("Get QuotationDetail By id");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		// return null;
+	}
+	
+	@RequestMapping(value = "/quotationDetailsView", method = RequestMethod.POST)
+	public ResponseEntity<Object> getQuotationDetailsViewById(@RequestBody String id) {
+		Integer qdId = Integer.valueOf(id);
+		System.out.println("iddddddddddd");
+
+		try {
+			EditQuotation quoDetails = quoDetailsService.editQuotationDetailsView(qdId);
 			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);
 		} catch (Exception e) {
 			Logs logs = new Logs();
