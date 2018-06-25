@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
@@ -29,4 +30,6 @@ public interface Quo_Benef_DetailsService {
 	QuotationView getQuo_Benef_DetailByQuoDetailId(QuotationDetails quotationDetails) throws Exception;
 	
 	QuotationDetails getQuo_Benef_DetailByQuoDetailId(Quotation quotation) throws Exception;
+
+	ArrayList<ViewQuotation> getQuotationDetailsView(Integer quoId)  throws Exception;
 }

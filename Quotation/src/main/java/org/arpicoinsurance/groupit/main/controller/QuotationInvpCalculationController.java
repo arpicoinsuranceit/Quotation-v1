@@ -38,7 +38,7 @@ public class QuotationInvpCalculationController {
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();
 
-				 //System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+				// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 70) {
 					if (error.equals("No")) {
 						calResp = invpService.getCalcutatedInvp(calculation);
@@ -105,8 +105,13 @@ public class QuotationInvpCalculationController {
 							// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 							if (error.equals("No")) {
+								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+								if (error.equalsIgnoreCase("ok")) {
 
-								responseMap = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+									responseMap = invpService.saveQuotation(calculation, _invpSaveQuotation, id);
+								} else {
+									responseMap.replace("status", error);
+								}
 							} else {
 								responseMap.replace("status", error);
 							}
@@ -181,8 +186,13 @@ public class QuotationInvpCalculationController {
 							// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 							if (error.equals("No")) {
-
-								responseMap = invpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+								if (error.equalsIgnoreCase("ok")) {
+									responseMap = invpService.editQuotation(calculation, _invpSaveQuotation, userId,
+											qdId);
+								} else {
+									responseMap.replace("status", error);
+								}
 							} else {
 								responseMap.replace("status", error);
 							}

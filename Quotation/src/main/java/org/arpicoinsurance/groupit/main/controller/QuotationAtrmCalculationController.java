@@ -25,7 +25,7 @@ public class QuotationAtrmCalculationController {
 
 	@Autowired
 	private ATRMService atrmService;
-	
+
 	@Autowired
 	private LogService logService;
 
@@ -34,9 +34,11 @@ public class QuotationAtrmCalculationController {
 	@RequestMapping(value = "/quoAtrmCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		// System.out.println(calculation);
-		//System.out.println(calculation.get_personalInfo().getSgenger() + "***************************");
+		// System.out.println(calculation.get_personalInfo().getSgenger() +
+		// "***************************");
 
-		//System.out.println(calculation.get_personalInfo().getMgenger() + "************************************");
+		// System.out.println(calculation.get_personalInfo().getMgenger() +
+		// "************************************");
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -49,7 +51,7 @@ public class QuotationAtrmCalculationController {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return new ResponseEntity<Object> (calRespPost, HttpStatus.OK);
+						return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
 					}
 				} else {
 					calResp.setErrorExist(true);
@@ -59,7 +61,7 @@ public class QuotationAtrmCalculationController {
 				calResp.setErrorExist(true);
 				calResp.setError("Product");
 			}
-			return new ResponseEntity<Object> (calResp, HttpStatus.OK);
+			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 		} catch (Exception e) {
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
@@ -74,15 +76,15 @@ public class QuotationAtrmCalculationController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		//return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/quoAtrmsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -98,11 +100,15 @@ public class QuotationAtrmCalculationController {
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-
-							if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
-								responseMap = atrmService.saveQuotation(calculation, _invpSaveQuotation, id);
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
+									responseMap = atrmService.saveQuotation(calculation, _invpSaveQuotation, id);
+								} else {
+									responseMap.replace("status", "Total Premium must be greater than 1250");
+								}
 							} else {
-								responseMap.replace("status", "Total Premium must be greater than 1250");
+								responseMap.replace("status", error);
 							}
 						} else {
 							responseMap.replace("status", error);
@@ -116,10 +122,11 @@ public class QuotationAtrmCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString() + ", id : " + id);
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString()
+					+ ", id : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("saveAtrm : QuotationAtrmCalculationController");
@@ -131,7 +138,7 @@ public class QuotationAtrmCalculationController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -147,11 +154,11 @@ public class QuotationAtrmCalculationController {
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
 		/*
-		*System.out.println(userId);
-		*System.out.println(qdId);
-		*System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		*System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
-		*/
+		 * System.out.println(userId); System.out.println(qdId);
+		 * System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
+		 * get_frequance());
+		 */
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -168,11 +175,16 @@ public class QuotationAtrmCalculationController {
 					if (validation.validateInvpEndProd() == 1) {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
-
-							if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
-								responseMap = atrmService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
+									responseMap = atrmService.editQuotation(calculation, _invpSaveQuotation, userId,
+											qdId);
+								} else {
+									responseMap.replace("status", "Total Premium must be greater than 1250");
+								}
 							} else {
-								responseMap.replace("status", "Total Premium must be greater than 1250");
+								responseMap.replace("status", error);
 							}
 						} else {
 							responseMap.replace("status", error);
@@ -186,10 +198,11 @@ public class QuotationAtrmCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-			return new ResponseEntity<Object> (responseMap, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString() + ", userId : " + userId + ", qdId : " + qdId);
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : " + calculation.toString()
+					+ ", userId : " + userId + ", qdId : " + qdId);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("editAtrm : QuotationAtrmCalculationController");
@@ -201,7 +214,7 @@ public class QuotationAtrmCalculationController {
 				System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object> (e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;

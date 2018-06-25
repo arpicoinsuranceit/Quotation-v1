@@ -69,7 +69,12 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			
 			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
+<<<<<<< HEAD
 		    LocalDate currentDate = LocalDate.now();
+=======
+		    //LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+			LocalDate currentDate = LocalDate.now();
+>>>>>>> refs/remotes/origin/branch-120
 		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 		    diffInYears+=1;
 		    String age=Long.toString(diffInYears);

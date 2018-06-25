@@ -133,9 +133,9 @@ public class ENDServiceImpl implements ENDService {
 			/// Calculate BSA Premium ///
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
-
+			//System.out.println(bsaYearly);
 			
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),

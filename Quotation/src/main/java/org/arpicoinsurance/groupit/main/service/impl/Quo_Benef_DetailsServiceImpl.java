@@ -357,5 +357,54 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 		return quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
 	}
 
+	@Override
+	public ArrayList<ViewQuotation> getQuotationDetailsView(Integer quoId) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		ArrayList<QuotationView> viewQuotationDetailsList=(ArrayList<QuotationView>) getQuo_Benef_DetailsByQuoDetailId(quoId);
+		ArrayList<ViewQuotation> allQuotationList=new ArrayList<>();
+		
+		for (QuotationView quotationView : viewQuotationDetailsList) {
+			EditQuotation editQuotation=quotationDetailsService.editQuotationDetailsView(quotationView.getQuoDetailId());
+			ViewQuotation viewQuotation=new ViewQuotation();
+			
+			
+			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
+			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
+			viewQuotation.setProductName(quotation.getProducts().getProductName());
+			viewQuotation.setQuotationId(quotation.getId());
+			viewQuotation.setQuotationDate(new SimpleDateFormat("EEE, d MMM yyyy").format(quotationView.getQuotationDate()));
+			viewQuotation.set_children(editQuotation.get_children());
+			viewQuotation.set_childrenBenefits(quotationView.getChildBenf());
+			
+			if(editQuotation.get_mainlife().get_mGender().equals("F")) {
+				editQuotation.get_mainlife().set_mGender("Female");
+			}else {
+				editQuotation.get_mainlife().set_mGender("Male");
+			}
+			
+			if(editQuotation.get_spouse().get_sAge() != null && editQuotation.get_spouse().get_sName() != null) {
+				if(editQuotation.get_spouse().get_sGender().equals("F")) {
+					editQuotation.get_spouse().set_sGender("Female");
+				}else {
+					editQuotation.get_spouse().set_sGender("Male");
+				}
+			}
+			
+			editQuotation.get_mainlife().set_mOccupation(quotationView.getCustDetails().getMainLifeOccupation());
+			viewQuotation.set_mainlife(editQuotation.get_mainlife());
+			viewQuotation.set_mainLifeBenefits(quotationView.getMainLifeBenf());
+			editQuotation.get_spouse().set_sOccupation(quotationView.getCustDetails().getSpouseOccupation());
+			viewQuotation.set_spouse(editQuotation.get_spouse());
+			viewQuotation.set_spouseBenefits(quotationView.getSpouseBenf());
+			editQuotation.get_plan().set_msfb(editQuotation.get_plan().get_bsa()/(editQuotation.get_plan().get_term()*12));
+			viewQuotation.set_plan(editQuotation.get_plan());
+//			System.out.println(quotationView.getQuotationDate());
+			
+			allQuotationList.add(viewQuotation);
+		}
+		
+		return allQuotationList;
+	}
+
 	
 }

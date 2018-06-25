@@ -196,9 +196,10 @@ public class ASFPServiceImpl implements ASFPService {
 
 			BigDecimal bsaYearly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
+					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
 					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp, false);
 
+			//System.out.println(bsaYearly);
 			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());

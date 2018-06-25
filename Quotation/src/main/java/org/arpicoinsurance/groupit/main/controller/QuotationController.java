@@ -111,8 +111,11 @@ public class QuotationController {
 	@RequestMapping(value = "/quotationDetailsView", method = RequestMethod.POST)
 	public ResponseEntity<Object> getQuotationDetailsViewById(@RequestBody String id) {
 		Integer qdId = Integer.valueOf(id);
+<<<<<<< HEAD
 		System.out.println("iddddddddddd");
 
+=======
+>>>>>>> refs/remotes/origin/branch-120
 		try {
 			EditQuotation quoDetails = quoDetailsService.editQuotationDetailsView(qdId);
 			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);
