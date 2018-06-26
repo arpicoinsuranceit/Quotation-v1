@@ -1335,7 +1335,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -3703,7 +3703,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -5101,7 +5101,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -6499,7 +6499,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -7918,7 +7918,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -9519,7 +9519,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
@@ -10312,7 +10312,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		cuCellM3.setBorder(Border.NO_BORDER);
 
 		// Creating a Date Format for DOB
-		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-YYY");
+		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
 
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
