@@ -86,6 +86,7 @@ public class QuotationController {
 	public ResponseEntity<Object> getQuotationDetailsById(@RequestBody String id) {
 		Integer qdId = Integer.valueOf(id);
 		try {
+			System.out.println("testtttttttttttt");
 			EditQuotation quoDetails = quoDetailsService.editQuotationDetails(qdId);
 			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);
 		} catch (Exception e) {
@@ -110,6 +111,7 @@ public class QuotationController {
 	@RequestMapping(value = "/quotationDetailsView", method = RequestMethod.POST)
 	public ResponseEntity<Object> getQuotationDetailsViewById(@RequestBody String id) {
 		Integer qdId = Integer.valueOf(id);
+
 		try {
 			EditQuotation quoDetails = quoDetailsService.editQuotationDetailsView(qdId);
 			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);

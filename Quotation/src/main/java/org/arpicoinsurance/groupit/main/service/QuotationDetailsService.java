@@ -12,5 +12,6 @@ public interface QuotationDetailsService {
 	public EditQuotation editQuotationDetailsView(Integer qdId)throws Exception;
 	
 	QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception;
+
 	
 }

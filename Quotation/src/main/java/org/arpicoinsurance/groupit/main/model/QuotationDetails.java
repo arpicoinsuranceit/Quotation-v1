@@ -55,9 +55,16 @@ public class QuotationDetails implements Serializable{
 	
 	private Double premium = 0.0;
 	
+	
 	private List<Surrendervals> surrenderValueList;
+	
+	private List<PensionShedule> pensionShedules;
+	
 	public QuotationDetails() {}
+	
 
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getQdId() {
@@ -345,5 +352,19 @@ public class QuotationDetails implements Serializable{
 
 	public void setSurrenderValueList(List<Surrendervals> surrenderValueList) {
 		this.surrenderValueList = surrenderValueList;
+	}
+
+
+
+	@OneToMany(mappedBy="quotationDetails",targetEntity=PensionShedule.class)
+	public List<PensionShedule> getPensionShedules() {
+		return pensionShedules;
+	}
+
+
+
+
+	public void setPensionShedules(List<PensionShedule> pensionShedules) {
+		this.pensionShedules = pensionShedules;
 	}
 }

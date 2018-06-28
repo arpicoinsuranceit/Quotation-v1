@@ -71,6 +71,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
 		    //LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
 			LocalDate currentDate = LocalDate.now();
+
 		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 		    diffInYears+=1;
 		    String age=Long.toString(diffInYears);
