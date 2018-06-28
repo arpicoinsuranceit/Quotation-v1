@@ -48,6 +48,7 @@ public class LoginServiceImpl implements LoginService{
 
 	@Override
 	public List<Login> getAllLogin() throws Exception {
+		//throw new RuntimeException("Just the message");
 		List<Login> logins = new ArrayList<>();
 		loginDao.findAll().forEach(logins::add);
 		return logins;

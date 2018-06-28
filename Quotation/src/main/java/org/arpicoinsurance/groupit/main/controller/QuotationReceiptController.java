@@ -8,11 +8,13 @@ import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
 import org.arpicoinsurance.groupit.main.model.Shedule;
+import org.arpicoinsurance.groupit.main.model.Surrendervals;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationReceiptService;
 import org.arpicoinsurance.groupit.main.service.SheduleService;
+import org.arpicoinsurance.groupit.main.service.SurrenderValService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +42,9 @@ public class QuotationReceiptController {
 	@Autowired
 	private SheduleService sheduleService;
 	
+	@Autowired
+	private SurrenderValService surrenderValsService;
+	
 	@RequestMapping(value = "/quotationsearch/{id}")
 	public List<QuotationSearch> getQuotationList(@PathVariable String id){
 		try {
@@ -63,6 +68,7 @@ public class QuotationReceiptController {
 	@RequestMapping(value="/getQuoDetail",method=RequestMethod.POST)
 	public ViewQuotation viewQuotation(@RequestParam("qdId") Integer qdId,@RequestParam("qId") Integer qId) {
 		try {
+			
 			ViewQuotation viewQuo=quoBenefDetailService.getQuotationDetail(qdId, qId);
 			System.out.println(viewQuo.get_mainlife().get_mCustCode() + "   custCode");
 			return viewQuo;
@@ -95,7 +101,6 @@ public class QuotationReceiptController {
 		try {
 			List<MediTestReceiptHelper> list =  healthRequirmentsService.getMediTestByQuoDetails(qdId);
 			
-			System.out.println("aa");
 			list.forEach(e -> System.out.println(e.toString()));
 			
 			return list;
@@ -105,6 +110,23 @@ public class QuotationReceiptController {
 		return new ArrayList<MediTestReceiptHelper>();
 	}
 	
+	@RequestMapping(value="/getSurrenderVals",method=RequestMethod.POST)
+	public List<Surrendervals> getSurrenderValsHelper(@RequestParam("qdId") Integer qdId){
+
+		
+		try {
+			List<Surrendervals> list =  surrenderValsService.getSurrenderValBuQuotationDetails(qdId);
+			
+			System.out.println("sur : "+list.size());
+			list.forEach(e -> System.out.println(e.toString()));
+			
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<Surrendervals>();
+	}
+	
 	
 	
 	@RequestMapping(value="/isavailable",method=RequestMethod.POST)
@@ -112,6 +134,19 @@ public class QuotationReceiptController {
 	
 		try {
 			if(quotationDetailService.isAvailable(qdId, qId)) {
+				return "true";
+			}
+			return "false";
+		}catch (Exception e) {
+			return "false";
+		}
+	}
+	
+	@RequestMapping(value="/updateStatus",method=RequestMethod.POST)
+	public String updateStatus (@RequestParam("qdId") Integer qdId) {
+	
+		try {
+			if(quotationDetailService.updateStatus(qdId)) {
 				return "true";
 			}
 			return "false";

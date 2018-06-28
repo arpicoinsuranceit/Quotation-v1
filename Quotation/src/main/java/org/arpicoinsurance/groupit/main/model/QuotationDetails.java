@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class QuotationDetails implements Serializable{
@@ -52,8 +54,18 @@ public class QuotationDetails implements Serializable{
 	private String quotationModifyBy;
 	private Date quotationModifyDate;
 	
+	private Double premium = 0.0;
+	
+	
+	private List<Surrendervals> surrenderValueList;
+	
+	private List<PensionShedule> pensionShedules;
+	
 	public QuotationDetails() {}
+	
 
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getQdId() {
@@ -316,5 +328,44 @@ public class QuotationDetails implements Serializable{
 
 	public void setRetirmentAge(Integer retirmentAge) {
 		this.retirmentAge = retirmentAge;
+	}
+
+	public Date getQuotationCreateDate() {
+		return quotationCreateDate;
+	}
+
+	public void setQuotationCreateDate(Date quotationCreateDate) {
+		this.quotationCreateDate = quotationCreateDate;
+	}
+
+	public Double getPremium() {
+		return premium;
+	}
+
+	public void setPremium(Double premium) {
+		this.premium = premium;
+	}
+
+	@OneToMany(mappedBy="quotationDetails",targetEntity=Surrendervals.class)
+	public List<Surrendervals> getSurrenderValueList() {
+		return surrenderValueList;
+	}
+
+	public void setSurrenderValueList(List<Surrendervals> surrenderValueList) {
+		this.surrenderValueList = surrenderValueList;
+	}
+
+
+
+	@OneToMany(mappedBy="quotationDetails",targetEntity=PensionShedule.class)
+	public List<PensionShedule> getPensionShedules() {
+		return pensionShedules;
+	}
+
+
+
+
+	public void setPensionShedules(List<PensionShedule> pensionShedules) {
+		this.pensionShedules = pensionShedules;
 	}
 }

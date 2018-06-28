@@ -52,7 +52,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -131,31 +130,35 @@ public class INVPServiceImpl implements INVPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			System.out.println("Invp Frequency : " + quotationCalculation.get_personalInfo().getFrequance());
+			// System.out.println("Invp Frequency : " +
+			// quotationCalculation.get_personalInfo().getFrequance());
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
+			System.out.println(rebate + " : rebate");
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
-					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
-			
+					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true,
+					rebate);
+
 			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
-			
+					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false, 1);
+
+		//System.out.println(bsaYearly);
 			calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
-			//System.out.println(bsaPremium.doubleValue() + " bbbbbbbbbbbbbbbbbbbbaaaaaaaaassssssiiiicccccc Premium");
-			//calResp.setBasicSumAssured(bsaPremium.doubleValue());
+			calResp.setBasicSumAssured(bsaPremium.doubleValue());
+
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			 quotationCalculation.get_personalInfo().getSgenger()!=null){
+			if (quotationCalculation.get_personalInfo().getSage() != null
+					&& quotationCalculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			}
 
@@ -192,7 +195,7 @@ public class INVPServiceImpl implements INVPService {
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double intrat, Date chedat, double bassum, int paytrm,
-			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading, double rebate) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
@@ -209,15 +212,19 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println("Pay Trm :" + paytrm);
+		// System.out.println("Pay Trm :" + paytrm);
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
-				.multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
+				.multiply(new BigDecimal(bassum)))
+						.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
+						.multiply((new BigDecimal(1).subtract(
+								(new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))))
+						.setScale(0, RoundingMode.HALF_UP);
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		if(isAddOccuLoading) {
+		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-			
+
 		}
 		return premium.multiply(new BigDecimal(rate));
 	}
@@ -230,13 +237,13 @@ public class INVPServiceImpl implements INVPService {
 		RateCardINVP rateCardINVP = rateCardINVPDao
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
-		System.out.println("age : " + age);
-		System.out.println("term : " + term);
-		System.out.println("intrat : " + intrat);
-		System.out.println("paytrm : " + paytrm);
-		System.out.println("Sumasu : " + rateCardINVP.getSumasu());
-		System.out.println("SumRate : " + rateCardINVP.getSumasu());
-		System.out.println("Rate : " + rateCardINVP.getRate());
+		// System.out.println("age : " + age);
+		// System.out.println("term : " + term);
+		// System.out.println("intrat : " + intrat);
+		// System.out.println("paytrm : " + paytrm);
+		// System.out.println("Sumasu : " + rateCardINVP.getSumasu());
+		// System.out.println("SumRate : " + rateCardINVP.getSumasu());
+		// System.out.println("Rate : " + rateCardINVP.getRate());
 
 		maturity = (new BigDecimal(rateCardINVP.getRate()).divide(new BigDecimal(rateCardINVP.getSumasu()), 20,
 				RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)).setScale(0, RoundingMode.HALF_UP);
@@ -245,15 +252,20 @@ public class INVPServiceImpl implements INVPService {
 	}
 
 	@Override
-	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
-		
+
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
+		if (productDao.findByProductCode("INVP").getActive() == 0) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -277,7 +289,8 @@ public class INVPServiceImpl implements INVPService {
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
 		mainLifeDetail.setCustomer(mainlife);
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob() + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
+		// System.out.println(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mDob()
+		// + " hhhhhhhhhhhhh hhhhhhhhhhhhhhhh");
 
 		Customer spouse = null;
 		if (_invpSaveQuotation.get_personalInfo().get_spouse() != null
@@ -427,7 +440,7 @@ public class INVPServiceImpl implements INVPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -481,31 +494,38 @@ public class INVPServiceImpl implements INVPService {
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		System.out.println("age : " + age + " term : " + term + " BSA premium : " + premium + " paytrm : " + paytrm
-				+ " Rate : " + rateCardATFESC.getRate());
+		// System.out.println("age : " + age + " term : " + term + " BSA premium : " +
+		// premium + " paytrm : " + paytrm
+		// + " Rate : " + rateCardATFESC.getRate());
 		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
 				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
-		System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " + (premium - lifpos.doubleValue()));
+		// System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " +
+		// (premium - lifpos.doubleValue()));
 		return lifpos;
 	}
 
 	@Override
-	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
+		if (productDao.findByProductCode("INVP").getActive() == 0) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
 		QuotationQuickCalResponse calResp = getCalcutatedInvp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
 
-		Products products = productDao.findByProductCode("INVP");
+		//Products products = productDao.findByProductCode("INVP");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -557,7 +577,7 @@ public class INVPServiceImpl implements INVPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-
+		quotation.setStatus("active");
 		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
 				calResp.getBasicSumAssured(),
@@ -676,7 +696,7 @@ public class INVPServiceImpl implements INVPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

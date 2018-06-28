@@ -1,16 +1,17 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.ASFPService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,11 +26,14 @@ public class QuotationAsfpCalculationController {
 	@Autowired
 	private ASFPService asfpService;
 
+	@Autowired
+	private LogService logService;
+
 	// private Double totPre=0.0;
 
 	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
-	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		System.out.println(calculation.get_personalInfo().getMgenger());
+	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
+		// System.out.println(calculation.get_personalInfo().getMgenger());
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -42,7 +46,7 @@ public class QuotationAsfpCalculationController {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return calRespPost;
+						return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
 					}
 				} else {
 					calResp.setErrorExist(true);
@@ -56,27 +60,36 @@ public class QuotationAsfpCalculationController {
 			if (calResp.getL2() == 0) {
 				calResp.setL2(calculation.get_personalInfo().getBsa());
 			}
-
-			return calResp;
+			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationAsfpCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
-	public HashMap<String, Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		System.out.println(id);
-		String resp = "Fail";
+		// System.out.println(id);
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 
 		QuotationCalculation calculation = null;
 		Validation validation = null;
-		CalculationUtils utils = new CalculationUtils();
 		try {
 			if (id != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
@@ -91,8 +104,12 @@ public class QuotationAsfpCalculationController {
 
 							// if(validation.validateAsfpProdTotPremium(totPre,utils.getPayterm(calculation.get_personalInfo().getFrequance())).equals(1))
 							// {
-							responseMap = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
-
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = asfpService.saveQuotation(calculation, _invpSaveQuotation, id);
+							} else {
+								responseMap.replace("status", error);
+							}
 							// }else {
 							/// resp = "Total Premium times frequency must be greater than 1250 times
 							// frequency";
@@ -111,9 +128,24 @@ public class QuotationAsfpCalculationController {
 				responseMap.replace("status", "User can't be identify");
 
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationAsfpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation"
+					+ _invpSaveQuotation.toString() + ", id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("saveAsfp : QuotationAsfpCalculationController");
+			logs.setUserId(id);
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -123,19 +155,16 @@ public class QuotationAsfpCalculationController {
 			}
 		}
 
-		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoAsfpEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public HashMap<String, Object> editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
-		System.out.println(qdId);
-		String resp = "Fail";
+		// System.out.println(qdId);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 		Validation validation = null;
-		CalculationUtils utils = new CalculationUtils();
 		try {
 			if (userId != null) {
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
@@ -149,9 +178,9 @@ public class QuotationAsfpCalculationController {
 						if (error.equals("No")) {
 
 							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-							
+
 						} else {
-							resp = error;
+							responseMap.replace("status", error);
 						}
 					} else {
 						responseMap.replace("status", "Error at product");
@@ -163,9 +192,24 @@ public class QuotationAsfpCalculationController {
 				responseMap.replace("status", "User can't be identify");
 
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationAsfpCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation"
+					+ _invpSaveQuotation.toString() + ", userId : " + userId + ", qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editAsfp : QuotationAsfpCalculationController");
+			logs.setUserId(userId);
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -174,8 +218,6 @@ public class QuotationAsfpCalculationController {
 				validation = null;
 			}
 		}
-
-		return responseMap;
 	}
 
 }

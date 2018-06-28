@@ -24,4 +24,12 @@ public class QuotationCalculation{
 		this._product = _product;
 	}
 	
+	@Override
+	public String toString() {
+		return "QuotationCalculation [_product=" + _product + ", _personalInfo=" + _personalInfo + ", _riderDetails="
+				+ _riderDetails + "]" + _personalInfo.toString() + _riderDetails;
+	}
+	
+	
+	
 }

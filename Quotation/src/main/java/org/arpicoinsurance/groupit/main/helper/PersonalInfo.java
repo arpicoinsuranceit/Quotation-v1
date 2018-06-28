@@ -15,6 +15,8 @@ public class PersonalInfo {
 	private Double bsa;
 	private Double intrate;
 	private Double msfb;
+	private Integer pensionPaingTerm;
+	private Integer retAge;
 	private Double mPreviousSumAtRisk;
 	private Double sPreviousSumAtRisk;
 	
@@ -140,6 +142,39 @@ public class PersonalInfo {
 		this.sPreviousSumAtRisk = sPreviousSumAtRisk;
 	}
 
+	public Integer getPensionPaingTerm() {
+		return pensionPaingTerm;
+	}
+
+	public void setPensionPaingTerm(Integer pensionPaingTerm) {
+		this.pensionPaingTerm = pensionPaingTerm;
+	}
+
+	public Integer getRetAge() {
+		return retAge;
+	}
+
+	public void setRetAge(Integer retAge) {
+		this.retAge = retAge;
+	}
+
+	@Override
+	public String toString() {
+		String childrenString = "children : ";
+
+		if (childrens != null) {
+
+			for (Children children : childrens) {
+				childrenString += children.toString();
+			}
+		}
+		
+		return "PersonalInfo [mage=" + mage + ", mgenger=" + mgenger + ", mocu=" + mocu + ", sage=" + sage
+				+ ", sgenger=" + sgenger + ", socu=" + socu + ", term=" + term + ", payingterm=" + payingterm
+				+ ", frequance=" + frequance + ", bsa=" + bsa + ", intrate=" + intrate + ", msfb=" + msfb
+				+ ", pensionPaingTerm=" + pensionPaingTerm + ", retAge=" + retAge + ", mPreviousSumAtRisk="
+				+ mPreviousSumAtRisk + ", sPreviousSumAtRisk=" + sPreviousSumAtRisk + ", childrens=" + childrens + "]" + childrenString;
+	}
 		
 }
 

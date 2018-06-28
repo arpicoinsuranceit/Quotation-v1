@@ -1,14 +1,13 @@
 package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ViewQuotation {
 	private String productCode;
 	private String productName;
 	private Integer quoDetailId;
 	private Integer quotationId;
-	private Date quotationDate;
+	private String quotationDate;
 	private MainLife _mainlife;
 	private Spouse _spouse;
 	private ArrayList<Children> _children;
@@ -71,10 +70,10 @@ public class ViewQuotation {
 	public void setQuoDetailId(Integer quoDetailId) {
 		this.quoDetailId = quoDetailId;
 	}
-	public Date getQuotationDate() {
+	public String getQuotationDate() {
 		return quotationDate;
 	}
-	public void setQuotationDate(Date quotationDate) {
+	public void setQuotationDate(String quotationDate) {
 		this.quotationDate = quotationDate;
 	}
 	public String getProductName() {

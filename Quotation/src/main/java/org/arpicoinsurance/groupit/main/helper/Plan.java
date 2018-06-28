@@ -165,4 +165,13 @@ public class Plan {
 		this.sumatRiskSpouse = sumatRiskSpouse;
 	}
 	
+	@Override
+	public String toString() {
+		return "Plan [_term=" + _term + ", _frequance=" + _frequance + ", _bsa=" + _bsa + ", contribution="
+				+ contribution + ", _interestRate=" + _interestRate + ", _payingterm=" + _payingterm + ", _msfb="
+				+ _msfb + ", _bsaTotal=" + _bsaTotal + ", _nomineeName=" + _nomineeName + ", _nomineedob=" + _nomineedob
+				+ ", _nomineeAge=" + _nomineeAge + ", _nomoneeRelation=" + _nomoneeRelation + ", pensionPaingTerm="
+				+ pensionPaingTerm + ", retAge=" + retAge + ", age=" + age + "]";
+	}
+	
 }

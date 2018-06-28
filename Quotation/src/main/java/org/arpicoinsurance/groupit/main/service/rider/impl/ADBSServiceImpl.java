@@ -15,7 +15,7 @@ public class ADBSServiceImpl implements ADBSService{
 	@Override
 	public BigDecimal calculateADBS(double ridsumasu, String payFrequency, double relief,  double occupation_loding)
 			throws Exception {
-		System.out.println("ADBS ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
+//		System.out.println("ADBS ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumADBS = new BigDecimal(0);
 		if(payFrequency.equalsIgnoreCase("S")){
 			//(((1*@rider_sum_assured@)/1000))*@relief@
@@ -26,7 +26,7 @@ public class ADBSServiceImpl implements ADBSService{
 		}
 		
 		premiumADBS = premiumADBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumADBS : "+premiumADBS.toString());
+//		System.out.println("premiumADBS : "+premiumADBS.toString());
 		return premiumADBS;
 	}
 }

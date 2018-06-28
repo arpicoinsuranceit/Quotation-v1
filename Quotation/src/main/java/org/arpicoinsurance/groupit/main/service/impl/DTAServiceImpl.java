@@ -28,15 +28,12 @@ import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.model.Benefits;
-import org.arpicoinsurance.groupit.main.model.Child;
-import org.arpicoinsurance.groupit.main.model.CustChildDetails;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
-import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
@@ -51,7 +48,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -128,8 +124,8 @@ public class DTAServiceImpl implements DTAService {
 		
 		DTAHelper dtaHelper = new DTAHelper();
 
-		System.out.println(
-				"age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex + " loanamt : " + loanamt);
+//		System.out.println(
+//				"age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex + " loanamt : " + loanamt);
 
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal total_premium = new BigDecimal(0);
@@ -180,19 +176,19 @@ public class DTAServiceImpl implements DTAService {
 
 			total_premium = total_premium.add(occuLodingPremium);
 
-			System.out.println("polyer : " + String.valueOf(i));
-			System.out.println("outyer : " + String.valueOf(term - (i - 1)));
-			System.out.println("outsum : " + amount.toPlainString());
-			System.out.println("lonred : " + reduction.toPlainString());
-			System.out.println("prmrat : " + rateCardDTA.getRate());
-			System.out.println("premum : " + occuLodingPremium.toPlainString());
+//			System.out.println("polyer : " + String.valueOf(i));
+//			System.out.println("outyer : " + String.valueOf(term - (i - 1)));
+//			System.out.println("outsum : " + amount.toPlainString());
+//			System.out.println("lonred : " + reduction.toPlainString());
+//			System.out.println("prmrat : " + rateCardDTA.getRate());
+//			System.out.println("premum : " + occuLodingPremium.toPlainString());
 
 			amount = outstanding;
 
 		}
 		dtaHelper.setBsa(total_premium);
 		dtaHelper.setDtaSheduleList(dtaSheduleList);
-		System.out.println("total_premium : " + total_premium.toString());
+//		System.out.println("total_premium : " + total_premium.toString());
 		return dtaHelper;
 	}
 
@@ -204,8 +200,8 @@ public class DTAServiceImpl implements DTAService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-
+			//Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			//System.out.println(rebate + " : rebate");
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(), quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getIntrate(),
@@ -229,13 +225,13 @@ public class DTAServiceImpl implements DTAService {
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			
-			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
+//			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
-			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
-			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
-			Double extraOE = adminFee + tax;
+			//Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			Double tax = calculationUtils.getTaxAmount(tot);
+			Double extraOE = tax;
 
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
@@ -255,9 +251,19 @@ public class DTAServiceImpl implements DTAService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		Quotation quo =null;
 		
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
+		
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
 
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(id);
@@ -304,7 +310,8 @@ public class DTAServiceImpl implements DTAService {
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
-
+		quotationDetails.setPolicyFee(450.00);
+		
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
@@ -388,7 +395,7 @@ public class DTAServiceImpl implements DTAService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -436,7 +443,17 @@ public class DTAServiceImpl implements DTAService {
 		
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
-		Products products = productDao.findByProductCode("DTA");
+		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
+		
+		//Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -475,6 +492,8 @@ public class DTAServiceImpl implements DTAService {
 		mainLifeDetail.setCustomer(mainlife);
 
 		Quotation quotation = quotationDetails.getQuotation();
+		quotation.setStatus("active");
+		
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -572,7 +591,7 @@ public class DTAServiceImpl implements DTAService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

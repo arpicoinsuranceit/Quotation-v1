@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardAIBDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
-import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
@@ -34,7 +32,6 @@ import org.arpicoinsurance.groupit.main.service.AIBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -73,7 +70,7 @@ public class AIBServiceImpl implements AIBService {
 	@Override
 	public BigDecimal calculateAIBMaturaty(Integer term, Double adbrat, Double fundmarat, Double fundrat,
 			Double contribution, Date chedat, String paymod) throws Exception {
-		System.out.println(contribution);
+		//System.out.println(contribution);
 		CalculationUtils calculationUtils = new CalculationUtils();
 		BigDecimal maturity = new BigDecimal(0);
 		BigDecimal open_fund = new BigDecimal("0");
@@ -91,8 +88,8 @@ public class AIBServiceImpl implements AIBService {
 		RateCardAIB rateCardAIB = rateCardAIBDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term,
 				chedat, chedat, chedat, chedat);
 		BigDecimal interest_rate = new BigDecimal(rateCardAIB.getRate());
-		System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : " + fundmarat + " fundrat : "
-				+ fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
+		//System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : " + fundmarat + " fundrat : "
+		//		+ fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
 		for (int i = 1; i <= term; i++) {
 			for (int j = 1; j <= calculationUtils.getPayterm(paymod); j++) {
 
@@ -126,7 +123,7 @@ public class AIBServiceImpl implements AIBService {
 
 		}
 
-		System.out.println("maturity : " + total_amount.toString());
+		//System.out.println("maturity : " + total_amount.toString());
 		maturity = total_amount.setScale(0, BigDecimal.ROUND_UP);
 		return maturity;
 	}
@@ -139,7 +136,7 @@ public class AIBServiceImpl implements AIBService {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
 		Products products = productDao.findByProductCode("AIB");
-		System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		//System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 		/*
 		 * BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new
@@ -276,7 +273,7 @@ public class AIBServiceImpl implements AIBService {
 		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
 		Products products = productDao.findByProductCode("AIB");
-		System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		//System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 		/*BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S");*/
 		Double adminFee = calculationUtils.getAdminFee("S");

@@ -211,7 +211,7 @@ public class UsersServiceImpl implements UsersService {
 				File currentFile = new File(userProfilePictureCurrent.getUrl());
 				if (currentFile.exists()) {
 					
-					System.out.println("Called");
+//					System.out.println("Called");
 					File dest = new File(UPLOADED_FOLDER + "old_" + userProfilePicturePending.getUsers().getUserCode()+"_"+(oldList.size()+1));
 					if (dest.exists()) {
 						dest.delete();

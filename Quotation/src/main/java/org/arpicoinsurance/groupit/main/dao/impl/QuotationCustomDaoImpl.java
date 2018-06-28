@@ -8,7 +8,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.arpicoinsurance.groupit.main.dao.custom.QuotationCustomDao;
-import org.arpicoinsurance.groupit.main.helper.MedicalRequirementsHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

@@ -20,7 +20,7 @@ public class WPBSServiceImpl implements WPBSService {
 		premiumWPBS = premiumWPBS.add(new BigDecimal(calResp.getCibs() == null ? 0.0 : calResp.getCibs()));
 		premiumWPBS = premiumWPBS.multiply(new BigDecimal(0.05)).setScale(0, RoundingMode.HALF_UP);
 		premiumWPBS = premiumWPBS.multiply(new BigDecimal(OccuLoading)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumWPBS : "+premiumWPBS.toString());
+//		System.out.println("premiumWPBS : "+premiumWPBS.toString());
 		return premiumWPBS;
 	}
 

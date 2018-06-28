@@ -2,6 +2,9 @@ package org.arpicoinsurance.groupit.main.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.arpicoinsurance.groupit.main.model.PensionShedule;
 
 public class QuotationQuickCalResponse {
 	private Double basicSumAssured = 0.00;
@@ -14,6 +17,9 @@ public class QuotationQuickCalResponse {
 	
 	
 	private Double l2=0.00;
+	private Integer l2term=0;
+	private Double l2Sum=0.00;
+	
 	private Double at6= 0.00;
 	private Double at8= 0.00;
 	private Double at10= 0.00;
@@ -219,6 +225,18 @@ public class QuotationQuickCalResponse {
 	private HashMap<String, Object> mainLifeHealthReq = null;
 	private HashMap<String, Object> spouseHealthReq = null;
 	
+	private Double pensionPremium1 = 0.0;
+	private Double pensionPremium2 = 0.0;
+	private Double pensionPremium3 = 0.0;
+	
+	
+	private boolean isArp = false;
+	private String payTerm; 
+	
+	private List<SurrenderValHelper> surrenderValHelpers = null;
+	
+	private List<PensionShedule> pensionShedules  = null;
+	
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
 	}
@@ -266,6 +284,18 @@ public class QuotationQuickCalResponse {
 	}
 	public void setL2(Double l2) {
 		this.l2 = l2;
+	}
+	public Double getL2Sum() {
+		return l2Sum;
+	}
+	public void setL2Sum(Double l2Sum) {
+		this.l2Sum = l2Sum;
+	}
+	public Integer getL2term() {
+		return l2term;
+	}
+	public void setL2term(Integer l2term) {
+		this.l2term = l2term;
 	}
 	public Double getAt6() {
 		return at6;
@@ -1143,46 +1173,49 @@ public class QuotationQuickCalResponse {
 	}
 	public void setSpouseHealthReq(HashMap<String, Object> spouseHealthReq) {
 		this.spouseHealthReq = spouseHealthReq;
-	}/*
-	@Override
-	public String toString() {
-		return "QuotationQuickCalResponse [basicSumAssured=" + basicSumAssured + ", extraOE=" + extraOE + ", addBenif="
-				+ addBenif + ", totPremium=" + totPremium + ", occuLodingTot=" + occuLodingTot + ", withoutLoadingTot="
-				+ withoutLoadingTot + ", l2=" + l2 + ", at6=" + at6 + ", at8=" + at8 + ", at10=" + at10
-				+ ", guaranteed=" + guaranteed + ", adb=" + adb + ", adbBsa=" + adbBsa + ", adbTerm=" + adbTerm
-				+ ", sfpo=" + sfpo + ", sfpoBsa=" + sfpoBsa + ", sfpoTerm=" + sfpoTerm + ", atpb=" + atpb + ", atpbBsa="
-				+ atpbBsa + ", atpbTerm=" + atpbTerm + ", cib=" + cib + ", cibBsa=" + cibBsa + ", cibTerm=" + cibTerm
-				+ ", feb=" + feb + ", febBsa=" + febBsa + ", febTerm=" + febTerm + ", hb=" + hb + ", hbBsa=" + hbBsa
-				+ ", hbTerm=" + hbTerm + ", mifdb=" + mifdb + ", mifdbBsa=" + mifdbBsa + ", mifdbTerm=" + mifdbTerm
-				+ ", mifdbt=" + mifdbt + ", mifdbtBsa=" + mifdbtBsa + ", mifdbtTerm=" + mifdbtTerm + ", mifdt=" + mifdt
-				+ ", mifdtBsa=" + mifdtBsa + ", mifdtTerm=" + mifdtTerm + ", ppdb=" + ppdb + ", ppdbBsa=" + ppdbBsa
-				+ ", ppdbTerm=" + ppdbTerm + ", suhrb=" + suhrb + ", suhrbBsa=" + suhrbBsa + ", suhrbTerm=" + suhrbTerm
-				+ ", tpdasb=" + tpdasb + ", tpdasbBsa=" + tpdasbBsa + ", tpdasbTerm=" + tpdasbTerm + ", tpdb=" + tpdb
-				+ ", tpdbBsa=" + tpdbBsa + ", tpdbTerm=" + tpdbTerm + ", wpb=" + wpb + ", wpbBsa=" + wpbBsa
-				+ ", wpbTerm=" + wpbTerm + ", bsas=" + bsas + ", bsasBsa=" + bsasBsa + ", bsasTerm=" + bsasTerm
-				+ ", adbs=" + adbs + ", adbsBsa=" + adbsBsa + ", adbsTerm=" + adbsTerm + ", cibs=" + cibs + ", cibsBsa="
-				+ cibsBsa + ", cibsTerm=" + cibsTerm + ", febs=" + febs + ", febsBsa=" + febsBsa + ", febsTerm="
-				+ febsTerm + ", hbs=" + hbs + ", hbsBsa=" + hbsBsa + ", hbsTerm=" + hbsTerm + ", ppdbs=" + ppdbs
-				+ ", ppdbsBsa=" + ppdbsBsa + ", ppdbsTerm=" + ppdbsTerm + ", suhrbs=" + suhrbs + ", suhrbsBsa="
-				+ suhrbsBsa + ", suhrbsTerm=" + suhrbsTerm + ", tpdasbs=" + tpdasbs + ", tpdasbsBsa=" + tpdasbsBsa
-				+ ", tpdasbsTerm=" + tpdasbsTerm + ", tpdbs=" + tpdbs + ", tpdbsBsa=" + tpdbsBsa + ", tpdbsTerm="
-				+ tpdbsTerm + ", wpbs=" + wpbs + ", wpbsBsa=" + wpbsBsa + ", wpbsTerm=" + wpbsTerm + ", cibc=" + cibc
-				+ ", cibcBsa=" + cibcBsa + ", cibcTerm=" + cibcTerm + ", hbc=" + hbc + ", hbcBsa=" + hbcBsa
-				+ ", hbcTerm=" + hbcTerm + ", suhrbc=" + suhrbc + ", suhrbcBsa=" + suhrbcBsa + ", suhrbcTerm="
-				+ suhrbcTerm + ", jlb=" + jlb + ", jlbBsa=" + jlbBsa + ", jlbTerm=" + jlbTerm + ", jlbpl=" + jlbpl
-				+ ", jlbplBsa=" + jlbplBsa + ", jlbplTerm=" + jlbplTerm + ", tpddta=" + tpddta + ", tpddtaBsa="
-				+ tpddtaBsa + ", tpddtaTerm=" + tpddtaTerm + ", tpddtas=" + tpddtas + ", tpddtasBsa=" + tpddtasBsa
-				+ ", tpddtasTerm=" + tpddtasTerm + ", tpddtapl=" + tpddtapl + ", tpddtaplBsa=" + tpddtaplBsa
-				+ ", tpddtaplTerm=" + tpddtaplTerm + ", tpddtaspl=" + tpddtaspl + ", tpddtasplBsa=" + tpddtasplBsa
-				+ ", tpddtasplTerm=" + tpddtasplTerm + ", hrbi=" + hrbi + ", hrbiBsa=" + hrbiBsa + ", hrbiTerm="
-				+ hrbiTerm + ", hrbf=" + hrbf + ", hrbfBsa=" + hrbfBsa + ", hrbfTerm=" + hrbfTerm + ", hrbis=" + hrbis
-				+ ", hrbisBsa=" + hrbisBsa + ", hrbisTerm=" + hrbisTerm + ", hrbfs=" + hrbfs + ", hrbfsBsa=" + hrbfsBsa
-				+ ", hrbfsTerm=" + hrbfsTerm + ", hrbic=" + hrbic + ", hrbicBsa=" + hrbicBsa + ", hrbicTerm="
-				+ hrbicTerm + ", hrbfc=" + hrbfc + ", hrbfcBsa=" + hrbfcBsa + ", hrbfcTerm=" + hrbfcTerm
-				+ ", dtaShedules=" + dtaShedules + ", isErrorExist=" + isErrorExist + ", error=" + error
-				+ ", isWarningExist=" + isWarningExist + ", warning=" + warning + "]";
 	}
-	*/
+	public Double getPensionPremium1() {
+		return pensionPremium1;
+	}
+	public void setPensionPremium1(Double pensionPremium1) {
+		this.pensionPremium1 = pensionPremium1;
+	}
+	public Double getPensionPremium2() {
+		return pensionPremium2;
+	}
+	public void setPensionPremium2(Double pensionPremium2) {
+		this.pensionPremium2 = pensionPremium2;
+	}
+	public Double getPensionPremium3() {
+		return pensionPremium3;
+	}
+	public void setPensionPremium3(Double pensionPremium3) {
+		this.pensionPremium3 = pensionPremium3;
+	}
+	public boolean isArp() {
+		return isArp;
+	}
+	public void setArp(boolean isArp) {
+		this.isArp = isArp;
+	}
+	public String getPayTerm() {
+		return payTerm;
+	}
+	public void setPayTerm(String payTerm) {
+		this.payTerm = payTerm;
+	}
+	public List<SurrenderValHelper> getSurrenderValHelpers() {
+		return surrenderValHelpers;
+	}
+	public void setSurrenderValHelpers(List<SurrenderValHelper> surrenderValHelpers) {
+		this.surrenderValHelpers = surrenderValHelpers;
+	}
+	public List<PensionShedule> getPensionShedules() {
+		return pensionShedules;
+	}
+	public void setPensionShedules(List<PensionShedule> pensionShedules) {
+		this.pensionShedules = pensionShedules;
+	}
 	
 	
 	

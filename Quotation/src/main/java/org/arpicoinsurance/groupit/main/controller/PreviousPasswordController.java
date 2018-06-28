@@ -6,11 +6,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.arpicoinsurance.groupit.main.encrypt.EncryptData;
 import org.arpicoinsurance.groupit.main.model.Login;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.PreviousPassword;
 import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.PreviousPasswordService;
 import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +31,12 @@ public class PreviousPasswordController {
 	@Autowired
 	private UsersService usersService;
 	
+	@Autowired
+	private LogService logService;
 	
 	@RequestMapping(value="/password",method=RequestMethod.POST)
-	public String changePassword(@RequestBody Login login) {
+	public ResponseEntity<Object> changePassword(@RequestBody Login login) {
+		String resp = "";
 		try {
 			if(isPasswordMatchToPattern(login)) {
 				Users users=usersService.getUser(login.getLocks());
@@ -58,28 +65,42 @@ public class PreviousPasswordController {
 						password.setLogin(users.getLogin());
 						
 						if(previousPasswordService.savePassword(password,login2)) {
-							return "Success";
+							resp = "Success";
 						}else {
-							return "fail";
+							resp = "fail";
 						}
 						
 					}else {
-						return "Used";
+						resp = "Used";
 					}
 				}else {
-					return "Current Pw";
+					resp = "Current Pw";
 				}
 				
 			}else {
-				return "Pw Not Match";
+				resp = "Pw Not Match";
 			}
 			
+			return new ResponseEntity<Object>(resp , HttpStatus.OK);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\nParameters : " + login.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("changePassword : PreviousPasswordController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		return null;
+		//return null;
 	}
 
 	//check password pattern

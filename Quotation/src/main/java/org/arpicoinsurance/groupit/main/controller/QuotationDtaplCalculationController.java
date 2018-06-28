@@ -1,15 +1,18 @@
 package org.arpicoinsurance.groupit.main.controller;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.service.DTAPLService;
+import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +27,11 @@ public class QuotationDtaplCalculationController {
 	@Autowired
 	private DTAPLService dtaplService;
 
+	@Autowired
+	private LogService logService;
+
 	@RequestMapping(value = "/quoDtaplCal", method = RequestMethod.POST)
-	public QuotationQuickCalResponse calculateQuotation(@RequestBody QuotationCalculation calculation) {
+	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		Validation validation = null;
 		QuotationQuickCalResponse calResp = null;
 		try {
@@ -39,7 +45,7 @@ public class QuotationDtaplCalculationController {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
 						calRespPost.setError(calResp.getError());
 						calRespPost.setErrorExist(true);
-						return calRespPost;
+						return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
 					}
 				}
 
@@ -49,17 +55,25 @@ public class QuotationDtaplCalculationController {
 				}
 			} else {
 				calResp.setError("Term is too large for Mainlife age");
-				;
 				calResp.setErrorExist(true);
 			}
-
-			return calResp;
+			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 
 		} catch (Exception e) {
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateQuotation : QuotationDtaplCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (validation != null) {
 				validation = null;
@@ -69,14 +83,13 @@ public class QuotationDtaplCalculationController {
 			}
 
 		}
-		return null;
+		// return null;
 	}
 
 	@RequestMapping(value = "/quoDtaplsave/{id}", method = RequestMethod.POST)
-	public HashMap<String, Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> saveDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) {
-		System.out.println(id);
-		String resp = "Fail";
+		// System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -93,12 +106,18 @@ public class QuotationDtaplCalculationController {
 					String error = validation.validateBenifict();
 
 					if (error.equals("No")) {
-						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
+						error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+						if (error.equalsIgnoreCase("ok")) {
+							if (calculation.get_personalInfo().getMage()
+									+ calculation.get_personalInfo().getTerm() < 70) {
 
-							responseMap = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
-							
+								responseMap = dtaplService.saveQuotation(calculation, _invpSaveQuotation, id);
+
+							} else {
+								responseMap.replace("status", "Term is too large for mainlife age..");
+							}
 						} else {
-							responseMap.replace("status", "Term is too large for mainlife age..");
+							responseMap.replace("status", error);
 						}
 					} else {
 						responseMap.replace("status", error);
@@ -110,11 +129,24 @@ public class QuotationDtaplCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-
-			Logger.getLogger(QuotationDtaplCalculationController.class.getName()).log(Level.SEVERE, null, e);
-
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setUserId(id);
+			logs.setOperation("saveDtapl : QuotationDtaplCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 
 			if (calculation != null) {
@@ -125,20 +157,18 @@ public class QuotationDtaplCalculationController {
 			}
 
 		}
-
-		return responseMap;
 	}
 
 	@RequestMapping(value = "/quoDtaplEdit/{userId}/{qdId}", method = RequestMethod.POST)
-	public HashMap<String, Object> editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+	public ResponseEntity<Object> editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
-		System.out.println(userId);
-		System.out.println(qdId);
-		System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
-
-		String resp = "Fail";
+		/*
+		 * System.out.println(userId); System.out.println(qdId);
+		 * System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
+		 * get_frequance());
+		 */
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -155,12 +185,18 @@ public class QuotationDtaplCalculationController {
 					String error = validation.validateBenifict();
 
 					if (error.equals("No")) {
-						if (calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() < 70) {
+						error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+						if (error.equalsIgnoreCase("ok")) {
+							if (calculation.get_personalInfo().getMage()
+									+ calculation.get_personalInfo().getTerm() < 70) {
 
-							responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							} else {
+								responseMap.replace("status", "Term is too large for mainlife age..");
+
+							}
 						} else {
-							responseMap.replace("status", "Term is too large for mainlife age..");
-
+							responseMap.replace("status", error);
 						}
 					} else {
 						responseMap.replace("status", error);
@@ -172,9 +208,24 @@ public class QuotationDtaplCalculationController {
 			} else {
 				responseMap.replace("status", "User can't be identify");
 			}
-
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
-			Logger.getLogger(QuotationDtaCalculationController.class.getName()).log(Level.SEVERE, null, e);
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setUserId(userId);
+			logs.setOperation("editDtapl : QuotationDtaplCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			if (calculation != null) {
 				calculation = null;
@@ -183,7 +234,5 @@ public class QuotationDtaplCalculationController {
 				validation = null;
 			}
 		}
-
-		return responseMap;
 	}
 }

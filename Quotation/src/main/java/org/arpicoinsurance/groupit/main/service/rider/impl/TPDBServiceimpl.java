@@ -15,7 +15,7 @@ public class TPDBServiceimpl implements TPDBService {
 	@Override
 	public BigDecimal calculateTPDB(double ridsumasu, String payFrequency, double relief, double occupation_loding) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("TPDB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
+//		System.out.println("TPDB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumTPDB = new BigDecimal(0);
 		if(payFrequency.equalsIgnoreCase("S")){
 			// (((0.5*@rider_sum_assured@)/1000))*@relief@
@@ -25,7 +25,7 @@ public class TPDBServiceimpl implements TPDBService {
 			premiumTPDB = (((new BigDecimal(0.5).multiply(new BigDecimal(ridsumasu))).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		premiumTPDB = premiumTPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		System.out.println("premiumTPDB : "+premiumTPDB.toString());
+//		System.out.println("premiumTPDB : "+premiumTPDB.toString());
 		return premiumTPDB;
 	}
 

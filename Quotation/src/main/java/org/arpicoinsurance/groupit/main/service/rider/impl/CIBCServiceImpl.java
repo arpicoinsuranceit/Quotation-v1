@@ -24,14 +24,14 @@ public class CIBCServiceImpl implements CIBCService{
 			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		BigDecimal premiumCIBC = new BigDecimal(0);
-		System.out.println(age + " $ " +term + " $ "+ chedat);
+		//System.out.println(age + " $ " +term + " $ "+ chedat);
 		
-		System.out.println(term + "//////");
+		//System.out.println(term + "//////");
 		RateCardCIBC rateCardCIBC = rateCardCIBCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
 		
-		System.out.println(" Rate : "+rateCardCIBC.getRate());
+		//System.out.println(" Rate : "+rateCardCIBC.getRate());
 
-		System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
+		//System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
 		if(payFrequency.equalsIgnoreCase("S")){
 			// ((@rate@*@rider_sum_assured@/1000))*@relief@
 			premiumCIBC = (new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);		
@@ -40,7 +40,7 @@ public class CIBCServiceImpl implements CIBCService{
 			premiumCIBC = ((new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		
-		System.out.println("premiumCIBC : "+premiumCIBC.toString());
+		//System.out.println("premiumCIBC : "+premiumCIBC.toString());
 		return premiumCIBC;
 	}
 

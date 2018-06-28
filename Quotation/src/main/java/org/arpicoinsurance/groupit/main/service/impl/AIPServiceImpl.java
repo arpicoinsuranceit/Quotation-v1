@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
@@ -72,7 +73,12 @@ public class AIPServiceImpl implements AIPService {
 	}
 
 	public AIPCalResp calculateAIPMaturaty(Integer term, Double adbrat, Double fundmarat, Double intrat,
-			Double contribution, Date chedat, String paymod, boolean schedule, boolean isAddOccuLoading) throws Exception {
+			Double contribution, Date chedat, String paymod, boolean schedule, boolean isAddOccuLoading)
+			throws Exception {
+
+		// throw new RuntimeException("Just Message");
+		
+		
 
 		AIPCalResp aipCalResp = null;
 		ArrayList<AipCalShedule> aipCalShedules = null;
@@ -81,30 +87,30 @@ public class AIPServiceImpl implements AIPService {
 
 			CalculationUtils calculationUtils = new CalculationUtils();
 			BigDecimal maturity = new BigDecimal(0);
-			BigDecimal open_fund = new BigDecimal("0");
-			BigDecimal fund_amount = new BigDecimal("0");
-			BigDecimal balance_bfi = new BigDecimal("0");
-			BigDecimal interest_annum = new BigDecimal("0");
-			BigDecimal balance_bmf = new BigDecimal("0");
-			BigDecimal mgt_fees = new BigDecimal("0");
-			BigDecimal close_bal = new BigDecimal("0");
+			BigDecimal open_fund = new BigDecimal(0);
+			BigDecimal fund_amount = new BigDecimal(0);
+			BigDecimal balance_bfi = new BigDecimal(0);
+			BigDecimal interest_annum = new BigDecimal(0);
+			BigDecimal balance_bmf = new BigDecimal(0);
+			BigDecimal mgt_fees = new BigDecimal(0);
+			BigDecimal close_bal = new BigDecimal(0);
 			BigDecimal premium = new BigDecimal(contribution.doubleValue());
-			BigDecimal total_amount = new BigDecimal("0");
-			BigDecimal cum_premium = new BigDecimal("0");
-			BigDecimal com_premium = new BigDecimal("0");
+			BigDecimal total_amount = new BigDecimal(0);
+			BigDecimal cum_premium = new BigDecimal(0);
+			BigDecimal com_premium = new BigDecimal(0);
 			BigDecimal management_fee = new BigDecimal(fundmarat.doubleValue());
 			BigDecimal interest_rate = new BigDecimal(intrat.doubleValue());
 			BigDecimal adb_rate = new BigDecimal(adbrat.doubleValue());
-			System.out.println(" term : " + term + " adbrat : " + adbrat + " fundmarat : " + fundmarat + " intrat : "
-					+ intrat + " paymod : " + paymod);
+			// System.out.println(" term : " + term + " adbrat : " + adbrat + " fundmarat :
+			// " + fundmarat + " intrat : "
+			// + intrat + " paymod : " + paymod);
 			aipCalShedules = new ArrayList<>();
-
 			RateCardAIP rateCardAIP = null;
 			int polyear = 0;
 			for (int i = 0; i < (term.intValue() * 12); i++) {
-				
+
 				if (i % 12 == 0) {
-					polyear = (polyear+1);
+					polyear = (polyear + 1);
 					if (polyear > 3) {
 						polyear = 4;
 					}
@@ -122,7 +128,8 @@ public class AIPServiceImpl implements AIPService {
 									chedat, chedat);
 				}
 
-				System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " + rateCardAIP.getRate());
+				// System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " +
+				// rateCardAIP.getRate());
 				BigDecimal fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
 
 				// calculationUtils.getPayterm(paymod)
@@ -130,8 +137,9 @@ public class AIPServiceImpl implements AIPService {
 				// for (int j = 1; j <= 12; j++) {
 				AipCalShedule aipCalShedule = new AipCalShedule();
 				if (schedule) {
-					System.out.println("polyer : " + ((i / 12) + 1) + " polmth : " + ((i % 12) + 1) + " opnfun : "
-							+ open_fund.toString());
+					// System.out.println("polyer : " + ((i / 12) + 1) + " polmth : " + ((i % 12) +
+					// 1) + " opnfun : "
+					// + open_fund.toString());
 					aipCalShedule.setPolicyYear(((i / 12) + 1));
 					aipCalShedule.setPolicyMonth(((i % 12) + 1));
 					aipCalShedule.setOpeningFee(open_fund.setScale(0, BigDecimal.ROUND_UP).doubleValue());
@@ -143,8 +151,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("M")) {
 					fund_amount = premium.multiply(fund_rate.divide(new BigDecimal("100"))).setScale(6, 4);
@@ -156,8 +164,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("H")) {
 					if (i % 6 == 0) {
@@ -165,8 +173,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				} else if (paymod.equalsIgnoreCase("Y")) {
 					if (i % 12 == 0) {
@@ -174,8 +182,8 @@ public class AIPServiceImpl implements AIPService {
 						cum_premium = cum_premium.add(premium);
 						com_premium = premium;
 					} else {
-						fund_amount = new BigDecimal("0");
-						com_premium = new BigDecimal("0");
+						fund_amount = new BigDecimal(0);
+						com_premium = new BigDecimal(0);
 					}
 				}
 
@@ -195,10 +203,13 @@ public class AIPServiceImpl implements AIPService {
 
 				if (schedule) {
 
-					System.out.println("cumcon : " + com_premium.toString() + " fndamt : " + fund_amount.toString()
-							+ " fndbfi : " + balance_bfi.toString() + " intanm : " + interest_annum.toString()
-							+ " fndbmf : " + balance_bmf.toString() + " mgtfee : " + mgt_fees.toString() + " fndclo : "
-							+ close_bal.toString() + " fndclo : " + close_bal.toString());
+					/*
+					 * System.out.println("cumcon : " + com_premium.toString() + " fndamt : " +
+					 * fund_amount.toString() + " fndbfi : " + balance_bfi.toString() + " intanm : "
+					 * + interest_annum.toString() + " fndbmf : " + balance_bmf.toString() +
+					 * " mgtfee : " + mgt_fees.toString() + " fndclo : " + close_bal.toString() +
+					 * " fndclo : " + close_bal.toString());
+					 */
 
 					aipCalShedule.setComCon(com_premium.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 					aipCalShedule.setFundAmt(fund_amount.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
@@ -209,11 +220,13 @@ public class AIPServiceImpl implements AIPService {
 					aipCalShedule.setIntAmt(interest_annum.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
 					if (close_bal.compareTo(cum_premium) == -1) {
-						System.out.println("adbcov : " + cum_premium.multiply(adb_rate).setScale(2, 4).toPlainString());
+						// System.out.println("adbcov : " + cum_premium.multiply(adb_rate).setScale(2,
+						// 4).toPlainString());
 
 						aipCalShedule.setAdbCov(cum_premium.multiply(adb_rate).setScale(2, 4).doubleValue());
 					} else {
-						System.out.println("adbcov : " + close_bal.multiply(adb_rate).setScale(2, 4).toPlainString());
+						// System.out.println("adbcov : " + close_bal.multiply(adb_rate).setScale(2,
+						// 4).toPlainString());
 
 						aipCalShedule.setAdbCov(close_bal.multiply(adb_rate).setScale(2, 4).doubleValue());
 					}
@@ -226,14 +239,14 @@ public class AIPServiceImpl implements AIPService {
 
 			}
 
-			System.out.println("maturity " + intrat + " : " + total_amount.toString());
+			// System.out.println("maturity " + intrat + " : " + total_amount.toString());
 
 			maturity = total_amount;
 
 			Double adminFee = calculationUtils.getAdminFee(paymod);
 
 			Double tax = calculationUtils.getTaxAmount(adminFee + contribution);
-			System.out.println(tax);
+			// System.out.println(tax);
 			aipCalResp.setMaturaty(maturity.setScale(0, BigDecimal.ROUND_UP).doubleValue());
 			aipCalResp.setAipCalShedules(aipCalShedules);
 			aipCalResp.setExtraOe(adminFee + tax);
@@ -245,7 +258,6 @@ public class AIPServiceImpl implements AIPService {
 				aipCalResp = null;
 			}
 		}
-
 	}
 
 	@Override
@@ -258,22 +270,32 @@ public class AIPServiceImpl implements AIPService {
 		CustomerDetails customerDetails = null;
 		Quotation quotation = null;
 		QuotationDetails quotationDetails = null;
-		
+
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 		
+		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
 		try {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
-					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
+
+			//System.out.println(fundMrate);
+
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
+
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
@@ -288,6 +310,10 @@ public class AIPServiceImpl implements AIPService {
 			customer.setCustModifyDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
+			try {
+				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
+			} catch (Exception e) { }
+			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
@@ -309,6 +335,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotationCreateBy(user.getUserCode());
 			quotationDetails.setQuotationquotationCreateDate(new Date());
 			quotationDetails.setCustomerDetails(customerDetails);
+			quotationDetails.setPremium(_invpSaveQuotation.get_plan().get_bsa());
 			switch (frequance) {
 			case "M":
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
@@ -468,10 +495,11 @@ public class AIPServiceImpl implements AIPService {
 	@Override
 	public HashMap<String, Object> editQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer userId, Integer qdId)
 			throws Exception {
-		
-		System.out.println(_invpSaveQuotation.get_plan().get_frequance());
-		System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-		System.out.println(_invpSaveQuotation.get_plan().get_term());
+
+		// System.out.println(_invpSaveQuotation.get_plan().get_frequance());
+		// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+		// System.out.println(_invpSaveQuotation.get_plan().get_term());
+
 		
 		CalculationUtils calculationUtils = null;
 		Products products = null;
@@ -483,24 +511,34 @@ public class AIPServiceImpl implements AIPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 		QuotationDetails quotationDetails = null;
+		
+		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+		
 		try {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 9.0, contribution,
+
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
+
+			//System.out.println(fundMrate);
+
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
-			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 10.0,
+			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
-			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, 0.2, 11.0,
+			AIPCalResp aip3 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 11.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
 
 			occupation = occupationDao
 					.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
-			
 
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
@@ -510,7 +548,11 @@ public class AIPServiceImpl implements AIPService {
 			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
-
+			
+			try {
+				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
+			} catch (Exception e) { }
+			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = details.getQuotation();
@@ -522,7 +564,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
 			quotationDetails.setBaseSum(0.0);
-			
+
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
@@ -532,51 +574,53 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setCustomerDetails(customerDetails);
 			Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 			quotationDetails.setTaxAmount(tax);
+
+			quotationDetails.setPremium(_invpSaveQuotation.get_plan().get_bsa());
 			switch (frequance) {
 			case "M":
-				
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
-				System.out.println(adminFee);
-				System.out.println(tax);
-				
+
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// System.out.println(adminFee);
+				// System.out.println(tax);
+
 				quotationDetails.setPremiumMonth(_invpSaveQuotation.get_plan().get_bsa());
-				
+
 				quotationDetails.setPremiumMonthT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "Q":
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
-				System.out.println(adminFee);
-				System.out.println(tax);
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// System.out.println(adminFee);
+				// System.out.println(tax);
 				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumQuaterT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "H":
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
-				System.out.println(adminFee);
-				System.out.println(tax);
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// System.out.println(adminFee);
+				// System.out.println(tax);
 				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumHalfT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "Y":
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
-				System.out.println(adminFee);
-				System.out.println(tax);
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// System.out.println(adminFee);
+				// System.out.println(tax);
 				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumYearT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
 				break;
 			case "S":
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
-				System.out.println(adminFee);
-				System.out.println(tax);
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa());
+				// System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// System.out.println(adminFee);
+				// System.out.println(tax);
 				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());
 				quotationDetails.setPremiumSingleT(_invpSaveQuotation.get_plan().get_bsa() + adminFee + tax);
 
@@ -658,7 +702,7 @@ public class AIPServiceImpl implements AIPService {
 			}
 
 		} finally {
-			
+
 			if (calculationUtils != null) {
 				calculationUtils = null;
 			}

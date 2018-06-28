@@ -50,7 +50,6 @@ import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -131,13 +130,13 @@ public class ATRMServiceImpl implements ATRMService {
 				rate = 1.0;
 			}
 		}
-		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
+//		System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardATRM rateCardATRM = rateCardATRMDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
+//		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardATRM.getRate())
@@ -151,18 +150,18 @@ public class ATRMServiceImpl implements ATRMService {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
-		System.out.println("premium : " + premium.toString());
+//		System.out.println("premium : " + premium.toString());
 		return premium.multiply(new BigDecimal(rate));
 	}
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedAtrm(QuotationCalculation calculation) throws Exception {
-		System.out.println(calculation.get_personalInfo().getMgenger());
-
-		System.out.println(calculation.get_personalInfo().getMgenger()
-				+ "/////////////////////////////////////////////////////////////");
-		System.out.println(calculation.get_personalInfo().getSgenger()
-				+ "/////////////////////////////////////////////////////////////");
+//		System.out.println(calculation.get_personalInfo().getMgenger());
+//
+//		System.out.println(calculation.get_personalInfo().getMgenger()
+//				+ "/////////////////////////////////////////////////////////////");
+//		System.out.println(calculation.get_personalInfo().getSgenger()
+//				+ "/////////////////////////////////////////////////////////////");
 
 		CalculationUtils calculationUtils = null;
 		try {
@@ -171,6 +170,7 @@ public class ATRMServiceImpl implements ATRMService {
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
+			//System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(calculation.get_personalInfo().getMocu(),
 					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
@@ -178,9 +178,10 @@ public class ATRMServiceImpl implements ATRMService {
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp, true);
 
 			BigDecimal bsaYearly = calculateL2(calculation.get_personalInfo().getMocu(),
-					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), rebate,
+					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), 1,
 					new Date(), calculation.get_personalInfo().getBsa(), 1, calResp, false);
 
+			//System.out.println(bsaYearly);
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(calculation, calResp);
@@ -216,6 +217,11 @@ public class ATRMServiceImpl implements ATRMService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ATRM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		if (calResp.isErrorExist()) {
@@ -370,7 +376,7 @@ public class ATRMServiceImpl implements ATRMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -423,6 +429,12 @@ public class ATRMServiceImpl implements ATRMService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		if(productDao.findByProductCode("ATRM").getActive() == 0 ) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtrm(calculation);
 		if (calResp.isErrorExist()) {
@@ -482,7 +494,7 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
-
+		quotation.setStatus("active");
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -589,7 +601,7 @@ public class ATRMServiceImpl implements ATRMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
