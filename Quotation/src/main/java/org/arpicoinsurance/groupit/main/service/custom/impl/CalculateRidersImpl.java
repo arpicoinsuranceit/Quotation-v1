@@ -28,6 +28,7 @@ import org.arpicoinsurance.groupit.main.dao.RateCardTPDDTASDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.RateCardARP;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
@@ -351,12 +352,19 @@ public class CalculateRidersImpl implements CalculateRiders {
 				// "?????????????????????????????????????????????? title");
 				if (_cRiders != null) {
 					for (Benifict benifict : _cRiders) {
-						Integer term = 0;
+						Integer term = quotationCalculation.get_personalInfo().getTerm();
 						// System.out.println("product :" + quotationCalculation.get_product());
 						if (quotationCalculation.get_product().equals("ARP")) {
-							term = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
+							Integer maxterm = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 									quotationCalculation.get_personalInfo().getPayingterm());
+							
+							
+							
+							Integer valiedTerm = maxterm > term ? term : maxterm;
+							term = valiedTerm;
+							
+							
 							if (term < 5) {
 								calResp.setErrorExist(true);
 								calResp.setError(
@@ -364,8 +372,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 								return calResp;
 							}
 						} else {
-							term = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(), benifict.getType(),
+							Integer maxterm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(), benifict.getType(),
 									quotationCalculation.get_personalInfo().getTerm());
+
+							Integer valiedTerm = maxterm > term ? term : maxterm;
+							term = valiedTerm;
 						}
 
 						String benfName = benifict.getType();
@@ -385,6 +396,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 							break;
 
 						case "HBC":
+							System.out.println("HBC : " + term);
 							if (children.is_cHbc()) {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
@@ -431,6 +443,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount,
 			Integer childCount, Double inrate, String productCode) throws Exception {
 
+		System.out.println(age);
+		
 		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
 
 		calculateBenifPremium(type, bsa, gender, age, frequance, term, ocu, calResp, adultCount, childCount, bsa,
@@ -446,6 +460,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		// System.out.println(occupation_id + " ////////////// ocu ID");
 
+		System.out.println(term);
+		
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
 		Double relife = 1.0;
@@ -1677,11 +1693,19 @@ public class CalculateRidersImpl implements CalculateRiders {
 			if (ocuLoading == null)
 				ocuLoading = 1.0;
 
+			System.out.println("calculation term : "+ term );
+			
 			term = term > (21 - age) ? (21 - age) : term;
 
 			Integer maxTermToBenefictHBC = rateCardHBCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHBC = maxTermToBenefictHBC > term ? term : maxTermToBenefictHBC;
 
+			System.out.println("calculation age : "+ term );
+			System.out.println("calculation age : "+ age );
+			System.out.println("calculation term : "+ valiedTermHBC );
+			System.out.println("calculation payterm : "+ calResp.getPayTerm() );
+			System.out.println("calculation date : "+ new Date() );
+			
 			if (calResp.isArp()) {
 
 				RateCardARP rateCardARP = rateCardARPDao
@@ -1690,7 +1714,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			// System.out.println(relife + ": relife");
+			System.out.println(relife + ": relife");
 
 			// ** 21-age < term term = 21-age else term
 			BigDecimal hbc = hbcService.calculateHBC(valiedTermHBC, new Date(), ridsumasu, payFrequency, relife);

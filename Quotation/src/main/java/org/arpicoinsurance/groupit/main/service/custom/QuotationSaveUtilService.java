@@ -37,7 +37,7 @@ public interface QuotationSaveUtilService {
 	 
 	 ArrayList<Quo_Benef_Child_Details> getChildBenif(ArrayList<Quo_Benef_Details> benef_DetailsList,
 				ArrayList<CustChildDetails> custChildDetailsList, ArrayList<Child> childList,
-				ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC)
+				ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC, QuotationQuickCalResponse calResp)
 				throws Exception;
 	 
 	 ArrayList<Shedule> getSheduleDtaDtapl(QuotationQuickCalResponse calResp, QuotationDetails quotationDetails) throws Exception;

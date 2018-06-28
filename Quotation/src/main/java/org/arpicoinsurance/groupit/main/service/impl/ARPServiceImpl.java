@@ -481,12 +481,12 @@ public class ARPServiceImpl implements ARPService {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
-
+//TODO
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(), calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -740,8 +740,7 @@ public class ARPServiceImpl implements ARPService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
-
+							calculation.get_riderDetails().get_cRiders(),calResp);
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");
 						return responseMap;

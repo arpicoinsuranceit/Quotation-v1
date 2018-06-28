@@ -8,6 +8,7 @@ import java.util.List;
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.DTAShedule;
@@ -23,6 +24,7 @@ import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.RateCardARP;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
@@ -53,6 +55,9 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 
 	@Autowired
 	private HRBIService hrbiService;
+	
+	@Autowired
+	private RateCardARPDao rateCardARPDao;
 
 	
 	@Autowired
@@ -636,7 +641,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 
 	public ArrayList<Quo_Benef_Child_Details> getChildBenif(ArrayList<Quo_Benef_Details> benef_DetailsList,
 			ArrayList<CustChildDetails> custChildDetailsList, ArrayList<Child> childList,
-			ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC)
+			ArrayList<Children> get_childrenList, Integer term, String frequancy, ArrayList<Benifict> benifictListC, QuotationQuickCalResponse calResp)
 			throws Exception {
 
 		Double cib = null;
@@ -695,6 +700,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					hrbi = benifict.getSumAssured();
 			}
 
+		Double relife = 1.0;
+		
 		ArrayList<Quo_Benef_Child_Details> childBenifList = new ArrayList<>();
 		for (Children children : get_childrenList) {
 			for (Child child : childList) {
@@ -712,9 +719,18 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 										"CIBC", term);
 								//System.out.println(valiedTerm + "//////////////////// valied term");
 								benef_Child_Details.setTerm(valiedTerm);
+								
+								
+								if (calResp.isArp()) {
+									RateCardARP rateCardARP = rateCardARPDao
+											.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(children.get_cAge(),
+													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
+									relife = rateCardARP.getRate();
+								}
 
+								
 								BigDecimal cibc = cibcService.calculateCIBC(children.get_cAge(), valiedTerm, new Date(),
-										cib, frequancy, 1.0);
+										cib, frequancy, relife);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -732,8 +748,16 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 										"SHCBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
 								//System.out.println(children.get_cTitle() + "                                  test");
+								
+								if (calResp.isArp()) {
+									RateCardARP rateCardARP = rateCardARPDao
+											.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(children.get_cAge(),
+													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
+									relife = rateCardARP.getRate();
+								}
+								
 								BigDecimal cibc = suhrbcService.calculateSUHRBC(children.get_cAge(),
-										child.getChildGender(), valiedTerm, suhrb, new Date(), frequancy, 1.0);
+										child.getChildGender(), valiedTerm, suhrb, new Date(), frequancy, relife);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -748,7 +772,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"HBC", term);
 								benef_Child_Details.setTerm(valiedTerm);
-								BigDecimal cibc = hbcService.calculateHBC(valiedTerm, new Date(), hb, frequancy, 1.0);
+								
+								if (calResp.isArp()) {
+									RateCardARP rateCardARP = rateCardARPDao
+											.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(children.get_cAge(),
+													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
+									relife = rateCardARP.getRate();
+								}
+								
+								BigDecimal cibc = hbcService.calculateHBC(valiedTerm, new Date(), hb, frequancy, relife);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -777,8 +809,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"HCBIC", term);
 								benef_Child_Details.setTerm(valiedTerm);
+								
+								if (calResp.isArp()) {
+									RateCardARP rateCardARP = rateCardARPDao
+											.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(children.get_cAge(),
+													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
+									relife = rateCardARP.getRate();
+								}
 
-								BigDecimal hrbic = hrbiService.calculateHRBI(children.get_cAge(), valiedTerm, children.get_cTitle(), hrbi , new Date(), frequancy, 1.0, 1.0);
+								BigDecimal hrbic = hrbiService.calculateHRBI(children.get_cAge(), valiedTerm, children.get_cTitle(), hrbi , new Date(), frequancy, relife, 1.0);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
@@ -791,6 +830,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd4");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
+								
 								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 										"HCBFC", term);
 								benef_Child_Details.setTerm(valiedTerm);
