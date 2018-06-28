@@ -64,6 +64,7 @@ public class QuotationReceiptController {
 	public ViewQuotation viewQuotation(@RequestParam("qdId") Integer qdId,@RequestParam("qId") Integer qId) {
 		try {
 			ViewQuotation viewQuo=quoBenefDetailService.getQuotationDetail(qdId, qId);
+			System.out.println(viewQuo.get_mainlife().get_mCustCode() + "   custCode");
 			return viewQuo;
 			
 		} catch (Exception e) {
@@ -102,6 +103,21 @@ public class QuotationReceiptController {
 			e.printStackTrace();
 		}
 		return new ArrayList<MediTestReceiptHelper>();
+	}
+	
+	
+	
+	@RequestMapping(value="/isavailable",method=RequestMethod.POST)
+	public String isQuotationAvailable (@RequestParam("qdId") Integer qdId, @RequestParam("qId") Integer qId) {
+	
+		try {
+			if(quotationDetailService.isAvailable(qdId, qId)) {
+				return "true";
+			}
+			return "false";
+		}catch (Exception e) {
+			return "false";
+		}
 	}
 	
 }

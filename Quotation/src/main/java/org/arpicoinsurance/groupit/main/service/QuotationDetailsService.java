@@ -13,5 +13,7 @@ public interface QuotationDetailsService {
 	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception;
 	
 	public QuotationReceipt findQuotationDetailsForReceipt(Integer qdId)throws Exception;
+
+	public boolean isAvailable(Integer qdId, Integer qId)throws Exception;
 	
 }

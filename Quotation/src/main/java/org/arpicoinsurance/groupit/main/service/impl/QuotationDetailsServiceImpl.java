@@ -77,6 +77,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		    
 		    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
 		    
+		    System.out.println(customerDetails.getCustomer().getCustCode());
+		    
 		    mainLife.set_mAge(age);
 		    mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
 		    mainLife.set_mEmail(customerDetails.getCustEmail());
@@ -352,6 +354,15 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		quotationReceipt.setProductCode(details.getQuotation().getProducts().getProductCode());
 		quotationReceipt.setProductName(details.getQuotation().getProducts().getProductName());
 		return quotationReceipt;
+	}
+
+	@Override
+	public boolean isAvailable(Integer qdId, Integer qId) throws Exception {
+		QuotationDetails details = findQuotationDetails(qdId);
+		if(details != null && details.getQuotation().getId().equals(qId)) {
+			return true;
+		}
+		return false;
 	}
 	
 	
