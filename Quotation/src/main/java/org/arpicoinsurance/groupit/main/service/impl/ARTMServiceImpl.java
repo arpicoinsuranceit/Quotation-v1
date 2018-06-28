@@ -323,7 +323,7 @@ public class ARTMServiceImpl implements ARTMService {
 			pensionShedule.setProfit(profit.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setAmtcrtfnd(creditedFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setFndBeforeInt(amountBeforeInterest.setScale(2, RoundingMode.HALF_UP).doubleValue());
-
+			pensionShedule.setVarExpences(veriableExpenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			switch (level) {
 			case 1:
 				pensionShedule.setIntRat1(interest.setScale(2, RoundingMode.HALF_UP).doubleValue());
