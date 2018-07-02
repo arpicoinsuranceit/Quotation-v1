@@ -181,18 +181,21 @@ public class ARTMServiceImpl implements ARTMService {
 					// System.out.println(
 					// "comsin : " + commisionRate.get("comsin") + " comper : " +
 					// commisionRate.get("comper"));
-					
-					rateCardARTMVeriableExpences = rateCardARTMVeriableExpencesDao
-							.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
-									paytrm, paytrm, paytrm, paytrm, paymod, chedat, chedat);
-					
+
 				} else {
 					commisionRate = new HashMap<String, Double>();
 					commisionRate.put("comper", 0.0);
 					commisionRate.put("comsin", 0.0);
 					commisionRate.put("combrk", 0.0);
 					commisionRate.put("combrs", 0.0);
-					
+
+				}
+
+				if (polyear <= 4) {
+					rateCardARTMVeriableExpences = rateCardARTMVeriableExpencesDao
+							.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
+									paytrm, paytrm, paytrm, paytrm, paymod, chedat, chedat);
+				} else {
 					rateCardARTMVeriableExpences = new RateCardARTMVeriableExpences(0.0);
 				}
 
@@ -209,7 +212,6 @@ public class ARTMServiceImpl implements ARTMService {
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
 				// System.out.println("rateCardARTMProfit : " + rateCardARTMProfit.getRate());
 
-				
 			}
 
 			if (paytrm >= polyear) {
@@ -218,8 +220,9 @@ public class ARTMServiceImpl implements ARTMService {
 						contributionAmount = new BigDecimal(contribution);
 						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comsin"))))
 								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						veriableExpenses = (contributionAmount
+								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 					} else {
 						contributionAmount = new BigDecimal(0);
 						commision = new BigDecimal(0);
@@ -229,15 +232,17 @@ public class ARTMServiceImpl implements ARTMService {
 					contributionAmount = new BigDecimal(contribution);
 					commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
 							.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					veriableExpenses = (contributionAmount.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-							.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+					veriableExpenses = (contributionAmount
+							.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+									.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 				} else if (paymod.equalsIgnoreCase("Q")) {
 					if (i % 3 == 0) {
 						contributionAmount = new BigDecimal(contribution);
 						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
 								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						veriableExpenses = (contributionAmount
+								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 					} else {
 						contributionAmount = new BigDecimal(0);
 						commision = new BigDecimal(0);
@@ -248,8 +253,9 @@ public class ARTMServiceImpl implements ARTMService {
 						contributionAmount = new BigDecimal(contribution);
 						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
 								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						veriableExpenses = (contributionAmount
+								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 					} else {
 						contributionAmount = new BigDecimal(0);
 						commision = new BigDecimal(0);
@@ -260,8 +266,9 @@ public class ARTMServiceImpl implements ARTMService {
 						contributionAmount = new BigDecimal(contribution);
 						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
 								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						veriableExpenses = (contributionAmount
+								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 					} else {
 						contributionAmount = new BigDecimal(0);
 						commision = new BigDecimal(0);
@@ -290,16 +297,17 @@ public class ARTMServiceImpl implements ARTMService {
 				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
-			 System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision  + " Expenses : " + expenses+" veriableExpenses : "+veriableExpenses);
+			System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
+					+ " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses);
 			// System.out.println("closingFundAmount : " + closingFundAmount);
 			profit = closingFundAmount
-					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))  
+					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
 			// System.out.println("profit : " + profit);
 
-			creditedFundAmount = contributionAmount.subtract(commision).subtract(veriableExpenses).subtract(expenses).subtract(profit).setScale(4,
-					BigDecimal.ROUND_HALF_UP);
+			creditedFundAmount = contributionAmount.subtract(commision).subtract(veriableExpenses).subtract(expenses)
+					.subtract(profit).setScale(4, BigDecimal.ROUND_HALF_UP);
 			// System.out.println("creditedFundAmount : " + creditedFundAmount);
 
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
@@ -661,8 +669,8 @@ public class ARTMServiceImpl implements ARTMService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -889,8 +897,8 @@ public class ARTMServiceImpl implements ARTMService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

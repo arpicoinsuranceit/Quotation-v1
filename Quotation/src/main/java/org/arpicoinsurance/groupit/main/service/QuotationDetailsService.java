@@ -10,11 +10,7 @@ public interface QuotationDetailsService {
 	public EditQuotation editQuotationDetails(Integer qdId) throws Exception;
 
 	QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception;
-
-<<<<<<< HEAD
 	
-=======
 	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception;
 
->>>>>>> refs/remotes/origin/branch-122
 }

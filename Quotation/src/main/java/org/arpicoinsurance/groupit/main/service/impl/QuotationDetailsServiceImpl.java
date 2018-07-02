@@ -35,20 +35,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class QuotationDetailsServiceImpl implements QuotationDetailsService{
-	
+public class QuotationDetailsServiceImpl implements QuotationDetailsService {
+
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
-	
+
 	@Autowired
 	private Quo_Benef_DetailsService quo_Benef_DetailsService;
-	
+
 	@Autowired
 	private Quo_Benef_Child_DetailsService childBenefService;
-	
+
 	@Autowired
 	private QuotationService quotationService;
-	
+
 	@Autowired
 	private NomineeDao nomineeDao;
 
@@ -59,228 +59,218 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 
 	@Override
 	public EditQuotation editQuotationDetails(Integer qdId) throws Exception {
-		QuotationDetails details=findQuotationDetails(qdId);
-		EditQuotation editQuotation=new EditQuotation();
-		MainLife mainLife=new MainLife();
-		Spouse spouse=new Spouse();
-		if(details != null) {
-			CustomerDetails customerDetails=details.getCustomerDetails();
+		QuotationDetails details = findQuotationDetails(qdId);
+		EditQuotation editQuotation = new EditQuotation();
+		MainLife mainLife = new MainLife();
+		Spouse spouse = new Spouse();
+		if (details != null) {
+			CustomerDetails customerDetails = details.getCustomerDetails();
 			mainLife.set_mName(customerDetails.getCustName());
-			
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-<<<<<<< HEAD
-			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
-		    //LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
-=======
-			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
->>>>>>> refs/remotes/origin/branch-122
-			LocalDate currentDate = LocalDate.now();
-<<<<<<< HEAD
 
-=======
->>>>>>> refs/remotes/origin/branch-122
-		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
-		    diffInYears+=1;
-		    String age=Long.toString(diffInYears);
-		    
-		    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
-		    
-		    mainLife.set_mAge(age);
-		    mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
-		    mainLife.set_mEmail(customerDetails.getCustEmail());
-		    mainLife.set_mGender(customerDetails.getCustGender());
-		    mainLife.set_mMobile(customerDetails.getCustTel());
-		    mainLife.set_mNic(customerDetails.getCustNic());
-		    mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
-		    mainLife.set_mSmoking("No");
-		    mainLife.set_mTitle(customerDetails.getCustTitle());
-		    mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
-		    
-		    
-		    if(details.getSpouseDetails() != null) {
-		    	CustomerDetails spouseDetails=details.getSpouseDetails();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
+			// LocalDate currentDate =
+			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+
+			LocalDate currentDate = LocalDate.now();
+			
+			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+			diffInYears += 1;
+			String age = Long.toString(diffInYears);
+
+			SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");
+
+			mainLife.set_mAge(age);
+			mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
+			mainLife.set_mEmail(customerDetails.getCustEmail());
+			mainLife.set_mGender(customerDetails.getCustGender());
+			mainLife.set_mMobile(customerDetails.getCustTel());
+			mainLife.set_mNic(customerDetails.getCustNic());
+			mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
+			mainLife.set_mSmoking("No");
+			mainLife.set_mTitle(customerDetails.getCustTitle());
+			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
+
+			if (details.getSpouseDetails() != null) {
+				CustomerDetails spouseDetails = details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
-				
+
 				LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(spouseDetails.getCustDob()));
-			    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
-			    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
-			    sdiffInYears+=1;
-			    String sage=Long.toString(sdiffInYears);
-			    
+				LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+				long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+				sdiffInYears += 1;
+				String sage = Long.toString(sdiffInYears);
+
 				spouse.set_sActive(true);
-			    spouse.set_sAge(sage);
-			    spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
-			    spouse.set_sGender(spouseDetails.getCustGender());
-			    spouse.set_sNic(spouseDetails.getCustNic());
-			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
-			    spouse.set_sTitle(spouseDetails.getCustTitle());
-			    
-			    
-		    }else {
-		    	spouse.set_sActive(false);
-		    }
+				spouse.set_sAge(sage);
+				spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
+				spouse.set_sGender(spouseDetails.getCustGender());
+				spouse.set_sNic(spouseDetails.getCustNic());
+				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
+				spouse.set_sTitle(spouseDetails.getCustTitle());
+
+			} else {
+				spouse.set_sActive(false);
+			}
 		}
-		
-		
-		
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
-		
+
 		List<Nominee> nominees = nomineeDao.findByQuotationDetails(details);
-		if(nominees.size()>0) {
+		if (nominees.size() > 0) {
 			editQuotation.get_plan().set_nomineeName(nominees.get(0).getNomineeName());
 			editQuotation.get_plan().set_nomineeAge(nominees.get(0).getAge());
-			editQuotation.get_plan().set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
+			editQuotation.get_plan()
+					.set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
 			editQuotation.get_plan().set_nomoneeRelation(nominees.get(0).getRelation());
 		}
-		
-		//return editQuotation;
-		return getBenefitsAndChildDetails(details,editQuotation);
+
+		// return editQuotation;
+		return getBenefitsAndChildDetails(details, editQuotation);
 	}
 
-	private EditQuotation getBenefitsAndChildDetails(QuotationDetails details,EditQuotation editQuotation) throws Exception {
-		ArrayList<Quo_Benef_Details> benef_Details=(ArrayList<Quo_Benef_Details>) quo_Benef_DetailsService.findByQuotationDetails(details);
-		
-		ArrayList<QuoBenf> mainLifeBenef=new ArrayList<>();
-		ArrayList<QuoBenf> spouseBenef=new ArrayList<>();
-		ArrayList<QuoBenf> childBenef=new ArrayList<>();
-		
-		TreeMap< String, QuoChildBenef> childMap=new TreeMap<>();
-		
-		ArrayList<Children> childrenList=new ArrayList<>();
-		
-		if(benef_Details != null) {
+	private EditQuotation getBenefitsAndChildDetails(QuotationDetails details, EditQuotation editQuotation)
+			throws Exception {
+		ArrayList<Quo_Benef_Details> benef_Details = (ArrayList<Quo_Benef_Details>) quo_Benef_DetailsService
+				.findByQuotationDetails(details);
+
+		ArrayList<QuoBenf> mainLifeBenef = new ArrayList<>();
+		ArrayList<QuoBenf> spouseBenef = new ArrayList<>();
+		ArrayList<QuoBenf> childBenef = new ArrayList<>();
+
+		TreeMap<String, QuoChildBenef> childMap = new TreeMap<>();
+
+		ArrayList<Children> childrenList = new ArrayList<>();
+
+		if (benef_Details != null) {
 			for (Quo_Benef_Details quo_Benef_Details : benef_Details) {
-				Benefits benf=quo_Benef_Details.getBenefit();
-				if(benf.getBenefitType().equals("s")) {//check benf_type is spouse
-					QuoBenf qb=new QuoBenf();
+				Benefits benf = quo_Benef_Details.getBenefit();
+				if (benf.getBenefitType().equals("s")) {// check benf_type is spouse
+					QuoBenf qb = new QuoBenf();
 					qb.setBenfName(benf.getRiderCode());
 					qb.setPremium(quo_Benef_Details.getRiderPremium());
 					qb.setRiderSum(quo_Benef_Details.getRiderSum());
 					spouseBenef.add(qb);
-				}else if(benf.getBenefitType().equals("m")) {//check benf_type is mainLife
-					QuoBenf qb=new QuoBenf();
+				} else if (benf.getBenefitType().equals("m")) {// check benf_type is mainLife
+					QuoBenf qb = new QuoBenf();
 					qb.setBenfName(benf.getRiderCode());
 					qb.setPremium(quo_Benef_Details.getRiderPremium());
 					qb.setRiderSum(quo_Benef_Details.getRiderSum());
 					mainLifeBenef.add(qb);
-				}else if(benf.getBenefitType().equals("c")) {//check benf_type is child
-					QuoBenf qb1=new QuoBenf();
+				} else if (benf.getBenefitType().equals("c")) {// check benf_type is child
+					QuoBenf qb1 = new QuoBenf();
 					qb1.setBenfName(benf.getRiderCode());
 					qb1.setPremium(quo_Benef_Details.getRiderPremium());
 					qb1.setRiderSum(quo_Benef_Details.getRiderSum());
 					childBenef.add(qb1);
-					
-					List<Quo_Benef_Child_Details> qbcd=childBenefService.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
-					if(!qbcd.isEmpty()) {
-						QuoBenf qb=new QuoBenf();
+
+					List<Quo_Benef_Child_Details> qbcd = childBenefService
+							.getQuo_Benef_Child_DetailsByQuo_Benf_DetailsId(quo_Benef_Details.getQuo_Benef_DetailsId());
+					if (!qbcd.isEmpty()) {
+						QuoBenf qb = new QuoBenf();
 						qb.setBenfName(benf.getRiderCode());
 						qb.setRiderSum(quo_Benef_Details.getRiderSum());
-						
-						SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-						
+
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 						for (Quo_Benef_Child_Details quo_Benef_Child_Details : qbcd) {
-							Child child=quo_Benef_Child_Details.getCustChildDetails().getChild();
-							if(!childMap.containsKey(child.getChildName())) {
-								ArrayList<QuoBenf> benfs=new ArrayList<>();//create list of benefits
+							Child child = quo_Benef_Child_Details.getCustChildDetails().getChild();
+							if (!childMap.containsKey(child.getChildName())) {
+								ArrayList<QuoBenf> benfs = new ArrayList<>();// create list of benefits
 								qb.setPremium(quo_Benef_Child_Details.getPremium());
 								benfs.add(qb);
-								
-								QuoChildBenef benef=new QuoChildBenef();//create QuoChildBenef object
+
+								QuoChildBenef benef = new QuoChildBenef();// create QuoChildBenef object
 								benef.setChild(child);
-								benef.setBenfs(benfs);//set list of benefits
-								
-								Children children=new Children();
+								benef.setBenfs(benfs);// set list of benefits
+
+								Children children = new Children();
 								children.set_cActive(true);
-								
-								
+
 								LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(child.getChildDob()));
-							    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
-							    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
-							    sdiffInYears+=1;
-							    String sage=Long.toString(sdiffInYears);
-							    
-							    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
-							    
-							    children.set_cAge(Integer.parseInt(sage));
+								LocalDate scurrentDate = LocalDate
+										.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+								long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+								sdiffInYears += 1;
+								String sage = Long.toString(sdiffInYears);
+
+								SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");
+
+								children.set_cAge(Integer.parseInt(sage));
 								children.set_cDob(dateFormat1.format(child.getChildDob()));
 								children.set_cName(child.getChildName());
 								children.set_cNic(child.getChildNic());
 								children.set_cTitle(child.getChildGender());
-								
+
 								childrenList.add(children);
-								
+
 								childMap.put(child.getChildName(), benef);
-							}else {
-								QuoChildBenef childBenefit=childMap.get(child.getChildName());
-								ArrayList<QuoBenf> benflist=childBenefit.getBenfs();
+							} else {
+								QuoChildBenef childBenefit = childMap.get(child.getChildName());
+								ArrayList<QuoBenf> benflist = childBenefit.getBenfs();
 								qb.setPremium(quo_Benef_Child_Details.getPremium());
 								benflist.add(qb);
-								
+
 								childMap.get(child.getChildName()).setBenfs(benflist);
 							}
 						}
-						
+
 					}
-					
-					
-				}else {
-					
+
+				} else {
+
 				}
 			}
 		}
-		
-		
-		Set<Entry<String, QuoChildBenef>> benefs=childMap.entrySet();
-		ArrayList<QuoChildBenef> childBenefList=new ArrayList<>();
+
+		Set<Entry<String, QuoChildBenef>> benefs = childMap.entrySet();
+		ArrayList<QuoChildBenef> childBenefList = new ArrayList<>();
 		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
-			QuoChildBenef cb=entry.getValue();
+			QuoChildBenef cb = entry.getValue();
 			childBenefList.add(cb);
-			
-			for(Children children:childrenList) {
-				if(children.get_cName().equals(entry.getKey())) {
+
+			for (Children children : childrenList) {
+				if (children.get_cName().equals(entry.getKey())) {
 					for (QuoBenf bnf : cb.getBenfs()) {
-						if(bnf.getBenfName().equals("CIBC")) {
+						if (bnf.getBenfName().equals("CIBC")) {
 							children.set_cCibc(true);
 						}
-						/*if(bnf.getBenfName().equals("HRBC")) {
-							children.set_cHrbc(true);
-						}*/
-						if(bnf.getBenfName().equals("SHCBIC")) {
+						/*
+						 * if(bnf.getBenfName().equals("HRBC")) { children.set_cHrbc(true); }
+						 */
+						if (bnf.getBenfName().equals("SHCBIC")) {
 							children.set_cSuhrbc(true);
 						}
-						if(bnf.getBenfName().equals("HBC")) {
+						if (bnf.getBenfName().equals("HBC")) {
 							children.set_cHbc(true);
 						}
-						
-						if(bnf.getBenfName().equals("HCBIC")) {
+
+						if (bnf.getBenfName().equals("HCBIC")) {
 							children.set_cHrbic(true);
 						}
-						
-						if(bnf.getBenfName().equals("HCBFC")) {
+
+						if (bnf.getBenfName().equals("HCBFC")) {
 							children.set_cHrbfc(true);
 						}
 					}
 				}
 			}
 		}
-		
-		
-		
+
 		editQuotation.set_children(childrenList);
 		editQuotation.set_mainLifeBenefits(mainLifeBenef);
 		editQuotation.set_spouseBenefits(spouseBenef);
 		editQuotation.set_childrenBenefits(childBenef);
-		
+
 		return editQuotation;
-		
+
 	}
-	
-	
 
 	private Plan getPlanDetails(QuotationDetails details) {
-		Plan plan=new Plan();
+		Plan plan = new Plan();
 		plan.set_bsa(details.getBaseSum());
 		plan.set_term(details.getPolTerm());
 		plan.set_interestRate(details.getInterestRate());
@@ -288,9 +278,9 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		plan.setPensionPaingTerm(details.getPensionTerm());
 		plan.setRetAge(details.getRetirmentAge());
 		plan.set_payingterm(details.getPaingTerm());
-		
-//		System.out.println("paing term " + details.getPaingTerm());
-		
+
+		// System.out.println("paing term " + details.getPaingTerm());
+
 		switch (details.getPayMode()) {
 		case "M":
 			plan.set_frequance("Monthly");
@@ -321,97 +311,92 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService{
 		default:
 			break;
 		}
-		
+
 		return plan;
 	}
 
 	@Override
 	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
-		Quotation quotation=quotationService.getQuotation(quotationId);
-		if(quotation!=null) {
-			QuotationDetails quotationDetails=quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
-			if(quotationDetails!=null) {
+		Quotation quotation = quotationService.getQuotation(quotationId);
+		if (quotation != null) {
+			QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+			if (quotationDetails != null) {
 				return quotationDetails;
 			}
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception {
-		QuotationDetails details=findQuotationDetails(qdId);
-		EditQuotation editQuotation=new EditQuotation();
-		MainLife mainLife=new MainLife();
-		Spouse spouse=new Spouse();
-		if(details != null) {
-			CustomerDetails customerDetails=details.getCustomerDetails();
+		QuotationDetails details = findQuotationDetails(qdId);
+		EditQuotation editQuotation = new EditQuotation();
+		MainLife mainLife = new MainLife();
+		Spouse spouse = new Spouse();
+		if (details != null) {
+			CustomerDetails customerDetails = details.getCustomerDetails();
 			mainLife.set_mName(customerDetails.getCustName());
-			
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
-		    LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
-			//LocalDate currentDate = LocalDate.now();
-		    long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
-		    diffInYears+=1;
-		    String age=Long.toString(diffInYears);
-		    
-		    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");
-		    
-		    mainLife.set_mAge(age);
-		    mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
-		    mainLife.set_mEmail(customerDetails.getCustEmail());
-		    mainLife.set_mGender(customerDetails.getCustGender());
-		    mainLife.set_mMobile(customerDetails.getCustTel());
-		    mainLife.set_mNic(customerDetails.getCustNic());
-		    mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
-		    mainLife.set_mSmoking("No");
-		    mainLife.set_mTitle(customerDetails.getCustTitle());
-		    mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
-		    
-		    
-		    if(details.getSpouseDetails() != null) {
-		    	CustomerDetails spouseDetails=details.getSpouseDetails();
+			LocalDate currentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+			// LocalDate currentDate = LocalDate.now();
+			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+			diffInYears += 1;
+			String age = Long.toString(diffInYears);
+
+			SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");
+
+			mainLife.set_mAge(age);
+			mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
+			mainLife.set_mEmail(customerDetails.getCustEmail());
+			mainLife.set_mGender(customerDetails.getCustGender());
+			mainLife.set_mMobile(customerDetails.getCustTel());
+			mainLife.set_mNic(customerDetails.getCustNic());
+			mainLife.set_mOccupation(Integer.toString(customerDetails.getOccupation().getOcupationid()));
+			mainLife.set_mSmoking("No");
+			mainLife.set_mTitle(customerDetails.getCustTitle());
+			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
+
+			if (details.getSpouseDetails() != null) {
+				CustomerDetails spouseDetails = details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
-				
+
 				LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(spouseDetails.getCustDob()));
-			    LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
-			    long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
-			    sdiffInYears+=1;
-			    String sage=Long.toString(sdiffInYears);
-			    
+				LocalDate scurrentDate = LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+				long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
+				sdiffInYears += 1;
+				String sage = Long.toString(sdiffInYears);
+
 				spouse.set_sActive(true);
-			    spouse.set_sAge(sage);
-			    spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
-			    spouse.set_sGender(spouseDetails.getCustGender());
-			    spouse.set_sNic(spouseDetails.getCustNic());
-			    spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
-			    spouse.set_sTitle(spouseDetails.getCustTitle());
-			    
-			    
-		    }else {
-		    	spouse.set_sActive(false);
-		    }
+				spouse.set_sAge(sage);
+				spouse.set_sDob(dateFormat1.format(spouseDetails.getCustDob()));
+				spouse.set_sGender(spouseDetails.getCustGender());
+				spouse.set_sNic(spouseDetails.getCustNic());
+				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
+				spouse.set_sTitle(spouseDetails.getCustTitle());
+
+			} else {
+				spouse.set_sActive(false);
+			}
 		}
-		
-		
-		
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
-		
+
 		List<Nominee> nominees = nomineeDao.findByQuotationDetails(details);
-		if(nominees.size()>0) {
+		if (nominees.size() > 0) {
 			editQuotation.get_plan().set_nomineeName(nominees.get(0).getNomineeName());
 			editQuotation.get_plan().set_nomineeAge(nominees.get(0).getAge());
-			editQuotation.get_plan().set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
+			editQuotation.get_plan()
+					.set_nomineedob(new SimpleDateFormat("dd-MM-yyyy").format(nominees.get(0).getNomineeDob()));
 			editQuotation.get_plan().set_nomoneeRelation(nominees.get(0).getRelation());
 		}
-		
-		//return editQuotation;
-		return getBenefitsAndChildDetails(details,editQuotation);
+
+		// return editQuotation;
+		return getBenefitsAndChildDetails(details, editQuotation);
 	}
-	
-	
 
 }
