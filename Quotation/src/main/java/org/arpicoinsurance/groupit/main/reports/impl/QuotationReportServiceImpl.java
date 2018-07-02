@@ -22,7 +22,6 @@ import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
 import org.arpicoinsurance.groupit.main.helper.QuoCustomer;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
-import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationView;
 import org.arpicoinsurance.groupit.main.helper.RetirementPremium;
 import org.arpicoinsurance.groupit.main.model.PensionShedule;
@@ -30,13 +29,10 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
 import org.arpicoinsurance.groupit.main.service.ARTMService;
-import org.arpicoinsurance.groupit.main.service.impl.ARTMServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.colors.DeviceCmyk;
-import com.itextpdf.kernel.colors.DeviceGray;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -54,7 +50,6 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.ListNumberingType;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
-import com.itextpdf.text.pdf.GrayColor;
 
 @Service
 @Transactional
@@ -77,6 +72,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Autowired
 	private BenefitsDao benefictDao;
 
+	// To get ARTM Pension premiums
 	@Autowired
 	private ARTMService artmService;
 
