@@ -14,7 +14,7 @@ public class CommisionRateWCImpl implements CommisionRateWC {
 	public HashMap<String, Double> getCommisionRate(CommisionRatePara commisionRatePara) throws Exception {
 		try {
 			System.out.println(commisionRatePara.getPrdcod()+" "+commisionRatePara.getComyer()+" "+commisionRatePara.getToterm());
-			final String uri = "http://localhost:8085/commisionRate";
+			final String uri = "http://10.10.10.12:8080/Infosys/commisionRate";
 			//final String uri = "http://localhost:8085/commisionRate";
 			RestTemplate restTemplate = new RestTemplate();
 			HashMap<String, Double> result = restTemplate.postForObject(uri, commisionRatePara, HashMap.class);
