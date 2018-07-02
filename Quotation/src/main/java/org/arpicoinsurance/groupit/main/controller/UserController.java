@@ -30,7 +30,7 @@ public class UserController {
 	@Autowired
 	private LogService logService;
 
-	@PostMapping("/uploadProf/{userCode}")
+	@PostMapping("/uploadProf/{userCode:.+}")
 	public ResponseEntity<Object> saveUserProfilePicture(@RequestParam("image") MultipartFile image,
 			@PathVariable String userCode, RedirectAttributes redirectAttributes) {
 		// System.out.println("called");
@@ -64,7 +64,7 @@ public class UserController {
 
 	}
 
-	@RequestMapping(path = "/downloadProfPic/{id}", method = RequestMethod.GET)
+	@RequestMapping(path = "/downloadProfPic/{id:.+}", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<Object> getImage(@PathVariable String id) {
 
 		Map<String, String> image = null;
@@ -114,7 +114,7 @@ public class UserController {
 		// return null;
 	}
 
-	@RequestMapping(path = "/loadPendingProf/{id}", method = RequestMethod.GET)
+	@RequestMapping(path = "/loadPendingProf/{id:.+}", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<Object> getPendingImage(@PathVariable String id) {
 		try {
 			return new ResponseEntity<Object>(userService.getPendingImage(id), HttpStatus.OK);
@@ -137,7 +137,7 @@ public class UserController {
 		// return null;
 	}
 
-	@RequestMapping(value = "/approveUserProfile/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/approveUserProfile/{id:.+}", method = RequestMethod.GET)
 	public ResponseEntity<Object> approveImage(@PathVariable String id) {
 		// System.out.println(id);
 		try {
@@ -161,7 +161,7 @@ public class UserController {
 		// return null;
 	}
 
-	@RequestMapping(value = "/rejectUserProfile/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/rejectUserProfile/{id:.+}", method = RequestMethod.GET)
 	public ResponseEntity<Object> rejectImage(@PathVariable String id) {
 		// System.out.println(id);
 		try {
