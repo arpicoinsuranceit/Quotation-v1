@@ -63,6 +63,38 @@ public class QuotationCalculationController {
 		}
 		// return null;
 	}
+	
+	
+	@RequestMapping(value = "/ageCalNominee", method = RequestMethod.POST)
+	public ResponseEntity<Object> calculateAgeNominee(@RequestBody String dob) {
+		try {
+			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String parsedDate = formatter.format(initDate);
+			// System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
+			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
+			LocalDate currentDate = LocalDate.now();
+			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
+			diffInYears = diffInYears + 1;
+			return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n dob : " + dob);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("calculateAge : QuotationCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage() , HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		// return null;
+	}
 
 	/*
 	 * @RequestMapping(value="/asfpCal",method=RequestMethod.POST) public String

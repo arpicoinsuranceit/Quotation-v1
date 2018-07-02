@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.DateConverter;
+import org.arpicoinsurance.groupit.main.common.WebClient;
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDao;
 import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
@@ -309,6 +310,10 @@ public class AIPServiceImpl implements AIPService {
 			customer.setCustModifyDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
+			try {
+				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
+			} catch (Exception e) { }
+			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
@@ -543,7 +548,11 @@ public class AIPServiceImpl implements AIPService {
 			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
-
+			
+			try {
+				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
+			} catch (Exception e) { }
+			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = details.getQuotation();
