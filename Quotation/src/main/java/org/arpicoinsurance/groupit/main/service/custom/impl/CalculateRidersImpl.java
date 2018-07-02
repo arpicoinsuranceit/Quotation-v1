@@ -300,7 +300,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 							for (Benifict benifict2 : _sRiders) {
 								if (benifict2.getType().equals("HRBFS")) {
 									adultCount += 1;
-									// System.out.println(adultCount);
 								}
 							}
 						}
@@ -318,12 +317,20 @@ public class CalculateRidersImpl implements CalculateRiders {
 					}
 				}
 
-				calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
-						quotationCalculation.get_personalInfo().getTerm(), benifict.getSumAssured(),
-						quotationCalculation.get_personalInfo().getMgenger(),
-						quotationCalculation.get_personalInfo().getFrequance(),
-						quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate, quotationCalculation.get_product());
-
+				if(quotationCalculation.get_product().equalsIgnoreCase("ARTM") && !quotationCalculation.get_personalInfo().getFrequance().equals("S")) {
+					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
+							Integer.parseInt(quotationCalculation.get_personalInfo().getPayingterm()), benifict.getSumAssured(),
+							quotationCalculation.get_personalInfo().getMgenger(),
+							quotationCalculation.get_personalInfo().getFrequance(),
+							quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate, quotationCalculation.get_product());
+				}else {
+					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(), benifict.getType(),
+							quotationCalculation.get_personalInfo().getTerm(), benifict.getSumAssured(),
+							quotationCalculation.get_personalInfo().getMgenger(),
+							quotationCalculation.get_personalInfo().getFrequance(),
+							quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate, quotationCalculation.get_product());
+				}
+				
 			}
 		}
 
@@ -336,12 +343,19 @@ public class CalculateRidersImpl implements CalculateRiders {
 				for (Benifict benifict : _sRiders) {
 					// System.out.println(quotationCalculation.get_personalInfo().getTerm()
 					// + "?????????????????????????-------------------");
+					if(quotationCalculation.get_product().equalsIgnoreCase("ARTM") && !quotationCalculation.get_personalInfo().getFrequance().equals("S")) {
+						calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
+								benifict.getType(), Integer.parseInt(quotationCalculation.get_personalInfo().getPayingterm()),
+								benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
+								quotationCalculation.get_personalInfo().getFrequance(),
+								quotationCalculation.get_personalInfo().getSocu(), calResp, adultCount, childCount, inrate, quotationCalculation.get_product());
+					}else {
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
 							benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
 							quotationCalculation.get_personalInfo().getFrequance(),
 							quotationCalculation.get_personalInfo().getSocu(), calResp, adultCount, childCount, inrate, quotationCalculation.get_product());
-
+					}
 				}
 			}
 		}
@@ -352,7 +366,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 				// "?????????????????????????????????????????????? title");
 				if (_cRiders != null) {
 					for (Benifict benifict : _cRiders) {
-						Integer term = quotationCalculation.get_personalInfo().getTerm();
+						Integer term = 0;
+						if(quotationCalculation.get_product().equalsIgnoreCase("ARTM") && !quotationCalculation.get_personalInfo().getFrequance().equals("S")) {
+							term =  Integer.parseInt(quotationCalculation.get_personalInfo().getPayingterm());
+						}else {
+							term = quotationCalculation.get_personalInfo().getTerm();
+						}
+						
 						// System.out.println("product :" + quotationCalculation.get_product());
 						if (quotationCalculation.get_product().equals("ARP")) {
 							Integer maxterm = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
@@ -392,6 +412,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
 										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product());
+							}
+							break;
+						case "HRBFC":
+							if (children.is_cHrbfc()) {
+								calResp.setHrbfcTerm(term > calResp.getHrbfcTerm() ? term : calResp.getHrbfcTerm());
 							}
 							break;
 
@@ -1252,6 +1277,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				
 				calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
 				calResp.setHrbf(hrbf.doubleValue());
+				
 				calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
 				calResp.setHrbfTerm(valiedTermHRBF);
 			} catch (Exception e) {
@@ -1958,7 +1984,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		/////////////////////////////////////////////////////////////////////////
 		default:
-			// calResp.setHrbsTerm(term);
+			//calResp.setHrbsTerm(term);
 			calResp.setHrbfsTerm(term);
 			return calResp;
 		}

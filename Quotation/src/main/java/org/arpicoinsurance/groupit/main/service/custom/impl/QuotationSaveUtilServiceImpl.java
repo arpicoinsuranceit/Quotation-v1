@@ -715,8 +715,14 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd1");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"CIBC", term);
+								Integer valiedTerm = 0; 
+								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"CIBC", Integer.parseInt(calResp.getPayTerm()));
+								} else {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"CIBC", term);
+								}
 								//System.out.println(valiedTerm + "//////////////////// valied term");
 								benef_Child_Details.setTerm(valiedTerm);
 								
@@ -743,9 +749,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 							if (children.is_cSuhrbc()) {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd2");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
-
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"SHCBIC", term);
+								System.out.println(frequancy + "  :   sdfghjkl;fghjkl;'");
+								Integer valiedTerm = 0; 
+								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"SHCBIC", Integer.parseInt(calResp.getPayTerm()));
+								} else {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"SHCBIC", term);
+								}
 								benef_Child_Details.setTerm(valiedTerm);
 								//System.out.println(children.get_cTitle() + "                                  test");
 								
@@ -769,8 +781,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd3");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HBC", term);
+								Integer valiedTerm = 0; 
+								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"HBC", Integer.parseInt(calResp.getPayTerm()));
+								} else {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"HBC", term);
+								}
+								
 								benef_Child_Details.setTerm(valiedTerm);
 								
 								if (calResp.isArp()) {
@@ -806,8 +825,21 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd4  called HRBIC");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HCBIC", term);
+								Integer valiedTerm = 0; 
+								System.out.println(calResp.getPayTerm());
+								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
+									try {
+										valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+												"HCBIC", Integer.parseInt(calResp.getPayTerm()));
+									}catch (Exception e) {
+										e.printStackTrace();
+									}
+									
+								} else {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"HCBIC", term);
+								}
+								
 								benef_Child_Details.setTerm(valiedTerm);
 								
 								if (calResp.isArp()) {
@@ -830,9 +862,16 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								//System.out.println("addddddddddddddddddddddddddddddddddddddd4");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
+								Integer valiedTerm = 0; 
+								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"HCBFC", Integer.parseInt(calResp.getPayTerm()));
+								} else {
+									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
+											"HCBFC", term);
+								}
 								
-								Integer valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
-										"HCBFC", term);
+								
 								benef_Child_Details.setTerm(valiedTerm);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
