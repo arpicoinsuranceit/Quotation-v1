@@ -50,6 +50,7 @@ public class Quo_Benef_DetailsController {
 	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
 	public ResponseEntity<Object> viewQuotationDetails(@RequestBody String id) {
 		try {
+<<<<<<< HEAD
 			System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetails(quoId);
@@ -57,6 +58,15 @@ public class Quo_Benef_DetailsController {
 			
 		} catch (Exception e) {
 			//e.printStackTrace();
+=======
+			//System.out.println(id);
+			Integer quoId=Integer.valueOf(id);
+			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetails(quoId);
+			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
+			
+		} catch (Exception e) { 
+			e.printStackTrace();
+>>>>>>> refs/remotes/origin/branch-122
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\nParameters : " + id);
 			logs.setDate(new Date());

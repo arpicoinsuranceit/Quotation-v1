@@ -4,14 +4,17 @@ import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationDetailsService {
-	
-	public QuotationDetails findQuotationDetails(Integer qdId)throws Exception;
-	
-	public EditQuotation editQuotationDetails(Integer qdId)throws Exception;
-	
-	public EditQuotation editQuotationDetailsView(Integer qdId)throws Exception;
-	
+
+	public QuotationDetails findQuotationDetails(Integer qdId) throws Exception;
+
+	public EditQuotation editQuotationDetails(Integer qdId) throws Exception;
+
 	QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception;
 
+<<<<<<< HEAD
 	
+=======
+	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception;
+
+>>>>>>> refs/remotes/origin/branch-122
 }
