@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: Quotation
-Implementation-Version: 1.9.1
-Built-By: Dell
+Implementation-Version: 1.9.2
+Built-By: DSPChathuranga
 Implementation-Vendor-Id: arpicoinsurance.groupit
 Build-Jdk: 1.8.0_171
 Implementation-URL: http://projects.spring.io/spring-boot/Quotation/
