@@ -3894,10 +3894,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		// Creating a Date Format for DOB
 		SimpleDateFormat mainDob = new SimpleDateFormat("dd-MM-yyyy");
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/branch-123
 		cuCellM3.add(new Paragraph(quotationDetails.getCustomerDetails().getCustDob() != null
 				? mainDob.format(quotationDetails.getCustomerDetails().getCustDob())
 				: " ").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
