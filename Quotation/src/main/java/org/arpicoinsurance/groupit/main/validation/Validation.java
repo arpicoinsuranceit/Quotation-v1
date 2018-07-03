@@ -184,7 +184,7 @@ public class Validation {
 								return "Please get L2 for get This Benefict";
 							}
 							if (validateCIBARTM().equals(3)) {
-								return "CIB mest Greater than or Equal to L2 and Less than or Equal to 10 times of L2 and Less than or Equal 6,000,000";
+								return "CIB mest Greater than or Equal to 100,000 and Less than or Equal to 10 times of L2 and Less than or Equal 6,000,000";
 							}
 						} else {
 							if (validateInvpCIB().equals(0)) {
@@ -725,7 +725,7 @@ public class Validation {
 			if (benefitMap.containsKey("L2")) {
 				Double cib = benefitMap.get("CIB").getSumAssured();
 				Double l2 = benefitMap.get("L2").getSumAssured();
-				if (cib <= l2 * 10 && cib >= l2 && l2 < 6000000) {
+				if (cib <= l2 * 10 && cib >= 100000 && l2 < 6000000) {
 					return 1;
 				}
 				return 3;
