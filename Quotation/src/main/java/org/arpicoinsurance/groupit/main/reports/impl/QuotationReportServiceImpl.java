@@ -10802,7 +10802,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Cell abCell2 = new Cell();
 		abCell2.add(
-				new Paragraph("On death before retirement date").setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				new Paragraph("On death during the premium paying period").setFontSize(8).setTextAlignment(TextAlignment.CENTER));
 		benPrmyTable.addCell(abCell2);
 
 		if (benefitsLife.isEmpty()) {
@@ -10814,7 +10814,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					Cell abCell3 = new Cell();
 					if (bsa.getRiderSum() != null) {
 						abCell3.add(new Paragraph("LKR " + formatter.format(bsa.getRiderSum())
-								+ " will be paid. Future premium on primary benefit will be waived and monthly pension payable as described above.")
+								+ " will be paid. Future premium on primary benefit will be waived and monthly pension will be paid from the retirement date as described above.")
 										.setFontSize(8).setTextAlignment(TextAlignment.JUSTIFIED));
 					} else {
 
@@ -10830,13 +10830,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		benPrmyTable.startNewRow();
 
 		Cell abCell4 = new Cell();
-		abCell4.add(new Paragraph("On TPD (Acc./Sick.) before retirement date").setFontSize(8)
+		abCell4.add(new Paragraph("On TPD (Acc./Sick.) during the premium paying period").setFontSize(8)
 				.setTextAlignment(TextAlignment.CENTER));
 		benPrmyTable.addCell(abCell4);
 
 		Cell abCell5 = new Cell();
 		abCell5.add(new Paragraph(
-				"Future premium on primary benefit will be waived and monthly pension payable as described above")
+				"Future premium on primary benefit will be waived and monthly pension will be paid from the retirement date as described above")
 						.setFontSize(8).setTextAlignment(TextAlignment.JUSTIFIED));
 		benPrmyTable.addCell(abCell5);
 
