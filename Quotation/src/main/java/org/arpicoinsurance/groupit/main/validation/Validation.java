@@ -127,7 +127,7 @@ public class Validation {
 						// System.out.println("call ATPB");
 						if (calculation.get_product().equals("ARTM")) {
 							if (validateARTML2().equals(0)) {
-								return "L2 must be Greater than or Equal 100,000 and Less than or Equal 1,000,000";
+								return "L2 must be Greater than or Equal 100,000 and Less than or Equal 1,000,000 and L2 mod 25000 must 0";
 							}
 						}
 						break;
@@ -174,7 +174,7 @@ public class Validation {
 						/////// for END
 						if (calculation.get_product().equals("END1")) {
 							if (validateCIBEND().equals(0)) {
-								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA and CIB mod 25000 must 0";
 							}
 						} else if (calculation.get_product().equals("ARTM")) {
 							if (validateCIBARTM().equals(0)) {
@@ -184,11 +184,11 @@ public class Validation {
 								return "Please get L2 for get This Benefict";
 							}
 							if (validateCIBARTM().equals(3)) {
-								return "CIB mest Greater than or Equal to 100,000 and Less than or Equal to 10 times of L2 and Less than or Equal 6,000,000";
+								return "CIB mest Greater than or Equal to 100,000 and Less than or Equal to 10 times of L2 and Less than or Equal 6,000,000 and CIB mod 100000 must 0";
 							}
 						} else {
 							if (validateInvpCIB().equals(0)) {
-								return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA";
+								return "CIB must be greater than 250,000 and less than 6,000,000 and less than sum of ATPB and BSA and CIB mod 25000 must 0";
 							}
 						}
 						break;
@@ -291,11 +291,11 @@ public class Validation {
 						//////// validation END
 						if (calculation.get_product().equals("END1")) {
 							if (validateInvpSCIBEND().equals(0)) {
-								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000";
+								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
 							}
 						} else {
 							if (validateInvpSCIB().equals(0)) {
-								return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000";
+								return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
 							}
 						}
 						break;
@@ -397,11 +397,11 @@ public class Validation {
 					case "CIBC":
 						if (calculation.get_product().equals("END1")) {
 							if (validateENDCIBC().equals(0)) {
-								return "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000";
+								return "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
 							}
 						} else {
 							if (validateInvpCIBC().equals(0)) {
-								return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000";
+								return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
 							}
 						}
 						break;
@@ -620,7 +620,7 @@ public class Validation {
 	public Integer validateARTML2() {
 		if (benefitMap.containsKey("L2")) {
 			Benifict benifict = benefitMap.get("L2");
-			if (benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000) {
+			if (benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000 && benifict.getSumAssured() % 25000 == 0) {
 				return 1;
 			}
 		}
@@ -687,7 +687,7 @@ public class Validation {
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double cib = benefitMap.get("CIB").getSumAssured();
 
-			if (cib <= (atpb + bsa) && cib <= 6000000 && cib >= 250000) {
+			if (cib <= (atpb + bsa) && cib <= 6000000 && cib >= 250000 && cib % 25000 == 0) {
 				return 1;
 			}
 
@@ -708,7 +708,7 @@ public class Validation {
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double cib = benefitMap.get("CIB").getSumAssured();
 
-			if (cib <= (atpb + bsa) && cib <= 6000000 && cib >= 100000) {
+			if (cib <= (atpb + bsa) && cib <= 6000000 && cib >= 100000 && cib % 25000 == 0) {
 				return 1;
 			}
 
@@ -725,7 +725,7 @@ public class Validation {
 			if (benefitMap.containsKey("L2")) {
 				Double cib = benefitMap.get("CIB").getSumAssured();
 				Double l2 = benefitMap.get("L2").getSumAssured();
-				if (cib <= l2 * 10 && cib >= 100000 && l2 < 6000000) {
+				if (cib <= l2 * 10 && cib >= 100000 && cib <= 6000000 && cib % 100000 == 0) {
 					return 1;
 				}
 				return 3;
@@ -1012,7 +1012,7 @@ public class Validation {
 
 			// System.out.println(scb);
 			// System.out.println(cib);
-			if (cib <= scb && cib <= 6000000 && cib >= 250000) {
+			if (cib <= scb && cib <= 6000000 && cib >= 250000 && cib % 25000 == 0) {
 				return 1;
 			}
 
@@ -1041,7 +1041,7 @@ public class Validation {
 			// System.out.println(scb);
 			// System.out.println(cib);
 
-			if (cib <= scb && cib <= 6000000 && cib >= 100000) {
+			if (cib <= scb && cib <= 6000000 && cib >= 100000 && cib % 25000 == 0) {
 				return 1;
 			}
 
@@ -1157,7 +1157,7 @@ public class Validation {
 			Double cibcBsa = cibc.getSumAssured();
 			// Double atpbBsa = 0.0;
 
-			if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
+			if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa % 25000 == 0) {
 				return 1;
 			}
 		} else {
@@ -1168,7 +1168,7 @@ public class Validation {
 				Double cibcBsa = cibc.getSumAssured();
 				// Double atpbBsa = atpb.getSumAssured();
 
-				if (cibcBsa >= 250000 && cibcBsa <= 1000000) {
+				if (cibcBsa >= 250000 && cibcBsa <= 1000000 && cibcBsa % 25000 == 0) {
 					return 1;
 				}
 			}
@@ -1188,7 +1188,7 @@ public class Validation {
 			Double cibcBsa = cibc.getSumAssured();
 			// Double atpbBsa = 0.0;
 
-			if (cibcBsa >= 100000 && cibcBsa <= 1000000) {
+			if (cibcBsa >= 100000 && cibcBsa <= 1000000 && cibcBsa % 25000 == 0) {
 				return 1;
 			}
 		} else {
@@ -1199,7 +1199,7 @@ public class Validation {
 				Double cibcBsa = cibc.getSumAssured();
 				// Double atpbBsa = atpb.getSumAssured();
 
-				if (cibcBsa >= 100000 && cibcBsa <= 1000000) {
+				if (cibcBsa >= 100000 && cibcBsa <= 1000000 && cibcBsa % 25000 == 0) {
 					return 1;
 				}
 			}
