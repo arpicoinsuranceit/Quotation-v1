@@ -29,6 +29,7 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
 import org.arpicoinsurance.groupit.main.service.ARTMService;
+import org.arpicoinsurance.groupit.main.webclient.ArtmLstYearRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +76,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	// To get Retirement Premium
 	@Autowired
 	private ARTMService artmService;
+
+	@Autowired
+	private ArtmLstYearRate artmLstYearRate;
 
 	// paymode switch case variable
 	String modeMethod;
@@ -1574,7 +1578,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				System.out.println(bsa.getRiderCode());
+				// System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -1856,7 +1860,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L3") && !maturity.equalsIgnoreCase("L4")
@@ -2676,8 +2681,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
@@ -4125,7 +4131,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				System.out.println(bsa.getRiderCode());
+				// System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -4405,7 +4411,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L3") && !maturity.equalsIgnoreCase("L4")
@@ -5119,8 +5126,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
@@ -5680,7 +5688,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				System.out.println(bsa.getRiderCode());
+				// System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -5960,7 +5968,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L3") && !maturity.equalsIgnoreCase("L4")
@@ -6686,8 +6695,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
@@ -7252,7 +7262,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf msfeb : benefitsLife) {
-				System.out.println(msfeb.getRiderCode());
+				// System.out.println(msfeb.getRiderCode());
 
 				if (msfeb.getRiderCode().equalsIgnoreCase("L10")) {
 
@@ -7531,7 +7541,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L3") && !maturity.equalsIgnoreCase("L4")
@@ -8217,8 +8228,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
@@ -9079,7 +9091,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L3") && !maturity.equalsIgnoreCase("L4")
@@ -9972,8 +9985,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
@@ -10049,7 +10063,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER).setFixedPosition(50, 10, 500));
 
 		// Creating a VRIABLE TO GET THE NO OF PAGES
-		System.out.println("number pagesssssssssssss " + pdf.getNumberOfPages());
+		// System.out.println("number pagesssssssssssss " + pdf.getNumberOfPages());
 
 		int n = pdf.getNumberOfPages();
 		for (int i = 1; i <= n; i++) {
@@ -10076,18 +10090,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Override
 	public byte[] createARTMReport(QuotationDetails quotationDetails, QuotationView quotationView,
 			QuoCustomer quoCustomer) throws Exception {
-
-		/*
-		 * System.out.println("L22222222222222222222 " + quotationDetails.getBaseSum());
-		 * System.out.println("Retiremttttttt Ageeeeeeeeeeeeeeeeeeeeeee " +
-		 * quotationDetails.getRetirmentAge());
-		 * System.out.println("term of the policyyyyyyyyyyyyyyyyy" +
-		 * quotationDetails.getPolTerm());
-		 * System.out.println("cONTRIBUTIONNNNNNNNNNNNNNNNNNN" +
-		 * quotationDetails.getPremium());
-		 * System.out.println("retirenment paying perioddddddddddd " +
-		 * quotationDetails.getPensionTerm());
-		 */
 
 		// getting current year
 		Calendar calendar = Calendar.getInstance();
@@ -10727,9 +10729,21 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		quoCal = null;
 		personalInfo = null;
 
-		// Rate Declared for last year
-		document.add(new Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold().setFontSize(8)
-				.setCharacterSpacing(1));
+		//// Rate Declared for last year
+		SimpleDateFormat rateDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (quotationDetails.getQuotationCreateDate() != null) {
+
+			String rateDate = rateDateFormat.format(quotationDetails.getQuotationquotationCreateDate());
+
+			Double rate = artmLstYearRate.getLstYearRate(rateDate);
+
+			document.add(new Paragraph("Guaranteed dividend rate declared last year " + rate + "%").setBold()
+					.setFontSize(8).setCharacterSpacing(1));
+		} else {
+			document.add(new Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold().setFontSize(8)
+					.setCharacterSpacing(1));
+		}
 
 		document.add(new Paragraph(""));
 
@@ -10749,6 +10763,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		} else {
 			for (QuoBenf bsa : benefitsLife) {
+
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
 					Cell abCell3 = new Cell();
@@ -10791,7 +10806,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			document.add(new Paragraph("Benefits").setFontSize(8).setBold().setUnderline().setCharacterSpacing(1));
 
 			/* Declaring column sizes of the table respectively */
-			float[] pointColumnWidths = { 500, 80, 80, 80, 80, 80, 80 };
+			float[] pointColumnWidths = { 450, 80, 80, 80, 80, 80, 80, 80, 80, 80 };
 			Table benAddTable = new Table(pointColumnWidths);
 			benAddTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
@@ -10802,19 +10817,19 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1).setMarginTop(10));
 			benAddTable.addCell(alCellth1);
 
-			Cell alCellth2 = new Cell(0, 2);
+			Cell alCellth2 = new Cell(0, 3);
 			alCellth2.setBorder(new SolidBorder(1));
 			alCellth2.add(new Paragraph("Main Life").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
 					.setCharacterSpacing(1));
 			benAddTable.addCell(alCellth2);
 
-			Cell alCellth3 = new Cell(0, 2);
+			Cell alCellth3 = new Cell(0, 3);
 			alCellth3.setBorder(new SolidBorder(1));
 			alCellth3.add(new Paragraph("Spouse").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
 					.setCharacterSpacing(1));
 			benAddTable.addCell(alCellth3);
 
-			Cell alCellth4 = new Cell(0, 2);
+			Cell alCellth4 = new Cell(0, 3);
 			alCellth4.setBorder(new SolidBorder(1));
 			alCellth4.add(new Paragraph("Children").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
 					.setCharacterSpacing(1));
@@ -10834,6 +10849,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					.setCharacterSpacing(1));
 			benAddTable.addCell(alCellMP);
 
+			Cell alCellMT = new Cell();
+			alCellMT.setBorder(new SolidBorder(1));
+			alCellMT.add(new Paragraph("Term").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(alCellMT);
+
 			Cell alCellSA = new Cell();
 			alCellSA.setBorder(new SolidBorder(1));
 			alCellSA.add(new Paragraph("Amount").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
@@ -10846,6 +10867,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					.setCharacterSpacing(1));
 			benAddTable.addCell(alCellSP);
 
+			Cell alCellST = new Cell();
+			alCellST.setBorder(new SolidBorder(1));
+			alCellST.add(new Paragraph("Term").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(alCellST);
+
 			Cell alCellCA = new Cell();
 			alCellCA.setBorder(new SolidBorder(1));
 			alCellCA.add(new Paragraph("Amount").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
@@ -10857,6 +10884,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			alCellCP.add(new Paragraph("Premium").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
 					.setCharacterSpacing(1));
 			benAddTable.addCell(alCellCP);
+
+			Cell alCellCT = new Cell();
+			alCellCT.setBorder(new SolidBorder(1));
+			alCellCT.add(new Paragraph("Term").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
+					.setCharacterSpacing(1));
+			benAddTable.addCell(alCellCT);
 
 			/////////////////// End Of the Table Heading ////////////
 
@@ -10889,6 +10922,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							benefitDetailMap.put("benName", quoBenf.getBenfName());
 							benefitDetailMap.put("mainAmt", quoBenf.getRiderSum());
 							benefitDetailMap.put("mainPre", quoBenf.getPremium());
+							benefitDetailMap.put("mainTrm", quoBenf.getRiderTerm());
 
 							benifList.add(benefitDetailMap);
 						}
@@ -10915,6 +10949,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 								isAvailable = 1;
 								benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
 								benefitDetailMap.put("spousePre", quoBenf.getPremium());
+								benefitDetailMap.put("spouseTrm", quoBenf.getRiderTerm());
 
 							}
 
@@ -10933,6 +10968,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 							benefitDetailMap.put("benName", quoBenf.getBenfName());
 							benefitDetailMap.put("spouseAmt", quoBenf.getRiderSum());
 							benefitDetailMap.put("spousePre", quoBenf.getPremium());
+							benefitDetailMap.put("spouseTrm", quoBenf.getRiderTerm());
 
 							benifList.add(benefitDetailMap);
 						}
@@ -10991,6 +11027,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 									benefitDetailMap.put("childPre", hcbic);
 
 								}
+
+								benefitDetailMap.put("childTrm", quoChildBenef.getRiderTerm());
+
 							}
 
 						}
@@ -11019,6 +11058,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 								benefitDetailMap.put("childPre", hcbic);
 
 							}
+
+							benefitDetailMap.put("childTrm", quoChildBenef.getRiderTerm());
 
 							// Adding Full benefits details Hash Map to ArrayList
 							benifList.add(benefitDetailMap);
@@ -11095,13 +11136,31 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					benAddTable.addCell(alCellmP);
 				}
 
+				// Display Main Life Rider Term
+				Cell alCellmT = new Cell();
+				if (hashMap.get("mainTrm") != null) {
+
+					if (!maturity.equalsIgnoreCase("L14") && !maturity.equalsIgnoreCase("L15")
+							&& !maturity.equalsIgnoreCase("L16")) {
+						Integer mTrm = (Integer) hashMap.get("mainTrm");
+
+						alCellmT.add(new Paragraph(Integer.toString(mTrm)).setFontSize(8)
+								.setTextAlignment(TextAlignment.RIGHT));
+						benAddTable.addCell(alCellmT);
+					}
+
+				} else {
+					alCellmT.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellmT);
+				}
+
 				// Display Spouse Rider Amounts
 				Cell alCellsA = new Cell();
 
 				if (hashMap.get("spouseAmt") != null) {
 					String comb = (String) hashMap.get("combination");
 
-					System.out.println("benffff " + comb);
+					// System.out.println("benffff " + comb);
 					/* If Spouse having WPB or HCBF Spouse Amount will print as APPLIED */
 					if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
 
@@ -11150,6 +11209,27 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 						&& !maturity.equalsIgnoreCase("L16")) {
 					alCellsP.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 					benAddTable.addCell(alCellsP);
+
+				}
+
+				// Display Spouse Rider Term
+				Cell alCellsT = new Cell();
+				if (hashMap.get("spouseTrm") != null) {
+					Integer spTrm = (Integer) hashMap.get("spouseTrm");
+					alCellsT.add(new Paragraph(Integer.toString(spTrm)).setFontSize(8)
+							.setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellsT);
+
+				} else if (!maturity.equalsIgnoreCase("L14") && !maturity.equalsIgnoreCase("L15")
+						&& !maturity.equalsIgnoreCase("L16") && maturity.equalsIgnoreCase("CIB")) {
+
+					alCellsT.add(new Paragraph("").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellsT);
+
+				} else if (!maturity.equalsIgnoreCase("L14") && !maturity.equalsIgnoreCase("L15")
+						&& !maturity.equalsIgnoreCase("L16")) {
+					alCellsT.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellsT);
 
 				}
 
@@ -11213,6 +11293,31 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				}
 
+				// Display Child Riders Term
+				Cell alCellcT = new Cell();
+				alCellcT.setBorderRight(new SolidBorder(1));
+
+				if (hashMap.get("childTrm") != null) {
+					Integer cTrm = (Integer) hashMap.get("childTrm");
+
+					alCellcT.add(
+							new Paragraph(formatter.format(cTrm)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellcT);
+
+					// IF Child Premiums Are not equal Maturities and Premium is null
+				} else if (!maturity.equalsIgnoreCase("L14") && !maturity.equalsIgnoreCase("L15")
+						&& !maturity.equalsIgnoreCase("L16") && maturity.equalsIgnoreCase("CIB")) {
+
+					alCellcT.add(new Paragraph("").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellcT);
+
+				} else if (!maturity.equalsIgnoreCase("L14") && !maturity.equalsIgnoreCase("L15")
+						&& !maturity.equalsIgnoreCase("L16")) {
+					alCellcT.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+					benAddTable.addCell(alCellcT);
+
+				}
+
 			}
 
 			benAddTable.startNewRow();
@@ -11226,7 +11331,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		/// Creating Additional Benf Table
-		float[] addBenfTblColWidths = { 150, 80, 80 };
+		float[] addBenfTblColWidths = { 150, 80, 80, 80 };
 		Table cvrTable = new Table(addBenfTblColWidths);
 		cvrTable.setHorizontalAlignment(HorizontalAlignment.LEFT).setBorder(new SolidBorder(1));
 
@@ -11236,7 +11341,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1).setMarginTop(10));
 		cvrTable.addCell(abCellth1);
 
-		Cell abCellth2 = new Cell(0, 2);
+		Cell abCellth2 = new Cell(0, 3);
 		abCellth2.setBorder(new SolidBorder(1));
 		abCellth2.add(new Paragraph("Main Life").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
 				.setCharacterSpacing(1));
@@ -11254,6 +11359,12 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setCharacterSpacing(1));
 		cvrTable.addCell(abCellMP);
 
+		Cell abCellMT = new Cell();
+		abCellMT.setBorder(new SolidBorder(1));
+		abCellMT.add(new Paragraph("Term").setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER)
+				.setCharacterSpacing(1));
+		cvrTable.addCell(abCellMT);
+
 		cvrTable.startNewRow();
 
 		/*
@@ -11262,8 +11373,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 */
 		Double dc = 0.0;
 		Double dcp = 0.0;
+		Integer dct = 0;
 
 		Double wpbp = 0.0;
+		Integer wpbt = 0;
 
 		if (benefitsLife.isEmpty()) {
 
@@ -11277,11 +11390,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					 */
 					dc = quoAddBenf.getRiderSum();
 					dcp = quoAddBenf.getPremium();
+					dct = quoAddBenf.getRiderTerm();
 
 				}
 				if (quoAddBenf.getRiderCode().equalsIgnoreCase("WPB")) {
 					// only Waiver of Premium
 					wpbp = quoAddBenf.getPremium();
+					wpbt = quoAddBenf.getRiderTerm();
 
 				}
 
@@ -11314,52 +11429,72 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 		cvrTable.addCell(abCelld3);
 
-		cvrTable.startNewRow();
-
 		Cell abCelld4 = new Cell();
-		abCelld4.setBorderLeft(new SolidBorder(1));
-		abCelld4.add(new Paragraph("Waiver of Premium").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
-		cvrTable.addCell(abCelld4);
-
-		Cell abCelld5 = new Cell();
-		if (quotationDetails.getPayMode().equalsIgnoreCase("S")) {
-			abCelld5.add(new Paragraph("Not Applied").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+		if (dct == 0) {
+			abCelld4.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		} else {
-			abCelld5.add(new Paragraph("Applied").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+			abCelld4.add(new Paragraph(Integer.toString(dct)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		}
+		cvrTable.addCell(abCelld4);
+
+		cvrTable.startNewRow();
+
+		Cell abCelld5 = new Cell();
+		abCelld5.setBorderLeft(new SolidBorder(1));
+		abCelld5.add(new Paragraph("Waiver of Premium").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
 		cvrTable.addCell(abCelld5);
 
 		Cell abCelld6 = new Cell();
-		if (wpbp == 0.0) {
-			abCelld6.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+		if (quotationDetails.getPayMode().equalsIgnoreCase("S")) {
+			abCelld6.add(new Paragraph("Not Applied").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		} else {
-			abCelld6.add(new Paragraph(formatter.format(wpbp)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+			abCelld6.add(new Paragraph("Applied").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		}
 		cvrTable.addCell(abCelld6);
 
-		cvrTable.startNewRow();
-
 		Cell abCelld7 = new Cell();
-		abCelld7.setBorderLeft(new SolidBorder(1));
-		abCelld7.setBorderBottom(new SolidBorder(1));
-		abCelld7.add(new Paragraph("Contribution for Pension").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
-		cvrTable.addCell(abCelld7);
-
-		Cell abCelld8 = new Cell(0, 2);
-		abCelld8.setBorderBottom(new SolidBorder(1));
-		if (quotationDetails.getPremium() != null) {
-			abCelld8.add(new Paragraph(formatter.format(quotationDetails.getPremium())).setFontSize(8)
-					.setTextAlignment(TextAlignment.CENTER));
+		if (wpbp == 0.0) {
+			abCelld7.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		} else {
-			abCelld8.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+			abCelld7.add(new Paragraph(formatter.format(wpbp)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+
+		}
+		cvrTable.addCell(abCelld7);
+
+		Cell abCelld8 = new Cell();
+		if (wpbt == 0) {
+			abCelld8.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
+
+		} else {
+			abCelld8.add(new Paragraph(Integer.toString(wpbt)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT));
 
 		}
 		cvrTable.addCell(abCelld8);
+
+		cvrTable.startNewRow();
+
+		Cell abCelld9 = new Cell();
+		abCelld9.setBorderLeft(new SolidBorder(1));
+		abCelld9.setBorderBottom(new SolidBorder(1));
+		abCelld9.add(new Paragraph("Contribution for Pension").setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+		cvrTable.addCell(abCelld9);
+
+		Cell abCelld10 = new Cell(0, 3);
+		abCelld10.setBorderBottom(new SolidBorder(1));
+		if (quotationDetails.getPremium() != null) {
+			abCelld10.add(new Paragraph(formatter.format(quotationDetails.getPremium())).setFontSize(8)
+					.setTextAlignment(TextAlignment.CENTER));
+
+		} else {
+			abCelld10.add(new Paragraph("-").setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+		}
+		cvrTable.addCell(abCelld10);
 
 		document.add(cvrTable);
 
@@ -11618,13 +11753,19 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item1);
 
 		ListItem item2 = new ListItem();
-		item2.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(8).setFixedLeading(10));
+		item2.add(new Paragraph(
+				"This is a long-term product and its benefits are best realized when you continue the policy for full premium paying term. Terminating this policy before the end of the premium paying term may result in significant financial loss. ")
+						.setFontSize(8).setFixedLeading(10));
 		list.add(item2);
 
 		ListItem item3 = new ListItem();
-		item3.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
-				.setFontSize(8).setFixedLeading(10));
+		item3.add(new Paragraph("All Amounts are in Sri Lankan Rupees (LKR).").setFontSize(8).setFixedLeading(10));
 		list.add(item3);
+
+		ListItem item4 = new ListItem();
+		item4.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
+				.setFontSize(8).setFixedLeading(10));
+		list.add(item4);
 
 		document.add(list);
 
@@ -12120,7 +12261,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				System.out.println(bsa.getRiderCode());
+				// System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -12399,7 +12540,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " + maturity.equalsIgnoreCase("L3"));
+			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
 			if (!maturity.equalsIgnoreCase("L11") && !maturity.equalsIgnoreCase("L12")
@@ -13213,8 +13355,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		System.out.println(
-				"sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" + quotationDetails.getSumAtRiskMain());
+		// System.out.println(
+		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+		// quotationDetails.getSumAtRiskMain());
 
 		if (quotationDetails.getSumAtRiskMain() != null) {
 
