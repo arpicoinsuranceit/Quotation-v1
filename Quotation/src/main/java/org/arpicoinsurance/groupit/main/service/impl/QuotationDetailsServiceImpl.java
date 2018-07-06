@@ -356,6 +356,26 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		quotationReceipt.setQuotationId(details.getQuotation().getId());
 		quotationReceipt.setProductCode(details.getQuotation().getProducts().getProductCode());
 		quotationReceipt.setProductName(details.getQuotation().getProducts().getProductName());
+		switch (details.getPayMode()) {
+		case "M":
+			quotationReceipt.setPremium(details.getPremiumMonthT());
+			break;
+		case "Q":
+			quotationReceipt.setPremium(details.getPremiumQuaterT());
+			break;
+		case "H":
+			quotationReceipt.setPremium(details.getPremiumHalfT());
+			break;
+		case "Y":
+			quotationReceipt.setPremium(details.getPremiumYearT());
+			break;
+		case "S":
+			quotationReceipt.setPremium(details.getPremiumSingleT());
+			break;
+
+		default:
+			break;
+		}
 		return quotationReceipt;
 	}
 

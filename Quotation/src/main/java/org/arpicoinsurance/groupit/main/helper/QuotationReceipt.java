@@ -10,6 +10,7 @@ public class QuotationReceipt {
 	private String productCode; 
 	private String productName; 
 	private String branchCode;
+	private Double premium;
 	
 	public Integer getQuotationId() {
 		return QuotationId;
@@ -58,5 +59,11 @@ public class QuotationReceipt {
 	}
 	public void setBranchCode(String branchCode) {
 		this.branchCode = branchCode;
+	}
+	public Double getPremium() {
+		return premium;
+	}
+	public void setPremium(Double premium) {
+		this.premium = premium;
 	}
 }
