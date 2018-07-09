@@ -2543,7 +2543,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
@@ -4987,7 +4993,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
@@ -6543,7 +6555,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
@@ -8077,7 +8095,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
@@ -9835,7 +9859,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
@@ -13201,8 +13231,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-			mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
+			if (mainMedical.isEmpty()) {
+				mainMedical = "Not Applied";
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
 			Cell mrqCell2 = new Cell();
 			mrqCell2.setBorder(Border.NO_BORDER);
 			mrqCell2.add(new Paragraph(": " + mainMedical).setFontSize(9).setTextAlignment(TextAlignment.LEFT)
