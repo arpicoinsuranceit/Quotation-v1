@@ -151,12 +151,13 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getPayingterm(), 1, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), "Y", calResp, false);
+					quotationCalculation.get_personalInfo().getPayingterm(), calculationUtils.getRebate("M"), new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), "M", calResp, false);
 
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
 			//System.out.println(bsaYearly);
 			
 			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,

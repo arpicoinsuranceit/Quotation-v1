@@ -177,10 +177,13 @@ public class ATRMServiceImpl implements ATRMService {
 					new Date(), calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(calculation.get_personalInfo().getMocu(),
-					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), 1,
-					new Date(), calculation.get_personalInfo().getBsa(), 1, calResp, false);
+			BigDecimal bsaMonthly = calculateL2(calculation.get_personalInfo().getMocu(),
+					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"),
+					new Date(), calculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
 
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
+			/*System.out.println(bsaYearly);
+			*/
 			//System.out.println(bsaYearly);
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
