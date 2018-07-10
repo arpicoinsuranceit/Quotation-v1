@@ -174,8 +174,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -740,8 +741,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -1189,8 +1191,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -2545,7 +2548,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
+<<<<<<< HEAD
 				mainMedical = "Not Applied";
+=======
+
+				mainMedical = "Not Applied";
+
+>>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -2725,17 +2734,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 			document.add(finReqTbl);
 
-			/*
-			 * document.add(new
-			 * Paragraph("Financial Requirements ").setBold().setFontSize(9).setUnderline()
-			 * .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing
-			 * (1));
-			 * 
-			 * document.add(new
-			 * Paragraph("Applied - Please refer Underwritting department for Financial Guidlines. "
-			 * ) .setFontSize(9).setFixedLeading(10));
-			 */
-
 		}
 
 		/////////////////////// *End of FinanCial Requirements*///////////////////
@@ -2890,8 +2888,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(10)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -3752,8 +3751,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -4995,7 +4995,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
+<<<<<<< HEAD
 				mainMedical = "Not Applied";
+=======
+
+				mainMedical = "Not Applied";
+
+>>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -5038,98 +5044,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(medReqTable);
-		/*
-		 * try {
-		 * 
-		 * if (medicalDetails.isEmpty()) {
-		 * 
-		 * } else { document.add(new Paragraph(""));
-		 * 
-		 * document.add(new
-		 * Paragraph("Medical Requirements").setBold().setFontSize(9).setUnderline()
-		 * .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing
-		 * (1));
-		 * 
-		 * document.add(new Paragraph(""));
-		 * 
-		 * // Medical Requirements Table float[] pointColumnWidths6 = { 100, 500 };
-		 * Table medReqTable = new Table(pointColumnWidths6);
-		 * medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
-		 * 
-		 * // Creating a String Seperator ArrayList Seperate from seperator final String
-		 * SEPARATOR = " , ";
-		 * 
-		 * StringBuilder mainLife = new StringBuilder(); StringBuilder spouse = new
-		 * StringBuilder();
-		 * 
-		 * for (MedicalRequirementsHelper medicalReq : medicalDetails) {
-		 * 
-		 * // When MainLife having medical requiremnents if
-		 * (medicalReq.getMainStatus().equalsIgnoreCase("R")) {
-		 * mainLife.append(medicalReq.getMedicalReqname()); mainLife.append(SEPARATOR);
-		 * // When MainLife not having medical Requirements } else if
-		 * (medicalReq.getMainStatus().equalsIgnoreCase("NR")) {
-		 * 
-		 * } else { mainLife.append("NR"); mainLife.append(SEPARATOR); }
-		 * 
-		 * // When Spouse having medical Requirements if
-		 * (medicalReq.getSpouseStatus().equalsIgnoreCase("R")) {
-		 * spouse.append(medicalReq.getMedicalReqname()); spouse.append(SEPARATOR);
-		 * 
-		 * // When Spouse Not having medical Requirements } else if
-		 * (medicalReq.getSpouseStatus().equalsIgnoreCase("NR")) {
-		 * 
-		 * } else { spouse.append("NR"); spouse.append(SEPARATOR); }
-		 * 
-		 * }
-		 * 
-		 * String mainMedical = mainLife.toString(); mainMedical =
-		 * mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
-		 * 
-		 * Cell mrqCell1 = new Cell(); mrqCell1.setBorder(Border.NO_BORDER);
-		 * mrqCell1.add(new
-		 * Paragraph("Main Life").setBold().setFontSize(9).setTextAlignment(
-		 * TextAlignment.LEFT) .setFixedLeading(10).setCharacterSpacing(1));
-		 * medReqTable.addCell(mrqCell1);
-		 * 
-		 * Cell mrqCell2 = new Cell(); mrqCell2.setBorder(Border.NO_BORDER);
-		 * mrqCell2.add(new Paragraph(": " +
-		 * mainMedical).setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		 * .setFixedLeading(10)); medReqTable.addCell(mrqCell2);
-		 * 
-		 * medReqTable.startNewRow();
-		 * 
-		 * if (benefitsSpouse.isEmpty()) {
-		 * 
-		 * } else {
-		 * 
-		 * String spouseMedical = spouse.toString();
-		 * 
-		 * // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
-		 * 
-		 * if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
-		 * 
-		 * spouseMedical = spouseMedical.substring(0, spouseMedical.length() -
-		 * SEPARATOR.length());
-		 * 
-		 * Cell mrqCell3 = new Cell(); mrqCell3.setBorder(Border.NO_BORDER);
-		 * mrqCell3.add(new Paragraph("Spouse").setBold().setFontSize(9)
-		 * .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing
-		 * (1)); medReqTable.addCell(mrqCell3);
-		 * 
-		 * Cell mrqCell4 = new Cell(); mrqCell4.setBorder(Border.NO_BORDER);
-		 * mrqCell4.add(new Paragraph(": " + spouseMedical).setFontSize(9)
-		 * .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
-		 * medReqTable.addCell(mrqCell4); } }
-		 * 
-		 * document.add(medReqTable);
-		 * 
-		 * }
-		 * 
-		 * } catch (Exception e) { e.printStackTrace();
-		 * 
-		 * }
-		 */
 
 		document.add(new Paragraph(""));
 
@@ -5315,8 +5229,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -6557,7 +6472,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
+<<<<<<< HEAD
 				mainMedical = "Not Applied";
+=======
+
+				mainMedical = "Not Applied";
+
+>>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -6600,113 +6521,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(medReqTable);
-
-		// try {
-		//
-		// if (medicalDetails.isEmpty()) {
-		//
-		// } else {
-		// document.add(new Paragraph(""));
-		//
-		// document.add(new Paragraph("Medical
-		// Requirements").setBold().setFontSize(9).setUnderline()
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		//
-		// // Medical Requirements Table
-		// float[] pointColumnWidths6 = { 100, 500 };
-		// Table medReqTable = new Table(pointColumnWidths6);
-		// medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
-		//
-		// Creating a String Seperator ArrayList Seperate from seperator
-		// final String SEPARATOR = " , ";
-		//
-		// StringBuilder mainLife = new StringBuilder();
-		// StringBuilder spouse = new StringBuilder();
-		//
-		// for (MedicalRequirementsHelper medicalReq : medicalDetails) {
-		//
-		// // When MainLife having medical requiremnents
-		// if (medicalReq.getMainStatus().equalsIgnoreCase("R")) {
-		// mainLife.append(medicalReq.getMedicalReqname());
-		// mainLife.append(SEPARATOR);
-		// // When MainLife not having medical Requirements
-		// } else if (medicalReq.getMainStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// mainLife.append("NR");
-		// mainLife.append(SEPARATOR);
-		// }
-		//
-		// // When Spouse having medical Requirements
-		// if (medicalReq.getSpouseStatus().equalsIgnoreCase("R")) {
-		// spouse.append(medicalReq.getMedicalReqname());
-		// spouse.append(SEPARATOR);
-		//
-		// // When Spouse Not having medical Requirements
-		// } else if (medicalReq.getSpouseStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// spouse.append("NR");
-		// spouse.append(SEPARATOR);
-		// }
-		//
-		// }
-		//
-		// String mainMedical = mainLife.toString();
-		// mainMedical = mainMedical.substring(0, mainMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell1 = new Cell();
-		// mrqCell1.setBorder(Border.NO_BORDER);
-		// mrqCell1.add(new Paragraph("Main
-		// Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell1);
-		//
-		// Cell mrqCell2 = new Cell();
-		// mrqCell2.setBorder(Border.NO_BORDER);
-		// mrqCell2.add(new Paragraph(": " +
-		// mainMedical).setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10));
-		// medReqTable.addCell(mrqCell2);
-		//
-		// medReqTable.startNewRow();
-		//
-		// if (benefitsSpouse.isEmpty()) {
-		//
-		// } else {
-		//
-		// String spouseMedical = spouse.toString();
-		//
-		// // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
-		//
-		// if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
-		//
-		// spouseMedical = spouseMedical.substring(0, spouseMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell3 = new Cell();
-		// mrqCell3.setBorder(Border.NO_BORDER);
-		// mrqCell3.add(new Paragraph("Spouse").setBold().setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell3);
-		//
-		// Cell mrqCell4 = new Cell();
-		// mrqCell4.setBorder(Border.NO_BORDER);
-		// mrqCell4.add(new Paragraph(": " + spouseMedical).setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
-		// medReqTable.addCell(mrqCell4);
-		// }
-		// }
-		//
-		// document.add(medReqTable);
-		//
-		// }
-		//
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		//
-		// }
 
 		/////////////////////// *Start FinanCial Requirements*///////////////////
 
@@ -6891,8 +6705,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -8097,7 +7912,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
+<<<<<<< HEAD
 				mainMedical = "Not Applied";
+=======
+
+				mainMedical = "Not Applied";
+
+>>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -8140,112 +7961,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(medReqTable);
-
-		// try {
-		//
-		// if (medicalDetails.isEmpty()) {
-		//
-		// } else {
-		//
-		// document.add(new Paragraph("Medical
-		// Requirements").setBold().setFontSize(9).setUnderline()
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		//
-		// // Medical Requirements Table
-		// float[] pointColumnWidths6 = { 100, 500 };
-		// Table medReqTable = new Table(pointColumnWidths6);
-		// medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
-		//
-		// // Creating a String Seperator ArrayList Seperate from seperator
-		// final String SEPARATOR = " , ";
-		//
-		// StringBuilder mainLife = new StringBuilder();
-		// StringBuilder spouse = new StringBuilder();
-		//
-		// for (MedicalRequirementsHelper medicalReq : medicalDetails) {
-		//
-		// // When MainLife having medical requiremnents
-		// if (medicalReq.getMainStatus().equalsIgnoreCase("R")) {
-		// mainLife.append(medicalReq.getMedicalReqname());
-		// mainLife.append(SEPARATOR);
-		// // When MainLife not having medical Requirements
-		// } else if (medicalReq.getMainStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// mainLife.append("NR");
-		// mainLife.append(SEPARATOR);
-		// }
-		//
-		// // When Spouse having medical Requirements
-		// if (medicalReq.getSpouseStatus().equalsIgnoreCase("R")) {
-		// spouse.append(medicalReq.getMedicalReqname());
-		// spouse.append(SEPARATOR);
-		//
-		// // When Spouse Not having medical Requirements
-		// } else if (medicalReq.getSpouseStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// spouse.append("NR");
-		// spouse.append(SEPARATOR);
-		// }
-		//
-		// }
-		//
-		// String mainMedical = mainLife.toString();
-		// mainMedical = mainMedical.substring(0, mainMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell1 = new Cell();
-		// mrqCell1.setBorder(Border.NO_BORDER);
-		// mrqCell1.add(new Paragraph("Main
-		// Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell1);
-		//
-		// Cell mrqCell2 = new Cell();
-		// mrqCell2.setBorder(Border.NO_BORDER);
-		// mrqCell2.add(new Paragraph(": " +
-		// mainMedical).setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10));
-		// medReqTable.addCell(mrqCell2);
-		//
-		// medReqTable.startNewRow();
-		//
-		// if (benefitsSpouse.isEmpty()) {
-		//
-		// } else {
-		//
-		// String spouseMedical = spouse.toString();
-		//
-		// // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
-		//
-		// if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
-		//
-		// spouseMedical = spouseMedical.substring(0, spouseMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell3 = new Cell();
-		// mrqCell3.setBorder(Border.NO_BORDER);
-		// mrqCell3.add(new Paragraph("Spouse").setBold().setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell3);
-		//
-		// Cell mrqCell4 = new Cell();
-		// mrqCell4.setBorder(Border.NO_BORDER);
-		// mrqCell4.add(new Paragraph(": " + spouseMedical).setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
-		// medReqTable.addCell(mrqCell4);
-		// }
-		// }
-		//
-		// document.add(medReqTable);
-		//
-		// }
-		//
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		//
-		// }
 
 		/////////////////////// *Start FinanCial Requirements*///////////////////
 
@@ -8440,8 +8155,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(8)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -9861,7 +9577,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
+<<<<<<< HEAD
 				mainMedical = "Not Applied";
+=======
+
+				mainMedical = "Not Applied";
+
+>>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -9904,111 +9626,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(medReqTable);
-		// try {
-		//
-		// if (medicalDetails.isEmpty()) {
-		//
-		// } else {
-		//
-		// document.add(new Paragraph("Medical
-		// Requirements").setBold().setFontSize(8).setUnderline()
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		//
-		// // Medical Requirements Table
-		// float[] pointColumnWidths6 = { 100, 500 };
-		// Table medReqTable = new Table(pointColumnWidths6);
-		// medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
-		//
-		// // Creating a String Seperator ArrayList Seperate from seperator
-		// final String SEPARATOR = " , ";
-		//
-		// StringBuilder mainLife = new StringBuilder();
-		// StringBuilder spouse = new StringBuilder();
-		//
-		// for (MedicalRequirementsHelper medicalReq : medicalDetails) {
-		//
-		// // When MainLife having medical requiremnents
-		// if (medicalReq.getMainStatus().equalsIgnoreCase("R")) {
-		// mainLife.append(medicalReq.getMedicalReqname());
-		// mainLife.append(SEPARATOR);
-		// // When MainLife not having medical Requirements
-		// } else if (medicalReq.getMainStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// mainLife.append("NR");
-		// mainLife.append(SEPARATOR);
-		// }
-		//
-		// // When Spouse having medical Requirements
-		// if (medicalReq.getSpouseStatus().equalsIgnoreCase("R")) {
-		// spouse.append(medicalReq.getMedicalReqname());
-		// spouse.append(SEPARATOR);
-		//
-		// // When Spouse Not having medical Requirements
-		// } else if (medicalReq.getSpouseStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// spouse.append("NR");
-		// spouse.append(SEPARATOR);
-		// }
-		//
-		// }
-		//
-		// String mainMedical = mainLife.toString();
-		// mainMedical = mainMedical.substring(0, mainMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell1 = new Cell();
-		// mrqCell1.setBorder(Border.NO_BORDER);
-		// mrqCell1.add(new Paragraph("Main
-		// Life").setBold().setFontSize(8).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell1);
-		//
-		// Cell mrqCell2 = new Cell();
-		// mrqCell2.setBorder(Border.NO_BORDER);
-		// mrqCell2.add(new Paragraph(": " +
-		// mainMedical).setFontSize(8).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10));
-		// medReqTable.addCell(mrqCell2);
-		//
-		// medReqTable.startNewRow();
-		//
-		// if (benefitsSpouse.isEmpty()) {
-		//
-		// } else {
-		//
-		// String spouseMedical = spouse.toString();
-		//
-		// // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
-		//
-		// if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
-		//
-		// spouseMedical = spouseMedical.substring(0, spouseMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell3 = new Cell();
-		// mrqCell3.setBorder(Border.NO_BORDER);
-		// mrqCell3.add(new Paragraph("Spouse").setBold().setFontSize(8)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell3);
-		//
-		// Cell mrqCell4 = new Cell();
-		// mrqCell4.setBorder(Border.NO_BORDER);
-		// mrqCell4.add(new Paragraph(": " + spouseMedical).setFontSize(8)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
-		// medReqTable.addCell(mrqCell4);
-		// }
-		// }
-		//
-		// document.add(medReqTable);
-		//
-		// }
-		//
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		//
-		// }
 
 		/////////////////////// *Start FinanCial Requirements*///////////////////
 
@@ -10217,8 +9834,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(8)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -11905,8 +11523,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId()).setFontSize(9)
-				.setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(
+				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getQdId()))
+						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -13231,6 +12850,18 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
+<<<<<<< HEAD
+=======
+
+			if (mainMedical.isEmpty()) {
+
+				mainMedical = "Not Applied";
+
+			} else {
+				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
+
+			}
+>>>>>>> refs/remotes/origin/branch-126
 
 			if (mainMedical.isEmpty()) {
 				mainMedical = "Not Applied";
@@ -13275,115 +12906,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		}
 
 		document.add(medReqTable);
-
-		// try {
-		//
-		// if (medicalDetails.isEmpty()) {
-		//
-		// } else {
-		// document.add(new Paragraph(""));
-		//
-		// document.add(new Paragraph("Medical
-		// Requirements").setBold().setFontSize(9).setUnderline()
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		//
-		// document.add(new Paragraph(""));
-		//
-		// // Medical Requirements Table
-		// float[] pointColumnWidths6 = { 100, 500 };
-		// Table medReqTable = new Table(pointColumnWidths6);
-		// medReqTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
-		//
-		// // Creating a String Seperator ArrayList Seperate from seperator
-		// final String SEPARATOR = " , ";
-		//
-		// StringBuilder mainLife = new StringBuilder();
-		// StringBuilder spouse = new StringBuilder();
-		//
-		// for (MedicalRequirementsHelper medicalReq : medicalDetails) {
-		//
-		// // When MainLife having medical requiremnents
-		// if (medicalReq.getMainStatus().equalsIgnoreCase("R")) {
-		// mainLife.append(medicalReq.getMedicalReqname());
-		// mainLife.append(SEPARATOR);
-		// // When MainLife not having medical Requirements
-		// } else if (medicalReq.getMainStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// mainLife.append("NR");
-		// mainLife.append(SEPARATOR);
-		// }
-		//
-		// // When Spouse having medical Requirements
-		// if (medicalReq.getSpouseStatus().equalsIgnoreCase("R")) {
-		// spouse.append(medicalReq.getMedicalReqname());
-		// spouse.append(SEPARATOR);
-		//
-		// // When Spouse Not having medical Requirements
-		// } else if (medicalReq.getSpouseStatus().equalsIgnoreCase("NR")) {
-		//
-		// } else {
-		// spouse.append("NR");
-		// spouse.append(SEPARATOR);
-		// }
-		//
-		// }
-		//
-		// String mainMedical = mainLife.toString();
-		// mainMedical = mainMedical.substring(0, mainMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell1 = new Cell();
-		// mrqCell1.setBorder(Border.NO_BORDER);
-		// mrqCell1.add(new Paragraph("Main
-		// Life").setBold().setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell1);
-		//
-		// Cell mrqCell2 = new Cell();
-		// mrqCell2.setBorder(Border.NO_BORDER);
-		// mrqCell2.add(new Paragraph(": " +
-		// mainMedical).setFontSize(9).setTextAlignment(TextAlignment.LEFT)
-		// .setFixedLeading(10));
-		// medReqTable.addCell(mrqCell2);
-		//
-		// medReqTable.startNewRow();
-		//
-		// if (benefitsSpouse.isEmpty()) {
-		//
-		// } else {
-		//
-		// String spouseMedical = spouse.toString();
-		//
-		// // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
-		//
-		// if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
-		//
-		// spouseMedical = spouseMedical.substring(0, spouseMedical.length() -
-		// SEPARATOR.length());
-		//
-		// Cell mrqCell3 = new Cell();
-		// mrqCell3.setBorder(Border.NO_BORDER);
-		// mrqCell3.add(new Paragraph("Spouse").setBold().setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10).setCharacterSpacing(1));
-		// medReqTable.addCell(mrqCell3);
-		//
-		// Cell mrqCell4 = new Cell();
-		// mrqCell4.setBorder(Border.NO_BORDER);
-		// mrqCell4.add(new Paragraph(": " + spouseMedical).setFontSize(9)
-		// .setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
-		// medReqTable.addCell(mrqCell4);
-		// }
-		// }
-		//
-		// document.add(medReqTable);
-		//
-		// }
-		//
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		//
-		// }
 
 		/////////////////////// *Start FinanCial Requirements*///////////////////
 
