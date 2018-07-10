@@ -207,17 +207,17 @@ public class Validation {
 						break;
 					case "MFIBD":
 						if (validateInvpMIFBD().equals(0)) {
-							return "MIFBD mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MIFBD mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					case "MFIBT":
 						if (validateInvpMIFBT().equals(0)) {
-							return "MIFBT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MIFBT mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					case "MFIBDT":
 						if (validateInvpMFIBDT().equals(0)) {
-							return "MFIBDT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MFIBDT mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					/*
@@ -245,7 +245,7 @@ public class Validation {
 						break;
 					case "HB":
 						if (validateInvpHB().equals(0)) {
-							return "HB must be greater than 500 and less than 10,000 and multi value of 100";
+							return "HB must be greater than 500 and less than 10,000 and multi value of 100 and Less than 10% of Yearly Premium";
 						}
 						break;
 					case "TPDDTA":
