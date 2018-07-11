@@ -8,7 +8,6 @@ import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.InvpSavePersonalInfo;
-import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.Spouse;
@@ -172,11 +171,12 @@ public class Validation {
 						// System.out.println(calculation.get_product());
 
 						/////// for END
-						if (calculation.get_product().equals("END1")) {
+						
+						/*if (calculation.get_product().equals("END1")) {
 							if (validateCIBEND().equals(0)) {
 								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA and CIB mod 25000 must 0";
 							}
-						} else if (calculation.get_product().equals("ARTM")) {
+						} else */if (calculation.get_product().equals("ARTM")) {
 							if (validateCIBARTM().equals(0)) {
 								return "Internal Error";
 							}
@@ -207,17 +207,17 @@ public class Validation {
 						break;
 					case "MFIBD":
 						if (validateInvpMIFBD().equals(0)) {
-							return "MIFBD mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MIFBD mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					case "MFIBT":
 						if (validateInvpMIFBT().equals(0)) {
-							return "MIFBT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MIFBT mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					case "MFIBDT":
 						if (validateInvpMFIBDT().equals(0)) {
-							return "MFIBDT mod 1000 must be 0 and greater than 10,000 and less than 100,000";
+							return "MFIBDT mod 1000 must be 0 and greater than 10,000 and less than 100,000 and Less than Yearly Premium";
 						}
 						break;
 					/*
@@ -245,7 +245,7 @@ public class Validation {
 						break;
 					case "HB":
 						if (validateInvpHB().equals(0)) {
-							return "HB must be greater than 500 and less than 10,000 and multi value of 100";
+							return "HB must be greater than 500 and less than 10,000 and multi value of 100 and Less than 10% of Yearly Premium";
 						}
 						break;
 					case "TPDDTA":
@@ -289,15 +289,15 @@ public class Validation {
 							return "Please Select SCB before get SCIB";
 						}
 						//////// validation END
-						if (calculation.get_product().equals("END1")) {
+						/*if (calculation.get_product().equals("END1")) {
 							if (validateInvpSCIBEND().equals(0)) {
 								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
 							}
-						} else {
+						} else {*/
 							if (validateInvpSCIB().equals(0)) {
 								return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
 							}
-						}
+						/*}*/
 						break;
 					case "FEBS":
 						//////// validation END
@@ -395,15 +395,15 @@ public class Validation {
 					String type = benifict.getType();
 					switch (type) {
 					case "CIBC":
-						if (calculation.get_product().equals("END1")) {
+						/*if (calculation.get_product().equals("END1")) {
 							if (validateENDCIBC().equals(0)) {
 								return "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
 							}
-						} else {
+						} else {*/
 							if (validateInvpCIBC().equals(0)) {
 								return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
 							}
-						}
+						/*}*/
 						break;
 					/*
 					 * case "HRBC": if (validateInvpHRBC().equals(0)) { return

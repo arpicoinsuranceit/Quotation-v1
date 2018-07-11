@@ -40,7 +40,7 @@ public class QuotationArtmCalculationController {
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateATRM(@RequestBody QuotationCalculation calculation) {
 
-		System.out.println("called");
+		
 
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
@@ -53,6 +53,10 @@ public class QuotationArtmCalculationController {
 				if (error.equals("No")) {
 
 					calResp = artmService.getCalcutatedARTM(calculation, false);
+					
+					System.out.println(calResp.getPensionPremium1());
+					System.out.println(calResp.getPensionPremium2());
+					System.out.println(calResp.getPensionPremium3());
 
 					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
