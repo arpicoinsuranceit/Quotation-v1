@@ -135,7 +135,10 @@ public class ARTMServiceImpl implements ARTMService {
 			QuotationCalculation calculation, String divrat, List<PensionShedule> pensionShedules, Integer level)
 			throws Exception {
 
-		Integer poltrm = calculation.get_personalInfo().getTerm();
+		Integer poltrm = calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage();
+		calculation.get_personalInfo().setTerm(poltrm);
+		
+		//Integer poltrm = calculation.get_personalInfo().getTerm();
 		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("0") ? poltrm
 				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
 		String paymod = calculation.get_personalInfo().getFrequance();
