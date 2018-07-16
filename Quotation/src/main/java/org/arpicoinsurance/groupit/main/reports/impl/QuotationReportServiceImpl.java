@@ -2548,13 +2548,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
-<<<<<<< HEAD
-				mainMedical = "Not Applied";
-=======
 
 				mainMedical = "Not Applied";
 
->>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -4995,13 +4991,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
-<<<<<<< HEAD
-				mainMedical = "Not Applied";
-=======
 
 				mainMedical = "Not Applied";
 
->>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -6472,13 +6464,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
-<<<<<<< HEAD
-				mainMedical = "Not Applied";
-=======
 
 				mainMedical = "Not Applied";
 
->>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -7912,13 +7900,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
-<<<<<<< HEAD
-				mainMedical = "Not Applied";
-=======
 
 				mainMedical = "Not Applied";
 
->>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -9577,13 +9561,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String mainMedical = mainLife.toString();
 
 			if (mainMedical.isEmpty()) {
-<<<<<<< HEAD
-				mainMedical = "Not Applied";
-=======
 
 				mainMedical = "Not Applied";
 
->>>>>>> refs/remotes/origin/branch-126
 			} else {
 				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
 
@@ -12850,18 +12830,6 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			}
 
 			String mainMedical = mainLife.toString();
-<<<<<<< HEAD
-=======
-
-			if (mainMedical.isEmpty()) {
-
-				mainMedical = "Not Applied";
-
-			} else {
-				mainMedical = mainMedical.substring(0, mainMedical.length() - SEPARATOR.length());
-
-			}
->>>>>>> refs/remotes/origin/branch-126
 
 			if (mainMedical.isEmpty()) {
 				mainMedical = "Not Applied";
