@@ -546,7 +546,10 @@ public class ARPServiceImpl implements ARPService {
 				_invpSaveQuotation.get_personalInfo(), user);
 
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
-
+		
+		Quotation quotation = quotationDetails.getQuotation();
+		//quotation.setStatus("active");
+		
 		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
 		Customer spouse = null;
 		if (spouseDetail != null) {
@@ -585,8 +588,7 @@ public class ARPServiceImpl implements ARPService {
 			}
 		}
 
-		Quotation quotation = quotationDetails.getQuotation();
-		quotation.setStatus("active");
+		
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -598,7 +600,8 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		quotationDetails1.setQuotation(quotation);
-		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationModifyBy(user.getUserCode());
+		quotationDetails1.setQuotationModifyDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
@@ -625,7 +628,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetailList.add(medicalDetail);
 			}
 		}
-
+		
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),

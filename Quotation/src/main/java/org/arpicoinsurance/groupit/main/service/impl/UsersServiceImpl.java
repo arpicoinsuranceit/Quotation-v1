@@ -272,4 +272,9 @@ public class UsersServiceImpl implements UsersService {
 		return jsonMap;
 	}
 
+	@Override
+	public Users getUserByUserCode(String userCode) throws Exception {
+		return usersDao.findOneByUserCode(userCode);
+	}
+
 }

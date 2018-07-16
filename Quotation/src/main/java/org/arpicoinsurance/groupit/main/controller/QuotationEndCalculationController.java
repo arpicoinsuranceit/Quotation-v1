@@ -61,6 +61,7 @@ public class QuotationEndCalculationController {
 			}
 			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
 			logs.setDate(new Date());
