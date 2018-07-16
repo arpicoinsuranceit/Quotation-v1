@@ -7,8 +7,8 @@ import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 
 public interface QuotationDetailsService {
-	
-	public QuotationDetails findQuotationDetails(Integer qdId)throws Exception;
+
+public QuotationDetails findQuotationDetails(Integer qdId)throws Exception;
 	
 	public EditQuotation editQuotationDetails(Integer qdId)throws Exception;
 
@@ -21,7 +21,4 @@ public interface QuotationDetailsService {
 	public EditQuotation editQuotationDetailsView(Integer qdId)throws Exception;
 
 	public boolean updateStatus(Integer qdId) throws Exception;
-	
-
-	
 }

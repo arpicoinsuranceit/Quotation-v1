@@ -40,8 +40,8 @@ import org.springframework.stereotype.Service;
 public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 	@Autowired
-	private QuotationDao quotationDao; 
-	
+	private QuotationDao quotationDao;
+
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
 
@@ -73,9 +73,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mName(customerDetails.getCustName());
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
 			// LocalDate currentDate =
 			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+
 			LocalDate currentDate = LocalDate.now();
 
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
@@ -98,6 +100,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
 			mainLife.set_occuCode(customerDetails.getOccupation().getOcupationCode());
 			mainLife.set_mCustCode(customerDetails.getCustomer().getCustCode());
+
 			if (details.getSpouseDetails() != null) {
 				CustomerDetails spouseDetails = details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
@@ -115,6 +118,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 				spouse.set_sNic(spouseDetails.getCustNic());
 				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 				spouse.set_sTitle(spouseDetails.getCustTitle());
+
 				spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
 
 			} else {
@@ -327,6 +331,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		plan.setSumatRiskSpouse(details.getSumAtRiskSpouse());
 		plan.setInvPos(details.getInvestmentPos());
 		plan.setLifePos(details.getLifePos());
+
 		return plan;
 	}
 
@@ -378,6 +383,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		}
 		return quotationReceipt;
 	}
+	
+	
 
 	@Override
 	public boolean isAvailable(Integer qdId, Integer qId) throws Exception {
@@ -441,6 +448,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			}
 		}
 
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
@@ -456,6 +464,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 		// return editQuotation;
 		return getBenefitsAndChildDetails(details, editQuotation);
+
 
 	}
 

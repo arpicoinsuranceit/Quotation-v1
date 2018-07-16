@@ -194,13 +194,14 @@ public class ASFPServiceImpl implements ASFPService {
 					quotationCalculation.get_personalInfo().getMsfb(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 
-			BigDecimal bsaYearly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
-					quotationCalculation.get_personalInfo().getMsfb(), 1, calResp, false);
+					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
+					quotationCalculation.get_personalInfo().getMsfb(), calculationUtils.getPayterm("M"), calResp, false);
 
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
 			//System.out.println(bsaYearly);
-			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
@@ -445,7 +446,7 @@ public class ASFPServiceImpl implements ASFPService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -693,7 +694,7 @@ public class ASFPServiceImpl implements ASFPService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");
