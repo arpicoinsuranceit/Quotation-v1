@@ -131,10 +131,13 @@ public class ENDServiceImpl implements ENDService {
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			//System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
+					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
+	
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
+			//System.out.println(bsaYearly);
 			//System.out.println(bsaYearly);
 			
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
