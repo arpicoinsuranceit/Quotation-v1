@@ -491,7 +491,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 		mainLifeDetail.setCustomer(mainlife);
 
 		Quotation quotation = quotationDetails.getQuotation();
-		quotation.setStatus("active");
+		//quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
@@ -504,6 +504,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();

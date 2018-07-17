@@ -226,7 +226,8 @@ public class QuotationArpCalculationConroller {
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
 
 		
-		 System.out.println(token); System.out.println(qdId);
+		 System.out.println(token); 
+		 System.out.println(qdId);
 		 String userCode=new JwtDecoder().generate(token);
 		 System.out.println(userCode +" userCode");
 		 System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
@@ -280,7 +281,7 @@ public class QuotationArpCalculationConroller {
 					+ _invpSaveQuotation.toString() + " userId : " + user.getUserId() + " qdId : " + qdId);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("editArp : QuotationArpCalculationConroller");
+			logs.setOperation("editArpUnderwriter : QuotationArpCalculationConroller");
 			logs.setUserId(user.getUserId());
 			try {
 				logService.saveLog(logs);
@@ -300,67 +301,5 @@ public class QuotationArpCalculationConroller {
 			}
 		}
 		
-//		HashMap<String, Object> responseMap = new HashMap<>();
-//		responseMap.put("status", "fail");
-//		QuotationCalculation calculation = null;
-//
-//		Validation validation = null;
-//		try {
-//			if (userId != null) {
-//				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
-//					calculation = new QuotationCalculation();
-//					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
-//					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
-//					calculation.set_product(_invpSaveQuotation.get_product());
-//					validation = new Validation(calculation);
-//					if (validation.validateArpProd() == 1) {
-//						String error = validation.validateBenifict();
-//						if (error.equals("No")) {
-//							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
-//							if (error.equalsIgnoreCase("ok")) {
-//
-//								responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
-//							} else {
-//								responseMap.replace("status", error);
-//							}
-//						} else {
-//							responseMap.replace("status", error);
-//						}
-//					} else {
-//						responseMap.replace("status", "Error at product ");
-//					}
-//				} else {
-//					responseMap.replace("status", "Incomplete");
-//				}
-//			} else {
-//				responseMap.replace("status", "User can't be identify");
-//
-//			}
-//			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
-//		} catch (Exception e) {
-//			Logs logs = new Logs();
-//			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
-//					+ _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
-//			logs.setDate(new Date());
-//			logs.setHeading("Error");
-//			logs.setOperation("editArp : QuotationArpCalculationConroller");
-//			logs.setUserId(userId);
-//			try {
-//				logService.saveLog(logs);
-//			} catch (Exception e1) {
-//				System.out.println("... Error Message for Operation ...");
-//				e.printStackTrace();
-//				System.out.println("... Error Message for save log ...");
-//				e1.printStackTrace();
-//			}
-//			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//		} finally {
-//			if (calculation != null) {
-//				calculation = null;
-//			}
-//			if (validation != null) {
-//				validation = null;
-//			}
-//		}
 	}
 }

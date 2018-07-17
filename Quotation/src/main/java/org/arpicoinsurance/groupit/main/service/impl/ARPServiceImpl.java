@@ -601,8 +601,8 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		quotationDetails1.setQuotation(quotation);
-		quotationDetails1.setQuotationModifyBy(user.getUserCode());
-		quotationDetails1.setQuotationModifyDate(new Date());
+		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
