@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @Transactional
 public class AIPServiceImpl implements AIPService {
@@ -130,7 +131,12 @@ public class AIPServiceImpl implements AIPService {
 
 				// System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " +
 				// rateCardAIP.getRate());
-				BigDecimal fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
+				BigDecimal fund_rate = null;
+				try {
+					fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
+				} catch (Exception e) {
+					throw new NullPointerException("AIP Rate not found at Term : " + term + ", PayMode : " + paymod + " and Policy Year : " + polyear );
+				}
 
 				// calculationUtils.getPayterm(paymod)
 

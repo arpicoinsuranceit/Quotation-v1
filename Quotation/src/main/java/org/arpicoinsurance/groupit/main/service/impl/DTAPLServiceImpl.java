@@ -155,12 +155,17 @@ public class DTAPLServiceImpl implements DTAPLService {
 			BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
 
 			// (@loan_reduction@*@rate@/1000)+((@loan_reduction@*@rate@/1000)*0.2)
-			BigDecimal premium = ((reduction.multiply(new BigDecimal(rateCardDTA.getRate())))
-					.divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).add(
-							(((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000),
-									8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.2))))
-							.setScale(0, RoundingMode.HALF_UP);
-
+			BigDecimal premium = null;
+			try {
+				premium = ((reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000), 8,
+						BigDecimal.ROUND_HALF_UP))
+								.add((((reduction.multiply(new BigDecimal(rateCardDTA.getRate())))
+										.divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP))
+												.multiply(new BigDecimal(0.2))))
+								.setScale(0, RoundingMode.HALF_UP);
+			} catch (Exception e) {
+				throw new NullPointerException("DTAPL premium calculation Error");
+			}
 			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 			if (isAddOccuLoading) {
 
