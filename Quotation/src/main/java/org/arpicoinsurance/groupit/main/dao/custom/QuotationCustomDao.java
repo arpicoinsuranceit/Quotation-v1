@@ -6,4 +6,6 @@ import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 
 public interface QuotationCustomDao {
 	List<QuotationSearch> getQuotation (String id) throws Exception;
+	
+	List<QuotationSearch> getQuotationToUnderwrite (String status,Integer branchId) throws Exception;
 }

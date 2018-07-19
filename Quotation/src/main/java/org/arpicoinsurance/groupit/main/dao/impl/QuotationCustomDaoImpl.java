@@ -63,4 +63,35 @@ public class QuotationCustomDaoImpl implements QuotationCustomDao {
 		return quotationSearch;
 	}
 
+	@Override
+	public List<QuotationSearch> getQuotationToUnderwrite(String status, Integer branchId) throws Exception {
+		List<QuotationSearch> quotationSearchs = null;
+		try {
+			List<Object> args = new ArrayList<>();
+
+			quotationSearchs = jdbcTemplate.query(
+					"SELECT QD.QUOTATION_ID,QD.QD_ID FROM QUOTATION Q,QUOTATION_DETAILS QD,USERS U WHERE Q.ID=QD.QUOTATION_ID AND Q.USER_ID=U.USER_ID AND " + 
+					"Q.STATUS='"+status+"' AND U.BRANCH_BRANCH_ID="+branchId+" ",
+					args.toArray(), new ResultSetExtractor<List<QuotationSearch>>() {
+
+						@Override
+						public List<QuotationSearch> extractData(ResultSet resultSet)
+								throws SQLException, DataAccessException {
+							List<QuotationSearch> quotationSearchsTemp = new ArrayList<QuotationSearch>();
+							while (resultSet.next()) {
+								QuotationSearch quotationSearch = getQuoSearch(resultSet);
+								quotationSearchsTemp.add(quotationSearch);
+							}
+							return quotationSearchsTemp;
+
+						}
+
+					});
+		} catch (DataAccessException dataAccessException) {
+			throw dataAccessException;
+
+		}
+		return quotationSearchs;
+	}
+
 }
