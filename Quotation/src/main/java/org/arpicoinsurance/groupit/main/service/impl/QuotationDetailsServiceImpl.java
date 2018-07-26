@@ -321,7 +321,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 		plan.setPolicyFee(details.getPolicyFee());
 		plan.setAdminFee(details.getAdminFee());
-		plan.setTax(plan.getAdminFee());
+		plan.setTax(plan.getTax());
+		System.out.println(plan.get_bsaTotal());
+		System.out.println(plan.getAdminFee());
+		System.out.println(plan.getPolicyFee());
+		System.out.println(plan.getTax());
 		plan.setGrsprm(plan.get_bsaTotal() - (plan.getAdminFee() + plan.getPolicyFee() + plan.getTax()));
 		plan.setSumatRiskMain(details.getSumAtRiskMain());
 		plan.setSumatRiskSpouse(details.getSumAtRiskSpouse());
