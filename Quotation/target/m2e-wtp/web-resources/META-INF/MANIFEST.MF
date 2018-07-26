@@ -3,7 +3,7 @@ Implementation-Title: Quotation
 Implementation-Version: 1.9.8
 Built-By: Dell
 Implementation-Vendor-Id: arpicoinsurance.groupit
-Build-Jdk: 1.8.0_171
+Build-Jdk: 1.8.0_181
 Implementation-URL: http://projects.spring.io/spring-boot/Quotation/
 Created-By: Maven Integration for Eclipse
 Implementation-Vendor: Pivotal Software, Inc.

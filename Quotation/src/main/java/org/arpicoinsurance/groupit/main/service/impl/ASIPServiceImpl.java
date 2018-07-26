@@ -617,10 +617,11 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);

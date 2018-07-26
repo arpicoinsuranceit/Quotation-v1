@@ -331,11 +331,13 @@ public class AIBServiceImpl implements AIBService {
 		customerDetails.setCustomer(customer);
 
 		Quotation quotation = details.getQuotation();
+		Integer count = quotationDetailsDao.countByQuotation(quotation);
 		quotation.setProducts(products);
 		quotation.setStatus("active");
 		quotation.setUser(user);
 
 		QuotationDetails quotationDetails = new QuotationDetails();
+		quotationDetails.setSeqnum(count + 1);
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 		quotationDetails.setAdminFee(adminFee);

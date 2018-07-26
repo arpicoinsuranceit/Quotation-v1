@@ -562,6 +562,7 @@ public class AIPServiceImpl implements AIPService {
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = details.getQuotation();
+			Integer count = quotationDetailsDao.countByQuotation(quotation);
 			quotation.setProducts(products);
 			quotation.setStatus("active");
 			quotation.setUser(user);
@@ -569,6 +570,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setSeqnum(count + 1);
 			quotationDetails.setBaseSum(0.0);
 
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();

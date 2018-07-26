@@ -591,6 +591,8 @@ public class INVPServiceImpl implements INVPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
+		
 		quotation.setStatus("active");
 		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
@@ -598,7 +600,7 @@ public class INVPServiceImpl implements INVPService {
 				calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
