@@ -1640,9 +1640,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHB = rateCardHBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHB = maxTermToBenefictHB > term ? term : maxTermToBenefictHB;
 
-			if (ridsumasu.doubleValue() > calResp.getBsaYearlyPremium() * 0.1) {
+			System.out.println(calResp.getBsaYearlyPremium());
+			
+			if (ridsumasu.doubleValue() > calResp.getBsaYearlyPremium() * 0.2) {
 				calResp.setErrorExist(true);
-				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.1));
+				BigDecimal val = new BigDecimal(calResp.getBsaYearlyPremium()).multiply(new BigDecimal(0.2));
 				calResp.setError("HB MAx Value is " + val.setScale(2, RoundingMode.HALF_UP).doubleValue());
 				return calResp;
 			}
@@ -1726,12 +1728,12 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHBC = rateCardHBCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHBC = maxTermToBenefictHBC > term ? term : maxTermToBenefictHBC;
 
-			System.out.println("calculation age : "+ term );
+			/*System.out.println("calculation age : "+ term );
 			System.out.println("calculation age : "+ age );
 			System.out.println("calculation term : "+ valiedTermHBC );
 			System.out.println("calculation payterm : "+ calResp.getPayTerm() );
 			System.out.println("calculation date : "+ new Date() );
-			
+			*/
 			if (calResp.isArp()) {
 
 				RateCardARP rateCardARP = rateCardARPDao
@@ -1740,7 +1742,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			System.out.println(relife + ": relife");
+			//System.out.println(relife + ": relife");
 
 			// ** 21-age < term term = 21-age else term
 			BigDecimal hbc = hbcService.calculateHBC(valiedTermHBC, new Date(), ridsumasu, payFrequency, relife);
