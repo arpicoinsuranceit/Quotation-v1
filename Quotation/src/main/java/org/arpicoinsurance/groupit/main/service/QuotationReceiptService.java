@@ -8,4 +8,6 @@ public interface QuotationReceiptService {
 	
 	public List<QuotationSearch> searchQuotation(String id) throws Exception;
 	
+	public List<QuotationSearch> searchQuotationProp(String id) throws Exception;
+	
 }

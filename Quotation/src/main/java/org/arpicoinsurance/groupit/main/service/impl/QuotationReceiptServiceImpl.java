@@ -27,6 +27,12 @@ public class QuotationReceiptServiceImpl implements QuotationReceiptService{
 		return quotationCustomDao.getQuotation(id);
 	}
 
+	@Override
+	public List<QuotationSearch> searchQuotationProp(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return quotationCustomDao.getQuotationProp(id);
+	}
+
 	
 
 }

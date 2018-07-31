@@ -7,9 +7,13 @@ import org.arpicoinsurance.groupit.main.helper.MediTestReceiptHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
+import org.arpicoinsurance.groupit.main.model.Nominee;
+import org.arpicoinsurance.groupit.main.model.PensionShedule;
 import org.arpicoinsurance.groupit.main.model.Shedule;
 import org.arpicoinsurance.groupit.main.model.Surrendervals;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
+import org.arpicoinsurance.groupit.main.service.NomineeService;
+import org.arpicoinsurance.groupit.main.service.PensionSheduleService;
 import org.arpicoinsurance.groupit.main.service.Quo_Benef_DetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationReceiptService;
@@ -45,10 +49,27 @@ public class QuotationReceiptController {
 	@Autowired
 	private SurrenderValService surrenderValsService;
 	
+	@Autowired
+	private NomineeService nomineeService;
+	
+	@Autowired
+	private PensionSheduleService pensionSheduleService;
+	
 	@RequestMapping(value = "/quotationsearch/{id}")
 	public List<QuotationSearch> getQuotationList(@PathVariable String id){
 		try {
 			return quotationReceiptService.searchQuotation(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping(value = "/quotationsearchprop/{id}")
+	public List<QuotationSearch> getQuotationListStatusProp(@PathVariable String id){
+		System.out.println(id + " search");
+		try {
+			return quotationReceiptService.searchQuotationProp(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -153,6 +174,32 @@ public class QuotationReceiptController {
 		}catch (Exception e) {
 			return "false";
 		}
+	}
+	
+	@RequestMapping(value="/getPensionShedule",method=RequestMethod.POST)
+	public List<PensionShedule> getPensionShedule(@RequestParam("qdId") Integer qdId) {
+		try {
+			List<PensionShedule> shedules = pensionSheduleService.findByQuotationDetails(qdId);
+			return shedules;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<PensionShedule>();
+	}
+	
+	@RequestMapping(value="/getNominee",method=RequestMethod.POST)
+	public List<Nominee> getNominee(@RequestParam("qdId") Integer qdId) {
+		try {
+			List<Nominee> nominee = nomineeService.findByQuotationDetails(qdId);
+			return nominee;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Nominee>();
 	}
 	
 }
