@@ -64,7 +64,14 @@ public class QuotationServiceImpl implements QuotationService{
 
 	@Override
 	public List<Quotation> getQuotationByUserId(Users user,List<String> status) throws Exception {
-		return quotationDao.findByUserAndStatusInOrderByIdDesc(user, status);
+		
+		if(user.getBranch().getBranch_Code().equals("HO")) {
+			return quotationDao.findByStatusInOrderByIdDesc(status);
+		}else {
+			return quotationDao.findByUserAndStatusInOrderByIdDesc(user, status);
+		}
+		
+		 
 	}
 	
 	@Override
