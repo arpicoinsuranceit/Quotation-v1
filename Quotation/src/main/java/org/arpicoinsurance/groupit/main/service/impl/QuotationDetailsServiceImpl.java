@@ -318,7 +318,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	@Override
 	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
 		Quotation quotation = quotationService.getQuotation(quotationId);
-		if (quotation != null) {
+		if (quotation != null && quotation.getStatus().equals("active")) {
 			QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
 			if (quotationDetails != null) {
 				return quotationDetails;
