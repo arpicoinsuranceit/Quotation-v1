@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @Transactional
 public class AIPServiceImpl implements AIPService {
@@ -130,7 +131,12 @@ public class AIPServiceImpl implements AIPService {
 
 				// System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " +
 				// rateCardAIP.getRate());
-				BigDecimal fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
+				BigDecimal fund_rate = null;
+				try {
+					fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
+				} catch (Exception e) {
+					throw new NullPointerException("AIP Rate not found at Term : " + term + ", PayMode : " + paymod + " and Policy Year : " + polyear );
+				}
 
 				// calculationUtils.getPayterm(paymod)
 
@@ -541,9 +547,10 @@ public class AIPServiceImpl implements AIPService {
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
 
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
-
+			quotation = details.getQuotation();
+			
 			customer = details.getCustomerDetails().getCustomer();
-			user = userdao.findOne(userId);
+			user = quotation.getUser();
 
 			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
@@ -555,7 +562,8 @@ public class AIPServiceImpl implements AIPService {
 			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
-			quotation = details.getQuotation();
+			
+			Integer count = quotationDetailsDao.countByQuotation(quotation);
 			quotation.setProducts(products);
 			quotation.setStatus("active");
 			quotation.setUser(user);
@@ -563,6 +571,7 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails = new QuotationDetails();
 			quotationDetails.setQuotation(quotation);
 			quotationDetails.setAdminFee(adminFee);
+			quotationDetails.setSeqnum(count + 1);
 			quotationDetails.setBaseSum(0.0);
 
 			String frequance = _invpSaveQuotation.get_plan().get_frequance();

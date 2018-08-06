@@ -268,6 +268,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 				//if(!benef_Details.isEmpty()) {
 					QuotationView quotationView=getQuotationBenfList(benef_Details, customer, quoDetails.getQdId());
 					quotationView.setQuotationDate(quoDetails.getQuotationquotationCreateDate());
+					quotationView.setSeqId(quoDetails.getSeqnum());
 					viewQuotationDetailsList.add(quotationView);
 				//}
 				
@@ -293,7 +294,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService{
 			EditQuotation editQuotation=quotationDetailsService.editQuotationDetails(quotationView.getQuoDetailId());
 			ViewQuotation viewQuotation=new ViewQuotation();
 			
-			
+			viewQuotation.setSeqId(quotationView.getSeqId());
 			viewQuotation.setQuoDetailId(quotationView.getQuoDetailId());
 			viewQuotation.setProductCode(quotation.getProducts().getProductCode());
 			viewQuotation.setProductName(quotation.getProducts().getProductName());

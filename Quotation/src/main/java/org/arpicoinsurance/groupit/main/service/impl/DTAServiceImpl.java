@@ -97,7 +97,7 @@ public class DTAServiceImpl implements DTAService {
 
 	@Autowired
 	private SheduleDao sheduleDao;
-	
+
 	@Autowired
 	private OccupationLodingDao occupationLodingDao;
 
@@ -108,9 +108,9 @@ public class DTAServiceImpl implements DTAService {
 	private HealthRequirmentsService healthRequirmentsService;
 
 	@Override
-	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)
-			throws Exception {
-		
+	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt,
+			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
+
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -121,11 +121,12 @@ public class DTAServiceImpl implements DTAService {
 				rate = 1.0;
 			}
 		}
-		
+
 		DTAHelper dtaHelper = new DTAHelper();
 
-//		System.out.println(
-//				"age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex + " loanamt : " + loanamt);
+		// System.out.println(
+		// "age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex
+		// + " loanamt : " + loanamt);
 
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal total_premium = new BigDecimal(0);
@@ -154,15 +155,20 @@ public class DTAServiceImpl implements DTAService {
 			BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
 
 			// @loan_reduction@*@rate@/1000
-			BigDecimal premium = (reduction.multiply(new BigDecimal(rateCardDTA.getRate())))
-					.divide(new BigDecimal(1000), 0, BigDecimal.ROUND_HALF_UP);
-			
-			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-			if(isAddOccuLoading) {
-				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-				calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+			BigDecimal premium = null;
+			try {
+				premium = (reduction.multiply(new BigDecimal(rateCardDTA.getRate()))).divide(new BigDecimal(1000), 0,
+						BigDecimal.ROUND_HALF_UP);
+			} catch (Exception e) {
+				throw new NullPointerException("Error at DTA Premium Calculation");
 			}
-			
+			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+			if (isAddOccuLoading) {
+				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+				calResp.setOccuLodingTot(
+						calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+			}
+
 			DTAShedule shedule = new DTAShedule();
 
 			shedule.setLonred(reduction.doubleValue());
@@ -176,19 +182,19 @@ public class DTAServiceImpl implements DTAService {
 
 			total_premium = total_premium.add(occuLodingPremium);
 
-//			System.out.println("polyer : " + String.valueOf(i));
-//			System.out.println("outyer : " + String.valueOf(term - (i - 1)));
-//			System.out.println("outsum : " + amount.toPlainString());
-//			System.out.println("lonred : " + reduction.toPlainString());
-//			System.out.println("prmrat : " + rateCardDTA.getRate());
-//			System.out.println("premum : " + occuLodingPremium.toPlainString());
+			// System.out.println("polyer : " + String.valueOf(i));
+			// System.out.println("outyer : " + String.valueOf(term - (i - 1)));
+			// System.out.println("outsum : " + amount.toPlainString());
+			// System.out.println("lonred : " + reduction.toPlainString());
+			// System.out.println("prmrat : " + rateCardDTA.getRate());
+			// System.out.println("premum : " + occuLodingPremium.toPlainString());
 
 			amount = outstanding;
 
 		}
 		dtaHelper.setBsa(total_premium);
 		dtaHelper.setDtaSheduleList(dtaSheduleList);
-//		System.out.println("total_premium : " + total_premium.toString());
+		// System.out.println("total_premium : " + total_premium.toString());
 		return dtaHelper;
 	}
 
@@ -201,8 +207,9 @@ public class DTAServiceImpl implements DTAService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			//System.out.println(rebate + " : rebate");
-			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(), quotationCalculation.get_personalInfo().getMage(),
+			// System.out.println(rebate + " : rebate");
+			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getIntrate(),
 					quotationCalculation.get_personalInfo().getMgenger(), new Date(),
@@ -216,20 +223,23 @@ public class DTAServiceImpl implements DTAService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			if(quotationCalculation.get_personalInfo().getSage()!=null &&
-					quotationCalculation.get_personalInfo().getSgenger()!=null){
+			if (quotationCalculation.get_personalInfo().getSage() != null
+					&& quotationCalculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			}
 
-			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
+			// bsaPremium));
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
-			
-//			System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" + calResp.getBasicSumAssured());
+
+			// System.out.println("Premium ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" +
+			// calResp.getBasicSumAssured());
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
-			//Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			// Double adminFee =
+			// calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot);
 			Double extraOE = tax;
 
@@ -246,20 +256,20 @@ public class DTAServiceImpl implements DTAService {
 	}
 
 	@Override
-	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer id)
-			throws Exception {
+	public HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer id) throws Exception {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("DTA").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
-		Quotation quo =null;
-		
+
+		Quotation quo = null;
+
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
-		
+
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
@@ -281,7 +291,7 @@ public class DTAServiceImpl implements DTAService {
 		mainlife.setCustCreateDate(new Date());
 		mainlife.setCustCreateBy(user.getUser_Name());
 		mainlife.setCustCode(new WebClient().getCustCode(_invpSaveQuotation.get_personalInfo()));
-		
+
 		mainLifeDetail.setCustomer(mainlife);
 
 		Customer spouse = null;
@@ -311,7 +321,7 @@ public class DTAServiceImpl implements DTAService {
 		quotationDetails.setQuotationCreateBy(user.getUserCode());
 		quotationDetails.setInterestRate(calculation.get_personalInfo().getIntrate());
 		quotationDetails.setPolicyFee(450.00);
-		
+
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
 		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
@@ -395,7 +405,7 @@ public class DTAServiceImpl implements DTAService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -434,25 +444,25 @@ public class DTAServiceImpl implements DTAService {
 	}
 
 	@Override
-	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId) throws Exception {
+	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
+			Integer userId, Integer qdId) throws Exception {
 
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
 		Quotation quo = null;
-		
+
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("DTA").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("DTA").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		Products products = productDao.findByProductCode("DTA");
 		Users user = userDao.findOne(userId);
 
@@ -492,10 +502,11 @@ public class DTAServiceImpl implements DTAService {
 		mainLifeDetail.setCustomer(mainlife);
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
-		
-		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -591,7 +602,7 @@ public class DTAServiceImpl implements DTAService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -625,6 +636,7 @@ public class DTAServiceImpl implements DTAService {
 
 		responseMap.put("status", "Success");
 		responseMap.put("code", quo.getId().toString());
-		return responseMap;	}
+		return responseMap;
+	}
 
 }

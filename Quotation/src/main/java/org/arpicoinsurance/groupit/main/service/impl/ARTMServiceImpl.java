@@ -137,15 +137,13 @@ public class ARTMServiceImpl implements ARTMService {
 
 		Integer poltrm = calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage();
 		calculation.get_personalInfo().setTerm(poltrm);
-		
-		//Integer poltrm = calculation.get_personalInfo().getTerm();
+
+		// Integer poltrm = calculation.get_personalInfo().getTerm();
 		Integer paytrm = calculation.get_personalInfo().getPayingterm().equalsIgnoreCase("0") ? poltrm
 				: Integer.parseInt(calculation.get_personalInfo().getPayingterm());
 		String paymod = calculation.get_personalInfo().getFrequance();
 		Date chedat = new Date();
 		Double contribution = calculation.get_personalInfo().getBsa();
-
-		// TODO Insert values for schedule
 
 		CommisionRatePara commisionRatePara = new CommisionRatePara("ARTM", paytrm, paytrm);
 		HashMap<String, Double> commisionRate = null;
@@ -180,7 +178,12 @@ public class ARTMServiceImpl implements ARTMService {
 
 			if (i % 12 == 0) {
 				if (polyear <= 5) {
-					commisionRate = commisionRateWC.getCommisionRate(commisionRatePara);
+					try {
+						commisionRate = commisionRateWC.getCommisionRate(commisionRatePara);
+					} catch (Exception e) {
+						throw new NullPointerException("Commotion Rate not found");
+					}
+
 					// //System.out.println(
 					// "comsin : " + commisionRate.get("comsin") + " comper : " +
 					// commisionRate.get("comper"));
@@ -224,72 +227,78 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 
 			if (paytrm >= polyear) {
-				if ((paymod.equalsIgnoreCase("S"))) {
-					if (i == 0) {
-						contributionAmount = new BigDecimal(contribution);
-						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comsin"))))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount
-								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					} else {
-						contributionAmount = new BigDecimal(0);
-						commision = new BigDecimal(0);
-						veriableExpenses = new BigDecimal(0);
-					}
-				} else if (paymod.equalsIgnoreCase("M")) {
-					contributionAmount = new BigDecimal(contribution);
-					commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
-							.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					veriableExpenses = (contributionAmount
-							.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+				try {
+					if ((paymod.equalsIgnoreCase("S"))) {
+						if (i == 0) {
+							contributionAmount = new BigDecimal(contribution);
+							commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comsin"))))
 									.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-				} else if (paymod.equalsIgnoreCase("Q")) {
-					if (i % 3 == 0) {
+							veriableExpenses = (contributionAmount
+									.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+											.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						} else {
+							contributionAmount = new BigDecimal(0);
+							commision = new BigDecimal(0);
+							veriableExpenses = new BigDecimal(0);
+						}
+					} else if (paymod.equalsIgnoreCase("M")) {
 						contributionAmount = new BigDecimal(contribution);
 						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
 								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 						veriableExpenses = (contributionAmount
 								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
 										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					} else {
-						contributionAmount = new BigDecimal(0);
-						commision = new BigDecimal(0);
-						veriableExpenses = new BigDecimal(0);
+					} else if (paymod.equalsIgnoreCase("Q")) {
+						if (i % 3 == 0) {
+							contributionAmount = new BigDecimal(contribution);
+							commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
+									.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+							veriableExpenses = (contributionAmount
+									.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+											.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						} else {
+							contributionAmount = new BigDecimal(0);
+							commision = new BigDecimal(0);
+							veriableExpenses = new BigDecimal(0);
+						}
+					} else if (paymod.equalsIgnoreCase("H")) {
+						if (i % 6 == 0) {
+							contributionAmount = new BigDecimal(contribution);
+							commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
+									.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+							veriableExpenses = (contributionAmount
+									.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+											.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						} else {
+							contributionAmount = new BigDecimal(0);
+							commision = new BigDecimal(0);
+							veriableExpenses = new BigDecimal(0);
+						}
+					} else if (paymod.equalsIgnoreCase("Y")) {
+						if (i % 12 == 0) {
+							contributionAmount = new BigDecimal(contribution);
+							commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
+									.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+							veriableExpenses = (contributionAmount
+									.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
+											.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+						} else {
+							contributionAmount = new BigDecimal(0);
+							commision = new BigDecimal(0);
+							veriableExpenses = new BigDecimal(0);
+						}
 					}
-				} else if (paymod.equalsIgnoreCase("H")) {
-					if (i % 6 == 0) {
-						contributionAmount = new BigDecimal(contribution);
-						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount
-								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					} else {
-						contributionAmount = new BigDecimal(0);
-						commision = new BigDecimal(0);
-						veriableExpenses = new BigDecimal(0);
-					}
-				} else if (paymod.equalsIgnoreCase("Y")) {
-					if (i % 12 == 0) {
-						contributionAmount = new BigDecimal(contribution);
-						commision = (contributionAmount.multiply(new BigDecimal(commisionRate.get("comper"))))
-								.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-						veriableExpenses = (contributionAmount
-								.multiply(new BigDecimal(rateCardARTMVeriableExpences.getRate())))
-										.divide(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-					} else {
-						contributionAmount = new BigDecimal(0);
-						commision = new BigDecimal(0);
-						veriableExpenses = new BigDecimal(0);
-					}
+				} catch (Exception e) {
+					throw new NullPointerException("rateCardARTMVeriableExpences Error");
 				}
 
-				// //System.out.println("contributionAmount : " + contributionAmount + " commision
+				// //System.out.println("contributionAmount : " + contributionAmount + "
+				// commision
 				// : " + commision);
 
 				//expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
 				//		BigDecimal.ROUND_HALF_UP);
+
 
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
@@ -306,8 +315,9 @@ public class ARTMServiceImpl implements ARTMService {
 				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
-			//System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
-			//		+ " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses);
+			// System.out.println("contributionAmount : " + contributionAmount + " commision
+			// : " + commision
+			// + " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses);
 			// //System.out.println("closingFundAmount : " + closingFundAmount);
 			
 			expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
@@ -317,6 +327,7 @@ public class ARTMServiceImpl implements ARTMService {
 					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
+
 			// //System.out.println("profit : " + profit);
 
 			creditedFundAmount = contributionAmount.subtract(commision).subtract(veriableExpenses).subtract(expenses)
@@ -326,10 +337,15 @@ public class ARTMServiceImpl implements ARTMService {
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
 			// //System.out.println("amountBeforeInterest : " + amountBeforeInterest);
 
-			double intrat = Math.pow(
-					1.0D + new BigDecimal(dividentRate.getDobval()).divide(new BigDecimal("100")).doubleValue(),
-					1 / 12.0D) - 1.0D;
+			double intrat = 0.0;
 
+			try {
+				intrat = Math.pow(
+						1.0D + new BigDecimal(dividentRate.getDobval()).divide(new BigDecimal("100")).doubleValue(),
+						1 / 12.0D) - 1.0D;
+			} catch (Exception e) {
+				throw new NullPointerException("Error at Divident Rate");
+			}
 			// //System.out.println("intrat : " + intrat);
 
 			interest = amountBeforeInterest.multiply(new BigDecimal(intrat)).setScale(4, BigDecimal.ROUND_HALF_UP);
@@ -399,23 +415,33 @@ public class ARTMServiceImpl implements ARTMService {
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
 						"A", chedat, chedat, chedat, chedat);
 		// //System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
-
-		double reprate = (1.0D - Math.pow(
-				(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10, BigDecimal.ROUND_HALF_UP))
-						.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)).add(new BigDecimal(1)))
-								.doubleValue(),
-				(12 * calculation.get_personalInfo().getPensionPaingTerm() * -1)))
-				/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
-						BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
-								.doubleValue();
-		// //System.out.println("closingFundAmount : " + closingFundAmount + " reprate : "
+		double reprate = 0.0;
+		try {
+			reprate = (1.0D - Math.pow(
+					(((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
+							BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP))
+									.add(new BigDecimal(1))).doubleValue(),
+					(12 * calculation.get_personalInfo().getPensionPaingTerm() * -1)))
+					/ (((new BigDecimal(repaymentRate.getDobval()).divide(new BigDecimal(100), 10,
+							BigDecimal.ROUND_HALF_UP)).divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
+									.doubleValue();
+		} catch (Exception e) {
+			throw new NullPointerException("Error at calculate Repayment Rate");
+		}
+		// //System.out.println("closingFundAmount : " + closingFundAmount + " reprate :
+		// "
 		// + reprate);
 		// TODO calculate premium
 		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate), 6, BigDecimal.ROUND_HALF_UP);
-
-		double repexp = new BigDecimal(1)
-				.subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100)))).doubleValue();
-		// //System.out.println("pensionPremium : " + pensionPremium + " repexp : " +
+		double repexp = 0.0;
+		try {
+			repexp = new BigDecimal(1)
+					.subtract((new BigDecimal(repaymentExpences.getDobval()).divide(new BigDecimal(100))))
+					.doubleValue();
+		} catch (Exception e) {
+			throw new NullPointerException("Error at Calculate Repayment Expences");
+		}
+		// System.out.println("pensionPremium : " + pensionPremium + " repexp : " +
 		// repexp);
 		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
 		// //System.out.println("pensionPremium : " + pensionPremium);
@@ -427,7 +453,7 @@ public class ARTMServiceImpl implements ARTMService {
 			throws Exception {
 
 		CalculationUtils calculationUtils = null;
-		
+
 		try {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
@@ -783,10 +809,11 @@ public class ARTMServiceImpl implements ARTMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setBaseSum(calResp.getL2Sum());
 		quotationDetails1.setRetirmentAge(calculation.get_personalInfo().getRetAge());
 		quotationDetails1.setPensionTerm(calculation.get_personalInfo().getPensionPaingTerm());

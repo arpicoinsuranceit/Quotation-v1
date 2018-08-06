@@ -40,7 +40,7 @@ public class QuotationArtmCalculationController {
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateATRM(@RequestBody QuotationCalculation calculation) {
 
-		
+		System.out.println(calculation.get_riderDetails().get_cRiders().toString());
 
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();

@@ -216,13 +216,16 @@ public class INVPServiceImpl implements INVPService {
 				.findByAgeAndTermAndIntratAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, intrat,
 						chedat, chedat, chedat, chedat);
 		// System.out.println("Pay Trm :" + paytrm);
+		try {
 		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
 				.multiply(new BigDecimal(bassum)))
 						.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
 						.multiply((new BigDecimal(1).subtract(
 								(new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))))
 						.setScale(0, RoundingMode.HALF_UP);
-
+		} catch (Exception e) {
+			throw new NullPointerException("Error at INVP Premium Calculation");
+		}
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
@@ -248,8 +251,12 @@ public class INVPServiceImpl implements INVPService {
 		// System.out.println("SumRate : " + rateCardINVP.getSumasu());
 		// System.out.println("Rate : " + rateCardINVP.getRate());
 
+		try {
 		maturity = (new BigDecimal(rateCardINVP.getRate()).divide(new BigDecimal(rateCardINVP.getSumasu()), 20,
 				RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)).setScale(0, RoundingMode.HALF_UP);
+		} catch (Exception e) {
+			throw new NullPointerException("Calculate Maturity Error at INVP");
+		}
 		return maturity;
 
 	}
@@ -500,8 +507,12 @@ public class INVPServiceImpl implements INVPService {
 		// System.out.println("age : " + age + " term : " + term + " BSA premium : " +
 		// premium + " paytrm : " + paytrm
 		// + " Rate : " + rateCardATFESC.getRate());
+		try {
 		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
 				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
+		} catch (Exception e) {
+			throw new NullPointerException("Error at Life Position Calcuate");
+		}
 		// System.out.println("lifpos : " + lifpos.doubleValue() + " invpos : " +
 		// (premium - lifpos.doubleValue()));
 		return lifpos;
@@ -580,6 +591,8 @@ public class INVPServiceImpl implements INVPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
+		
 		quotation.setStatus("active");
 		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
@@ -587,7 +600,7 @@ public class INVPServiceImpl implements INVPService {
 				calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())).doubleValue();
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, lifePos);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);

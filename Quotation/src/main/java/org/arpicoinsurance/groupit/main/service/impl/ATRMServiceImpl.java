@@ -139,12 +139,15 @@ public class ATRMServiceImpl implements ATRMService {
 //		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
+		try {
 		premium = ((((new BigDecimal(rateCardATRM.getRate())
 				.subtract(((new BigDecimal(rateCardATRM.getRate()).multiply(new BigDecimal(rebate)))
 						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-
+		} catch (Exception e) {
+			throw new NullPointerException("ATRM Premium calculation Error");
+		}
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
@@ -497,10 +500,12 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
+		
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
 		} else {

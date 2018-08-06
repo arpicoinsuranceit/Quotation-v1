@@ -17,55 +17,64 @@ public class JLBServiceImpl implements JLBService {
 
 	@Autowired
 	private RateCardJLBDao rateCardJLBDao;
-	
+
 	@Override
-	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)
-			throws Exception {
-		//System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
+	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt,
+			double occupation_loding) throws Exception {
+		// System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
+		// "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal premiumJLB = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
 
-			RateCardJLB rateCardJLB = rateCardJLBDao.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat, chedat, chedat, chedat);
-			//System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
-			
-            //annuity for term
-            double annuity = 1 + (intrat / 100);
-            annuity = Math.pow(annuity, ((term - (i - 1)) * -1));
-            annuity = 1 - annuity;
-            annuity /= (intrat / 100);
+			RateCardJLB rateCardJLB = rateCardJLBDao
+					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
+							chedat, chedat, chedat);
+			// System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
 
-            //annuity for term -1
-            double annuity2 = 1 + (intrat / 100);
-            annuity2 = Math.pow(annuity2, ((term - i) * -1));
-            annuity2 = 1 - annuity2;
-            annuity2 /= (intrat / 100);
-           
-            BigDecimal outstanding = amount.multiply(new BigDecimal(annuity2 / annuity)).setScale(8, RoundingMode.HALF_UP);
+			// annuity for term
+			double annuity = 1 + (intrat / 100);
+			annuity = Math.pow(annuity, ((term - (i - 1)) * -1));
+			annuity = 1 - annuity;
+			annuity /= (intrat / 100);
 
-            BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
+			// annuity for term -1
+			double annuity2 = 1 + (intrat / 100);
+			annuity2 = Math.pow(annuity2, ((term - i) * -1));
+			annuity2 = 1 - annuity2;
+			annuity2 /= (intrat / 100);
 
-            // (@loan_reduction@*@rate@/1000)*0.85
-            BigDecimal premium = ((reduction.multiply(new BigDecimal(rateCardJLB.getRate()))).divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.85)).setScale(0, RoundingMode.HALF_UP);
+			BigDecimal outstanding = amount.multiply(new BigDecimal(annuity2 / annuity)).setScale(8,
+					RoundingMode.HALF_UP);
 
-            premiumJLB = premiumJLB.add(premium);
+			BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
 
-            /*
-            System.out.println("polyer : "+ String.valueOf(i));
-            System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
-            System.out.println("outsum : "+ amount.toPlainString());
-            System.out.println("lonred : "+ reduction.toPlainString());
-            System.out.println("prmrat : "+ rateCardJLB.getRate());
-            System.out.println("premum : "+ premium.toPlainString());
-			*/
-            amount = outstanding;
+			// (@loan_reduction@*@rate@/1000)*0.85
+			BigDecimal premium = null;
+			try {
+				premium = ((reduction.multiply(new BigDecimal(rateCardJLB.getRate())))
+						.divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.85))
+								.setScale(0, RoundingMode.HALF_UP);
+			} catch (Exception e) {
+				throw new NullPointerException("JLB Rate not fount at Age : " + age + ", Term : " + term + " and Sex : " + sex);
+			}
+			premiumJLB = premiumJLB.add(premium);
 
-        }
-		
-		
+			/*
+			 * System.out.println("polyer : "+ String.valueOf(i));
+			 * System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
+			 * System.out.println("outsum : "+ amount.toPlainString());
+			 * System.out.println("lonred : "+ reduction.toPlainString());
+			 * System.out.println("prmrat : "+ rateCardJLB.getRate());
+			 * System.out.println("premum : "+ premium.toPlainString());
+			 */
+			amount = outstanding;
+
+		}
+
 		premiumJLB = premiumJLB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		//System.out.println("premiumJLB : "+premiumJLB.toString());
+		// System.out.println("premiumJLB : "+premiumJLB.toString());
 		return premiumJLB;
 	}
 

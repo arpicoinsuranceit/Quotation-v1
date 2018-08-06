@@ -19,6 +19,7 @@ public class QuotationQuickCalResponse {
 	private Double l2=0.00;
 	private Integer l2term=0;
 	private Double l2Sum=0.00;
+	private Double yearlyL2Sum =0.00;
 	
 	private Double at6= 0.00;
 	private Double at8= 0.00;
@@ -297,6 +298,12 @@ public class QuotationQuickCalResponse {
 	}
 	public void setL2term(Integer l2term) {
 		this.l2term = l2term;
+	}
+	public Double getYearlyL2Sum() {
+		return yearlyL2Sum;
+	}
+	public void setYearlyL2Sum(Double yearlyL2Sum) {
+		this.yearlyL2Sum = yearlyL2Sum;
 	}
 	public Double getAt6() {
 		return at6;

@@ -14,35 +14,47 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CIBCServiceImpl implements CIBCService{
+public class CIBCServiceImpl implements CIBCService {
 
 	@Autowired
 	private RateCardCIBCDao rateCardCIBCDao;
-	
+
 	@Override
 	public BigDecimal calculateCIBC(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief) throws Exception {
-		// TODO Auto-generated method stub
 		BigDecimal premiumCIBC = new BigDecimal(0);
-		//System.out.println(age + " $ " +term + " $ "+ chedat);
-		
-		//System.out.println(term + "//////");
-		RateCardCIBC rateCardCIBC = rateCardCIBCDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-		
-		//System.out.println(" Rate : "+rateCardCIBC.getRate());
+		// System.out.println(age + " $ " +term + " $ "+ chedat);
 
-		//System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
-		if(payFrequency.equalsIgnoreCase("S")){
-			// ((@rate@*@rider_sum_assured@/1000))*@relief@
-			premiumCIBC = (new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);		
-		}else {
-			// ((@rate@*@rider_sum_assured@/1000)/@payment_frequency@)*@relief@
-			premiumCIBC = ((new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu)).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
+		// System.out.println(term + "//////");
+		RateCardCIBC rateCardCIBC = rateCardCIBCDao
+				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+						chedat, chedat);
+
+		// System.out.println(" Rate : "+rateCardCIBC.getRate());
+
+		// System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency :
+		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((@rate@*@rider_sum_assured@/1000))*@relief@
+
+				premiumCIBC = (new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu))
+						.divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief))
+								.setScale(0, RoundingMode.HALF_UP);
+
+			} else {
+				// ((@rate@*@rider_sum_assured@/1000)/@payment_frequency@)*@relief@
+				premiumCIBC = ((new BigDecimal(rateCardCIBC.getRate()).multiply(new BigDecimal(ridsumasu))
+						.divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(
+								new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10,
+								RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0,
+										RoundingMode.HALF_UP);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("CIBC Rate not found for Age : " + age + " and term : " + term);
 		}
-		
-		//System.out.println("premiumCIBC : "+premiumCIBC.toString());
+		// System.out.println("premiumCIBC : "+premiumCIBC.toString());
 		return premiumCIBC;
 	}
-
 
 }

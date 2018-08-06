@@ -55,6 +55,8 @@ public class QuotationDetails implements Serializable{
 	
 	private Double premium = 0.0;
 	
+	private Integer seqnum = 1;
+	
 	
 	private List<Surrendervals> surrenderValueList;
 	
@@ -366,5 +368,19 @@ public class QuotationDetails implements Serializable{
 
 	public void setPensionShedules(List<PensionShedule> pensionShedules) {
 		this.pensionShedules = pensionShedules;
+	}
+
+
+
+
+	public Integer getSeqnum() {
+		return seqnum;
+	}
+
+
+
+
+	public void setSeqnum(Integer seqnum) {
+		this.seqnum = seqnum;
 	}
 }

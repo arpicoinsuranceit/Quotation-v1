@@ -41,19 +41,28 @@ public class HRBFServiceImpl implements HRBFService {
 		// System.out.println("HRB age : "+age+" ridsumasu : "+ridsumasu+" term :
 		// "+term+" payFrequency : "+payFrequency+" relief : "+relief+" Rate :
 		// "+rateCardHRBF.getRate());
-		if (payFrequency.equalsIgnoreCase("S")) {
-			// ((@rate@) *@relief@)
-			premiumHRBF = new BigDecimal(rateCardHRBF.getRate()).multiply(new BigDecimal(relief));
-		} else {
-			// ((@rate@/@payment_frequency@) *@relief@)
-			premiumHRBF = (new BigDecimal(rateCardHRBF.getRate())
-					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply(new BigDecimal(relief));
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((@rate@) *@relief@)
+				premiumHRBF = new BigDecimal(rateCardHRBF.getRate()).multiply(new BigDecimal(relief));
+			} else {
+				// ((@rate@/@payment_frequency@) *@relief@)
+				premiumHRBF = (new BigDecimal(rateCardHRBF.getRate()).divide(
+						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+								.multiply(new BigDecimal(relief));
+			}
+		} catch (Exception e) {
+			throw new NullPointerException(
+					"HCBF Rate not found Age : " + age + ", Term : " + term + ", Rider Sumassured : " + ridsumasu
+							+ ", Child Count : " + chlcnt + " and Adult Count : " + adlcnt);
 		}
-
 		// Added for HCB Discount
-		premiumHRBF = premiumHRBF.multiply(new BigDecimal(rateCardHCBDIS.getRate())).setScale(0, RoundingMode.HALF_UP);
-
+		try {
+			premiumHRBF = premiumHRBF.multiply(new BigDecimal(rateCardHCBDIS.getRate())).setScale(0,
+					RoundingMode.HALF_UP);
+		} catch (Exception e) {
+			throw new NullPointerException("HCBF Discount Rate not fount at Age : " + age);
+		}
 		premiumHRBF = premiumHRBF.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// System.out.println("premiumHRBI : "+premiumHRBF.toString());
 		return premiumHRBF;

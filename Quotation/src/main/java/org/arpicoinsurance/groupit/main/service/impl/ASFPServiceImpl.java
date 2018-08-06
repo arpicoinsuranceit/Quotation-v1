@@ -126,7 +126,8 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
-//		System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term + " paytrm : " + paytrm);
+		// System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term
+		// + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L10");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
@@ -143,16 +144,21 @@ public class ASFPServiceImpl implements ASFPService {
 		RateCardASFP rateCardASFP = rateCardASFPDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-//		System.out.println("rateCardASFP : " + rateCardASFP.getRate());
+		// System.out.println("rateCardASFP : " + rateCardASFP.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
-		premium = ((((new BigDecimal(rateCardASFP.getRate())
-				.subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
-						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
-								RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb))).divide(new BigDecimal(paytrm),
-										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
+		try {
+			premium = ((((new BigDecimal(rateCardASFP.getRate())
+					.subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
+							.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+									RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb)))
+											.divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0,
+													RoundingMode.HALF_UP);
+		} catch (Exception e) {
+			throw new NullPointerException("Error at ASFP premium calculation");
+		}
 
-//		System.out.println("premium : " + premium.toString());
+		// System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
@@ -166,10 +172,10 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL2(int term, double msfb) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-//		System.out.println("term : " + term + " msfb : " + msfb);
+		// System.out.println("term : " + term + " msfb : " + msfb);
 		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0,
 				RoundingMode.HALF_UP);
-//		System.out.println("maturity : " + maturity.toString());
+		// System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -182,9 +188,9 @@ public class ASFPServiceImpl implements ASFPService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			//System.out.println(rebate + " : rebate");
-//			System.out.println(quotationCalculation.get_personalInfo().getMsfb()
-//					+ " quotationCalculation.get_personalInfo().getMsfb()");
+			// System.out.println(rebate + " : rebate");
+			// System.out.println(quotationCalculation.get_personalInfo().getMsfb()
+			// + " quotationCalculation.get_personalInfo().getMsfb()");
 			BigDecimal bsa = calculateL2(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getMsfb());
 
@@ -197,11 +203,12 @@ public class ASFPServiceImpl implements ASFPService {
 			BigDecimal bsaMonthly = calculateL10(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
-					quotationCalculation.get_personalInfo().getMsfb(), calculationUtils.getPayterm("M"), calResp, false);
+					quotationCalculation.get_personalInfo().getMsfb(), calculationUtils.getPayterm("M"), calResp,
+					false);
 
-			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
-			//System.out.println(bsaYearly);
-			
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
+			// System.out.println(bsaYearly);
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 
@@ -209,8 +216,8 @@ public class ASFPServiceImpl implements ASFPService {
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			if(quotationCalculation.get_personalInfo().getSage()!=null &&
-					quotationCalculation.get_personalInfo().getSgenger()!=null){
+			if (quotationCalculation.get_personalInfo().getSage() != null
+					&& quotationCalculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			}
 
@@ -244,8 +251,8 @@ public class ASFPServiceImpl implements ASFPService {
 			Integer id) throws Exception {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("ASFP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("ASFP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
@@ -365,7 +372,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setBenefit(benefitsDao.findOne(20));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
@@ -390,7 +397,8 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		
+		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
@@ -429,7 +437,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -445,8 +453,8 @@ public class ASFPServiceImpl implements ASFPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -476,16 +484,16 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-		
+
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		if(productDao.findByProductCode("ASFP").getActive() == 0 ) {
+		if (productDao.findByProductCode("ASFP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
 		if (calResp.getTotPremium() < 1250) {
 			calResp.setErrorExist(true);
@@ -564,10 +572,11 @@ public class ASFPServiceImpl implements ASFPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -611,7 +620,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setBenefit(benefitsDao.findOne(20));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);
@@ -636,7 +645,7 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
@@ -677,7 +686,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -693,8 +702,8 @@ public class ASFPServiceImpl implements ASFPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

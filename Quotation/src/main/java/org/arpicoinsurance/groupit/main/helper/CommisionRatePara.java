@@ -2,6 +2,7 @@ package org.arpicoinsurance.groupit.main.helper;
 
 public class CommisionRatePara {
 	
+	
 	private String prdcod;
 	private int comyer;
 	private int frmtrm;
@@ -44,5 +45,9 @@ public class CommisionRatePara {
 		this.toterm = toterm;
 	}
 	
-
+	@Override
+	public String toString() {
+		return "CommisionRatePara [prdcod=" + prdcod + ", comyer=" + comyer + ", frmtrm=" + frmtrm + ", toterm="
+				+ toterm + "]";
+	}
 }

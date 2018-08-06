@@ -7,6 +7,7 @@ public class ViewQuotation {
 	private String productName;
 	private Integer quoDetailId;
 	private Integer quotationId;
+	private Integer seqId;
 	private String quotationDate;
 	private MainLife _mainlife;
 	private Spouse _spouse;
@@ -87,6 +88,12 @@ public class ViewQuotation {
 	}
 	public void setQuotationId(Integer quotationId) {
 		this.quotationId = quotationId;
+	}
+	public Integer getSeqId() {
+		return seqId;
+	}
+	public void setSeqId(Integer seqId) {
+		this.seqId = seqId;
 	}
 	
 	

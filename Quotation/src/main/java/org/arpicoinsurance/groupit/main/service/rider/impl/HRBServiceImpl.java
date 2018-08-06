@@ -31,21 +31,26 @@ public class HRBServiceImpl implements HRBService {
 		RateCardHRB rateCardHRB = rateCardHRBDao
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndSumasuAndAdlcntAndChlcntAndStrdatLessThanOrStrdat(
 						age, age, age, age, sex, ridsumasu, adlcnt, chlcnt, chedat, chedat);
-	
+
 		// System.out.println("Rate : "+rateCardHRB.getRate());
 		// System.out.println("Rate : "+rateCardHCBDIS.getRate());
 		// System.out.println("HRB age : "+age+" sex : "+sex+" ridsumasu : "+ridsumasu+"
 		// adlcnt : "+adlcnt+" chlcnt : "+chlcnt+" payFrequency : "+payFrequency+"
 		// relief : "+relief+" Rate : "+rateCardHRB.getRate());
-		if (payFrequency.equalsIgnoreCase("S")) {
-			// ((@rate@) *@relief@)
-			premiumHRB = new BigDecimal(rateCardHRB.getRate()).multiply(new BigDecimal(relief)).setScale(0,
-					RoundingMode.HALF_UP);
-		} else {
-			// ((@rate@/@payment_frequency@) *@relief@)
-			premiumHRB = (new BigDecimal(rateCardHRB.getRate())
-					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((@rate@) *@relief@)
+				premiumHRB = new BigDecimal(rateCardHRB.getRate()).multiply(new BigDecimal(relief)).setScale(0,
+						RoundingMode.HALF_UP);
+			} else {
+				// ((@rate@/@payment_frequency@) *@relief@)
+				premiumHRB = (new BigDecimal(rateCardHRB.getRate()).divide(
+						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+								.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException(
+					"HCB Rate not found at Age : " + age + ", Sex : " + sex + " and Rider Sumassured : " + ridsumasu);
 		}
 
 		premiumHRB = premiumHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);

@@ -70,7 +70,7 @@ public class AIBServiceImpl implements AIBService {
 	@Override
 	public BigDecimal calculateAIBMaturaty(Integer term, Double adbrat, Double fundmarat, Double fundrat,
 			Double contribution, Date chedat, String paymod) throws Exception {
-		//System.out.println(contribution);
+		// System.out.println(contribution);
 		CalculationUtils calculationUtils = new CalculationUtils();
 		BigDecimal maturity = new BigDecimal(0);
 		BigDecimal open_fund = new BigDecimal("0");
@@ -87,9 +87,18 @@ public class AIBServiceImpl implements AIBService {
 		BigDecimal fund_rate = new BigDecimal(fundrat);
 		RateCardAIB rateCardAIB = rateCardAIBDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term,
 				chedat, chedat, chedat, chedat);
-		BigDecimal interest_rate = new BigDecimal(rateCardAIB.getRate());
-		//System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : " + fundmarat + " fundrat : "
-		//		+ fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
+
+		BigDecimal interest_rate = null;
+
+		try {
+			interest_rate = new BigDecimal(rateCardAIB.getRate());
+		} catch (Exception e) {
+			throw new NullPointerException("AIB Rate not found at Term : " + term);
+		}
+
+		// System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : "
+		// + fundmarat + " fundrat : "
+		// + fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
 		for (int i = 1; i <= term; i++) {
 			for (int j = 1; j <= calculationUtils.getPayterm(paymod); j++) {
 
@@ -123,7 +132,7 @@ public class AIBServiceImpl implements AIBService {
 
 		}
 
-		//System.out.println("maturity : " + total_amount.toString());
+		// System.out.println("maturity : " + total_amount.toString());
 		maturity = total_amount.setScale(0, BigDecimal.ROUND_UP);
 		return maturity;
 	}
@@ -131,12 +140,18 @@ public class AIBServiceImpl implements AIBService {
 	@Override
 	public HashMap<String, Object> saveQuotation(InvpSavePersonalInfo _invpSaveQuotation, Integer id) throws Exception {
 		CalculationUtils calculationUtils = new CalculationUtils();
-		Users user = userDao.findOne(id);
+		Users user = null;
+		try {
+			user = userDao.findOne(id);
+		} catch (Exception e) {
+			throw new NullPointerException("User Not Found");
+		}
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
 		Products products = productDao.findByProductCode("AIB");
-		//System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		// System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
+		// "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 		/*
 		 * BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0,contribution, new
@@ -146,17 +161,25 @@ public class AIBServiceImpl implements AIBService {
 		Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 
 		Customer customer = new Customer();
-		customer.setCustCreateBy(user.getUserCode());
+		try {
+			customer.setCustCreateBy(user.getUserCode());
+		} catch (Exception e) {
+			throw new NullPointerException("User Not Found");
+		}
 		customer.setCustCreateDate(new Date());
-		
+
 		customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
-		
+
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
 		Occupation occupation = occupationDao
 				.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
-
-		CustomerDetails customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+		CustomerDetails customerDetails = null;
+		try {
+			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+		} catch (Exception e) {
+			throw new NullPointerException("Occupation Not Found");
+		}
 		customerDetails.setCustomer(customer);
 
 		Quotation quotation = new Quotation();
@@ -199,7 +222,12 @@ public class AIBServiceImpl implements AIBService {
 							calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S").doubleValue());
 					mat1.setQuotationDetails(quoDetails);
 					mat1.setRierCode("IAIB");
-					mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
+					try {
+						mat1.setBenefit(benefitsDao.findByRiderCode("IAIB"));
+					} catch (Exception e) {
+						throw new NullPointerException("Benefict IAIB not found");
+					}
+
 					benefictList.add(mat1);
 
 					///////////////////////////// END ADD MATURITY////////////////////////
@@ -241,7 +269,7 @@ public class AIBServiceImpl implements AIBService {
 		try {
 			mainLifeDetail = new CustomerDetails();
 			mainLifeDetail.setCustName(get_personalInfo.get_mainlife().get_mName());
-			mainLifeDetail.setCustCivilStatus("");
+			mainLifeDetail.setCustCivilStatus(get_personalInfo.get_mainlife().get_mCivilStatus());
 			mainLifeDetail.setCustCreateBy(user.getUser_Name());
 			mainLifeDetail.setCustCreateDate(new Date());
 			mainLifeDetail.setCustDob(new DateConverter().stringToDate(get_personalInfo.get_mainlife().get_mDob()));
@@ -268,34 +296,48 @@ public class AIBServiceImpl implements AIBService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		
+
 		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
 		Products products = productDao.findByProductCode("AIB");
-		//System.out.println(_invpSaveQuotation.get_plan().get_bsa() + "*********************");
+		// System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
+		// "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
-		/*BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new Date(), "S");*/
+		/*
+		 * BigDecimal bsa = calculateAIBMaturaty(2, 0.0, 0.0, 100.0, contribution, new
+		 * Date(), "S");
+		 */
 		Double adminFee = calculationUtils.getAdminFee("S");
 		Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 
 		Customer customer = details.getCustomerDetails().getCustomer();
-		customer.setCustModifyBy(user.getUserCode());
+		try {
+			customer.setCustModifyBy(user.getUserCode());
+		} catch (Exception e) {
+			throw new NullPointerException("User Not Found");
+		}
 		customer.setCustModifyDate(new Date());
 		customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
 
 		Occupation occupation = occupationDao
 				.findByOcupationid(Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mOccupation()));
 
-		CustomerDetails customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+		CustomerDetails customerDetails = null;
+		try {
+			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
+		} catch (Exception e) {
+			throw new NullPointerException("Occupation not found");
+		}
 		customerDetails.setCustomer(customer);
 
 		Quotation quotation = details.getQuotation();
+		Integer count = quotationDetailsDao.countByQuotation(quotation);
 		quotation.setProducts(products);
 		quotation.setStatus("active");
 		quotation.setUser(user);
 
 		QuotationDetails quotationDetails = new QuotationDetails();
+		quotationDetails.setSeqnum(count + 1);
 		quotationDetails.setQuotation(quotation);
 		quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 		quotationDetails.setAdminFee(adminFee);
