@@ -202,6 +202,7 @@ public class ARTMServiceImpl implements ARTMService {
 					rateCardARTMVeriableExpences = new RateCardARTMVeriableExpences(0.0);
 				}
 
+				/*
 				if (paytrm >= polyear) {
 					rateCardARTMExpences = rateCardARTMExpencesDao
 							.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
@@ -209,6 +210,11 @@ public class ARTMServiceImpl implements ARTMService {
 					// //System.out.println("rateCardARTMExpences : " +
 					// rateCardARTMExpences.getAmount()+" polyear : "+polyear+" paymod : "+paymod);
 				}
+				*/
+				
+				rateCardARTMExpences = rateCardARTMExpencesDao
+						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
+								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
 
 				rateCardARTMProfit = rateCardARTMProfitDao
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
@@ -282,27 +288,31 @@ public class ARTMServiceImpl implements ARTMService {
 				// //System.out.println("contributionAmount : " + contributionAmount + " commision
 				// : " + commision);
 
-				expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
-						BigDecimal.ROUND_HALF_UP);
+				//expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
+				//		BigDecimal.ROUND_HALF_UP);
 
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 
 			} else {
 				contributionAmount = new BigDecimal(0);
 				commision = new BigDecimal(0);
 				veriableExpenses = new BigDecimal(0);
-				expenses = new BigDecimal(0);
+				//expenses = new BigDecimal(0);
 
 				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
 			//System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
 			//		+ " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses);
 			// //System.out.println("closingFundAmount : " + closingFundAmount);
+			
+			expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
+					BigDecimal.ROUND_HALF_UP);
+			
 			profit = closingFundAmount
 					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
@@ -331,6 +341,7 @@ public class ARTMServiceImpl implements ARTMService {
 			pensionShedule.setPolyer(polyear);
 			Integer month = i + 1;
 			pensionShedule.setMonth(month);
+			pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setProfit(profit.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setAmtcrtfnd(creditedFundAmount.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			pensionShedule.setFndBeforeInt(amountBeforeInterest.setScale(2, RoundingMode.HALF_UP).doubleValue());
