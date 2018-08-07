@@ -174,9 +174,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -741,9 +740,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -1191,9 +1189,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -2884,9 +2881,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(10).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -3747,9 +3743,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -5221,9 +5216,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -6693,9 +6687,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -8139,9 +8132,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -9814,9 +9806,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(8).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();
@@ -11503,9 +11494,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		agtTable.addCell(agCellQId);
 		Cell agCellQ = new Cell();
 		agCellQ.setBorder(Border.NO_BORDER);
-		agCellQ.add(new Paragraph(
-				": " + quotationDetails.getQuotation().getId() + " - " + Integer.toString(quotationDetails.getSeqnum()))
-						.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		agCellQ.add(new Paragraph(": " + quotationDetails.getQuotation().getId() + " - " + quotationDetails.getQdId())
+				.setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
 		agtTable.addCell(agCellQ);
 
 		agtTable.startNewRow();

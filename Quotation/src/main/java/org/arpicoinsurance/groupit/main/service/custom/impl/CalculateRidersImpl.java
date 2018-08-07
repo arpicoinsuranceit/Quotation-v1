@@ -474,7 +474,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount,
 			Integer childCount, Double inrate, String productCode) throws Exception {
 
-		System.out.println(age);
+		//System.out.println(age);
 
 		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
 
@@ -491,9 +491,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		// System.out.println(occupation_id + " ////////////// ocu ID");
 
-		System.out.println(type);
+		//System.out.println(type);
 
-		System.out.println(calResp.getYearlyL2Sum() + " : L2 sum" );
+		//System.out.println(calResp.getYearlyL2Sum() + " : L2 sum" );
 		
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
@@ -503,7 +503,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 		switch (type) {
 
 		case "L2":
-			System.out.println("L2");
+			//System.out.println("L2");
 			if (productCode.equalsIgnoreCase("ARTM")) {
 
 				if (benefictDao.findByRiderCode("L2").getActive() == 0) {
