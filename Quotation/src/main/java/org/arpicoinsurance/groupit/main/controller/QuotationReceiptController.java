@@ -191,6 +191,7 @@ public class QuotationReceiptController {
 	
 	@RequestMapping(value="/getNominee",method=RequestMethod.POST)
 	public List<Nominee> getNominee(@RequestParam("qdId") Integer qdId) {
+		System.out.println("get nominee called...");
 		try {
 			List<Nominee> nominee = nomineeService.findByQuotationDetails(qdId);
 			return nominee;

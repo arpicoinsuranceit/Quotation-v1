@@ -42,7 +42,7 @@ public class QuotationAipCalculationController {
 	@RequestMapping(value = "/aipCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAIP(@RequestBody Plan plan) throws Exception {
 		CalculationUtils calUtil = new CalculationUtils();
-		// System.out.println(plan.toString());
+		 //System.out.println(plan.toString());
 
 		Validation validation = new Validation();
 

@@ -551,7 +551,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 	public List<MediTestReceiptHelper> getMediTestByQuoDetails(Integer quId) throws Exception {
 		QuotationDetails details = quotationDetailService.findQuotationDetails(quId);
 		List<MediTestReceiptHelper> mediTestReceiptHelpers = new ArrayList<>();
-		if(!details.equals(null)) {
+		if(details != null) {
 			List<MedicalDetails> medicalDetailList = medicalDetailsDao.findByQuotationDetails(details);
 			for (MedicalDetails medicalDetail : medicalDetailList) {
 				MediTestReceiptHelper mediTestReceiptHelper = new MediTestReceiptHelper();

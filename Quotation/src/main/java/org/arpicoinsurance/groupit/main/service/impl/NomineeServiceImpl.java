@@ -25,6 +25,10 @@ public class NomineeServiceImpl implements NomineeService {
 	public List<Nominee> findByQuotationDetails(Integer qdId) throws Exception {
 		QuotationDetails details=quoDetailsDao.findByQdId(qdId);
 		
+		System.out.println("Called nominee service");
+		
+		System.out.println(details);
+		
 		return nomineeDao.findByQuotationDetails(details);
 	}
 
