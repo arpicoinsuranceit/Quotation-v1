@@ -10,6 +10,6 @@ public interface RateCardARTMDeathDao extends MongoRepository<RateCardARTMDeath,
 	
 	RateCardARTMDeath findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(int age, int term, Date strdat1,Date strdat2, Date enddat1,Date enddat2) throws Exception;
 
-	RateCardARP findFirstByOrderByTermDesc();
+	RateCardARTMDeath findFirstByOrderByTermDesc();
 
 }

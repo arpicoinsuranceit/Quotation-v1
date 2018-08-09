@@ -316,12 +316,21 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	}
 
 	@Override
-	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId, String type) throws Exception {
 		Quotation quotation = quotationService.getQuotation(quotationId);
-		if (quotation != null && quotation.getStatus().equals("active")) {
-			QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
-			if (quotationDetails != null) {
-				return quotationDetails;
+		if(type.equals("HO")) {
+			if (quotation != null && (quotation.getStatus().equals("active") || quotation.getStatus().equals("prop"))) {
+				QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+				if (quotationDetails != null) {
+					return quotationDetails;
+				}
+			}
+		}else {
+			if (quotation != null && quotation.getStatus().equals("active")) {
+				QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+				if (quotationDetails != null) {
+					return quotationDetails;
+				}
 			}
 		}
 
