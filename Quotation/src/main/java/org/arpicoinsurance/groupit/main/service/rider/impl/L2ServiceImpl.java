@@ -22,7 +22,7 @@ public class L2ServiceImpl implements L2Service {
 	@Override
 	public BigDecimal calculateL2(double ridsumasu, int term, int age, String payFrequency, double occupation_loding)
 			throws Exception {
-		System.out.println(" ////////////////////// artm " + age + " " + term);
+		// System.out.println(" ////////////////////// artm " + age + " " + term);
 		Date chedat = new Date();
 		RateCardARTMDeath rateCardARTMDeath = rateCardARTMDeathDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
@@ -31,20 +31,25 @@ public class L2ServiceImpl implements L2Service {
 
 		// System.out.println(rateCardARTMDeath.getRate() + " //////////////////////
 		// artm");
-		if (payFrequency.equalsIgnoreCase("S")) {
-			// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))*@term@
-			premiumL2 = ((new BigDecimal(rateCardARTMDeath.getRate())
-					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)))
-							.multiply(new BigDecimal(term))).setScale(4, BigDecimal.ROUND_HALF_UP);
-		} else {
-			// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))
-			premiumL2 = (new BigDecimal(rateCardARTMDeath.getRate())
-					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)))
-							.setScale(4, BigDecimal.ROUND_HALF_UP);
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))*@term@
+				premiumL2 = ((new BigDecimal(rateCardARTMDeath.getRate()).divide(
+						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+								.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6,
+										RoundingMode.HALF_UP)))
+								.multiply(new BigDecimal(term))).setScale(4, BigDecimal.ROUND_HALF_UP);
+			} else {
+				// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))
+				premiumL2 = (new BigDecimal(rateCardARTMDeath.getRate()).divide(
+						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+								.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6,
+										RoundingMode.HALF_UP)))
+								.setScale(4, BigDecimal.ROUND_HALF_UP);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("ARTM L2 Rate not found at Age : " + age + " and Term : " + term);
 		}
-
 		premiumL2 = premiumL2.multiply(new BigDecimal(occupation_loding)).setScale(0, BigDecimal.ROUND_HALF_UP);
 		return premiumL2;
 	}

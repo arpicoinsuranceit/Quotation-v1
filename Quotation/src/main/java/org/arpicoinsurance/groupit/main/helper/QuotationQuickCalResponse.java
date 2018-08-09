@@ -231,6 +231,7 @@ public class QuotationQuickCalResponse {
 	
 	
 	private boolean isArp = false;
+	private boolean isArtm = false;
 	private String payTerm; 
 	
 	private List<SurrenderValHelper> surrenderValHelpers = null;
@@ -1215,6 +1216,12 @@ public class QuotationQuickCalResponse {
 	}
 	public void setPensionShedules(List<PensionShedule> pensionShedules) {
 		this.pensionShedules = pensionShedules;
+	}
+	public boolean isArtm() {
+		return isArtm;
+	}
+	public void setArtm(boolean isArtm) {
+		this.isArtm = isArtm;
 	}
 	
 	

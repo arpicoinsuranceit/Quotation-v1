@@ -130,7 +130,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardSurenderDao rateCardSurenderDao;
-	
+
 	@Autowired
 	private SurrendervalDao surrenderValDao;
 
@@ -151,14 +151,15 @@ public class ARPServiceImpl implements ARPService {
 					quotationCalculation.get_personalInfo().getBsa(),
 					quotationCalculation.get_personalInfo().getFrequance(), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
-					quotationCalculation.get_personalInfo().getPayingterm(), 1, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), "Y", calResp, false);
+					quotationCalculation.get_personalInfo().getPayingterm(), calculationUtils.getRebate("M"),
+					new Date(), quotationCalculation.get_personalInfo().getBsa(), "M", calResp, false);
 
-			//System.out.println(bsaYearly);
-			
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
+			// System.out.println(bsaYearly);
+
 			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
 			// bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
@@ -231,24 +232,28 @@ public class ARPServiceImpl implements ARPService {
 						chedat, chedat, chedat, chedat);
 		// System.out.println("rateCardARPRelief : " + rateCardARP.getRate());
 
-		if (payFrequency.equalsIgnoreCase("S")) {
-			// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)) *@relief@
-			premium = (((new BigDecimal(rateCardEND.getRate())
-					.subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate)))
-							.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
-									RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)))
-											.multiply(new BigDecimal(rateCardARP.getRate()))
-											.setScale(0, RoundingMode.HALF_UP);
-		} else {
-			// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@)
-			// *@relief@
-			premium = ((((new BigDecimal(rateCardEND.getRate())
-					.subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate)))
-							.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
-									RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(
-											new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10,
-											RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARP.getRate()))
-													.setScale(0, RoundingMode.HALF_UP);
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)) *@relief@
+				premium = (((new BigDecimal(rateCardEND.getRate())
+						.subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate)))
+								.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+										RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)))
+												.multiply(new BigDecimal(rateCardARP.getRate()))
+												.setScale(0, RoundingMode.HALF_UP);
+			} else {
+				// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@)
+				// *@relief@
+				premium = ((((new BigDecimal(rateCardEND.getRate())
+						.subtract(((new BigDecimal(rateCardEND.getRate()).multiply(new BigDecimal(rebate)))
+								.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
+										RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(
+												new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10,
+												RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARP.getRate()))
+														.setScale(0, RoundingMode.HALF_UP);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("Rates not fount at ARP Product calculation");
 		}
 		// System.out.println("premium : " + premium.toString());
 
@@ -284,11 +289,11 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+		if (productDao.findByProductCode("ARP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedArp(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
@@ -410,9 +415,9 @@ public class ARPServiceImpl implements ARPService {
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
-		
+
 		List<Surrendervals> surrendervalsList = new ArrayList<>();
-		
+
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
@@ -439,7 +444,7 @@ public class ARPServiceImpl implements ARPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
-			
+
 			for (SurrenderValHelper surrenderValHelper : calResp.getSurrenderValHelpers()) {
 				Surrendervals surrendervals = new Surrendervals();
 				surrendervals.setCreateBy(user.getUserCode());
@@ -453,10 +458,10 @@ public class ARPServiceImpl implements ARPService {
 				surrendervals.setPrmpyr(surrenderValHelper.getPrmpyr());
 				surrendervals.setQuotationDetails(quoDetails);
 				surrendervals.setSurrnd(surrenderValHelper.getSurrnd());
-				
+
 				surrendervalsList.add(surrendervals);
 			}
-			
+
 			surrenderValDao.save(surrendervalsList);
 
 			/////////// Add Maturity///////////////////////
@@ -481,12 +486,11 @@ public class ARPServiceImpl implements ARPService {
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
 				if (bnfdList != null) {
-
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -522,8 +526,8 @@ public class ARPServiceImpl implements ARPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("ARP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("ARP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
@@ -586,10 +590,11 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -662,9 +667,9 @@ public class ARPServiceImpl implements ARPService {
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
-		
+
 		List<Surrendervals> surrendervalsList = new ArrayList<>();
-		
+
 		//////////////////////////// save edit//////////////////////////////////
 
 		Customer life = (Customer) customerDao.save(mainlife);
@@ -692,8 +697,7 @@ public class ARPServiceImpl implements ARPService {
 
 			quo = quotationDao.save(quotation);
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
-			
-			
+
 			for (SurrenderValHelper surrenderValHelper : calResp.getSurrenderValHelpers()) {
 				Surrendervals surrendervals = new Surrendervals();
 				surrendervals.setCreateBy(user.getUserCode());
@@ -707,10 +711,10 @@ public class ARPServiceImpl implements ARPService {
 				surrendervals.setPrmpyr(surrenderValHelper.getPrmpyr());
 				surrendervals.setQuotationDetails(quoDetails);
 				surrendervals.setSurrnd(surrenderValHelper.getSurrnd());
-				
+
 				surrendervalsList.add(surrendervals);
 			}
-			
+
 			surrenderValDao.save(surrendervalsList);
 
 			/////////// Add Maturity///////////////////////
@@ -739,9 +743,8 @@ public class ARPServiceImpl implements ARPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
-
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");
 						return responseMap;
@@ -825,9 +828,13 @@ public class ARPServiceImpl implements ARPService {
 										balance_term, new Date(), new Date(), new Date(), new Date());
 						// System.out.println("Rate : "+rateCardSurender != null ?
 						// rateCardSurender.getRate() : 0);
+						try {
 						surrender_val = (paidup_val
 								.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
 										.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+						} catch (Exception e) {
+							throw new NullPointerException("Surrender Valuse calculation Error");
+						}
 					}
 				} else {
 					polyer = i;
@@ -852,9 +859,13 @@ public class ARPServiceImpl implements ARPService {
 					// "+balance_term);
 					// System.out.println("Rate : "+(rateCardSurender == null ? 0 :
 					// rateCardSurender.getRate()));
+					try {
 					surrender_val = (paidup_val
 							.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
 									.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+					} catch (Exception e) {
+						throw new NullPointerException("Surrender Value Calculation Error");
+					}
 				}
 			} else {
 				polyer = i;
@@ -879,11 +890,14 @@ public class ARPServiceImpl implements ARPService {
 								balance_term, new Date(), new Date(), new Date(), new Date());
 				// System.out.println("Rate : "+rateCardSurender != null ?
 				// rateCardSurender.getRate() : 0);
+				try {
 				surrender_val = (paidup_val
 						.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
 								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+				} catch (Exception e) {
+					throw new NullPointerException("Surrender Value Calculation Error");
+				}
 			}
-
 
 			SurrenderValHelper helper = new SurrenderValHelper();
 			helper.setPolyer(String.valueOf(polyer));
@@ -911,7 +925,6 @@ public class ARPServiceImpl implements ARPService {
 			 */
 
 		}
-
 
 		return surrenderValHelpers;
 

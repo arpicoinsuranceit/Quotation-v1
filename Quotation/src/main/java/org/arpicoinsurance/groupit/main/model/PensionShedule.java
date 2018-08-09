@@ -29,6 +29,7 @@ public class PensionShedule implements Serializable{
 	private Double clsFnd2;
 	private Double intRat3;
 	private Double clsFnd3;
+	private Double varExpences;
 	
 	private QuotationDetails quotationDetails;
 
@@ -163,6 +164,14 @@ public class PensionShedule implements Serializable{
 
 	public void setQuotationDetails(QuotationDetails quotationDetails) {
 		this.quotationDetails = quotationDetails;
+	}
+
+	public Double getVarExpences() {
+		return varExpences;
+	}
+
+	public void setVarExpences(Double varExpences) {
+		this.varExpences = varExpences;
 	}
 	
 	

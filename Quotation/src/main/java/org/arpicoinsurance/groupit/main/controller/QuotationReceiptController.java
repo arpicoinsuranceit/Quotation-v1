@@ -55,10 +55,10 @@ public class QuotationReceiptController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/getquotationdetail/{qdId}")
-	public QuotationReceipt getQuotationList(@PathVariable Integer qdId){
+	@RequestMapping(value = "/getquotationdetail/{qId}/{seqNo}")
+	public QuotationReceipt getQuotationList(@PathVariable Integer qId, @PathVariable Integer seqNo){
 		try {
-			return quotationDetailService.findQuotationDetailsForReceipt(qdId);
+			return quotationDetailService.findQuotationDetailsForReceipt(qId, seqNo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,10 +66,10 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value="/getQuoDetail",method=RequestMethod.POST)
-	public ViewQuotation viewQuotation(@RequestParam("qdId") Integer qdId,@RequestParam("qId") Integer qId) {
+	public ViewQuotation viewQuotation(@RequestParam("seqNo") Integer seqId,@RequestParam("qId") Integer qId) {
 		try {
 			
-			ViewQuotation viewQuo=quoBenefDetailService.getQuotationDetail(qdId, qId);
+			ViewQuotation viewQuo=quoBenefDetailService.getQuotationDetail(seqId, qId);
 			System.out.println(viewQuo.get_mainlife().get_mCustCode() + "   custCode");
 			return viewQuo;
 			
@@ -81,9 +81,9 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value="/getShedule",method=RequestMethod.POST)
-	public List<Shedule> getShedule(@RequestParam("qdId") Integer qdId) {
+	public List<Shedule> getShedule(@PathVariable Integer qId, @PathVariable Integer seqNo) {
 		try {
-			List<Shedule> shedules = sheduleService.findByQuotationDetails(qdId);
+			List<Shedule> shedules = sheduleService.findByQuotationDetails(qId, seqNo);
 			return shedules;
 			
 		} catch (Exception e) {
@@ -94,12 +94,12 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value="/getMediDetails",method=RequestMethod.POST)
-	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@RequestParam("qdId") Integer qdId){
+	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@PathVariable Integer qId, @PathVariable Integer seqNo){
 		
 		System.out.println("called medi");
 		
 		try {
-			List<MediTestReceiptHelper> list =  healthRequirmentsService.getMediTestByQuoDetails(qdId);
+			List<MediTestReceiptHelper> list =  healthRequirmentsService.getMediTestByQuoDetails(qId, seqNo);
 			
 			list.forEach(e -> System.out.println(e.toString()));
 			
@@ -111,11 +111,11 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value="/getSurrenderVals",method=RequestMethod.POST)
-	public List<Surrendervals> getSurrenderValsHelper(@RequestParam("qdId") Integer qdId){
+	public List<Surrendervals> getSurrenderValsHelper(@PathVariable Integer qId, @PathVariable Integer seqNo){
 
 		
 		try {
-			List<Surrendervals> list =  surrenderValsService.getSurrenderValBuQuotationDetails(qdId);
+			List<Surrendervals> list =  surrenderValsService.getSurrenderValBuQuotationDetails(qId, seqNo);
 			
 			System.out.println("sur : "+list.size());
 			list.forEach(e -> System.out.println(e.toString()));
@@ -130,10 +130,10 @@ public class QuotationReceiptController {
 	
 	
 	@RequestMapping(value="/isavailable",method=RequestMethod.POST)
-	public String isQuotationAvailable (@RequestParam("qdId") Integer qdId, @RequestParam("qId") Integer qId) {
+	public String isQuotationAvailable (@RequestParam("seqNo") Integer seqNo, @RequestParam("qId") Integer qId) {
 	
 		try {
-			if(quotationDetailService.isAvailable(qdId, qId)) {
+			if(quotationDetailService.isAvailable(seqNo, qId)) {
 				return "true";
 			}
 			return "false";
@@ -143,10 +143,10 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value="/updateStatus",method=RequestMethod.POST)
-	public String updateStatus (@RequestParam("qdId") Integer qdId) {
+	public String updateStatus (@RequestParam("seqNo") Integer seqNo, @RequestParam("qId") Integer qId) {
 	
 		try {
-			if(quotationDetailService.updateStatus(qdId)) {
+			if(quotationDetailService.updateStatus(seqNo, qId)) {
 				return "true";
 			}
 			return "false";

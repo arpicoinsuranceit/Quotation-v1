@@ -32,7 +32,7 @@ public class QuotationCustomDaoImpl implements QuotationCustomDao {
 			List<Object> args = new ArrayList<>();
 
 			quotationSearchs = jdbcTemplate.query(
-					"SELECT qd.qd_id, qd.quotation_id FROM quotation_details qd, quotation q "
+					"SELECT qd.qd_id, qd.quotation_id, qd.seqnum FROM quotation_details qd, quotation q "
 					+ "where qd.quotation_id = q.id and q.status = 'active' and quotation_id like '"+id+"%'",
 					args.toArray(), new ResultSetExtractor<List<QuotationSearch>>() {
 
@@ -60,6 +60,7 @@ public class QuotationCustomDaoImpl implements QuotationCustomDao {
 		QuotationSearch quotationSearch = new QuotationSearch();
 		quotationSearch.setQuotationId(Integer.toString(resultSet.getInt("quotation_id")));
 		quotationSearch.setQuotationDetailId(Integer.toString(resultSet.getInt("qd_id")));
+		quotationSearch.setSeqId(resultSet.getInt("seqnum"));
 		return quotationSearch;
 	}
 

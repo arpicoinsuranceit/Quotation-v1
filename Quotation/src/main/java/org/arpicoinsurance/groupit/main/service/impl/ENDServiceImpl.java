@@ -131,10 +131,13 @@ public class ENDServiceImpl implements ENDService {
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			//System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
-					quotationCalculation.get_personalInfo().getTerm(), 1, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), 1, calResp, false);
+					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
+					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
+	
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
+			//System.out.println(bsaYearly);
 			//System.out.println(bsaYearly);
 			
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
@@ -442,7 +445,7 @@ public class ENDServiceImpl implements ENDService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -542,9 +545,13 @@ public class ENDServiceImpl implements ENDService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		
+		Integer count = quotationDetailDao.countByQuotation(quotation);
+		
 		quotation.setStatus("active");
+		
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -671,7 +678,7 @@ public class ENDServiceImpl implements ENDService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

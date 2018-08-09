@@ -61,12 +61,14 @@ public class QuotationEndCalculationController {
 			}
 			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
 			logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("calculateQuotation : QuotationEndCalculationController");
 			try {
+				
 				logService.saveLog(logs);
 			} catch (Exception e1) {
 				System.out.println("... Error Message for Operation ...");

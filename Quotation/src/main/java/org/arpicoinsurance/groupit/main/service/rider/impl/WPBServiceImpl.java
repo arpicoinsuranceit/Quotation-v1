@@ -39,7 +39,12 @@ public class WPBServiceImpl implements WPBService{
 	public BigDecimal calculateARTMWPB(QuotationQuickCalResponse calResp, Double occuloading) throws Exception {
 		// ((@Contribution@*5)/100))
 		BigDecimal premiumWPB = new BigDecimal(0);
-		premiumWPB = ((new BigDecimal(calResp.getBasicSumAssured()).multiply(new BigDecimal(5))).divide(new BigDecimal(100))).setScale(0, RoundingMode.HALF_UP);
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getBasicSumAssured() == null ? 0.0 : calResp.getBasicSumAssured()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getL2() == null ? 0.0 : calResp.getL2()));
+		premiumWPB = premiumWPB.add(new BigDecimal(calResp.getCib() == null ? 0.0 : calResp.getCib()));
+		
+		premiumWPB = premiumWPB.multiply(new BigDecimal(0.085)).setScale(0, RoundingMode.HALF_UP);
+//		System.out.println("premiumWPB : "+premiumWPB.toString());
 		premiumWPB = premiumWPB.multiply(new BigDecimal(occuloading)).setScale(0, RoundingMode.HALF_UP);
 		return premiumWPB;
 	}

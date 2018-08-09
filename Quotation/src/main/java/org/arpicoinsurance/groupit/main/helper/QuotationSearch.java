@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.helper;
 public class QuotationSearch {
 	private String QuotationId;
 	private String QuotationDetailId;
+	private Integer SeqId;
 	
 	public String getQuotationId() {
 		return QuotationId;
@@ -15,5 +16,11 @@ public class QuotationSearch {
 	}
 	public void setQuotationDetailId(String quotationDetailId) {
 		QuotationDetailId = quotationDetailId;
+	}
+	public Integer getSeqId() {
+		return SeqId;
+	}
+	public void setSeqId(Integer seqId) {
+		SeqId = seqId;
 	}
 }

@@ -139,12 +139,15 @@ public class ATRMServiceImpl implements ATRMService {
 //		System.out.println("rateCardATRM : " + rateCardATRM.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
+		try {
 		premium = ((((new BigDecimal(rateCardATRM.getRate())
 				.subtract(((new BigDecimal(rateCardATRM.getRate()).multiply(new BigDecimal(rebate)))
 						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-
+		} catch (Exception e) {
+			throw new NullPointerException("ATRM Premium calculation Error");
+		}
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
@@ -177,10 +180,13 @@ public class ATRMServiceImpl implements ATRMService {
 					new Date(), calculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance()), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(calculation.get_personalInfo().getMocu(),
-					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), 1,
-					new Date(), calculation.get_personalInfo().getBsa(), 1, calResp, false);
+			BigDecimal bsaMonthly = calculateL2(calculation.get_personalInfo().getMocu(),
+					calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"),
+					new Date(), calculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
 
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
+			/*System.out.println(bsaYearly);
+			*/
 			//System.out.println(bsaYearly);
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -393,7 +399,7 @@ public class ATRMServiceImpl implements ATRMService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -494,10 +500,12 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
+		
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
 		} else {
@@ -618,7 +626,7 @@ public class ATRMServiceImpl implements ATRMService {
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
 							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_riderDetails().get_cRiders(),calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

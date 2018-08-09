@@ -74,7 +74,7 @@ public class TokenController {
 
 						users = userService.getUserByLoginId(login.getLoginId());
 
-						if (users != null) {
+						if (users != null && users.getUser_Active() == 1) {
 							helperLogin.setUserCode(users.getUserCode());
 							helperLogin.setUserFullName(users.getUser_Name());
 							helperLogin.setUserId(users.getUserId());
@@ -83,6 +83,8 @@ public class TokenController {
 							loginService.updateFailCount(0, users.getLogin().getLoginId());
 
 							return generator.generate(helperLogin);
+						}else {
+							return "User Inactive";
 						}
 					}
 				} else {
@@ -119,8 +121,6 @@ public class TokenController {
 			}
 			throw new RuntimeException(e.getMessage());
 		}
-
-		return null;
 	}
 
 	private String checkPwAndUserName(Login logins) {

@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class QuotationView {
 	private Integer quoDetailId;
+	private Integer seqId;
 	private Date quotationDate;
 	private QuoCustomer custDetails;
 	private ArrayList<QuoBenf> mainLifeBenf;
@@ -15,6 +16,12 @@ public class QuotationView {
 	}
 	public void setQuoDetailId(Integer quoDetailId) {
 		this.quoDetailId = quoDetailId;
+	}
+	public Integer getSeqId() {
+		return seqId;
+	}
+	public void setSeqId(Integer seqId) {
+		this.seqId = seqId;
 	}
 	public QuoCustomer getCustDetails() {
 		return custDetails;

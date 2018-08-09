@@ -40,8 +40,8 @@ import org.springframework.stereotype.Service;
 public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 	@Autowired
-	private QuotationDao quotationDao; 
-	
+	private QuotationDao quotationDao;
+
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
 
@@ -76,6 +76,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
 			// LocalDate currentDate =
 			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
+
 			LocalDate currentDate = LocalDate.now();
 
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
@@ -98,6 +99,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
 			mainLife.set_occuCode(customerDetails.getOccupation().getOcupationCode());
 			mainLife.set_mCustCode(customerDetails.getCustomer().getCustCode());
+
 			if (details.getSpouseDetails() != null) {
 				CustomerDetails spouseDetails = details.getSpouseDetails();
 				spouse.set_sName(spouseDetails.getCustName());
@@ -116,7 +118,6 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 				spouse.set_sTitle(spouseDetails.getCustTitle());
 				spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
-
 			} else {
 				spouse.set_sActive(false);
 			}
@@ -321,7 +322,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 		plan.setPolicyFee(details.getPolicyFee());
 		plan.setAdminFee(details.getAdminFee());
-		plan.setTax(plan.getTax());
+		plan.setTax(details.getTaxAmount());
 		System.out.println(plan.get_bsaTotal());
 		System.out.println(plan.getAdminFee());
 		System.out.println(plan.getPolicyFee());
@@ -348,8 +349,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	}
 
 	@Override
-	public QuotationReceipt findQuotationDetailsForReceipt(Integer qdId) throws Exception {
-		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
+	public QuotationReceipt findQuotationDetailsForReceipt(Integer qId, Integer seqNo) throws Exception {
+		
+		Quotation  quotation = quotationDao.findById(qId);
+		
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
 
 		QuotationReceipt quotationReceipt = new QuotationReceipt();
 		quotationReceipt.setBranchCode(details.getQuotation().getUser().getBranch().getBranch_Code());
@@ -380,12 +384,15 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		default:
 			break;
 		}
+		quotationReceipt.setPolfeePremium((details.getPolicyFee()+ quotationReceipt.getPremium()));
 		return quotationReceipt;
 	}
 
+	
 	@Override
-	public boolean isAvailable(Integer qdId, Integer qId) throws Exception {
-		QuotationDetails details = findQuotationDetails(qdId);
+	public boolean isAvailable(Integer seqNo, Integer qId) throws Exception {
+		Quotation quotation = quotationDao.findById(qId);
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
 		if (details != null && details.getQuotation().getId().equals(qId)) {
 			return true;
 		}
@@ -462,11 +469,10 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		return getBenefitsAndChildDetails(details, editQuotation);
 
 	}
-
 	@Override
-	public boolean updateStatus(Integer qdId) throws Exception {
-		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
-		Quotation quotation = details.getQuotation();
+	public boolean updateStatus(Integer seqNo, Integer qId) throws Exception {
+		
+		Quotation quotation = quotationDao.findById(qId);
 		quotation.setStatus("PROP");
 		quotationDao.save(quotation);
 		return true;

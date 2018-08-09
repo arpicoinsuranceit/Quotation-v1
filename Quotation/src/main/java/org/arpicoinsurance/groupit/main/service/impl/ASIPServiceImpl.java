@@ -132,26 +132,34 @@ public class ASIPServiceImpl implements ASIPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			/// Calculate Rebate Premium ///
-			//Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			//System.out.println(rebate + " : rebate");
-			/// Calculate BSA Premium ///
+
+			// Calculate Rebate Premium ///
+			// Double rebate =
+			// calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			// System.out.println(rebate + " : rebate");
+			// Calculate BSA Premium ///
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 
-			BigDecimal bsaYearly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
+			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
-					1, calResp, false);
+					calculationUtils.getPayterm("M"), calResp, false);
+
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
+			/*
+			 * System.out.println(bsaYearly); System.out.println(bsaYearly);
+			 */
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			if(quotationCalculation.get_personalInfo().getSage()!=null &&
-				quotationCalculation.get_personalInfo().getSgenger()!=null){
+			if (quotationCalculation.get_personalInfo().getSage() != null
+					&& quotationCalculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			}
 
-			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
+			// bsaPremium));
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
@@ -171,7 +179,7 @@ public class ASIPServiceImpl implements ASIPService {
 					quotationCalculation.get_personalInfo().getBsa(), bsaPremium.doubleValue(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance())).doubleValue());
 
-//			System.out.println(calResp.getBasicSumAssured());
+			// System.out.println(calResp.getBasicSumAssured());
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
@@ -202,11 +210,12 @@ public class ASIPServiceImpl implements ASIPService {
 			}
 		}
 		BigDecimal premium = new BigDecimal(0);
-//		System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " + paytrm);
+		// System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " +
+		// paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)
 		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP))
 				.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
-//		System.out.println("premium : " + premium.toString());
+		// System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
 		if (isAddOccuLoading) {
@@ -234,8 +243,9 @@ public class ASIPServiceImpl implements ASIPService {
 		BigDecimal fund_charge = new BigDecimal(fundcharat).setScale(2, BigDecimal.ROUND_HALF_UP);
 		BigDecimal interest_rate = new BigDecimal(intrat).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-//		System.out.println("term : " + term + " fundcharat : " + fundcharat + " intrat : " + intrat + " paytrm : "
-//				+ paytrm + " bassum : " + bassum + " bsapremium : " + bsapremium);
+		// System.out.println("term : " + term + " fundcharat : " + fundcharat + "
+		// intrat : " + intrat + " paytrm : "
+		// + paytrm + " bassum : " + bassum + " bsapremium : " + bsapremium);
 		for (int i = 1; i <= term; ++i) {
 
 			// overidepara.put("current_year", String.valueOf(i));
@@ -249,13 +259,24 @@ public class ASIPServiceImpl implements ASIPService {
 			RateCardASIPFund rateCardASIPFund = rateCardASIPFundDao
 					.findByTermAndPolyearAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, polyear, chedat,
 							chedat, chedat, chedat);
-			BigDecimal fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2,
-					BigDecimal.ROUND_HALF_UP);
+			BigDecimal fund_allo_rate = null;
+			
+			try {
+				fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2,
+						BigDecimal.ROUND_HALF_UP);
+			}catch (Exception e) {
+				throw new NullPointerException("ASIP FUND Rates not found");
+			}
 
 			RateCardASIP rateCardASIP = rateCardASIPDao.findByAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 					age, chedat, chedat, chedat, chedat);
-			BigDecimal rate = new BigDecimal(rateCardASIP.getRate()).divide(new BigDecimal(10000), 8,
-					BigDecimal.ROUND_HALF_UP);
+			BigDecimal rate = null;
+			try {
+				rate = new BigDecimal(rateCardASIP.getRate()).divide(new BigDecimal(10000), 8,
+						BigDecimal.ROUND_HALF_UP);
+			} catch (Exception e) {
+				throw new NullPointerException("ASIP Rates not found");
+			}
 			// System.out.println("age : "+age+" polyear : "+polyear+" fund_allo_rate :
 			// "+fund_allo_rate+ " rate : "+rate);
 
@@ -302,8 +323,9 @@ public class ASIPServiceImpl implements ASIPService {
 
 		}
 
-//		System.out.println("maturity " + intrat + " : " + total_amount.setScale(0, BigDecimal.ROUND_HALF_UP) + " ---- "
-//				+ total_amount.toString());
+		// System.out.println("maturity " + intrat + " : " + total_amount.setScale(0,
+		// BigDecimal.ROUND_HALF_UP) + " ---- "
+		// + total_amount.toString());
 		maturity = total_amount;
 		return maturity.setScale(0, BigDecimal.ROUND_UP);
 	}
@@ -314,8 +336,8 @@ public class ASIPServiceImpl implements ASIPService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("ASIP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
@@ -479,7 +501,7 @@ public class ASIPServiceImpl implements ASIPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -495,8 +517,8 @@ public class ASIPServiceImpl implements ASIPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -532,8 +554,8 @@ public class ASIPServiceImpl implements ASIPService {
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("ASIP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("ASIP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
@@ -596,10 +618,11 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
-
+		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
 		if (spouseDetail != null) {
 			quotationDetails1.setSpouseDetails(spouseDetail);
@@ -709,7 +732,7 @@ public class ASIPServiceImpl implements ASIPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -724,8 +747,8 @@ public class ASIPServiceImpl implements ASIPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders());
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

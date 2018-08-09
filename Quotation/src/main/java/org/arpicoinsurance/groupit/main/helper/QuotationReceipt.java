@@ -11,6 +11,7 @@ public class QuotationReceipt {
 	private String productName; 
 	private String branchCode;
 	private Double premium;
+	private Double polfeePremium;
 	
 	public Integer getQuotationId() {
 		return QuotationId;
@@ -65,5 +66,11 @@ public class QuotationReceipt {
 	}
 	public void setPremium(Double premium) {
 		this.premium = premium;
+	}
+	public Double getPolfeePremium() {
+		return polfeePremium;
+	}
+	public void setPolfeePremium(Double polfeePremium) {
+		this.polfeePremium = polfeePremium;
 	}
 }

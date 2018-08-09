@@ -19,7 +19,6 @@ public class SUHRBSServiceImpl implements SUHRBSService {
 	@Autowired
 	private RateCardSUHRBDao rateCardSUHRBDao;
 
-
 	@Override
 	public BigDecimal calculateSUHRBS(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
 			String payFrequency, Double relief, double occupation_loding) throws Exception {
@@ -37,18 +36,21 @@ public class SUHRBSServiceImpl implements SUHRBSService {
 		// System.out.println("relief : "+relief);
 		// System.out.println("Rate : "+rateCardSUHRB.getRate());
 		//
-		if (payFrequency.equalsIgnoreCase("S")) {
-			// ((@rate@) *@relief@)
-			premiumSUHRBS = new BigDecimal(rateCardSUHRB.getRate()).multiply(new BigDecimal(relief)).setScale(0,
-					RoundingMode.HALF_UP);
-		} else {
-			// ((@rate@/@payment_frequency@) *@relief@)
-			premiumSUHRBS = (new BigDecimal(rateCardSUHRB.getRate())
-					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+		try {
+			if (payFrequency.equalsIgnoreCase("S")) {
+				// ((@rate@) *@relief@)
+				premiumSUHRBS = new BigDecimal(rateCardSUHRB.getRate()).multiply(new BigDecimal(relief)).setScale(0,
+						RoundingMode.HALF_UP);
+			} else {
+				// ((@rate@/@payment_frequency@) *@relief@)
+				premiumSUHRBS = (new BigDecimal(rateCardSUHRB.getRate()).divide(
+						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
+								.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("SHCBI Rate not found at Age : " + age + ", Sex : " + sex + ", Term : "
+					+ term + " and Rider Sumassured : " + ridsumasu);
 		}
-
-
 
 		premiumSUHRBS = premiumSUHRBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// System.out.println("premiumSUHRBS : "+premiumSUHRBS.toString());

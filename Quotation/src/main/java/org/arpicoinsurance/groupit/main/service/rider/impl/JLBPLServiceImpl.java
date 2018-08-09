@@ -46,7 +46,13 @@ public class JLBPLServiceImpl implements JLBPLService {
             BigDecimal reduction = amount.subtract(outstanding).setScale(8, RoundingMode.HALF_UP);
 
             // ((@loan_reduction@*@rate@/1000)*1.2)*0.85
-            BigDecimal premium = (((reduction.multiply(new BigDecimal(rateCardJLB.getRate()))).divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(1.2))).multiply(new BigDecimal(0.85)).setScale(0, RoundingMode.HALF_UP);
+            BigDecimal premium = null;
+            
+            try {
+            	premium = (((reduction.multiply(new BigDecimal(rateCardJLB.getRate()))).divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(1.2))).multiply(new BigDecimal(0.85)).setScale(0, RoundingMode.HALF_UP);
+            }catch (Exception e) {
+				throw new NullPointerException("JLBPL Rate not found at Age : " + age + ", Term : " + term + " and Sex : " + sex );
+			}
 
             premiumJLBPL = premiumJLBPL.add(premium);
 

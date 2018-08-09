@@ -6,6 +6,6 @@ import org.arpicoinsurance.groupit.main.model.Surrendervals;
 
 public interface SurrenderValService {
 
-	List<Surrendervals> getSurrenderValBuQuotationDetails(Integer qdId) throws Exception;
+	List<Surrendervals> getSurrenderValBuQuotationDetails(Integer qId, Integer seqNo) throws Exception;
 	
 }
