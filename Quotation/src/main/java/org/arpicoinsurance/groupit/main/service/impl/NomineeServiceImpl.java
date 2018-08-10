@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.arpicoinsurance.groupit.main.dao.NomineeDao;
@@ -29,7 +30,13 @@ public class NomineeServiceImpl implements NomineeService {
 		
 		System.out.println(details);
 		
-		return nomineeDao.findByQuotationDetails(details);
+		List<Nominee> nominee=nomineeDao.findByQuotationDetails(details);
+		
+		nominee.forEach(n ->{
+			n.setNomineeDateofBirth(new SimpleDateFormat("dd-MM-yyyy").format(n.getNomineeDob()));
+		});
+		
+		return nominee;
 	}
 
 	

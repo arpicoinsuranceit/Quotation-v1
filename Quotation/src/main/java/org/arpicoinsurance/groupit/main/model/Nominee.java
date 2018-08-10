@@ -20,6 +20,7 @@ public class Nominee {
 	private Integer age;
 	private Date nomineeDob;
 	private String relation;
+	private String nomineeDateofBirth;
 	
 	private QuotationDetails quotationDetails;
 	
@@ -74,6 +75,14 @@ public class Nominee {
 
 	public void setQuotationDetails(QuotationDetails quotationDetails) {
 		this.quotationDetails = quotationDetails;
+	}
+
+	public String getNomineeDateofBirth() {
+		return nomineeDateofBirth;
+	}
+
+	public void setNomineeDateofBirth(String nomineeDateofBirth) {
+		this.nomineeDateofBirth = nomineeDateofBirth;
 	}
 	
 	
