@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: Quotation
-Implementation-Version: 1.9.8
+Implementation-Version: 2.0.4
 Built-By: DSPChathuranga
 Implementation-Vendor-Id: arpicoinsurance.groupit
-Build-Jdk: 1.8.0_171
+Build-Jdk: 1.8.0_181
 Implementation-URL: http://projects.spring.io/spring-boot/Quotation/
 Created-By: Maven Integration for Eclipse
 Implementation-Vendor: Pivotal Software, Inc.

@@ -7082,7 +7082,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 					if (msfeb.getRiderSum() != null) {
 						cuCellP9.add(new Paragraph(
-								formatter.format(msfeb.getRiderSum() / (12 * quotationDetails.getPolTerm())))
+								formatter.format(msfeb.getRiderSum()))
 										.setFontSize(9).setTextAlignment(TextAlignment.CENTER).setFixedLeading(10));
 
 						cusTable.addCell(cuCellP9);
@@ -7635,7 +7635,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					/*
 					 * School Fees Expenses Benf = L10 /(12 * Policy Term )
 					 */
-					msfeb = msfeb + (quoAddBenf.getRiderSum() / (12 * quotationDetails.getPolTerm()));
+					msfeb = msfeb + (quoAddBenf.getRiderSum());
 					msfebp = msfebp + quoAddBenf.getPremium();
 
 				}
