@@ -161,7 +161,7 @@ public class QuotationController {
 
 	@RequestMapping(value = "/findQuotation/{type}", method = RequestMethod.POST)
 	public ResponseEntity<Object> findQuotationToPrint(@RequestBody String id, @PathVariable String type) {
-		// System.out.println("Find Quotation Called..." + id);
+		 //System.out.println("Find Quotation Called..." + type);
 		Integer qdId = Integer.valueOf(id);
 		HashMap<String, String> map = new HashMap<>();
 
