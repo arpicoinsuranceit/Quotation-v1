@@ -28,6 +28,7 @@ import org.arpicoinsurance.groupit.main.dao.RateCardARTMProfitDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMVeriableExpencesDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardProductVarDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.CommisionRatePara;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -446,6 +447,27 @@ public class ARTMServiceImpl implements ARTMService {
 	@Override
 	public QuotationQuickCalResponse getCalcutatedARTM(QuotationCalculation calculation, boolean printShedule)
 			throws Exception {
+		
+		//////// Single Premium Recheck /////////
+		
+		if(calculation.get_personalInfo().getFrequance().equals("S")) {
+			calculation.get_personalInfo().setChildrens(null);
+			calculation.get_riderDetails().set_cRiders(null);
+			calculation.get_riderDetails().set_sRiders(null);
+			ArrayList<Benifict> details = new ArrayList<>();
+			
+			calculation.get_riderDetails().get_mRiders().forEach( e -> {
+				if(e.getType().equals("L2")) {
+					details.add(e);
+				}
+			});
+			
+			
+			calculation.get_riderDetails().set_mRiders(details);
+			
+		}
+		
+		////////END Single Premium Recheck /////////
 
 		CalculationUtils calculationUtils = null;
 

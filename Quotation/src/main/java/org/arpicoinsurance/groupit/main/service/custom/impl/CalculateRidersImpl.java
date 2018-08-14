@@ -383,7 +383,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 						}
 
 						// System.out.println("product :" + quotationCalculation.get_product());
-						if (quotationCalculation.get_product().equals("ARP")) {
+						/*if (quotationCalculation.get_product().equals("ARP")) {
 							Integer maxterm = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 									quotationCalculation.get_personalInfo().getPayingterm());
@@ -397,13 +397,15 @@ public class CalculateRidersImpl implements CalculateRiders {
 										"Can't get benifict fof child because 21 - ( Child Age + Pay Term) must be greate than 5");
 								return calResp;
 							}
-						} else {
+						} else {*/
 							Integer maxterm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
 							term = valiedTerm;
-						}
+							
+							System.out.println("ARP Valied Term : " + term);
+						/*}*/
 
 						String benfName = benifict.getType();
 
@@ -1009,17 +1011,28 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictCIBC = rateCardCIBCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermCIBC = maxTermToBenefictCIBC > term ? term : maxTermToBenefictCIBC;
 
+			System.out.println("Valied term ARP CIBC : " + valiedTermCIBC);
+			
 			if (calResp.isArp()) {
+				
+				System.out.println("age : " + age);
+				System.out.println("valiedTermCIBC : " + valiedTermCIBC);
+				System.out.println("calResp.getPayTerm() : " + calResp.getPayTerm());
+				
 				RateCardARP rateCardARP = rateCardARPDao
 						.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
 								valiedTermCIBC, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
 				relife = rateCardARP.getRate();
 			}
+			
+			System.out.println("Valied term ARP relife : " + relife);
 
 			// System.out.println(relife + ": relife");
 
 			BigDecimal cibc = cibcService.calculateCIBC(age, valiedTermCIBC, new Date(), ridsumasu, payFrequency,
 					relife);
+			
+			System.out.println("Valied term ARP cibc : " + cibc);
 
 			if (!(cibc.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
