@@ -49,6 +49,8 @@ public class QuotationDetails implements Serializable{
 	private Integer pensionTerm;
 	private Integer retirmentAge;
 	
+	private Integer seqnum;
+	
 	private String quotationCreateBy;
 	private Date quotationCreateDate;
 	private String quotationModifyBy;
@@ -345,6 +347,22 @@ public class QuotationDetails implements Serializable{
 	public void setPremium(Double premium) {
 		this.premium = premium;
 	}
+	
+	
+
+	public Integer getSeqnum() {
+		return seqnum;
+	}
+
+
+
+
+	public void setSeqnum(Integer seqnum) {
+		this.seqnum = seqnum;
+	}
+
+
+
 
 	@OneToMany(mappedBy="quotationDetails",targetEntity=Surrendervals.class)
 	public List<Surrendervals> getSurrenderValueList() {

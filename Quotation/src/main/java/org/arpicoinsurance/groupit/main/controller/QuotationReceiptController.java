@@ -6,6 +6,7 @@ import java.util.List;
 import org.arpicoinsurance.groupit.main.helper.MediTestReceiptHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
+import org.arpicoinsurance.groupit.main.helper.QuotationSearchProp;
 import org.arpicoinsurance.groupit.main.helper.ViewQuotation;
 import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.PensionShedule;
@@ -66,7 +67,7 @@ public class QuotationReceiptController {
 	}
 	
 	@RequestMapping(value = "/quotationsearchprop/{id}")
-	public List<QuotationSearch> getQuotationListStatusProp(@PathVariable String id){
+	public List<QuotationSearchProp> getQuotationListStatusProp(@PathVariable String id){
 		System.out.println(id + " search");
 		try {
 			return quotationReceiptService.searchQuotationProp(id);

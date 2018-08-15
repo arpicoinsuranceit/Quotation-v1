@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.arpicoinsurance.groupit.main.dao.custom.QuotationCustomDao;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
+import org.arpicoinsurance.groupit.main.helper.QuotationSearchProp;
 import org.arpicoinsurance.groupit.main.service.QuotationReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class QuotationReceiptServiceImpl implements QuotationReceiptService{
 	}
 
 	@Override
-	public List<QuotationSearch> searchQuotationProp(String id) throws Exception {
+	public List<QuotationSearchProp> searchQuotationProp(String id) throws Exception {
 		// TODO Auto-generated method stub
 		return quotationCustomDao.getQuotationProp(id);
 	}

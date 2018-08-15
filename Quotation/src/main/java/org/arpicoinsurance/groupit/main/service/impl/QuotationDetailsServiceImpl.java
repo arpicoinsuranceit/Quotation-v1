@@ -477,4 +477,14 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		return true;
 	}
 
+	@Override
+	public QuotationDetails findByQuotationAndSeqnum(Integer quoId, Integer seqnum) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		if(quotation!=null) {
+			return quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqnum);
+		}
+		
+		return null;
+	}
+
 }
