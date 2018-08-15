@@ -459,7 +459,7 @@ public class ASIPServiceImpl implements ASIPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
+		benef_Details.setRiderSum(quotationDetails.getBaseSum());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
