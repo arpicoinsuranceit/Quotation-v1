@@ -6,7 +6,9 @@ import java.util.Date;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathSingleDao;
 import org.arpicoinsurance.groupit.main.model.RateCardARTMDeath;
+import org.arpicoinsurance.groupit.main.model.RateCardARTMDeathSingle;
 import org.arpicoinsurance.groupit.main.service.rider.L2Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,28 +20,31 @@ public class L2ServiceImpl implements L2Service {
 
 	@Autowired
 	private RateCardARTMDeathDao rateCardARTMDeathDao;
+	
+	@Autowired
+	private RateCardARTMDeathSingleDao rateCardARTMDeathSingleDao;
 
 	@Override
 	public BigDecimal calculateL2(double ridsumasu, int term, int age, String payFrequency, double occupation_loding)
 			throws Exception {
-		// System.out.println(" ////////////////////// artm " + age + " " + term);
+		//System.out.println(" ////////////////////// artm " + age + " " + term);
 		Date chedat = new Date();
-		RateCardARTMDeath rateCardARTMDeath = rateCardARTMDeathDao
-				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
-						chedat, chedat);
 		BigDecimal premiumL2 = new BigDecimal(0);
 
 		// System.out.println(rateCardARTMDeath.getRate() + " //////////////////////
 		// artm");
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
-				// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))*@term@
-				premiumL2 = ((new BigDecimal(rateCardARTMDeath.getRate()).divide(
-						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))
-								.multiply((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6,
-										RoundingMode.HALF_UP)))
-								.multiply(new BigDecimal(term))).setScale(4, BigDecimal.ROUND_HALF_UP);
+				RateCardARTMDeathSingle rateCardARTMDeathSingle = rateCardARTMDeathSingleDao
+						.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+								chedat, chedat);
+				//System.out.println(rateCardARTMDeathSingle.getRate() + " artm");
+				// ((@rider_sum_assured@)/1000)*@rate@)
+				premiumL2 = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6,RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARTMDeathSingle.getRate()));
 			} else {
+				RateCardARTMDeath rateCardARTMDeath = rateCardARTMDeathDao
+						.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
+								chedat, chedat);
 				// ((@rate@/@payment_frequency@) *(@rider_sum_assured@)/1000))
 				premiumL2 = (new BigDecimal(rateCardARTMDeath.getRate()).divide(
 						new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 6, RoundingMode.HALF_UP))

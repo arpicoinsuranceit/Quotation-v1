@@ -547,9 +547,10 @@ public class AIPServiceImpl implements AIPService {
 			Double adminFee = calculationUtils.getAdminFee(_invpSaveQuotation.get_plan().get_frequance());
 
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
-
+			quotation = details.getQuotation();
+			
 			customer = details.getCustomerDetails().getCustomer();
-			user = userdao.findOne(userId);
+			user = quotation.getUser();
 
 			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
@@ -561,7 +562,7 @@ public class AIPServiceImpl implements AIPService {
 			
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
-			quotation = details.getQuotation();
+			
 			Integer count = quotationDetailsDao.countByQuotation(quotation);
 			quotation.setProducts(products);
 			quotation.setStatus("active");

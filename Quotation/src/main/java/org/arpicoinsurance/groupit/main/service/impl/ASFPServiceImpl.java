@@ -372,7 +372,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setBenefit(benefitsDao.findOne(20));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails);
@@ -397,7 +397,8 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(quotationDetails.getBaseSum());
+		
+		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
@@ -619,7 +620,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
 
-		benef_Details.setBenefit(benefitsDao.findOne(21));
+		benef_Details.setBenefit(benefitsDao.findOne(20));
 		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
 		benef_Details.setQuo_Benef_CreateDate(new Date());
 		benef_Details.setQuotationDetails(quotationDetails1);
@@ -644,7 +645,7 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);

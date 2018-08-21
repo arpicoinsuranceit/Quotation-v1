@@ -15,6 +15,8 @@ public interface QuotationDao extends CrudRepository<Quotation, Integer>{
 	
 
 	List<Quotation> findByUserAndStatusInOrderByIdDesc(Users user, List<String> status)throws Exception;
+
+	List<Quotation> findByStatusInOrderByIdDesc(List<String> status)throws Exception;
 	
 
 }

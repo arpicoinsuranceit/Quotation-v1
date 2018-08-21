@@ -159,14 +159,14 @@ public class QuotationController {
 		// return null;
 	}
 
-	@RequestMapping(value = "/findQuotation", method = RequestMethod.POST)
-	public ResponseEntity<Object> findQuotationToPrint(@RequestBody String id) {
-		// System.out.println("Find Quotation Called..." + id);
+	@RequestMapping(value = "/findQuotation/{type}", method = RequestMethod.POST)
+	public ResponseEntity<Object> findQuotationToPrint(@RequestBody String id, @PathVariable String type) {
+		 //System.out.println("Find Quotation Called..." + type);
 		Integer qdId = Integer.valueOf(id);
 		HashMap<String, String> map = new HashMap<>();
 
 		try {
-			QuotationDetails quoDetails = quoDetailsService.findFirstByQuotationOrderByQdIdDesc(qdId);
+			QuotationDetails quoDetails = quoDetailsService.findFirstByQuotationOrderByQdIdDesc(qdId, type);
 			if (quoDetails != null) {
 				map.put("status", "1");
 				map.put("quotationNumber", Integer.toString(quoDetails.getQuotation().getId()));

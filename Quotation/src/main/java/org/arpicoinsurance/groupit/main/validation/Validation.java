@@ -245,7 +245,7 @@ public class Validation {
 						break;
 					case "HB":
 						if (validateInvpHB().equals(0)) {
-							return "HB must be greater than 500 and less than 10,000 and multi value of 100 and Less than 10% of Yearly Premium";
+							return "HB must be greater than 500 and less than 15,000 and multi value of 100 and Less than 20% of Yearly Premium";
 						}
 						break;
 					case "TPDDTA":
@@ -886,7 +886,7 @@ public class Validation {
 		if (benefitMap.containsKey("HB")) {
 			Benifict benifict = benefitMap.get("HB");
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 500 && rbsa <= 10000 && rbsa % 100 == 0) {
+			if (rbsa >= 500 && rbsa <= 15000 && rbsa % 100 == 0) {
 				return 1;
 			}
 		}
@@ -1134,7 +1134,7 @@ public class Validation {
 			Double hb = benefitMap.get("HB").getSumAssured();
 			Double hbs = benefitMap.get("HBS").getSumAssured();
 
-			if (hbs >= 500 && hbs <= 10000 && hbs.equals(hb) && hbs % 100 == 0) {
+			if (hbs >= 500 && hbs <= 15000 && hbs.equals(hb) && hbs % 100 == 0) {
 				return 1;
 			}
 			return 0;
@@ -1261,7 +1261,7 @@ public class Validation {
 			Double hb = benefitMap.get("HB").getSumAssured();
 			Double hbc = benefitMap.get("HBC").getSumAssured();
 
-			if (hbc >= 500 && hbc <= 10000 && hbc.equals(hb) && hbc % 100 == 0) {
+			if (hbc >= 500 && hbc <= 15000 && hbc.equals(hb) && hbc % 100 == 0) {
 				return 1;
 			}
 			return 0;

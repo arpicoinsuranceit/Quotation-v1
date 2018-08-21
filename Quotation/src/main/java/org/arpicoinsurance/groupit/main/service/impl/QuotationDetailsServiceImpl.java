@@ -336,12 +336,22 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	}
 
 	@Override
-	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId, String type) throws Exception {
 		Quotation quotation = quotationService.getQuotation(quotationId);
-		if (quotation != null) {
-			QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
-			if (quotationDetails != null) {
-				return quotationDetails;
+		if(type.equals("HO")) {
+			//System.out.println("ho");
+			if (quotation != null && (quotation.getStatus().equals("active") || quotation.getStatus().equalsIgnoreCase("prop"))) {
+				QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+				if (quotationDetails != null) {
+					return quotationDetails;
+				}
+			}
+		}else {
+			if (quotation != null && quotation.getStatus().equals("active")) {
+				QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
+				if (quotationDetails != null) {
+					return quotationDetails;
+				}
 			}
 		}
 
@@ -477,5 +487,6 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		quotationDao.save(quotation);
 		return true;
 	}
+
 
 }
