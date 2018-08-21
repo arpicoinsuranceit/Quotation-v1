@@ -363,7 +363,6 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 	@Override
 	public ViewQuotation getQuotationDetail(Integer seqId, Integer qId) throws Exception {
 		Quotation quotation = quotationDao.findById(qId);
-		
 		QuotationDetails quotationDetails = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqId);
 		Integer qdId = quotationDetails.getQdId();
 		ArrayList<QuotationView> viewQuotationDetailsList = (ArrayList<QuotationView>) getQuo_Benef_DetailsByQuoDetailId(

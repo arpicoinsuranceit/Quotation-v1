@@ -103,7 +103,7 @@ public class QuotationReceiptController {
 	}
 
 	@RequestMapping(value = "/getShedule", method = RequestMethod.POST)
-	public List<Shedule> getShedule(@PathVariable Integer qId, @PathVariable Integer seqNo) {
+	public List<Shedule> getShedule(@RequestParam("seqNo") Integer seqNo, @RequestParam("qId") Integer qId) {
 		try {
 			List<Shedule> shedules = sheduleService.findByQuotationDetails(qId, seqNo);
 			return shedules;
@@ -116,8 +116,7 @@ public class QuotationReceiptController {
 	}
 
 	@RequestMapping(value = "/getMediDetails", method = RequestMethod.POST)
-	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@PathVariable Integer qId,
-			@PathVariable Integer seqNo) {
+	public List<MediTestReceiptHelper> getMediTestReceiptHelper(@RequestParam("seqNo") Integer seqNo, @RequestParam("qId") Integer qId) {
 
 		System.out.println("called medi");
 
@@ -134,8 +133,7 @@ public class QuotationReceiptController {
 	}
 
 	@RequestMapping(value = "/getSurrenderVals", method = RequestMethod.POST)
-	public List<Surrendervals> getSurrenderValsHelper(@PathVariable Integer qId, @PathVariable Integer seqNo) {
-
+	public List<Surrendervals> getSurrenderValsHelper(@RequestParam("seqNo") Integer seqNo, @RequestParam("qId") Integer qId) {
 		try {
 			List<Surrendervals> list = surrenderValsService.getSurrenderValBuQuotationDetails(qId, seqNo);
 
