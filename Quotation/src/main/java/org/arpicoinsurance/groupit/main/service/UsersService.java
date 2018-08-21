@@ -19,6 +19,8 @@ public interface UsersService {
 	
 	Users getUser(Integer id) throws Exception;
 	
+	Users getUserByUserCode(String userCode) throws Exception;
+	
 	List <Users> getAllUsers() throws Exception;
 	
 	Users getUserByLoginId(Integer id) throws Exception;

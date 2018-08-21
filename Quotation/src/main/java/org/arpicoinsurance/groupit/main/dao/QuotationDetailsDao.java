@@ -23,4 +23,5 @@ public interface QuotationDetailsDao extends CrudRepository<QuotationDetails,Str
 	
 	Integer countByQuotation(Quotation quotation)throws Exception;
 	
+
 }

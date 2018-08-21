@@ -7,9 +7,12 @@ import org.arpicoinsurance.groupit.main.helper.EditQuotation;
 import org.arpicoinsurance.groupit.main.model.Logs;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.security.JwtDecoder;
 import org.arpicoinsurance.groupit.main.service.LogService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.QuotationService;
+import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,9 @@ public class QuotationController {
 
 	@Autowired
 	private LogService logService;
+	
+	@Autowired
+	private UsersService userService;
 
 	@RequestMapping(value = "/quotation/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getQuotation(@PathVariable Integer id) {
@@ -80,6 +86,33 @@ public class QuotationController {
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		// return null;
+	}
+	
+	@RequestMapping(value = "/quo/{token:.+}", method = RequestMethod.POST)
+	public ResponseEntity<Object> getQuotationByUserCode(@PathVariable String token,@RequestBody String id) {
+		System.out.println(token +"token");
+		String userCode=new JwtDecoder().generate(token);
+		System.out.println(userCode +" userCode");
+		
+		try {
+			Users user=userService.getUserByUserCode(userCode);
+			return new ResponseEntity<Object>(quotationService.getQuotationDetails(user.getUserId()), HttpStatus.OK);
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("getQuotation : QuotationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@RequestMapping(value = "/quotationDetails", method = RequestMethod.POST)

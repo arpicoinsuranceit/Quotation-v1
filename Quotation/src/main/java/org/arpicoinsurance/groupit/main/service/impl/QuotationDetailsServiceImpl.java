@@ -73,6 +73,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mName(customerDetails.getCustName());
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 			LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(customerDetails.getCustDob()));
 			// LocalDate currentDate =
 			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
@@ -117,7 +118,9 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 				spouse.set_sNic(spouseDetails.getCustNic());
 				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 				spouse.set_sTitle(spouseDetails.getCustTitle());
+
 				spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
+
 			} else {
 				spouse.set_sActive(false);
 			}
@@ -365,6 +368,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		
 		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
 
+
 		QuotationReceipt quotationReceipt = new QuotationReceipt();
 		quotationReceipt.setBranchCode(details.getQuotation().getUser().getBranch().getBranch_Code());
 		quotationReceipt.setAgentCode(details.getQuotationCreateBy());
@@ -395,8 +399,11 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			break;
 		}
 		quotationReceipt.setPolfeePremium((details.getPolicyFee()+ quotationReceipt.getPremium()));
+
 		return quotationReceipt;
 	}
+	
+	
 
 	
 	@Override
@@ -462,6 +469,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			}
 		}
 
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
@@ -488,5 +496,21 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		return true;
 	}
 
+	@Override
+	public QuotationDetails findByQuotationAndSeqnum(Integer quoId, Integer seqnum) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		if(quotation!=null) {
+			return quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqnum);
+		}
+		
+		return null;
+	}
 
+	@Override
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

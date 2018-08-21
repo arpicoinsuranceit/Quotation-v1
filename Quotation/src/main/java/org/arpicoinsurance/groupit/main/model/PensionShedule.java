@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class PensionShedule implements Serializable{
 	
@@ -158,6 +160,7 @@ public class PensionShedule implements Serializable{
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "quotationDetail_id", nullable = false)
+	@JsonIgnore
 	public QuotationDetails getQuotationDetails() {
 		return quotationDetails;
 	}

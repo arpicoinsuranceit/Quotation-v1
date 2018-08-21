@@ -618,6 +618,7 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
@@ -632,6 +633,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

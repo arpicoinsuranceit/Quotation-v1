@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class QuotationDetails implements Serializable{
+public class QuotationDetails implements Serializable {
 	private Integer qdId;
 	private String paingTerm;
 	private Integer polTerm;
@@ -33,41 +33,38 @@ public class QuotationDetails implements Serializable{
 	private Double premiumSingleT;
 	private Double sumAtRiskMain;
 	private Double sumAtRiskSpouse;
-	
+
 	private Double policyFee;
 	private Double taxAmount;
 	private Double adminFee;
-	
+
 	private Double interestRate;
 	private Double investmentPos;
 	private Double lifePos;
-	
+
 	private Quotation quotation;
 	private CustomerDetails customerDetails;
 	private CustomerDetails spouseDetails;
-	
+
 	private Integer pensionTerm;
 	private Integer retirmentAge;
-	
+
 	private String quotationCreateBy;
 	private Date quotationCreateDate;
 	private String quotationModifyBy;
 	private Date quotationModifyDate;
-	
-	private Double premium = 0.0;
-	
-	private Integer seqnum = 1;
-	
-	
-	private List<Surrendervals> surrenderValueList;
-	
-	private List<PensionShedule> pensionShedules;
-	
-	public QuotationDetails() {}
-	
 
-	
-	
+	private Double premium = 0.0;
+
+	private Integer seqnum = 1;
+
+	private List<Surrendervals> surrenderValueList;
+
+	private List<PensionShedule> pensionShedules;
+
+	public QuotationDetails() {
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getQdId() {
@@ -348,7 +345,15 @@ public class QuotationDetails implements Serializable{
 		this.premium = premium;
 	}
 
-	@OneToMany(mappedBy="quotationDetails",targetEntity=Surrendervals.class)
+	public Integer getSeqnum() {
+		return seqnum;
+	}
+
+	public void setSeqnum(Integer seqnum) {
+		this.seqnum = seqnum;
+	}
+
+	@OneToMany(mappedBy = "quotationDetails", targetEntity = Surrendervals.class)
 	public List<Surrendervals> getSurrenderValueList() {
 		return surrenderValueList;
 	}
@@ -357,31 +362,13 @@ public class QuotationDetails implements Serializable{
 		this.surrenderValueList = surrenderValueList;
 	}
 
-
-
-	@OneToMany(mappedBy="quotationDetails",targetEntity=PensionShedule.class)
+	@OneToMany(mappedBy = "quotationDetails", targetEntity = PensionShedule.class)
 	public List<PensionShedule> getPensionShedules() {
 		return pensionShedules;
 	}
-
-
-
 
 	public void setPensionShedules(List<PensionShedule> pensionShedules) {
 		this.pensionShedules = pensionShedules;
 	}
 
-
-
-
-	public Integer getSeqnum() {
-		return seqnum;
-	}
-
-
-
-
-	public void setSeqnum(Integer seqnum) {
-		this.seqnum = seqnum;
-	}
 }

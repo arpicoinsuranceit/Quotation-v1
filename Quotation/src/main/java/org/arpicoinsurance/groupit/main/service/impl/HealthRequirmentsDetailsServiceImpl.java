@@ -563,7 +563,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
 		
 		List<MediTestReceiptHelper> mediTestReceiptHelpers = new ArrayList<>();
-		if(!details.equals(null)) {
+		if(details != null) {
 			List<MedicalDetails> medicalDetailList = medicalDetailsDao.findByQuotationDetails(details);
 			for (MedicalDetails medicalDetail : medicalDetailList) {
 				MediTestReceiptHelper mediTestReceiptHelper = new MediTestReceiptHelper();
