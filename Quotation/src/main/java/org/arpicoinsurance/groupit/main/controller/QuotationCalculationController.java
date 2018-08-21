@@ -147,10 +147,12 @@ public class QuotationCalculationController {
 	public ResponseEntity<Object> calculateAgeFromNic(@RequestBody String nic) {
 		try {
 			HashMap<String, Object> map = new HashMap<>();
+			
 			int year = 0;
 			int day = 0;
 			int bday = 0;
 			int month = 0;
+			
 			if (nic.length() == 9) {
 				year = (1900 + Integer.parseInt(nic.substring(0, 2)));
 				// System.out.println("---- "+nic);
@@ -159,6 +161,11 @@ public class QuotationCalculationController {
 				year = Integer.parseInt(nic.substring(0, 4));
 				day = Integer.parseInt(nic.substring(4, 7));
 			}
+			
+			
+			Date date = new SimpleDateFormat("D yyyy").parse(day + " " + year);
+			
+			System.out.println(new SimpleDateFormat("dd-MM-yyyy").format(date));
 
 			Integer[] daysofmonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 

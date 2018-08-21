@@ -522,7 +522,7 @@ public class Validation {
 						&& calculation.get_personalInfo().getMage() >= 18
 						&& calculation.get_personalInfo().getMage() <= 65
 						&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70
-						&& calculation.get_personalInfo().getBsa() >= 250000) {
+						&& calculation.get_personalInfo().getBsa() >= 100000) {
 			return 1;
 		}
 
