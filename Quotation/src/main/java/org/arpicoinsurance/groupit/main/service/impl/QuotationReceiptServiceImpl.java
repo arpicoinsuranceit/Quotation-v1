@@ -24,7 +24,7 @@ public class QuotationReceiptServiceImpl implements QuotationReceiptService{
 		
 		System.out.println(id);
 		
-		return quotationCustomDao.getQuotation(id);
+		return quotationCustomDao.getQuotationForReceipt(id);
 	}
 
 	

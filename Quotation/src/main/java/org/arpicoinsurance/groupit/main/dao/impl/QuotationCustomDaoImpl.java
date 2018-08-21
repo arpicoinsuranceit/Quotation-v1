@@ -64,4 +64,35 @@ public class QuotationCustomDaoImpl implements QuotationCustomDao {
 		return quotationSearch;
 	}
 
+	@Override
+	public List<QuotationSearch> getQuotationForReceipt(String id) throws Exception {
+		List<QuotationSearch> quotationSearchs = null;
+		try {
+			List<Object> args = new ArrayList<>();
+
+			quotationSearchs = jdbcTemplate.query(
+					"SELECT qd.qd_id, qd.quotation_id, qd.seqnum FROM quotation_details qd, quotation q "
+					+ "where qd.quotation_id = q.id and q.status = 'active' and quotation_id like '"+id+"%'",
+					args.toArray(), new ResultSetExtractor<List<QuotationSearch>>() {
+
+						@Override
+						public List<QuotationSearch> extractData(ResultSet resultSet)
+								throws SQLException, DataAccessException {
+							List<QuotationSearch> quotationSearchsTemp = new ArrayList<QuotationSearch>();
+							while (resultSet.next()) {
+								QuotationSearch quotationSearch = getQuoSearch(resultSet);
+								quotationSearchsTemp.add(quotationSearch);
+							}
+							return quotationSearchsTemp;
+
+						}
+
+					});
+		} catch (DataAccessException dataAccessException) {
+			throw dataAccessException;
+
+		}
+		return quotationSearchs;
+	}
+
 }
