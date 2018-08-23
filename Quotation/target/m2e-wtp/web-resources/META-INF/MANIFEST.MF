@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: Quotation
-Implementation-Version: 2.0.5
-Built-By: DSPChathuranga
+Implementation-Version: 2.0.6
+Built-By: ASUS
 Implementation-Vendor-Id: arpicoinsurance.groupit
 Build-Jdk: 1.8.0_181
 Implementation-URL: http://projects.spring.io/spring-boot/Quotation/
