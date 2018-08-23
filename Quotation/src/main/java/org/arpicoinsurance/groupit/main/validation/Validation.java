@@ -133,7 +133,7 @@ public class Validation {
 					case "SFPO":
 						// System.out.println("call SFPO");
 						if (validateInvpSFPO().equals(0)) {
-							return "SFPO must be greater than or equal 250,000 and SFPO must be multi value of 50,000 and SFPO must be less than or equal to multi value of BSA till 10 times";
+							return "SFPO must be greater than or equal 250,000 and SFPO must be multi value of 25,000";
 						}
 						if (validateInvpSFPO().equals(2)) {
 							return "Max Age is 60 for get SFPO";
@@ -582,7 +582,7 @@ public class Validation {
 			Benifict benifict = benefitMap.get("SFPO");
 			Double bsa = calculation.get_personalInfo().getBsa();
 			Double rbsa = benifict.getSumAssured();
-			if (rbsa >= 250000 && (rbsa % 50000 == 0) && (rbsa <= bsa * 10)) {
+			if (rbsa >= 250000 && (rbsa % 25000 == 0)) {
 				return 1;
 			}
 		}
