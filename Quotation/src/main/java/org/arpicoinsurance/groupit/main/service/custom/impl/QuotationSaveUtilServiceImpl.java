@@ -732,6 +732,8 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 											.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(children.get_cAge(),
 													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
 									relife = rateCardARP.getRate();
+									
+								
 								}
 
 								
@@ -798,6 +800,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 													valiedTerm, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
 									relife = rateCardARP.getRate();
 								}
+								
 								
 								BigDecimal cibc = hbcService.calculateHBC(valiedTerm, new Date(), hb, frequancy, relife);
 

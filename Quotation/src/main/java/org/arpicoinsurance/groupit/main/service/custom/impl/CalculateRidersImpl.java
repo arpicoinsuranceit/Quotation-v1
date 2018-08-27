@@ -403,9 +403,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
 							term = valiedTerm;
-							
-							System.out.println("ARP Valied Term : " + term);
-						/*}*/
+						/*System.out.println("ARP Valied Term : " + term);
+						}*/
 
 						String benfName = benifict.getType();
 
@@ -1023,6 +1022,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 						.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
 								valiedTermCIBC, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
 				relife = rateCardARP.getRate();
+				
+				
 			}
 			
 			System.out.println("Valied term ARP relife : " + relife);
@@ -1417,6 +1418,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// Integer valiedTermHRBIC = 10;
 
+			
 			BigDecimal hrbic = hrbiService.calculateHRBI(age, valiedTermHRBIC, gender, ridsumasu, new Date(),
 					payFrequency, relife, ocuLoading);
 
