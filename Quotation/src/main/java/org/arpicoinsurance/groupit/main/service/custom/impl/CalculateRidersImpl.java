@@ -403,12 +403,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
 							term = valiedTerm;
-<<<<<<< HEAD
 						}
-=======
-						/*System.out.println("ARP Valied Term : " + term);
-						}*/
->>>>>>> refs/remotes/origin/branch-125
+
 
 						String benfName = benifict.getType();
 
