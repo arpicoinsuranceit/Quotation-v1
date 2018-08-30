@@ -398,11 +398,15 @@ public class CalculateRidersImpl implements CalculateRiders {
 								return calResp;
 							}
 						} else {*/
+						
+						
 							Integer maxterm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
 							term = valiedTerm;
+							
+							
 						/*System.out.println("ARP Valied Term : " + term);
 						}*/
 
