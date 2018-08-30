@@ -396,14 +396,28 @@ public class CalculateRidersImpl implements CalculateRiders {
 										"Can't get benifict fof child because 21 - ( Child Age + Pay Term) must be greate than 5");
 								return calResp;
 							}
+<<<<<<< HEAD
 						} else {
+=======
+						} else {*/
+						
+						
+>>>>>>> refs/remotes/origin/branch-125
 							Integer maxterm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
+<<<<<<< HEAD
 							term = valiedTerm;
 						}
 
+=======
+							term = valiedTerm;
+							
+							
+						/*System.out.println("ARP Valied Term : " + term);
+						}*/
+>>>>>>> refs/remotes/origin/branch-125
 
 						String benfName = benifict.getType();
 
