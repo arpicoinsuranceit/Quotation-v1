@@ -7,7 +7,9 @@ import javax.transaction.Transactional;
 import org.arpicoinsurance.groupit.main.dao.custom.QuotationCustomDao;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearch;
 import org.arpicoinsurance.groupit.main.helper.QuotationSearchProp;
+import org.arpicoinsurance.groupit.main.security.JwtDecoder;
 import org.arpicoinsurance.groupit.main.service.QuotationReceiptService;
+import org.arpicoinsurance.groupit.main.webclient.ReceiptClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,36 @@ public class QuotationReceiptServiceImpl implements QuotationReceiptService{
 	@Autowired
 	private QuotationCustomDao quotationCustomDao;
 	
+	@Autowired
+	private JwtDecoder decoder;
+	
+	@Autowired
+	private ReceiptClient client;
+	
 	@Override
-	public List<QuotationSearch> searchQuotation(String id) throws Exception {
+	public List<QuotationSearch> searchQuotation(String id, String token) throws Exception {
 		
 	//	List<QuotationSearch> quotationSearchs = new ArrayList<>();
 		
+		String userCode = decoder.generate(token);
+		
+		System.out.println(userCode);
+		
 		System.out.println(id);
 		
-		return quotationCustomDao.getQuotationForReceipt(id);
+		List<String> list = client.getBranches(userCode);
+		
+		for (String string : list) {
+			if (string.equals("HO")) {
+				return quotationCustomDao.getQuotationForReceipt(id);
+			}
+		}
+		
+		String branches = getPara(list);
+		
+		System.out.println(branches);
+		
+		return quotationCustomDao.getQuotationForReceipt(id, branches);
 	}
 
 	@Override
@@ -33,6 +57,18 @@ public class QuotationReceiptServiceImpl implements QuotationReceiptService{
 		return quotationCustomDao.getQuotationProp(id);
 	}
 
+	public String getPara(List<String> loccodes) {
+		String locations="";
+		if(loccodes != null) {
+			for (String string : loccodes) {
+				locations+="'"+string+"'"+",";
+			}
+		}
+		
+		locations=locations.replaceAll(",$", "");
+		
+		return locations;
+	}
 	
 
 }

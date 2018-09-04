@@ -56,10 +56,11 @@ public class QuotationReceiptController {
 	@Autowired
 	private PensionSheduleService pensionSheduleService;
 
-	@RequestMapping(value = "/quotationsearch/{id}")
-	public List<QuotationSearch> getQuotationList(@PathVariable String id) {
+	@RequestMapping(value = "/quotationsearch/{id}/{token:.+}")
+	public List<QuotationSearch> getQuotationList(@PathVariable String id, @PathVariable String token) {
+		System.out.println(token);
 		try {
-			return quotationReceiptService.searchQuotation(id);
+			return quotationReceiptService.searchQuotation(id, token);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
