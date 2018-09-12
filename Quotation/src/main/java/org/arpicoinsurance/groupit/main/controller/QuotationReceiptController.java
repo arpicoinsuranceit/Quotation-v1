@@ -200,5 +200,18 @@ public class QuotationReceiptController {
 
 		return new ArrayList<Nominee>();
 	}
+	
+	@RequestMapping(value = "/checkNicValidation", method = RequestMethod.POST)
+	public String checkNicValidation (@RequestParam("nic") String nic,@RequestParam("gender") String gender,@RequestParam("age") String age,@RequestParam("seqNo") String seqNo, @RequestParam("qId") String qId){
+		System.out.println("checkNicValidation");
+		
+		try {
+			return quotationDetailService.checkNicValidation(nic, gender, Integer.valueOf(age), Integer.valueOf(seqNo), Integer.valueOf(qId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 }
