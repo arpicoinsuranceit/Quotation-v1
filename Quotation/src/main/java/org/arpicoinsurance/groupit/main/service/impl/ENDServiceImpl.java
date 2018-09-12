@@ -120,7 +120,7 @@ public class ENDServiceImpl implements ENDService {
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
 
-//		System.out.println(quotationCalculation.get_personalInfo().getMgenger());
+		// System.out.println(quotationCalculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
 		try {
@@ -129,32 +129,31 @@ public class ENDServiceImpl implements ENDService {
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			//System.out.println(rebate + " : rebate");
+			// System.out.println(rebate + " : rebate");
 			/// Calculate BSA Premium ///
 			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
 					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
-	
-			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
-			//System.out.println(bsaYearly);
-			//System.out.println(bsaYearly);
-			
+
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
+			// System.out.println(bsaYearly);
+			// System.out.println(bsaYearly);
+
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
 					quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
 
-			
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(quotationCalculation));
 
-			if(quotationCalculation.get_personalInfo().getSage()!=null &&
-			quotationCalculation.get_personalInfo().getSgenger()!=null){
+			if (quotationCalculation.get_personalInfo().getSage() != null
+					&& quotationCalculation.get_personalInfo().getSgenger() != null) {
 				calResp.setSpouseHealthReq(healthRequirmentsService.getSumAtRiskDetailsSpouse(quotationCalculation));
 			}
 			calResp.setAt6(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
@@ -192,12 +191,13 @@ public class ENDServiceImpl implements ENDService {
 				rate = 1.0;
 			}
 		}
-//		System.out.println("END bassum : " + bassum + " age : " + age + " term : " + term + " paytrm : " + paytrm);
+		// System.out.println("END bassum : " + bassum + " age : " + age + " term : " +
+		// term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
-//		System.out.println("rateCardEND : " + rateCardEND.getRate());
+		// System.out.println("rateCardEND : " + rateCardEND.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardEND.getRate())
@@ -206,23 +206,23 @@ public class ENDServiceImpl implements ENDService {
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
-//		System.out.println("premium : " + premium.toString());
+		// System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
-		
-//		System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot() );
-//		System.out.println("occu loading :" + calResp.getOccuLodingTot() );
-		
-		if(isAddOccuLoading) {
+
+		// System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot()
+		// );
+		// System.out.println("occu loading :" + calResp.getOccuLodingTot() );
+
+		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
-		
 
-//		System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot() );
-//		System.out.println("occu loading :" + calResp.getOccuLodingTot() );
-		
-		
+		// System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot()
+		// );
+		// System.out.println("occu loading :" + calResp.getOccuLodingTot() );
+
 		return occuLodingPremium;
 	}
 
@@ -230,11 +230,11 @@ public class ENDServiceImpl implements ENDService {
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 		// @sum_assured@ + ((@sum_assured@*0.025)*@term@)
 		BigDecimal maturity = new BigDecimal(0);
-//		System.out.println("term : " + term + " bassum : " + bassum);
+		// System.out.println("term : " + term + " bassum : " + bassum);
 		maturity = (new BigDecimal(bassum)
 				.add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term)))))
 						.setScale(0, RoundingMode.HALF_UP);
-//		System.out.println("maturity : " + maturity.toString());
+		// System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -246,12 +246,11 @@ public class ENDServiceImpl implements ENDService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 
-		if(productDao.findByProductCode("END1").getActive() == 0 ) {
+		if (productDao.findByProductCode("END1").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 
 		if (calResp.isErrorExist()) {
@@ -373,26 +372,26 @@ public class ENDServiceImpl implements ENDService {
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
 		benef_DetailsList.add(benef_Details);
-//
-//		for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
-//			System.out.println("");
-//			System.out.println(quo_Benef_Details.toString());
-//			System.out.println("");
-//		}
+		//
+		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
+		// System.out.println("");
+		// System.out.println(quo_Benef_Details.toString());
+		// System.out.println("");
+		// }
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
-//		System.out.println("custSave");
+		// System.out.println("custSave");
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
-//		System.out.println("custDetailSaveSave");
+		// System.out.println("custDetailSaveSave");
 		ArrayList<CustChildDetails> custChildDList = null;
 		if (life != null && mainLifeDetails != null) {
 
 			if (spouse != null) {
 				Customer sp = customerDao.save(spouse);
-//				System.out.println("custSSave");
+				// System.out.println("custSSave");
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
-//				System.out.println("custSDetailSave");
+				// System.out.println("custSDetailSave");
 				if (sp == null && spDetsils != null) {
 					responseMap.put("status", "Error at Spouse Saving");
 					return responseMap;
@@ -400,9 +399,9 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
-//			System.out.println("childSave");
+			// System.out.println("childSave");
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
-//			System.out.println("childDetailSave");
+			// System.out.println("childDetailSave");
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
 					responseMap.put("status", "Error at Child Saving");
@@ -411,7 +410,7 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 			quo = quotationDao.save(quotation);
-//			System.out.println("quotationSave");
+			// System.out.println("quotationSave");
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Add Maturity //////////////////
@@ -423,7 +422,7 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -432,20 +431,20 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Done Save Medical req ////////////////
 
 			if (quo != null && quoDetails != null) {
-//				for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
-//					System.out.println(benef_Details2.toString());
-//					System.out.println("");
-//				}
+				// for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
+				// System.out.println(benef_Details2.toString());
+				// System.out.println("");
+				// }
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
-//				System.out.println("benDetailsSave");
+				// System.out.println("benDetailsSave");
 				if (bnfdList != null) {
 
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -475,25 +474,25 @@ public class ENDServiceImpl implements ENDService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
-		//CalculationUtils calculationUtils = new CalculationUtils();
+			Integer userId, Integer qdId, Integer type) throws Exception {
+		// CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("END1").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("END1").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
 
-		//Products products = productDao.findByProductCode("END1");
+		// Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -546,11 +545,10 @@ public class ENDServiceImpl implements ENDService {
 
 		Quotation quotation = quotationDetails.getQuotation();
 
-		
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		
-		quotation.setStatus("active");
-		
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
@@ -664,7 +662,7 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-//				System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -680,8 +678,8 @@ public class ENDServiceImpl implements ENDService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

@@ -238,7 +238,7 @@ public class QuotationArtmCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = artmService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = artmService.editQuotation(calculation, _invpSaveQuotation, userId, qdId, 1);
 							} else {
 								responseMap.replace("status", error);
 							}
@@ -324,7 +324,7 @@ public class QuotationArtmCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = artmService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+								responseMap = artmService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId, 2);
 							} else {
 								responseMap.replace("status", error);
 							}

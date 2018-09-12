@@ -31,7 +31,7 @@ public class QuotationAsfpCalculationController {
 
 	@Autowired
 	private LogService logService;
-	
+
 	@Autowired
 	private UsersService usersService;
 
@@ -183,7 +183,7 @@ public class QuotationAsfpCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
-							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId, 1);
 
 						} else {
 							responseMap.replace("status", error);
@@ -225,23 +225,23 @@ public class QuotationAsfpCalculationController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoAsfpEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editAsfpUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
 		// System.out.println(qdId);
-		
-		String userCode=new JwtDecoder().generate(token);
-		
+
+		String userCode = new JwtDecoder().generate(token);
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 		Validation validation = null;
-		Users user=null;
-		
+		Users user = null;
+
 		try {
 			if (userCode != null) {
-				user=usersService.getUserByUserCode(userCode);
+				user = usersService.getUserByUserCode(userCode);
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
@@ -252,7 +252,8 @@ public class QuotationAsfpCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 
-							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(),
+									qdId, 1);
 
 						} else {
 							responseMap.replace("status", error);

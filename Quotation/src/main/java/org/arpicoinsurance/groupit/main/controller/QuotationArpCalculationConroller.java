@@ -102,6 +102,7 @@ public class QuotationArpCalculationConroller {
 							error = validationInvp.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
 								responseMap = arpServie.saveQuotation(calculation, _invpSaveQuotation, id);
+								
 							} else {
 								responseMap.replace("status", error);
 							}
@@ -176,7 +177,8 @@ public class QuotationArpCalculationConroller {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
 
-								responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, userId, qdId, 1);
+								
 							} else {
 								responseMap.replace("status", error);
 							}
@@ -256,7 +258,7 @@ public class QuotationArpCalculationConroller {
 								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 								if (error.equalsIgnoreCase("ok")) {
 
-									responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+									responseMap = arpServie.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId, 2);
 								} else {
 									responseMap.replace("status", error);
 								}

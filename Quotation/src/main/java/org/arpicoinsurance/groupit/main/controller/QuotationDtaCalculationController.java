@@ -32,7 +32,7 @@ public class QuotationDtaCalculationController {
 
 	@Autowired
 	private LogService logService;
-	
+
 	@Autowired
 	private UsersService usersService;
 
@@ -187,7 +187,8 @@ public class QuotationDtaCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = dtaService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = dtaService.editQuotation(calculation, _invpSaveQuotation, userId, qdId,
+										1);
 							} else {
 								responseMap.replace("status", error);
 							}
@@ -231,7 +232,7 @@ public class QuotationDtaCalculationController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoDtaEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editDtaUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
@@ -242,18 +243,18 @@ public class QuotationDtaCalculationController {
 		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
 		 * get_frequance());
 		 */
-		String userCode=new JwtDecoder().generate(token);
-		
+		String userCode = new JwtDecoder().generate(token);
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
-		Users user=null;
-		
+		Users user = null;
+
 		try {
 			if (userCode != null) {
-				user=usersService.getUserByUserCode(userCode);
+				user = usersService.getUserByUserCode(userCode);
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
@@ -265,7 +266,8 @@ public class QuotationDtaCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = dtaService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+								responseMap = dtaService.editQuotation(calculation, _invpSaveQuotation,
+										user.getUserId(), qdId, 2);
 							} else {
 								responseMap.replace("status", error);
 							}

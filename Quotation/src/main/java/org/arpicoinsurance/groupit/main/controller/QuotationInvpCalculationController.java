@@ -195,7 +195,7 @@ public class QuotationInvpCalculationController {
 								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 								if (error.equalsIgnoreCase("ok")) {
 									responseMap = invpService.editQuotation(calculation, _invpSaveQuotation, userId,
-											qdId);
+											qdId, 1);
 								} else {
 									responseMap.replace("status", error);
 								}
@@ -282,7 +282,7 @@ public class QuotationInvpCalculationController {
 								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 								if (error.equalsIgnoreCase("ok")) {
 									responseMap = invpService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(),
-											qdId);
+											qdId, 2);
 								} else {
 									responseMap.replace("status", error);
 								}
