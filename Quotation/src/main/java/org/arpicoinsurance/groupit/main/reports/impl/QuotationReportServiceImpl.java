@@ -7081,9 +7081,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				if (msfeb.getRiderCode().equalsIgnoreCase("L10")) {
 
 					if (msfeb.getRiderSum() != null) {
-						cuCellP9.add(new Paragraph(
-								formatter.format(msfeb.getRiderSum()))
-										.setFontSize(9).setTextAlignment(TextAlignment.CENTER).setFixedLeading(10));
+						cuCellP9.add(new Paragraph(formatter.format(msfeb.getRiderSum())).setFontSize(9)
+								.setTextAlignment(TextAlignment.CENTER).setFixedLeading(10));
 
 						cusTable.addCell(cuCellP9);
 
@@ -10351,17 +10350,29 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		//// Rate Declared for last year
 		SimpleDateFormat rateDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+		// Create calendar object to get prev year
+		Calendar cal = Calendar.getInstance();
+
+		// set Date Format for calender
+		cal.setTime(quotationDetails.getQuotationCreateDate());
+
+		// subtract 1 year from quo create date
+		cal.add(Calendar.YEAR, -1);
+
+		Date prev = cal.getTime();
+
 		if (quotationDetails.getQuotationCreateDate() != null) {
 
-			String rateDate = rateDateFormat.format(quotationDetails.getQuotationquotationCreateDate());
+			String rateDate = rateDateFormat.format(prev);
 
 			Double rate = artmLstYearRate.getLstYearRate(rateDate);
 
 			document.add(new Paragraph("Guaranteed dividend rate declared last year " + rate + "%").setBold()
 					.setFontSize(8).setCharacterSpacing(1));
-		} else {
-			document.add(new Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold().setFontSize(8)
-					.setCharacterSpacing(1));
+
+		}else {
+			document.add(new Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold()
+					.setFontSize(8).setCharacterSpacing(1));
 		}
 
 		document.add(new Paragraph(""));

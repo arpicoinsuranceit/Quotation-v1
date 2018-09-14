@@ -382,42 +382,26 @@ public class CalculateRidersImpl implements CalculateRiders {
 						}
 
 						// System.out.println("product :" + quotationCalculation.get_product());
-						if (quotationCalculation.get_product().equals("ARP")) {
+						/*if (quotationCalculation.get_product().equals("ARP")) {
 							Integer maxterm = calculateBenefictTerm.calculateChildBenifictTermARP(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 									quotationCalculation.get_personalInfo().getPayingterm());
-
 							Integer valiedTerm = maxterm > term ? term : maxterm;
 							term = valiedTerm;
-
 							if (term < 5) {
 								calResp.setErrorExist(true);
 								calResp.setError(
 										"Can't get benifict fof child because 21 - ( Child Age + Pay Term) must be greate than 5");
 								return calResp;
 							}
-<<<<<<< HEAD
-						} else {
-=======
 						} else {*/
-						
-						
->>>>>>> refs/remotes/origin/branch-125
 							Integer maxterm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 									benifict.getType(), quotationCalculation.get_personalInfo().getTerm());
 
 							Integer valiedTerm = maxterm > term ? term : maxterm;
-<<<<<<< HEAD
 							term = valiedTerm;
-						}
-
-=======
-							term = valiedTerm;
-							
-							
 						/*System.out.println("ARP Valied Term : " + term);
 						}*/
->>>>>>> refs/remotes/origin/branch-125
 
 						String benfName = benifict.getType();
 
@@ -488,7 +472,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount,
 			Integer childCount, Double inrate, String productCode) throws Exception {
 
-		//System.out.println(age);
+		System.out.println(age);
 
 		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
 
@@ -505,9 +489,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		// System.out.println(occupation_id + " ////////////// ocu ID");
 
-		//System.out.println(type);
+		System.out.println(type);
 
-		//System.out.println(calResp.getYearlyL2Sum() + " : L2 sum" );
+		System.out.println(calResp.getYearlyL2Sum() + " : L2 sum" );
 		
 		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
@@ -517,7 +501,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 		switch (type) {
 
 		case "L2":
-			//System.out.println("L2");
+			System.out.println("L2");
 			if (productCode.equalsIgnoreCase("ARTM")) {
 
 				if (benefictDao.findByRiderCode("L2").getActive() == 0) {
@@ -1023,7 +1007,14 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictCIBC = rateCardCIBCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermCIBC = maxTermToBenefictCIBC > term ? term : maxTermToBenefictCIBC;
 
+			System.out.println("Valied term ARP CIBC : " + valiedTermCIBC);
+			
 			if (calResp.isArp()) {
+				
+				System.out.println("age : " + age);
+				System.out.println("valiedTermCIBC : " + valiedTermCIBC);
+				System.out.println("calResp.getPayTerm() : " + calResp.getPayTerm());
+				
 				RateCardARP rateCardARP = rateCardARPDao
 						.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
 								valiedTermCIBC, calResp.getPayTerm(), new Date(), new Date(), new Date(), new Date());
@@ -1031,11 +1022,15 @@ public class CalculateRidersImpl implements CalculateRiders {
 				
 				
 			}
+			
+			System.out.println("Valied term ARP relife : " + relife);
 
 			// System.out.println(relife + ": relife");
 
 			BigDecimal cibc = cibcService.calculateCIBC(age, valiedTermCIBC, new Date(), ridsumasu, payFrequency,
 					relife);
+			
+			System.out.println("Valied term ARP cibc : " + cibc);
 
 			if (!(cibc.doubleValue() > 0)) {
 				calResp.setErrorExist(true);

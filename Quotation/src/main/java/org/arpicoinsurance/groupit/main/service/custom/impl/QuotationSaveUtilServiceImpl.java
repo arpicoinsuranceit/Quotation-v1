@@ -832,7 +832,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = 0; 
-								//System.out.println(calResp.getPayTerm());
+								System.out.println(calResp.getPayTerm());
 								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
 									try {
 										valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),

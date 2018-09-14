@@ -43,7 +43,7 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllLogin() {
 		
-		try {
+		/*try {
 			List<Login> loginList = loginService.getAllLogin();
 			return new ResponseEntity<Object>(loginList, HttpStatus.OK);
 		} catch (Exception e) {
@@ -62,9 +62,9 @@ public class LoginController {
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		}*/
 		
-		 //return null;
+		 return null;
 	}
 
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
