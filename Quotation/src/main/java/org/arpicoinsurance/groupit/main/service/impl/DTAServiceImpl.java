@@ -162,7 +162,7 @@ public class DTAServiceImpl implements DTAService {
 			} catch (Exception e) {
 				throw new NullPointerException("Error at DTA Premium Calculation");
 			}
-			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 			if (isAddOccuLoading) {
 				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 				calResp.setOccuLodingTot(

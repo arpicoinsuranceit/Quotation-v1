@@ -208,7 +208,7 @@ public class ENDServiceImpl implements ENDService {
 
 //		System.out.println("premium : " + premium.toString());
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		
 //		System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot() );
 //		System.out.println("occu loading :" + calResp.getOccuLodingTot() );

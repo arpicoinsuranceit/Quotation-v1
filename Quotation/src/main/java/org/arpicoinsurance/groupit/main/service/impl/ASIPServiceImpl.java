@@ -216,12 +216,12 @@ public class ASIPServiceImpl implements ASIPService {
 				.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 		// System.out.println("premium : " + premium.toString());
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
-		return premium.multiply(new BigDecimal(rate));
+		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 	}
 
 	@Override

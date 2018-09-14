@@ -148,13 +148,13 @@ public class ATRMServiceImpl implements ATRMService {
 		} catch (Exception e) {
 			throw new NullPointerException("ATRM Premium calculation Error");
 		}
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
 //		System.out.println("premium : " + premium.toString());
-		return premium.multiply(new BigDecimal(rate));
+		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 	}
 
 	@Override
