@@ -226,13 +226,13 @@ public class INVPServiceImpl implements INVPService {
 		} catch (Exception e) {
 			throw new NullPointerException("Error at INVP Premium Calculation");
 		}
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		if (isAddOccuLoading) {
 			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 
 		}
-		return premium.multiply(new BigDecimal(rate));
+		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 	}
 
 	@Override

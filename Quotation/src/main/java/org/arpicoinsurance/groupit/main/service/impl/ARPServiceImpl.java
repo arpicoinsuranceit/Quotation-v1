@@ -257,7 +257,7 @@ public class ARPServiceImpl implements ARPService {
 		}
 		// System.out.println("premium : " + premium.toString());
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		if (isAddOccuLoading) {
 			// System.out.println(calResp.getWithoutLoadingTot() +
 			// "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");

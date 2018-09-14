@@ -166,7 +166,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			} catch (Exception e) {
 				throw new NullPointerException("DTAPL premium calculation Error");
 			}
-			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate));
+			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 			if (isAddOccuLoading) {
 
 				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
