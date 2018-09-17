@@ -3,6 +3,9 @@ package org.arpicoinsurance.groupit.main.common;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CalculationUtils {
 
 	public int getPayterm(String payFrequency) {
@@ -114,6 +117,17 @@ public class CalculationUtils {
 			return 0.2;
 		}
 
+	}
+
+	public String getPhoneNo(String phone) throws Exception {
+		if (phone.length() == 9) {
+			phone = "0" + phone;
+			return phone;
+		} else if (phone.length() == 10) {
+			return phone;
+		} else {
+			return "Error";
+		}
 	}
 
 }

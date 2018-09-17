@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.model.Logs;
@@ -29,6 +30,9 @@ public class QuotationAsipCntroller {
 
 	@Autowired
 	private LogService logService;
+	
+	@Autowired
+	private CalculationUtils calculationUtils;
 
 	@RequestMapping(value = "/asipCal", method = RequestMethod.POST)
 
@@ -79,10 +83,20 @@ public class QuotationAsipCntroller {
 
 	@RequestMapping(value = "/quoAsipsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAsip(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable Integer id) {
+			@PathVariable Integer id) throws Exception {
 		// System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		
 		QuotationCalculation calculation = null;
 		Validation validationInvp = null;
 		try {
@@ -144,7 +158,7 @@ public class QuotationAsipCntroller {
 
 	@RequestMapping(value = "/quoAsipEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editAsip(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 
 		/*
 		 * System.out.println(userId); System.out.println(qdId);
@@ -157,6 +171,15 @@ public class QuotationAsipCntroller {
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		
 		Validation validation = null;
 		try {
 			if (userId != null) {

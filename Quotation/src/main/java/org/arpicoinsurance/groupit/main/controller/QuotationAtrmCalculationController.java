@@ -2,6 +2,8 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.model.Logs;
@@ -28,6 +30,9 @@ public class QuotationAtrmCalculationController {
 
 	@Autowired
 	private LogService logService;
+	
+	@Autowired
+	private CalculationUtils calculationUtils;
 
 	private double totPre = 0.0;
 
@@ -83,10 +88,19 @@ public class QuotationAtrmCalculationController {
 
 	@RequestMapping(value = "/quoAtrmsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable Integer id) {
+			@PathVariable Integer id) throws Exception {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+		
+		if(!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
 		QuotationCalculation calculation = null;
 		Validation validation = null;
 		try {
@@ -151,7 +165,7 @@ public class QuotationAtrmCalculationController {
 
 	@RequestMapping(value = "/quoAtrmEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editAtrm(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 
 		/*
 		 * System.out.println(userId); System.out.println(qdId);
@@ -162,6 +176,15 @@ public class QuotationAtrmCalculationController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+		
+		if(!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
 
 		Validation validation = null;
 		try {
