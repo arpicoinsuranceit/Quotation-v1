@@ -331,8 +331,8 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			if (benifictListM != null) {
 				for (Benifict benifict : benifictListM) {
 
-					// System.out.println(benifict.getType()
-					// + " main beneficts /////////////////////");
+					 System.out.println(benifict.getType()
+					 + " main beneficts /////////////////////");
 
 					switch (benifict.getType()) {
 					case "SUHRB":
@@ -352,6 +352,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 						hcb = benifict.getSumAssured();
 						break;
 					case "HRBI":
+						isHcbi = true;
+						hcb = benifict.getSumAssured();
+						break;
+					case "HRBF":
 						isHcbi = true;
 						hcb = benifict.getSumAssured();
 						break;
@@ -465,13 +469,29 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 						isHcbi = true;
 						hcb = benifict.getSumAssured();
 						break;
+					case "HRBFS":
+						isHcbi = true;
+						
+						for (Benifict e : calculation.get_riderDetails().get_mRiders()) {
+							if(e.getType().equals("HRBF") || e.getType().equals("HCBF")) {
+								hcb = e.getSumAssured();
+							}
+						}
+						
+						break;
 					case "HCBIS":
 						isHcbi = true;
 						hcb = benifict.getSumAssured();
 						break;
 					case "HCBFS":
 						isHcbf = true;
-						hcb = benifict.getSumAssured();
+						
+						for (Benifict e : calculation.get_riderDetails().get_mRiders()) {
+							if(e.getType().equals("HRBF") || e.getType().equals("HCBF")) {
+								hcb = e.getSumAssured();
+							}
+						}
+						
 						break;
 
 					default:
