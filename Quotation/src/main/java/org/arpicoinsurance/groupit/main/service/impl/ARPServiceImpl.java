@@ -533,7 +533,7 @@ public class ARPServiceImpl implements ARPService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-		CalculationUtils calculationUtils = new CalculationUtils();
+		//CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -559,7 +559,7 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 
-		Products products = productDao.findByProductCode("ARP");
+		//Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -571,7 +571,7 @@ public class ARPServiceImpl implements ARPService {
 				_invpSaveQuotation.get_personalInfo(), user);
 
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
-
+		
 		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
 		Customer spouse = null;
 		if (spouseDetail != null) {
@@ -614,6 +614,7 @@ public class ARPServiceImpl implements ARPService {
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
+
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -625,6 +626,7 @@ public class ARPServiceImpl implements ARPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
@@ -651,7 +653,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetailList.add(medicalDetail);
 			}
 		}
-
+		
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),

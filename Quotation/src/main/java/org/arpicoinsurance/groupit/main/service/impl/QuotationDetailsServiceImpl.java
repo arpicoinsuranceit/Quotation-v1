@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import javax.transaction.Transactional;
 import org.arpicoinsurance.groupit.main.dao.NomineeDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
@@ -17,6 +18,7 @@ import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
+import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -36,6 +38,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class QuotationDetailsServiceImpl implements QuotationDetailsService {
+
+	@Autowired
+	private QuotationDao quotationDao;
 
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
@@ -74,12 +79,14 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
 
 			LocalDate currentDate = LocalDate.now();
-			
+
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 			diffInYears += 1;
 			String age = Long.toString(diffInYears);
 
 			SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");
+
+			System.out.println(customerDetails.getCustomer().getCustCode());
 
 			mainLife.set_mAge(age);
 			mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
@@ -91,6 +98,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mSmoking("No");
 			mainLife.set_mTitle(customerDetails.getCustTitle());
 			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
+			mainLife.set_occuCode(customerDetails.getOccupation().getOcupationCode());
+			mainLife.set_mCustCode(customerDetails.getCustomer().getCustCode());
 
 			if (details.getSpouseDetails() != null) {
 				CustomerDetails spouseDetails = details.getSpouseDetails();
@@ -109,6 +118,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 				spouse.set_sNic(spouseDetails.getCustNic());
 				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 				spouse.set_sTitle(spouseDetails.getCustTitle());
+
+				spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
 
 			} else {
 				spouse.set_sActive(false);
@@ -312,6 +323,18 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			break;
 		}
 
+		plan.setPolicyFee(details.getPolicyFee());
+		plan.setAdminFee(details.getAdminFee());
+		plan.setTax(details.getTaxAmount());
+		System.out.println(plan.get_bsaTotal());
+		System.out.println(plan.getAdminFee());
+		System.out.println(plan.getPolicyFee());
+		System.out.println(plan.getTax());
+		plan.setGrsprm(plan.get_bsaTotal() - (plan.getAdminFee() + plan.getPolicyFee() + plan.getTax()));
+		plan.setSumatRiskMain(details.getSumAtRiskMain());
+		plan.setSumatRiskSpouse(details.getSumAtRiskSpouse());
+		plan.setInvPos(details.getInvestmentPos());
+		plan.setLifePos(details.getLifePos());
 		return plan;
 	}
 
@@ -339,6 +362,60 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	}
 
 	@Override
+	public QuotationReceipt findQuotationDetailsForReceipt(Integer qId, Integer seqNo) throws Exception {
+		
+		Quotation  quotation = quotationDao.findById(qId);
+		
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+
+
+		QuotationReceipt quotationReceipt = new QuotationReceipt();
+		quotationReceipt.setBranchCode(details.getQuotation().getUser().getBranch().getBranch_Code());
+		quotationReceipt.setAgentCode(details.getQuotationCreateBy());
+		quotationReceipt.setCustomerName(details.getCustomerDetails().getCustName());
+		quotationReceipt.setCustTitle(details.getCustomerDetails().getCustTitle());
+		quotationReceipt.setQuotationDetailId(details.getQdId());
+		quotationReceipt.setQuotationId(details.getQuotation().getId());
+		quotationReceipt.setProductCode(details.getQuotation().getProducts().getProductCode());
+		quotationReceipt.setProductName(details.getQuotation().getProducts().getProductName());
+		switch (details.getPayMode()) {
+		case "M":
+			quotationReceipt.setPremium(details.getPremiumMonthT());
+			break;
+		case "Q":
+			quotationReceipt.setPremium(details.getPremiumQuaterT());
+			break;
+		case "H":
+			quotationReceipt.setPremium(details.getPremiumHalfT());
+			break;
+		case "Y":
+			quotationReceipt.setPremium(details.getPremiumYearT());
+			break;
+		case "S":
+			quotationReceipt.setPremium(details.getPremiumSingleT());
+			break;
+
+		default:
+			break;
+		}
+		quotationReceipt.setPolfeePremium((details.getPolicyFee()+ quotationReceipt.getPremium()));
+
+		return quotationReceipt;
+	}
+	
+	
+
+	
+	@Override
+	public boolean isAvailable(Integer seqNo, Integer qId) throws Exception {
+		Quotation quotation = quotationDao.findById(qId);
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+		if (details != null && details.getQuotation().getId().equals(qId)) {
+			return true;
+		}
+		return false;
+	}
+
 	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception {
 		QuotationDetails details = findQuotationDetails(qdId);
 		EditQuotation editQuotation = new EditQuotation();
@@ -392,6 +469,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			}
 		}
 
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
@@ -407,6 +485,32 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 		// return editQuotation;
 		return getBenefitsAndChildDetails(details, editQuotation);
+
+	}
+	@Override
+	public boolean updateStatus(Integer seqNo, Integer qId) throws Exception {
+		
+		Quotation quotation = quotationDao.findById(qId);
+		quotation.setStatus("PROP");
+		quotationDao.save(quotation);
+		return true;
 	}
 
+	@Override
+	public QuotationDetails findByQuotationAndSeqnum(Integer quoId, Integer seqnum) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		if(quotation!=null) {
+			return quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqnum);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

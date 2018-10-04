@@ -746,7 +746,7 @@ public class ARTMServiceImpl implements ARTMService {
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
 
-		CalculationUtils calculationUtils = new CalculationUtils();
+		//CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -759,7 +759,7 @@ public class ARTMServiceImpl implements ARTMService {
 			return responseMap;
 		}
 
-		Products products = productDao.findByProductCode("ARTM");
+		//Products products = productDao.findByProductCode("ARTM");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -811,8 +811,10 @@ public class ARTMServiceImpl implements ARTMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
+
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
@@ -829,6 +831,7 @@ public class ARTMServiceImpl implements ARTMService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

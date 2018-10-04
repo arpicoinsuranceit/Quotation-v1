@@ -612,9 +612,10 @@ public class INVPServiceImpl implements INVPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		
 		quotation.setStatus("active");
+
 		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
 				calResp.getBasicSumAssured(),
@@ -631,6 +632,7 @@ public class INVPServiceImpl implements INVPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

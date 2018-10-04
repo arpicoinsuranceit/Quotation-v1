@@ -212,7 +212,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// //System.out.println(rebate + " : rebate");
+
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
@@ -457,7 +457,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			return responseMap;
 		}
 
-		Products products = productDao.findByProductCode("DTAPL");
+		//Products products = productDao.findByProductCode("DTAPL");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -496,8 +496,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 		mainLifeDetail.setCustomer(mainlife);
 
 		Quotation quotation = quotationDetails.getQuotation();
+		
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
+
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
@@ -510,6 +512,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 		quotationDetails1.setInterestRate(calculation.get_personalInfo().getIntrate());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();

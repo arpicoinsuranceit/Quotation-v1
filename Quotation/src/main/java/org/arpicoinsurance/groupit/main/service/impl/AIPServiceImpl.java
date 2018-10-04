@@ -585,7 +585,7 @@ public class AIPServiceImpl implements AIPService {
 			
 			Integer count = quotationDetailsDao.countByQuotation(quotation);
 			quotation.setProducts(products);
-			quotation.setStatus("active");
+			//quotation.setStatus("active");
 			quotation.setUser(user);
 
 			quotationDetails = new QuotationDetails();
@@ -598,8 +598,8 @@ public class AIPServiceImpl implements AIPService {
 			quotationDetails.setPayMode(frequance);
 			quotationDetails.setPolTerm(_invpSaveQuotation.get_plan().get_term());
 			quotationDetails.setPolicyFee(calculationUtils.getPolicyFee());
-			quotationDetails.setQuotationCreateBy(user.getUserCode());
-			quotationDetails.setQuotationquotationCreateDate(new Date());
+			quotationDetails.setQuotationModifyBy(user.getUserCode());
+			quotationDetails.setQuotationModifyDate(new Date());
 			quotationDetails.setCustomerDetails(customerDetails);
 			Double tax = calculationUtils.getTaxAmount(contribution + adminFee);
 			quotationDetails.setTaxAmount(tax);

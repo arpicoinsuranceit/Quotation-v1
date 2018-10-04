@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
-import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
+//import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardCIBCDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardCIBDao;
@@ -60,7 +60,7 @@ import org.arpicoinsurance.groupit.main.service.rider.SHCBFService;
 import org.arpicoinsurance.groupit.main.service.rider.SHCBIService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBCService;
 import org.arpicoinsurance.groupit.main.service.rider.SUHRBSService;
-import org.arpicoinsurance.groupit.main.service.rider.SUHRBService;
+//import org.arpicoinsurance.groupit.main.service.rider.SUHRBService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBSService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDASBService;
 import org.arpicoinsurance.groupit.main.service.rider.TPDBSService;
@@ -150,9 +150,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 	@Autowired
 	private HRBIService hrbiService;
 
-	@Autowired
+	/*@Autowired
 	private SUHRBService suhrbService;
-
+*/
 	@Autowired
 	private SUHRBSService suhrbsService;
 
@@ -222,8 +222,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 	@Autowired
 	private RateCardMFIBDDao rateCardMFIBDDao;
 
-	@Autowired
-	private RateCardARTMDeathDao rateCardArtmDeathDao;
+/*	@Autowired
+	private RateCardARTMDeathDao rateCardArtmDeathDao;*/
+
+
 
 	@Autowired
 	private RateCardMFIBTDao rateCardMFIBTDao;
@@ -1323,6 +1325,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			Integer maxTermToBenefictHRBI = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHRBI = maxTermToBenefictHRBI > term ? term : maxTermToBenefictHRBI;
 
+
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
 						.findByAgeAndTermAndRlftermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
@@ -1338,6 +1341,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			BigDecimal hrbi = hrbiService.calculateHRBI(age, valiedTermHRBI, gender, ridsumasu, new Date(),
 					payFrequency, relife, ocuLoading);
+
 
 			if (!(hrbi.doubleValue() > 0)) {
 				calResp.setErrorExist(true);

@@ -488,7 +488,7 @@ public class ENDServiceImpl implements ENDService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId) throws Exception {
-		// CalculationUtils calculationUtils = new CalculationUtils();
+
 
 		Quotation quo = null;
 
@@ -513,7 +513,7 @@ public class ENDServiceImpl implements ENDService {
 			return responseMap;
 		}
 
-		// Products products = productDao.findByProductCode("END1");
+
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -569,7 +569,6 @@ public class ENDServiceImpl implements ENDService {
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 
 		quotation.setStatus("active");
-
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -581,6 +580,7 @@ public class ENDServiceImpl implements ENDService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

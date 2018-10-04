@@ -521,8 +521,10 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
+
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -535,6 +537,7 @@ public class ATRMServiceImpl implements ATRMService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

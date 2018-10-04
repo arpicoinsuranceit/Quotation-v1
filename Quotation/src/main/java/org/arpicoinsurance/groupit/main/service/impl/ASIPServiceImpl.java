@@ -136,11 +136,8 @@ public class ASIPServiceImpl implements ASIPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			// Calculate Rebate Premium ///
-			// Double rebate =
-			// calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// //System.out.println(rebate + " : rebate");
-			// Calculate BSA Premium ///
+
+
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
@@ -637,6 +634,7 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 
 		Quotation quotation = quotationDetails.getQuotation();
+
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 		quotation.setStatus("active");
 
@@ -651,6 +649,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
