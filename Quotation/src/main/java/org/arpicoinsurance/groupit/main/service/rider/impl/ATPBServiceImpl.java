@@ -27,7 +27,7 @@ public class ATPBServiceImpl implements ATPBService {
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("ATPB ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("ATPB ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -49,7 +49,7 @@ public class ATPBServiceImpl implements ATPBService {
 			throw new NullPointerException("ATPB Rate not found for Age : " + age + " and Term : " + term);
 		}
 
-		// System.out.println("premiumATPB : "+premiumATPB.toString());
+		// //System.out.println("premiumATPB : "+premiumATPB.toString());
 		return premiumATPB;
 
 	}

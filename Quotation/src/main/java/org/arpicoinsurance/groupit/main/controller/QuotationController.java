@@ -47,9 +47,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,9 +72,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,7 +86,7 @@ public class QuotationController {
 	public ResponseEntity<Object> getQuotationDetailsById(@RequestBody String id) {
 		Integer qdId = Integer.valueOf(id);
 		try {
-			System.out.println("testtttttttttttt");
+			//System.out.println("testtttttttttttt");
 			EditQuotation quoDetails = quoDetailsService.editQuotationDetails(qdId);
 			return new ResponseEntity<Object>(quoDetails, HttpStatus.OK);
 		} catch (Exception e) {
@@ -98,9 +98,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -124,9 +124,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -149,9 +149,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -161,7 +161,7 @@ public class QuotationController {
 
 	@RequestMapping(value = "/findQuotation/{type}", method = RequestMethod.POST)
 	public ResponseEntity<Object> findQuotationToPrint(@RequestBody String id, @PathVariable String type) {
-		 //System.out.println("Find Quotation Called..." + type);
+		 ////System.out.println("Find Quotation Called..." + type);
 		Integer qdId = Integer.valueOf(id);
 		HashMap<String, String> map = new HashMap<>();
 
@@ -193,9 +193,9 @@ public class QuotationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

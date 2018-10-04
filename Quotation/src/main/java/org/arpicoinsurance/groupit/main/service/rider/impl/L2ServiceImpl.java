@@ -27,18 +27,18 @@ public class L2ServiceImpl implements L2Service {
 	@Override
 	public BigDecimal calculateL2(double ridsumasu, int term, int age, String payFrequency, double occupation_loding)
 			throws Exception {
-		//System.out.println(" ////////////////////// artm " + age + " " + term);
+		////System.out.println(" ////////////////////// artm " + age + " " + term);
 		Date chedat = new Date();
 		BigDecimal premiumL2 = new BigDecimal(0);
 
-		// System.out.println(rateCardARTMDeath.getRate() + " //////////////////////
+		// //System.out.println(rateCardARTMDeath.getRate() + " //////////////////////
 		// artm");
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
 				RateCardARTMDeathSingle rateCardARTMDeathSingle = rateCardARTMDeathSingleDao
 						.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 								chedat, chedat);
-				//System.out.println(rateCardARTMDeathSingle.getRate() + " artm");
+				////System.out.println(rateCardARTMDeathSingle.getRate() + " artm");
 				// ((@rider_sum_assured@)/1000)*@rate@)
 				premiumL2 = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6,RoundingMode.HALF_UP)).multiply(new BigDecimal(rateCardARTMDeathSingle.getRate()));
 			} else {

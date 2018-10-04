@@ -36,7 +36,7 @@ public class QuotationAipCalculationController {
 	@RequestMapping(value = "/aipCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAIP(@RequestBody Plan plan) throws Exception {
 		CalculationUtils calUtil = new CalculationUtils();
-		// System.out.println(plan.toString());
+		// //System.out.println(plan.toString());
 
 		Validation validation = new Validation();
 
@@ -55,7 +55,7 @@ public class QuotationAipCalculationController {
 		Double contribution = plan.get_bsa();
 		Double fundMrate = calUtil.getFndMngRate(contribution,plan.get_frequance());
 
-		//System.out.println(fundMrate);
+		////System.out.println(fundMrate);
 
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
@@ -79,9 +79,9 @@ public class QuotationAipCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -114,7 +114,7 @@ public class QuotationAipCalculationController {
 		Double contribution = plan.get_bsa();
 		Double fundMrate = calUtil.getFndMngRate(contribution,plan.get_frequance());
 
-		//System.out.println(fundMrate);
+		////System.out.println(fundMrate);
 		try {
 			AIPCalResp aipCalResp = aipService.calculateAIPMaturaty(plan.get_term(), 2.0, fundMrate, 9.0, contribution,
 					new Date(), plan.get_frequance(), true, false);
@@ -135,9 +135,9 @@ public class QuotationAipCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -181,19 +181,20 @@ public class QuotationAipCalculationController {
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
-			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation :"
+			/*logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation :"
 					+ _invpSaveQuotation.toString() + " , id : " + id);
-			logs.setDate(new Date());
+		*/	logs.setDate(new Date());
 			logs.setHeading("Error");
 			logs.setOperation("saveAIP : QuotationAipCalculationController");
 			logs.setUserId(id);
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -248,9 +249,9 @@ public class QuotationAipCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

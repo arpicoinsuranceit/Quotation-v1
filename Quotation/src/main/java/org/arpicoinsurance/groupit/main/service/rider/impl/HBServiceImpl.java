@@ -23,14 +23,14 @@ public class HBServiceImpl implements HBService {
 	public BigDecimal calculateHB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
 
-		System.out.println(age);
-		System.out.println(term);
+		//System.out.println(age);
+		//System.out.println(term);
 
 		BigDecimal premiumHB = new BigDecimal(0);
 		RateCardHB rateCardHB = rateCardHBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
 				term, chedat, chedat, chedat, chedat);
-		//System.out.println(rateCardHB.getRate());
-		// System.out.println("HB ridsumasu : "+ridsumasu+" payFrequency :
+		////System.out.println(rateCardHB.getRate());
+		// //System.out.println("HB ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardHB.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -53,7 +53,7 @@ public class HBServiceImpl implements HBService {
 		}
 
 		premiumHB = premiumHB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumHB : "+premiumHB.toString());
+		// //System.out.println("premiumHB : "+premiumHB.toString());
 		return premiumHB;
 	}
 

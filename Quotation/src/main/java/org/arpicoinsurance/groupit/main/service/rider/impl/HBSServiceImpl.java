@@ -23,18 +23,18 @@ public class HBSServiceImpl implements HBSService {
 	public BigDecimal calculateHBS(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
 
-		// System.out.println("age : " + age);
-		// System.out.println("term : " + term);
-		// System.out.println("chedat : " + chedat);
-		// System.out.println("ridsumasu : " + ridsumasu);
-		// System.out.println("payFrequency : " + payFrequency);
-		// System.out.println("relief : " + relief);
-		// System.out.println("occupation_loding : " + occupation_loding);
+		// //System.out.println("age : " + age);
+		// //System.out.println("term : " + term);
+		// //System.out.println("chedat : " + chedat);
+		// //System.out.println("ridsumasu : " + ridsumasu);
+		// //System.out.println("payFrequency : " + payFrequency);
+		// //System.out.println("relief : " + relief);
+		// //System.out.println("occupation_loding : " + occupation_loding);
 
 		BigDecimal premiumHBS = new BigDecimal(0);
 		RateCardHB rateCardHB = rateCardHBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age,
 				term, chedat, chedat, chedat, chedat);
-		// System.out.println("HBS ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("HBS ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardHB.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -56,7 +56,7 @@ public class HBSServiceImpl implements HBSService {
 			throw new NullPointerException("HBS term not found at Age : " + age + " and Term : " + term);
 		}
 		premiumHBS = premiumHBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumHBS : "+premiumHBS.toString());
+		// //System.out.println("premiumHBS : "+premiumHBS.toString());
 		return premiumHBS;
 	}
 

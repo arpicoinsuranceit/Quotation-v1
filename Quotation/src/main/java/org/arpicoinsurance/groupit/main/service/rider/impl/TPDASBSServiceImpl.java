@@ -26,7 +26,7 @@ public class TPDASBSServiceImpl implements TPDASBSService {
 		RateCardTPDASB rateCardTPDASB = cardTPDASBDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("TPDASBS ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("TPDASBS ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -46,7 +46,7 @@ public class TPDASBSServiceImpl implements TPDASBSService {
 			throw new NullPointerException("TPDASBS Rate not found at Age : " + age + " and Term : " + term);
 		}
 		premiumTPDASBS = premiumTPDASBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumTPDASBS : "+premiumTPDASBS.toString());
+		// //System.out.println("premiumTPDASBS : "+premiumTPDASBS.toString());
 		return premiumTPDASBS;
 	}
 

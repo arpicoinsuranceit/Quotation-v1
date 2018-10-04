@@ -22,10 +22,10 @@ public class TPDASBServiceImpl implements TPDASBService{
 	public BigDecimal calculateTPDASB(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief, double occupation_loding)
 			throws Exception {
 		
-//		System.out.println("age :" +age + "term : " + term );
+//		//System.out.println("age :" +age + "term : " + term );
 		BigDecimal premiumTPDASB = new BigDecimal(0);
 		RateCardTPDASB rateCardTPDASB = cardTPDASBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
-//		System.out.println("TPDASB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());
+//		//System.out.println("TPDASB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());
 		try {
 			if(payFrequency.equalsIgnoreCase("S")){
 				// ((@rate@*@rider_sum_assured@/1000))*@relief@
@@ -39,7 +39,7 @@ public class TPDASBServiceImpl implements TPDASBService{
 		}
 		
 		premiumTPDASB = premiumTPDASB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-//		System.out.println("premiumTPDASB : "+premiumTPDASB.toString());
+//		//System.out.println("premiumTPDASB : "+premiumTPDASB.toString());
 		return premiumTPDASB;
 	}
 

@@ -35,7 +35,7 @@ public class Quo_Benef_DetailsController {
 	/*@RequestMapping(value="/quodetails",method=RequestMethod.POST)
 	public ArrayList<QuotationView> getQuotationByUserId(@RequestBody String id) {
 		try {
-			System.out.println(id);
+			//System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<QuotationView> detailList=(ArrayList<QuotationView>) quoBenefDetailService.getQuo_Benef_DetailsByQuoDetailId(quoId);
 			return detailList;
@@ -50,7 +50,7 @@ public class Quo_Benef_DetailsController {
 	@RequestMapping(value="/quodetails",method=RequestMethod.POST)
 	public ResponseEntity<Object> viewQuotationDetails(@RequestBody String id) {
 		try {
-			//System.out.println(id);
+			////System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetails(quoId);
 			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
@@ -65,9 +65,9 @@ public class Quo_Benef_DetailsController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,7 +79,7 @@ public class Quo_Benef_DetailsController {
 	@RequestMapping(value="/quodetailsView",method=RequestMethod.POST)
 	public ResponseEntity<Object> viewQuotationDetailsView(@RequestBody String id) {
 		try {
-			//System.out.println(id);
+			////System.out.println(id);
 			Integer quoId=Integer.valueOf(id);
 			ArrayList<ViewQuotation> detailList=(ArrayList<ViewQuotation>) quoBenefDetailService.getQuotationDetailsView(quoId);
 			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
@@ -94,9 +94,9 @@ public class Quo_Benef_DetailsController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -120,9 +120,9 @@ public class Quo_Benef_DetailsController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

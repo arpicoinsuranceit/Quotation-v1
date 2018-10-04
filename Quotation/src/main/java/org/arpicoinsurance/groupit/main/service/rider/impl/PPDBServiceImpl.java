@@ -14,7 +14,7 @@ public class PPDBServiceImpl implements PPDBService{
 
 	@Override
 	public BigDecimal calculatePPDB(double ridsumasu, String payFrequency, double relief, double occupation_loding) throws Exception {
-//		System.out.println("PPDB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
+//		//System.out.println("PPDB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumPPDB = new BigDecimal(0);
 		if(payFrequency.equalsIgnoreCase("S")){
 			//(((1*@rider_sum_assured@)/1000))*@relief@
@@ -25,7 +25,7 @@ public class PPDBServiceImpl implements PPDBService{
 		}
 
 		premiumPPDB = premiumPPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-//		System.out.println("premiumPPDB : "+premiumPPDB.toString());
+//		//System.out.println("premiumPPDB : "+premiumPPDB.toString());
 		return premiumPPDB;
 	}
 

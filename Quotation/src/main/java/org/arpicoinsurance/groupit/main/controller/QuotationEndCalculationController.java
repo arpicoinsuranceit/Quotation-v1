@@ -33,9 +33,9 @@ public class QuotationEndCalculationController {
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 
-		// System.out.println("called");
+		// //System.out.println("called");
 
-		// System.out.println(calculation.toString());
+		// //System.out.println(calculation.toString());
 
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
@@ -71,9 +71,9 @@ public class QuotationEndCalculationController {
 				
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,9 +131,9 @@ public class QuotationEndCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -199,9 +199,9 @@ public class QuotationEndCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

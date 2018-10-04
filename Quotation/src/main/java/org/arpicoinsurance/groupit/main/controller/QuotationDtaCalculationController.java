@@ -67,9 +67,9 @@ public class QuotationDtaCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,7 +87,7 @@ public class QuotationDtaCalculationController {
 
 	@RequestMapping(value = "/quoDtasave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveDta(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) {
-		// System.out.println(id);
+		// //System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -135,9 +135,9 @@ public class QuotationDtaCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -158,9 +158,9 @@ public class QuotationDtaCalculationController {
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
 
 		/*
-		 * System.out.println(userId); System.out.println(qdId);
-		 * System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
+		 * //System.out.println(userId); //System.out.println(qdId);
+		 * //System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		 * //System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
 		 * get_frequance());
 		 */
 		HashMap<String, Object> responseMap = new HashMap<>();
@@ -210,9 +210,9 @@ public class QuotationDtaCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

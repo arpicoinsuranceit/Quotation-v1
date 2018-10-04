@@ -26,7 +26,7 @@ public class FEBSServiceImpl implements FEBSService {
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("FEBS ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("FEBS ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -49,7 +49,7 @@ public class FEBSServiceImpl implements FEBSService {
 		}
 
 		premiumFEBS = premiumFEBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumFEBS : "+premiumFEBS.toString());
+		// //System.out.println("premiumFEBS : "+premiumFEBS.toString());
 		return premiumFEBS;
 	}
 

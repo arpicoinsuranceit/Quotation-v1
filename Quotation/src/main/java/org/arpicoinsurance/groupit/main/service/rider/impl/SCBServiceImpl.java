@@ -23,20 +23,20 @@ public class SCBServiceImpl implements SCBService {
 	public BigDecimal calculateSCB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief, double occupation_loding) throws Exception {
 
-		// System.out.println(age);
-		// System.out.println(term);
-		// System.out.println(chedat);
-		// System.out.println(ridsumasu);
-		// System.out.println(payFrequency);
-		// System.out.println(relief);
-		// System.out.println(occupation_loding);
+		// //System.out.println(age);
+		// //System.out.println(term);
+		// //System.out.println(chedat);
+		// //System.out.println(ridsumasu);
+		// //System.out.println(payFrequency);
+		// //System.out.println(relief);
+		// //System.out.println(occupation_loding);
 		//
 
 		BigDecimal premiumSCB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("SCB ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("SCB ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardATFESC.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -56,7 +56,7 @@ public class SCBServiceImpl implements SCBService {
 			throw new NullPointerException("SCB Rate not found at Age : " + age + " and Term : " + term);
 		}
 		premiumSCB = premiumSCB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumSCB : "+premiumSCB.toString());
+		// //System.out.println("premiumSCB : "+premiumSCB.toString());
 		return premiumSCB;
 	}
 

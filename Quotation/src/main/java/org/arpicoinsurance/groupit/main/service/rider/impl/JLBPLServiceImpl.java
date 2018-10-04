@@ -21,13 +21,13 @@ public class JLBPLServiceImpl implements JLBPLService {
 	@Override
 	public BigDecimal calculateJLBPL(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)
 			throws Exception {
-		//System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
+		////System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal premiumJLBPL = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
 
 			RateCardJLB rateCardJLB = rateCardJLBDao.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat, chedat, chedat, chedat);
-			//System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
+			////System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
 			
             //annuity for term
             double annuity = 1 + (intrat / 100);
@@ -57,19 +57,19 @@ public class JLBPLServiceImpl implements JLBPLService {
             premiumJLBPL = premiumJLBPL.add(premium);
 
             /*
-            System.out.println("polyer : "+ String.valueOf(i));
-            System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
-            System.out.println("outsum : "+ amount.toPlainString());
-            System.out.println("lonred : "+ reduction.toPlainString());
-            System.out.println("prmrat : "+ rateCardJLB.getRate());
-            System.out.println("premum : "+ premium.toPlainString());
+            //System.out.println("polyer : "+ String.valueOf(i));
+            //System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
+            //System.out.println("outsum : "+ amount.toPlainString());
+            //System.out.println("lonred : "+ reduction.toPlainString());
+            //System.out.println("prmrat : "+ rateCardJLB.getRate());
+            //System.out.println("premum : "+ premium.toPlainString());
 			*/
             amount = outstanding;
 
         }
 		
 		premiumJLBPL = premiumJLBPL.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		//System.out.println("premiumJLBPL : "+premiumJLBPL.toString());
+		////System.out.println("premiumJLBPL : "+premiumJLBPL.toString());
 		return premiumJLBPL;
 	}
 

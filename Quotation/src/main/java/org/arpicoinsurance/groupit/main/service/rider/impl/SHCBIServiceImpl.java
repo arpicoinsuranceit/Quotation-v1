@@ -26,9 +26,9 @@ public class SHCBIServiceImpl implements SHCBIService {
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(
 						age, age, age, age, sex, term, ridsumasu, chedat, chedat);
 
-		// System.out.println("Rate : "+rateCardSUHRB.getRate());
-		// System.out.println("Rate : "+rateCardHCBDIS.getRate());
-		// System.out.println("SUHRB age : "+age+" sex : "+sex+" ridsumasu :
+		// //System.out.println("Rate : "+rateCardSUHRB.getRate());
+		// //System.out.println("Rate : "+rateCardHCBDIS.getRate());
+		// //System.out.println("SUHRB age : "+age+" sex : "+sex+" ridsumasu :
 		// "+ridsumasu+" term : "+term+" payFrequency : "+payFrequency+" relief :
 		// "+relief+" Rate : "+rateCardSUHRB.getRate());
 		try {
@@ -48,7 +48,7 @@ public class SHCBIServiceImpl implements SHCBIService {
 		}
 
 		premiumSUHRB = premiumSUHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumSUHRB : "+premiumSUHRB.toString());
+		// //System.out.println("premiumSUHRB : "+premiumSUHRB.toString());
 		return premiumSUHRB;
 	}
 

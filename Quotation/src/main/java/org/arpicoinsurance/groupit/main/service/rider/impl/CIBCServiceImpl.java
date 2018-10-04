@@ -23,16 +23,16 @@ public class CIBCServiceImpl implements CIBCService {
 	public BigDecimal calculateCIBC(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
 			Double relief) throws Exception {
 		BigDecimal premiumCIBC = new BigDecimal(0);
-		// System.out.println(age + " $ " +term + " $ "+ chedat);
+		// //System.out.println(age + " $ " +term + " $ "+ chedat);
 
-		// System.out.println(term + "//////");
+		// //System.out.println(term + "//////");
 		RateCardCIBC rateCardCIBC = rateCardCIBCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
 
-		// System.out.println(" Rate : "+rateCardCIBC.getRate());
+		// //System.out.println(" Rate : "+rateCardCIBC.getRate());
 
-		// System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("CIBC ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIBC.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -53,7 +53,7 @@ public class CIBCServiceImpl implements CIBCService {
 		} catch (Exception e) {
 			throw new NullPointerException("CIBC Rate not found for Age : " + age + " and term : " + term);
 		}
-		// System.out.println("premiumCIBC : "+premiumCIBC.toString());
+		// //System.out.println("premiumCIBC : "+premiumCIBC.toString());
 		return premiumCIBC;
 	}
 

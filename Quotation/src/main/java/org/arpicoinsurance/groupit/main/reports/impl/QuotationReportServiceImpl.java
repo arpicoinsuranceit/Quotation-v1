@@ -1578,7 +1578,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				// System.out.println(bsa.getRiderCode());
+				// //System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -1860,7 +1860,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -2567,7 +2567,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -2658,7 +2658,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 * 
 		 * String spouseMedical = spouse.toString();
 		 * 
-		 * // System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+		 * // //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 		 * 
 		 * if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 		 * 
@@ -2689,7 +2689,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 
@@ -3221,7 +3221,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph("\n"));
 
 		if (benefitsLife.size() == 1) {
-			// System.out.println("sizeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 1" );
+			// //System.out.println("sizeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 1" );
 		} else {
 
 			document.add(new Paragraph("Benefits").setFontSize(10).setBold().setUnderline().setCharacterSpacing(1));
@@ -3377,7 +3377,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				// Getting ALL Benefits Name object and cast to an String
 				String p = (String) hashMap.get("benName");
 
-				// System.out.println("combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn "
+				// //System.out.println("combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn "
 				// +hashMap.get("combination"));
 				alCellBenf.add(new Paragraph(p).setFontSize(9).setTextAlignment(TextAlignment.LEFT));
 				benAddTable.addCell(alCellBenf);
@@ -4128,7 +4128,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				// System.out.println(bsa.getRiderCode());
+				// //System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -4408,7 +4408,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -5008,7 +5008,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -5039,7 +5039,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 
@@ -5601,7 +5601,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				// System.out.println(bsa.getRiderCode());
+				// //System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -5881,7 +5881,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -6480,7 +6480,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -6509,7 +6509,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 
@@ -7076,7 +7076,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf msfeb : benefitsLife) {
-				// System.out.println(msfeb.getRiderCode());
+				// //System.out.println(msfeb.getRiderCode());
 
 				if (msfeb.getRiderCode().equalsIgnoreCase("L10")) {
 
@@ -7354,7 +7354,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -7914,7 +7914,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -7943,7 +7943,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 
@@ -8043,7 +8043,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Override
 	public byte[] createARPReport(QuotationDetails quotationDetails, QuotationView quotationView,
 			QuoCustomer quoCustomer) throws Exception {
-		// System.out.println("8888888888");
+		// //System.out.println("8888888888");
 		String mainLifeOcc = quotationDetails.getCustomerDetails().getOccupation().getOcupationName();
 		String mainLifeOccupation = "";
 
@@ -8806,7 +8806,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -9574,7 +9574,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -9603,7 +9603,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 
@@ -9681,7 +9681,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				.setFontSize(8).setBold().setTextAlignment(TextAlignment.CENTER).setFixedPosition(50, 10, 500));
 
 		// Creating a VRIABLE TO GET THE NO OF PAGES
-		// System.out.println("number pagesssssssssssss " + pdf.getNumberOfPages());
+		// //System.out.println("number pagesssssssssssss " + pdf.getNumberOfPages());
 
 		int n = pdf.getNumberOfPages();
 		for (int i = 1; i <= n; i++) {
@@ -10790,7 +10790,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				if (hashMap.get("spouseAmt") != null) {
 					String comb = (String) hashMap.get("combination");
 
-					// System.out.println("benffff " + comb);
+					// //System.out.println("benffff " + comb);
 					/* If Spouse having WPB or HCBF Spouse Amount will print as APPLIED */
 					if (comb.equalsIgnoreCase("WPB") || comb.equalsIgnoreCase("HCBF")) {
 
@@ -11236,11 +11236,11 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 * 
 		 * } else if (quotationDetails.getPayMode().equalsIgnoreCase("Q")) { contriution
 		 * = contriution + (quotationDetails.getPremium() * 4);
-		 * System.out.println("Quartltyyyyyyyyyyyy " + contriution);
+		 * //System.out.println("Quartltyyyyyyyyyyyy " + contriution);
 		 * 
 		 * } else if (quotationDetails.getPayMode().equalsIgnoreCase("H")) { contriution
 		 * = contriution + (quotationDetails.getPremium() * 2);
-		 * System.out.println("half yearlyyyyyyyyyyyyyyyyyyyyyyyyyyyy " + contriution);
+		 * //System.out.println("half yearlyyyyyyyyyyyyyyyyyyyyyyyyyyyy " + contriution);
 		 * 
 		 * }
 		 * 
@@ -11362,7 +11362,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 * // getting Previous Year Calendar prevYear = Calendar.getInstance();
 		 * prevYear.add(Calendar.YEAR, -1);
 		 * 
-		 * // System.out.println("yearrrrrrrrrrrrrrrrr " +prevYear.get(Calendar.YEAR));
+		 * // //System.out.println("yearrrrrrrrrrrrrrrrr " +prevYear.get(Calendar.YEAR));
 		 * document.add(new
 		 * Paragraph("** Guranteed minimum dividend rate declared for Last Year "+
 		 * prevYear.get(Calendar.YEAR)).setFontSize(9));
@@ -11891,7 +11891,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else {
 
 			for (QuoBenf bsa : benefitsLife) {
-				// System.out.println(bsa.getRiderCode());
+				// //System.out.println(bsa.getRiderCode());
 
 				if (bsa.getRiderCode().equalsIgnoreCase("L2")) {
 
@@ -12170,7 +12170,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			String p = (String) hashMap.get("benName");
 			String maturity = (String) hashMap.get("combination");
 
-			// System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
+			// //System.out.println("Combinationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn " +
 			// maturity.equalsIgnoreCase("L3"));
 
 			// Check Maturity values not equl then Display
@@ -12852,7 +12852,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 				String spouseMedical = spouse.toString();
 
-				// System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
+				// //System.out.println("spouse medicalllllllllllllllll " + spouseMedical);
 
 				if (!spouseMedical.endsWith("NR") && !spouseMedical.isEmpty()) {
 
@@ -12881,7 +12881,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating A variable for Sum At Risk
 		Double fiveM = 5000000.00;
 
-		// System.out.println(
+		// //System.out.println(
 		// "sum at riskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
 		// quotationDetails.getSumAtRiskMain());
 

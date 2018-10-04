@@ -25,7 +25,7 @@ public class HBCServiceImpl implements HBCService {
 		BigDecimal premiumHBC = new BigDecimal(0);
 		RateCardHBC rateCardHBC = rateCardHBCDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term,
 				chedat, chedat, chedat, chedat);
-		// System.out.println("HBC ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("HBC ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardHBC.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -47,7 +47,7 @@ public class HBCServiceImpl implements HBCService {
 			throw new NullPointerException("HCB Rate not found at Term : " + term);
 		}
 
-		// System.out.println("premiumHBC : "+premiumHBC.toString());
+		// //System.out.println("premiumHBC : "+premiumHBC.toString());
 		return premiumHBC;
 	}
 

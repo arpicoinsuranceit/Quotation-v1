@@ -21,7 +21,7 @@ public class TPDDTASServiceImpl implements TPDDTASService {
 	@Override
 	public BigDecimal calculateTPDDTAS(int age, int term, double intrat, String sex, Date chedat, double loanamt,
 			double occupation_loding) throws Exception {
-		// System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
+		// //System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
 		// "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
 		BigDecimal amount = new BigDecimal(loanamt);
@@ -31,7 +31,7 @@ public class TPDDTASServiceImpl implements TPDDTASService {
 			RateCardTPDDTAS rateCardTPDDTAS = rateCardTPDDTASDao
 					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
 							chedat, chedat, chedat);
-			// System.out.println("rateCardTPDDTAS : "+ rateCardTPDDTAS.getRate());
+			// //System.out.println("rateCardTPDDTAS : "+ rateCardTPDDTAS.getRate());
 
 			// annuity for term
 			double annuity = 1 + (intrat / 100);
@@ -62,18 +62,18 @@ public class TPDDTASServiceImpl implements TPDDTASService {
 			premiumTPDDTAS = premiumTPDDTAS.add(premium);
 
 			/*
-			 * System.out.println("polyer : "+ String.valueOf(i));
-			 * System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
-			 * System.out.println("outsum : "+ amount.toPlainString());
-			 * System.out.println("lonred : "+ reduction.toPlainString());
-			 * System.out.println("prmrat : "+ rateCardTPDDTAS.getRate());
-			 * System.out.println("premum : "+ premium.toPlainString());
+			 * //System.out.println("polyer : "+ String.valueOf(i));
+			 * //System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
+			 * //System.out.println("outsum : "+ amount.toPlainString());
+			 * //System.out.println("lonred : "+ reduction.toPlainString());
+			 * //System.out.println("prmrat : "+ rateCardTPDDTAS.getRate());
+			 * //System.out.println("premum : "+ premium.toPlainString());
 			 */
 			amount = outstanding;
 
 		}
 		premiumTPDDTAS = premiumTPDDTAS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumTPDDTAS : "+premiumTPDDTAS.toString());
+		// //System.out.println("premiumTPDDTAS : "+premiumTPDDTAS.toString());
 		return premiumTPDDTAS;
 	}
 

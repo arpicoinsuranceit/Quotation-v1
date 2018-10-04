@@ -33,8 +33,8 @@ public class UserController {
 	@PostMapping("/uploadProf/{userCode:.+}")
 	public ResponseEntity<Object> saveUserProfilePicture(@RequestParam("image") MultipartFile image,
 			@PathVariable String userCode, RedirectAttributes redirectAttributes) {
-		// System.out.println("called");
-		// System.out.println(userCode);
+		// //System.out.println("called");
+		// //System.out.println(userCode);
 		String resp = "";
 		if (image.isEmpty()) {
 
@@ -53,9 +53,9 @@ public class UserController {
 				try {
 					logService.saveLog(logs);
 				} catch (Exception e1) {
-					System.out.println("... Error Message for Operation ...");
+					//System.out.println("... Error Message for Operation ...");
 					e.printStackTrace();
-					System.out.println("... Error Message for save log ...");
+					//System.out.println("... Error Message for save log ...");
 					e1.printStackTrace();
 				}
 				return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,9 +80,9 @@ public class UserController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -104,9 +104,9 @@ public class UserController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,9 +127,9 @@ public class UserController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -139,7 +139,7 @@ public class UserController {
 
 	@RequestMapping(value = "/approveUserProfile/{id:.+}", method = RequestMethod.GET)
 	public ResponseEntity<Object> approveImage(@PathVariable String id) {
-		// System.out.println(id);
+		// //System.out.println(id);
 		try {
 			return new ResponseEntity<Object>(userService.approveImage(id), HttpStatus.OK);
 		} catch (Exception e) {
@@ -151,9 +151,9 @@ public class UserController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -163,7 +163,7 @@ public class UserController {
 
 	@RequestMapping(value = "/rejectUserProfile/{id:.+}", method = RequestMethod.GET)
 	public ResponseEntity<Object> rejectImage(@PathVariable String id) {
-		// System.out.println(id);
+		// //System.out.println(id);
 		try {
 			return new ResponseEntity<Object>(userService.rejectImage(id), HttpStatus.OK);
 		} catch (Exception e) {
@@ -175,9 +175,9 @@ public class UserController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

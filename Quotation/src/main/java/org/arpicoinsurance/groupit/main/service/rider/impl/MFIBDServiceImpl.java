@@ -26,7 +26,7 @@ public class MFIBDServiceImpl implements MFIBDService {
 		RateCardMFIBD rateCardMFIBD = rateCardMFIBDDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("MFIBD ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("MFIBD ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardMFIBD.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -46,7 +46,7 @@ public class MFIBDServiceImpl implements MFIBDService {
 			throw new NullPointerException("MIDBD Rate not found at Age : " + age + "Term : " + term);
 		}
 		premiumMFIBD = premiumMFIBD.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumMFIBD : "+premiumMFIBD.toString());
+		// //System.out.println("premiumMFIBD : "+premiumMFIBD.toString());
 		return premiumMFIBD;
 	}
 

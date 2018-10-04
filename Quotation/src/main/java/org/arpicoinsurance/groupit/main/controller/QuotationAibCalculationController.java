@@ -53,9 +53,9 @@ public class QuotationAibCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,7 +66,7 @@ public class QuotationAibCalculationController {
 	@RequestMapping(value = "/quoAibsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAib(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,
 			@PathVariable Integer id) {
-		// System.out.println(id);
+		// //System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		try {
@@ -93,9 +93,9 @@ public class QuotationAibCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -140,9 +140,9 @@ public class QuotationAibCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
