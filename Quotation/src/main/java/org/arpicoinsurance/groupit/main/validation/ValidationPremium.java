@@ -299,12 +299,12 @@ public class ValidationPremium {
 		//System.out.println(frequency + "                    " + premium);
 		String val = "ok";
 
-		String error = "<table style=\"width: 100%\"><tr><td style=\"text-align: left\">Minimum Monthly total premium </td><td> : </td><td style=\"text-align: right\"> 2,000.00 </td></tr>"
-				+ "<tr><td style=\"text-align: left\">Minimum Quarterly total premium </td><td> : </td><td style=\"text-align: right\"> 6,000.00 </td></tr>"
-				+ "<tr><td style=\"text-align: left\">Minimum Half Yearly total premium </td><td> : </td><td style=\"text-align: right\"> 12,000.00 </td></tr>"
-				+ "<tr><td style=\"text-align: left\">Minimum Yearly total premium </td><td> : </td><td style=\"text-align: right\"> 12,000.00 </td></tr>"
-				+ "<tr><td style=\"text-align: left\">Minimum Single premium </td><td> : </td><td style=\"text-align: right\"> 12,000.00 </td></tr>"
-				+ "<tr><td style=\"text-align: left\">Minimum Single premium (45+) </td><td> : </td><td style=\"text-align: right\"> 24,000.00 </td></tr></table";
+		String error = "<table style=\"width: 100%\"><tr><td style=\"text-align: left\">Minimum Monthly total premium </td><td> : </td><td style=\"text-align: right\"> 3,000.00 </td></tr>"
+				+ "<tr><td style=\"text-align: left\">Minimum Quarterly total premium </td><td> : </td><td style=\"text-align: right\"> 5,000.00 </td></tr>"
+				+ "<tr><td style=\"text-align: left\">Minimum Half Yearly total premium </td><td> : </td><td style=\"text-align: right\"> 15,000.00 </td></tr>"
+				+ "<tr><td style=\"text-align: left\">Minimum Yearly total premium </td><td> : </td><td style=\"text-align: right\"> 36,000.00 </td></tr>"
+				+ "<tr><td style=\"text-align: left\">Minimum Single premium </td><td> : </td><td style=\"text-align: right\"> 50,000.00 </td></tr>"
+				+ "<tr><td style=\"text-align: left\">Minimum Single premium (45+) </td><td> : </td><td style=\"text-align: right\"> 100,000.00 </td></tr></table";
 
 		switch (frequency) {
 		case "M":
