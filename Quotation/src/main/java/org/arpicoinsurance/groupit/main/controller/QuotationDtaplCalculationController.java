@@ -3,6 +3,7 @@ package org.arpicoinsurance.groupit.main.controller;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -29,6 +30,9 @@ public class QuotationDtaplCalculationController {
 
 	@Autowired
 	private LogService logService;
+	
+	@Autowired
+	private CalculationUtils calculationUtils;
 
 	@RequestMapping(value = "/quoDtaplCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
@@ -88,11 +92,19 @@ public class QuotationDtaplCalculationController {
 
 	@RequestMapping(value = "/quoDtaplsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable Integer id) {
-		// //System.out.println(id);
+			@PathVariable Integer id) throws Exception {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
 
 		Validation validation = null;
 		try {
@@ -161,7 +173,7 @@ public class QuotationDtaplCalculationController {
 
 	@RequestMapping(value = "/quoDtaplEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editDtapl(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 
 		/*
 		 * //System.out.println(userId); //System.out.println(qdId);
@@ -172,6 +184,15 @@ public class QuotationDtaplCalculationController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
 
 		Validation validation = null;
 		try {
