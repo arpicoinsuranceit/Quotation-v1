@@ -32,6 +32,9 @@ public class QuotationAipCalculationController {
 
 	@Autowired
 	private LogService logService;
+	
+	@Autowired
+	private CalculationUtils calculationUtils;
 
 	@RequestMapping(value = "/aipCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAIP(@RequestBody Plan plan) throws Exception {
@@ -150,10 +153,19 @@ public class QuotationAipCalculationController {
 
 	@RequestMapping(value = "/aipSavequo/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveAIP(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,
-			@PathVariable Integer id) {
+			@PathVariable Integer id) throws Exception {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
-
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_mainlife().get_mMobile());
+		
+		if(!phone.equals("Error")) {
+			_invpSaveQuotation.get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		
 		Validation validation = new Validation();
 		String message = "Error";
 		if (_invpSaveQuotation != null) {
@@ -206,9 +218,18 @@ public class QuotationAipCalculationController {
 
 	@RequestMapping(value = "/quoAipEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editAip(@RequestBody InvpSavePersonalInfo _invpSaveQuotation,
-			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) {
+			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_mainlife().get_mMobile());
+		
+		if(!phone.equals("Error")) {
+			_invpSaveQuotation.get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
 
 		Validation validation = new Validation();
 		String message = "Error";

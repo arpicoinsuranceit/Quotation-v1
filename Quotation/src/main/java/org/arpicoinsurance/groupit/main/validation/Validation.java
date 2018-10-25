@@ -1393,7 +1393,6 @@ public class Validation {
 	}
 
 	public String validateAIP(Integer age, String frequance, Double contribution, Integer term) {
-
 		if (frequance.equals("S")) {
 			if (age <= 70) {
 				if (term >= 5) {
