@@ -50,6 +50,7 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,10 +124,13 @@ public class ASFPServiceImpl implements ASFPService {
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
+	@Autowired
+	private ValidationPremium validationPremium;
+
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
-		// System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term
+		// //System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term
 		// + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L10");
@@ -144,7 +148,7 @@ public class ASFPServiceImpl implements ASFPService {
 		RateCardASFP rateCardASFP = rateCardASFPDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("rateCardASFP : " + rateCardASFP.getRate());
+		// //System.out.println("rateCardASFP : " + rateCardASFP.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		try {
@@ -158,7 +162,7 @@ public class ASFPServiceImpl implements ASFPService {
 			throw new NullPointerException("Error at ASFP premium calculation");
 		}
 
-		// System.out.println("premium : " + premium.toString());
+		// //System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 		if (isAddOccuLoading) {
@@ -172,10 +176,10 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL2(int term, double msfb) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-		// System.out.println("term : " + term + " msfb : " + msfb);
+		// //System.out.println("term : " + term + " msfb : " + msfb);
 		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0,
 				RoundingMode.HALF_UP);
-		// System.out.println("maturity : " + maturity.toString());
+		// //System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -188,8 +192,8 @@ public class ASFPServiceImpl implements ASFPService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// System.out.println(rebate + " : rebate");
-			// System.out.println(quotationCalculation.get_personalInfo().getMsfb()
+			// //System.out.println(rebate + " : rebate");
+			// //System.out.println(quotationCalculation.get_personalInfo().getMsfb()
 			// + " quotationCalculation.get_personalInfo().getMsfb()");
 			BigDecimal bsa = calculateL2(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getMsfb());
@@ -207,7 +211,7 @@ public class ASFPServiceImpl implements ASFPService {
 					false);
 
 			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
-			// System.out.println(bsaYearly);
+			// //System.out.println(bsaYearly);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -277,12 +281,20 @@ public class ASFPServiceImpl implements ASFPService {
 		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
-		if (calResp.getTotPremium() < 1250) {
+		/*if (calResp.getTotPremium() < 1250) {
 			calResp.setErrorExist(true);
 			calResp.setError("Total premium must be greater than 1250");
-		}
+		}*/
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
+		
+		String valPrm = validationPremium.validateASFP(calculation.get_personalInfo().getFrequance(),
+				calResp.getTotPremium());
+
+		if (!valPrm.equalsIgnoreCase("ok")) {
+			responseMap.put("status", valPrm);
 			return responseMap;
 		}
 
@@ -437,7 +449,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -495,15 +507,23 @@ public class ASFPServiceImpl implements ASFPService {
 		}
 
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
-		if (calResp.getTotPremium() < 1250) {
-			calResp.setErrorExist(true);
-			calResp.setError("Total premium must be greater than 1250");
-		}
+//		if (calResp.getTotPremium() < 1250) {
+//			calResp.setErrorExist(true);
+//			calResp.setError("Total premium must be greater than 1250");
+//		}
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
 
+		String valPrm = validationPremium.validateASFP(calculation.get_personalInfo().getFrequance(),
+				calResp.getTotPremium());
+
+		if (!valPrm.equalsIgnoreCase("ok")) {
+			responseMap.put("status", valPrm);
+			return responseMap;
+		}
+		
 		Nominee nominee = null;
 
 		if (_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName() != null
@@ -686,7 +706,7 @@ public class ASFPServiceImpl implements ASFPService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

@@ -27,7 +27,7 @@ public class SFPOServiceImpl implements SFPOService {
 		RateCardSFPO rateCardSFPO = rateCardSFPODao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("SFPO ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("SFPO ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardSFPO.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -47,7 +47,7 @@ public class SFPOServiceImpl implements SFPOService {
 			throw new NullPointerException("SFPO Rate not found at Age : " + age + " and Term : " + term);
 		}
 		premiumSFPO = premiumSFPO.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumSFPO : "+premiumSFPO.toString());
+		// //System.out.println("premiumSFPO : "+premiumSFPO.toString());
 		return premiumSFPO;
 	}
 

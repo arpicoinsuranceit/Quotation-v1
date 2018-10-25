@@ -21,7 +21,7 @@ public class JLBServiceImpl implements JLBService {
 	@Override
 	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt,
 			double occupation_loding) throws Exception {
-		// System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
+		// //System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
 		// "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
 		BigDecimal amount = new BigDecimal(loanamt);
@@ -31,7 +31,7 @@ public class JLBServiceImpl implements JLBService {
 			RateCardJLB rateCardJLB = rateCardJLBDao
 					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
 							chedat, chedat, chedat);
-			// System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
+			// //System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
 
 			// annuity for term
 			double annuity = 1 + (intrat / 100);
@@ -62,19 +62,19 @@ public class JLBServiceImpl implements JLBService {
 			premiumJLB = premiumJLB.add(premium);
 
 			/*
-			 * System.out.println("polyer : "+ String.valueOf(i));
-			 * System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
-			 * System.out.println("outsum : "+ amount.toPlainString());
-			 * System.out.println("lonred : "+ reduction.toPlainString());
-			 * System.out.println("prmrat : "+ rateCardJLB.getRate());
-			 * System.out.println("premum : "+ premium.toPlainString());
+			 * //System.out.println("polyer : "+ String.valueOf(i));
+			 * //System.out.println("outyer : "+ String.valueOf(term - (i - 1)));
+			 * //System.out.println("outsum : "+ amount.toPlainString());
+			 * //System.out.println("lonred : "+ reduction.toPlainString());
+			 * //System.out.println("prmrat : "+ rateCardJLB.getRate());
+			 * //System.out.println("premum : "+ premium.toPlainString());
 			 */
 			amount = outstanding;
 
 		}
 
 		premiumJLB = premiumJLB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumJLB : "+premiumJLB.toString());
+		// //System.out.println("premiumJLB : "+premiumJLB.toString());
 		return premiumJLB;
 	}
 

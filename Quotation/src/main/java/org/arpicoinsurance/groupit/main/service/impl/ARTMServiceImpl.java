@@ -135,7 +135,7 @@ public class ARTMServiceImpl implements ARTMService {
 			QuotationCalculation calculation, String divrat, List<PensionShedule> pensionShedules, Integer level)
 			throws Exception {
 
-		//System.out.println(calculation.get_personalInfo().getRetAge()+" --- "+calculation.get_personalInfo().getMage());
+		////System.out.println(calculation.get_personalInfo().getRetAge()+" --- "+calculation.get_personalInfo().getMage());
 		Integer poltrm = calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage();
 		calculation.get_personalInfo().setTerm(poltrm);
 
@@ -153,7 +153,7 @@ public class ARTMServiceImpl implements ARTMService {
 		RateCardProductVar dividentRate = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", divrat,
 						"A", chedat, chedat, chedat, chedat);
-		//System.out.println("dividentRate : " + dividentRate.getDobval());
+		////System.out.println("dividentRate : " + dividentRate.getDobval());
 
 		BigDecimal contributionAmount = new BigDecimal(0);
 		BigDecimal commision = new BigDecimal(0);
@@ -174,7 +174,7 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 
 			commisionRatePara.setComyer(polyear);
-			//System.out.println("polyear : " + polyear);
+			////System.out.println("polyear : " + polyear);
 
 			if (i % 12 == 0) {
 				if (polyear <= 5) {
@@ -184,7 +184,7 @@ public class ARTMServiceImpl implements ARTMService {
 						throw new NullPointerException("Commotion Rate not found");
 					}
 
-//					System.out.println(
+//					//System.out.println(
 //					 "comsin : " + commisionRate.get("comsin") + " comper : " +
 //					 commisionRate.get("comper"));
 
@@ -210,7 +210,7 @@ public class ARTMServiceImpl implements ARTMService {
 					rateCardARTMExpences = rateCardARTMExpencesDao
 							.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 									polyear, polyear, polyear, polyear, paymod, chedat, chedat);
-					// //System.out.println("rateCardARTMExpences : " +
+					// ////System.out.println("rateCardARTMExpences : " +
 					// rateCardARTMExpences.getAmount()+" polyear : "+polyear+" paymod : "+paymod);
 				}
 				*/
@@ -223,7 +223,7 @@ public class ARTMServiceImpl implements ARTMService {
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
 				
-				//System.out.println("rateCardARTMExpences : " + rateCardARTMExpences.getAmount() +"rateCardARTMProfit : " + rateCardARTMProfit.getRate()+ " rateCardARTMVeriableExpences : "+rateCardARTMVeriableExpences.getRate());
+				////System.out.println("rateCardARTMExpences : " + rateCardARTMExpences.getAmount() +"rateCardARTMProfit : " + rateCardARTMProfit.getRate()+ " rateCardARTMVeriableExpences : "+rateCardARTMVeriableExpences.getRate());
 
 			}
 
@@ -293,7 +293,7 @@ public class ARTMServiceImpl implements ARTMService {
 					throw new NullPointerException("rateCardARTMVeriableExpences Error");
 				}
 
-				//System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision);
+				////System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision);
 
 				expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
 						BigDecimal.ROUND_HALF_UP);
@@ -314,9 +314,9 @@ public class ARTMServiceImpl implements ARTMService {
 				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
 			}
 
-//			 System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
+//			 //System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
 //			 + " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses+" closingFundAmount : " + closingFundAmount);
-			//System.out.println("closingFundAmount : " + closingFundAmount);
+			////System.out.println("closingFundAmount : " + closingFundAmount);
 			
 			expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
 					BigDecimal.ROUND_HALF_UP);
@@ -326,14 +326,14 @@ public class ARTMServiceImpl implements ARTMService {
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
 
-//			System.out.println("profit : " + profit);
+//			//System.out.println("profit : " + profit);
 
 			creditedFundAmount = contributionAmount.subtract(commision).subtract(veriableExpenses).subtract(expenses)
 					.subtract(profit).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			System.out.println("creditedFundAmount : " + creditedFundAmount);
+//			//System.out.println("creditedFundAmount : " + creditedFundAmount);
 
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			System.out.println("amountBeforeInterest : " + amountBeforeInterest);
+//			//System.out.println("amountBeforeInterest : " + amountBeforeInterest);
 
 			double intrat = 0.0;
 
@@ -344,13 +344,13 @@ public class ARTMServiceImpl implements ARTMService {
 			} catch (Exception e) {
 				throw new NullPointerException("Error at Divident Rate");
 			}
-//			System.out.println("intrat : " + intrat);
+//			//System.out.println("intrat : " + intrat);
 
 			interest = amountBeforeInterest.multiply(new BigDecimal(intrat)).setScale(4, BigDecimal.ROUND_HALF_UP);
 
-//			System.out.println("interest : " + interest);
+//			//System.out.println("interest : " + interest);
 			closingFundAmount = amountBeforeInterest.add(interest).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			System.out.println("closingFundAmount : " + closingFundAmount);
+//			//System.out.println("closingFundAmount : " + closingFundAmount);
 
 			pensionShedule.setPolyer(polyear);
 			Integer month = i + 1;
@@ -407,12 +407,12 @@ public class ARTMServiceImpl implements ARTMService {
 		RateCardProductVar repaymentRate = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", reprat,
 						"A", chedat, chedat, chedat, chedat);
-		// //System.out.println("repaymentRate : " + repaymentRate.getDobval());
+		// ////System.out.println("repaymentRate : " + repaymentRate.getDobval());
 
 		RateCardProductVar repaymentExpences = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", "repexp",
 						"A", chedat, chedat, chedat, chedat);
-		// //System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
+		// ////System.out.println("repaymentExpences : " + repaymentExpences.getDobval());
 		double reprate = 0.0;
 		try {
 			reprate = (1.0D - Math.pow(
@@ -426,7 +426,7 @@ public class ARTMServiceImpl implements ARTMService {
 		} catch (Exception e) {
 			throw new NullPointerException("Error at calculate Repayment Rate");
 		}
-		// //System.out.println("closingFundAmount : " + closingFundAmount + " reprate :
+		// ////System.out.println("closingFundAmount : " + closingFundAmount + " reprate :
 		// "
 		// + reprate);
 		// TODO calculate premium
@@ -439,10 +439,10 @@ public class ARTMServiceImpl implements ARTMService {
 		} catch (Exception e) {
 			throw new NullPointerException("Error at Calculate Repayment Expences");
 		}
-		// System.out.println("pensionPremium : " + pensionPremium + " repexp : " +
+		// //System.out.println("pensionPremium : " + pensionPremium + " repexp : " +
 		// repexp);
 		pensionPremium = pensionPremium.multiply(new BigDecimal(repexp));
-		// //System.out.println("pensionPremium : " + pensionPremium);
+		// ////System.out.println("pensionPremium : " + pensionPremium);
 		return pensionPremium.setScale(0, BigDecimal.ROUND_HALF_UP);
 	}
 
@@ -631,32 +631,32 @@ public class ARTMServiceImpl implements ARTMService {
 		 */
 		//
 		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
-		// //System.out.println("");
-		// //System.out.println(quo_Benef_Details.toString());
-		// //System.out.println("");
+		// ////System.out.println("");
+		// ////System.out.println(quo_Benef_Details.toString());
+		// ////System.out.println("");
 		// }
 		// =======
 		//
 		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
-		// //System.out.println("");
-		// //System.out.println(quo_Benef_Details.toString());
-		// //System.out.println("");
+		// ////System.out.println("");
+		// ////System.out.println(quo_Benef_Details.toString());
+		// ////System.out.println("");
 		// }
 		// >>>>>>> refs/remotes/origin/branch-120
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
-		// //System.out.println("custSave");
+		// ////System.out.println("custSave");
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
-		// //System.out.println("custDetailSaveSave");
+		// ////System.out.println("custDetailSaveSave");
 		ArrayList<CustChildDetails> custChildDList = null;
 		if (life != null && mainLifeDetails != null) {
 
 			if (spouse != null) {
 				Customer sp = customerDao.save(spouse);
-				// //System.out.println("custSSave");
+				// ////System.out.println("custSSave");
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
-				// //System.out.println("custSDetailSave");
+				// ////System.out.println("custSDetailSave");
 				if (sp == null && spDetsils != null) {
 					responseMap.put("status", "Error at Spouse Saving");
 					return responseMap;
@@ -664,9 +664,9 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 
 			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
-			// //System.out.println("childSave");
+			// ////System.out.println("childSave");
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
-			// //System.out.println("childDetailSave");
+			// ////System.out.println("childDetailSave");
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
 					responseMap.put("status", "Error at Child Saving");
@@ -675,7 +675,7 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 
 			quo = quotationDao.save(quotation);
-			// //System.out.println("quotationSave");
+			// ////System.out.println("quotationSave");
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			for (PensionShedule p : calResp.getPensionShedules()) {
@@ -693,7 +693,7 @@ public class ARTMServiceImpl implements ARTMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// ////System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -703,12 +703,12 @@ public class ARTMServiceImpl implements ARTMService {
 
 			if (quo != null && quoDetails != null) {
 				// for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
-				// //System.out.println(benef_Details2.toString());
-				// //System.out.println("");
+				// ////System.out.println(benef_Details2.toString());
+				// ////System.out.println("");
 				// }
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
-				// //System.out.println("benDetailsSave");
+				// ////System.out.println("benDetailsSave");
 				if (bnfdList != null) {
 
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
@@ -927,7 +927,7 @@ public class ARTMServiceImpl implements ARTMService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// ////System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -983,7 +983,7 @@ public class ARTMServiceImpl implements ARTMService {
  * calculationUtils = new CalculationUtils(); /// Calculate Rebate Premium ///
  * //Double rebate =
  * calculationUtils.getRebate(calculation.get_personalInfo().getFrequance());
- * ////System.out.println(rebate + " : rebate"); /// Calculate BSA Premium ///
+ * //////System.out.println(rebate + " : rebate"); /// Calculate BSA Premium ///
  * //BigDecimal bsaYearly =
  * calculateL2(quotationCalculation.get_personalInfo().getMocu(), //
  * quotationCalculation.get_personalInfo().getMage(), //

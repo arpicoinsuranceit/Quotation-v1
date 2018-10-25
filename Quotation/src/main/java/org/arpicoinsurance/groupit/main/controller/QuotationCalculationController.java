@@ -31,7 +31,7 @@ public class QuotationCalculationController {
 			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String parsedDate = formatter.format(initDate);
-			// System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
+			// //System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
 			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
 			LocalDate currentDate = LocalDate.now();
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
@@ -41,7 +41,7 @@ public class QuotationCalculationController {
 				if(diffInMonth<6) {
 					return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
 				}
-				//System.out.println(diffInMonth);
+				////System.out.println(diffInMonth);
 			}
 			diffInYears = diffInYears + 1;
 			return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
@@ -54,9 +54,9 @@ public class QuotationCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage() , HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,7 +71,7 @@ public class QuotationCalculationController {
 			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String parsedDate = formatter.format(initDate);
-			// System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
+			// //System.out.println(parsedDate+" ddddddddddddddddddddddddddddddddddddddd");
 			LocalDate dateOfBirth = LocalDate.parse(parsedDate);
 			LocalDate currentDate = LocalDate.now();
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
@@ -86,9 +86,9 @@ public class QuotationCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage() , HttpStatus.INTERNAL_SERVER_ERROR);
@@ -155,7 +155,7 @@ public class QuotationCalculationController {
 			
 			if (nic.length() == 9) {
 				year = (1900 + Integer.parseInt(nic.substring(0, 2)));
-				// System.out.println("---- "+nic);
+				// //System.out.println("---- "+nic);
 				day = Integer.parseInt(nic.substring(2, 5));
 			} else if (nic.length() == 12) {
 				year = Integer.parseInt(nic.substring(0, 4));
@@ -165,7 +165,7 @@ public class QuotationCalculationController {
 			
 			Date date = new SimpleDateFormat("D yyyy").parse(day + " " + year);
 			
-			System.out.println(new SimpleDateFormat("dd-MM-yyyy").format(date));
+			//System.out.println(new SimpleDateFormat("dd-MM-yyyy").format(date));
 
 			Integer[] daysofmonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -207,7 +207,7 @@ public class QuotationCalculationController {
 			map.put("DOB", birthday);
 			map.put("Gender", getGender(nic));
 
-			// System.out.println(birthday);
+			// //System.out.println(birthday);
 			return new ResponseEntity<Object>(map , HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -219,9 +219,9 @@ public class QuotationCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage() , HttpStatus.INTERNAL_SERVER_ERROR);

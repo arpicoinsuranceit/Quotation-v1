@@ -279,7 +279,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 		plan.setRetAge(details.getRetirmentAge());
 		plan.set_payingterm(details.getPaingTerm());
 
-		// System.out.println("paing term " + details.getPaingTerm());
+		// //System.out.println("paing term " + details.getPaingTerm());
 
 		switch (details.getPayMode()) {
 		case "M":
@@ -319,7 +319,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId, String type) throws Exception {
 		Quotation quotation = quotationService.getQuotation(quotationId);
 		if(type.equals("HO")) {
-			//System.out.println("ho");
+			////System.out.println("ho");
 			if (quotation != null && (quotation.getStatus().equals("active") || quotation.getStatus().equalsIgnoreCase("prop"))) {
 				QuotationDetails quotationDetails = quotationDetailsDao.findFirstByQuotationOrderByQdIdDesc(quotation);
 				if (quotationDetails != null) {

@@ -26,7 +26,7 @@ public class HRBFServiceImpl implements HRBFService {
 	public BigDecimal calculateHRBF(Integer age, Integer term, Double ridsumasu, Integer adlcnt, Integer chlcnt,
 			Date chedat, String payFrequency, Double relief, double occupation_loding) throws Exception {
 
-		// System.out.println(adlcnt +"##########"+ chlcnt+"##########"+
+		// //System.out.println(adlcnt +"##########"+ chlcnt+"##########"+
 		// term+"##########"+ age+"##########"+ ridsumasu+"##########"+ chlcnt);
 		BigDecimal premiumHRBF = new BigDecimal(0);
 
@@ -36,9 +36,9 @@ public class HRBFServiceImpl implements HRBFService {
 		RateCardHCBDIS rateCardHCBDIS = rateCardHCBDISDao
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 						age, age, age, age, chedat, chedat, chedat, chedat);
-		// System.out.println("Rate : "+rateCardHRBF.getRate());
-		// System.out.println("Rate : "+rateCardHCBDIS.getRate());
-		// System.out.println("HRB age : "+age+" ridsumasu : "+ridsumasu+" term :
+		// //System.out.println("Rate : "+rateCardHRBF.getRate());
+		// //System.out.println("Rate : "+rateCardHCBDIS.getRate());
+		// //System.out.println("HRB age : "+age+" ridsumasu : "+ridsumasu+" term :
 		// "+term+" payFrequency : "+payFrequency+" relief : "+relief+" Rate :
 		// "+rateCardHRBF.getRate());
 		try {
@@ -64,7 +64,7 @@ public class HRBFServiceImpl implements HRBFService {
 			throw new NullPointerException("HCBF Discount Rate not fount at Age : " + age);
 		}
 		premiumHRBF = premiumHRBF.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumHRBI : "+premiumHRBF.toString());
+		// //System.out.println("premiumHRBI : "+premiumHRBF.toString());
 		return premiumHRBF;
 	}
 

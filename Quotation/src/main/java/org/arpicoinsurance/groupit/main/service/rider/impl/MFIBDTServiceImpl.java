@@ -26,7 +26,7 @@ public class MFIBDTServiceImpl implements MFIBDTService {
 		RateCardMFIBDT rateCardMFIBDT = rateCardMFIBDTDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// System.out.println("MFIBDT ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("MFIBDT ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardMFIBDT.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -46,7 +46,7 @@ public class MFIBDTServiceImpl implements MFIBDTService {
 			throw new NullPointerException("MFIBDT Rate not available at Age : " + age + " and Term : " + term);
 		}
 		premiumMFIBDT = premiumMFIBDT.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumMFIBDT : "+premiumMFIBDT.toString());
+		// //System.out.println("premiumMFIBDT : "+premiumMFIBDT.toString());
 		return premiumMFIBDT;
 	}
 

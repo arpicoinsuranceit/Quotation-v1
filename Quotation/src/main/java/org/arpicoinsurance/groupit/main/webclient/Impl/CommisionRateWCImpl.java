@@ -13,7 +13,7 @@ public class CommisionRateWCImpl implements CommisionRateWC {
 	@Override
 	public HashMap<String, Double> getCommisionRate(CommisionRatePara commisionRatePara) throws Exception {
 		try {
-//			System.out.println(commisionRatePara.getPrdcod() + " " + commisionRatePara.getComyer() + " "
+//			//System.out.println(commisionRatePara.getPrdcod() + " " + commisionRatePara.getComyer() + " "
 //					+ commisionRatePara.getToterm());
 			//final String uri = "http://10.10.10.12:8080/Infosys/commisionRate";
 			final String uri = "http://10.10.10.11:8085/commisionRate";

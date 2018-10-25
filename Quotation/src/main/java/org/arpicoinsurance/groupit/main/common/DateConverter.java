@@ -7,7 +7,7 @@ import java.util.Date;
 public class DateConverter {
 	
 	public Date stringToDate (String stdate) {
-		//System.out.println(stdate+"=========================================");
+		////System.out.println(stdate+"=========================================");
 		Date initDate=null;
 		try {
 			initDate = new SimpleDateFormat("dd-MM-yyyy").parse(stdate);

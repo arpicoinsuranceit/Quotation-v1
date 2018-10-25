@@ -70,7 +70,7 @@ public class AIBServiceImpl implements AIBService {
 	@Override
 	public BigDecimal calculateAIBMaturaty(Integer term, Double adbrat, Double fundmarat, Double fundrat,
 			Double contribution, Date chedat, String paymod) throws Exception {
-		// System.out.println(contribution);
+		// //System.out.println(contribution);
 		CalculationUtils calculationUtils = new CalculationUtils();
 		BigDecimal maturity = new BigDecimal(0);
 		BigDecimal open_fund = new BigDecimal("0");
@@ -96,7 +96,7 @@ public class AIBServiceImpl implements AIBService {
 			throw new NullPointerException("AIB Rate not found at Term : " + term);
 		}
 
-		// System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : "
+		// //System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : "
 		// + fundmarat + " fundrat : "
 		// + fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
 		for (int i = 1; i <= term; i++) {
@@ -132,7 +132,7 @@ public class AIBServiceImpl implements AIBService {
 
 		}
 
-		// System.out.println("maturity : " + total_amount.toString());
+		// //System.out.println("maturity : " + total_amount.toString());
 		maturity = total_amount.setScale(0, BigDecimal.ROUND_UP);
 		return maturity;
 	}
@@ -150,7 +150,7 @@ public class AIBServiceImpl implements AIBService {
 		HashMap<String, Object> responseMap = new HashMap<>();
 
 		Products products = productDao.findByProductCode("AIB");
-		// System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
+		// //System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
 		// "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 		/*
@@ -300,7 +300,7 @@ public class AIBServiceImpl implements AIBService {
 		QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 
 		Products products = productDao.findByProductCode("AIB");
-		// System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
+		// //System.out.println(_invpSaveQuotation.get_plan().get_bsa() +
 		// "*********************");
 		Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 		/*

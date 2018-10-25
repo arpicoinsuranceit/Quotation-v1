@@ -124,7 +124,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					Child child = new Child();
 					child.setChildName(children.get_cName());
 					child.setChildGender(children.get_cTitle());
-					//System.out.println("children.get_cTitle()" + children.get_cTitle());
+					////System.out.println("children.get_cTitle()" + children.get_cTitle());
 					child.setChildDob(new DateConverter().stringToDate(children.get_cDob()));
 					child.setChildNic(children.get_cNic());
 					child.setChildRelation(children.get_cTitle().equals("F") ? "Daughter" : "Son");
@@ -174,47 +174,47 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			quotationDetails.setPremium(calResp.getBasicSumAssured());
 			switch (calculation.get_personalInfo().getFrequance()) {
 			case "M":
-				//System.out.println(calResp.getBasicSumAssured());
-				//System.out.println(calResp.getTotPremium());
-				//System.out.println(calResp.getExtraOE());
-				//System.out.println(adminFee);
-				//System.out.println(taxAmount);
+				////System.out.println(calResp.getBasicSumAssured());
+				////System.out.println(calResp.getTotPremium());
+				////System.out.println(calResp.getExtraOE());
+				////System.out.println(adminFee);
+				////System.out.println(taxAmount);
 				quotationDetails.setPremiumMonth(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumMonthT(calResp.getTotPremium());
 				break;
 			case "Q":
-				//System.out.println(calResp.getBasicSumAssured());
-				//System.out.println(calResp.getTotPremium());
-				//System.out.println(calResp.getExtraOE());
-				//System.out.println(adminFee);
-				//System.out.println(taxAmount);
+				////System.out.println(calResp.getBasicSumAssured());
+				////System.out.println(calResp.getTotPremium());
+				////System.out.println(calResp.getExtraOE());
+				////System.out.println(adminFee);
+				////System.out.println(taxAmount);
 				quotationDetails.setPremiumQuater(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumQuaterT(calResp.getTotPremium());
 				break;
 			case "H":
-				//System.out.println(calResp.getBasicSumAssured());
-				//System.out.println(calResp.getTotPremium());
-				//System.out.println(calResp.getExtraOE());
-				//System.out.println(adminFee);
-				//System.out.println(taxAmount);
+				////System.out.println(calResp.getBasicSumAssured());
+				////System.out.println(calResp.getTotPremium());
+				////System.out.println(calResp.getExtraOE());
+				////System.out.println(adminFee);
+				////System.out.println(taxAmount);
 				quotationDetails.setPremiumHalf(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumHalfT(calResp.getTotPremium());
 				break;
 			case "Y":
-				//System.out.println(calResp.getBasicSumAssured());
-				//System.out.println(calResp.getTotPremium());
-				//System.out.println(calResp.getExtraOE());
-				//System.out.println(adminFee);
-				//System.out.println(taxAmount);
+				////System.out.println(calResp.getBasicSumAssured());
+				////System.out.println(calResp.getTotPremium());
+				////System.out.println(calResp.getExtraOE());
+				////System.out.println(adminFee);
+				////System.out.println(taxAmount);
 				quotationDetails.setPremiumYear(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumYearT(calResp.getTotPremium());
 				break;
 			case "S":
-				//System.out.println(calResp.getBasicSumAssured());
-				//System.out.println(calResp.getTotPremium());
-				//System.out.println(calResp.getExtraOE());
-				//System.out.println(adminFee);
-				//System.out.println(taxAmount);
+				////System.out.println(calResp.getBasicSumAssured());
+				////System.out.println(calResp.getTotPremium());
+				////System.out.println(calResp.getExtraOE());
+				////System.out.println(adminFee);
+				////System.out.println(taxAmount);
 				quotationDetails.setPremiumSingle(calResp.getBasicSumAssured());
 				quotationDetails.setPremiumSingleT(calResp.getTotPremium());
 				break;
@@ -260,7 +260,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					if (benifict2 != null) {
 						benef_Details.setBenefit(benifict2);
 					} else {
-						//System.out.println("******************" + benifict.getType() + "******Error");
+						////System.out.println("******************" + benifict.getType() + "******Error");
 					}
 
 					benef_Details.setQuotationDetails(quotationDetails);
@@ -439,7 +439,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					if (benifict2 != null) {
 						benef_Details.setBenefit(benifict2);
 					} else {
-						//System.out.println("******************" + benifict.getType() + "******Error");
+						////System.out.println("******************" + benifict.getType() + "******Error");
 					}
 					benef_Details.setBenefit(benifict2);
 					benef_Details.setQuotationDetails(quotationDetails);
@@ -584,7 +584,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 					if (benifict2 != null) {
 						benef_Details.setBenefit(benifict2);
 					} else {
-						//System.out.println("******************" + benifict.getType() + "******Error");
+						////System.out.println("******************" + benifict.getType() + "******Error");
 					}
 					benef_Details.setBenefit(benifict2);
 					benef_Details.setQuotationDetails(quotationDetails);
@@ -660,7 +660,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 			for (Quo_Benef_Details benef_Details : benef_DetailsList) {
 				if (benef_Details.getRierCode() != null) {
 					String type = benef_Details.getRierCode();
-					//System.out.println(type + "Tttttttttttttttt");
+					////System.out.println(type + "Tttttttttttttttt");
 					switch (type) {
 					case "CIBC":
 						cibc_Benef_Details = benef_Details;
@@ -706,13 +706,13 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 		for (Children children : get_childrenList) {
 			for (Child child : childList) {
 				if (child.getChildName().equals(children.get_cName())) {
-					//System.out.println("hit*******************");
+					////System.out.println("hit*******************");
 					for (CustChildDetails childDetails : custChildDetailsList) {
 						if (childDetails.getChild().equals(child)) {
-							//System.out.println("hit1*******************");
+							////System.out.println("hit1*******************");
 
 							if (children.is_cCibc()) {
-								//System.out.println("addddddddddddddddddddddddddddddddddddddd1");
+								////System.out.println("addddddddddddddddddddddddddddddddddddddd1");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = 0; 
@@ -723,7 +723,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
 											"CIBC", term);
 								}
-								//System.out.println(valiedTerm + "//////////////////// valied term");
+								////System.out.println(valiedTerm + "//////////////////// valied term");
 								benef_Child_Details.setTerm(valiedTerm);
 								
 								
@@ -743,15 +743,15 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);
 								benef_Child_Details.setPremium(cibc.doubleValue());
-								//System.out.println(cibc_Benef_Details.getQuo_Benef_DetailsId()
+								////System.out.println(cibc_Benef_Details.getQuo_Benef_DetailsId()
 								//		+ "===============================================1");
 								benef_Child_Details.setQuo_Benef_Details(cibc_Benef_Details);
 								childBenifList.add(benef_Child_Details);
 							}
 							if (children.is_cSuhrbc()) {
-								//System.out.println("addddddddddddddddddddddddddddddddddddddd2");
+								////System.out.println("addddddddddddddddddddddddddddddddddddddd2");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
-								System.out.println(frequancy + "  :   sdfghjkl;fghjkl;'");
+								//System.out.println(frequancy + "  :   sdfghjkl;fghjkl;'");
 								Integer valiedTerm = 0; 
 								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
 									valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
@@ -761,7 +761,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 											"SHCBIC", term);
 								}
 								benef_Child_Details.setTerm(valiedTerm);
-								//System.out.println(children.get_cTitle() + "                                  test");
+								////System.out.println(children.get_cTitle() + "                                  test");
 								
 								if (calResp.isArp()) {
 									RateCardARP rateCardARP = rateCardARPDao
@@ -780,7 +780,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 								childBenifList.add(benef_Child_Details);
 							}
 							if (children.is_cHbc()) {
-								//System.out.println("addddddddddddddddddddddddddddddddddddddd3");
+								////System.out.println("addddddddddddddddddddddddddddddddddddddd3");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = 0; 
@@ -815,7 +815,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 							
 							/*
 							 * if (children.is_cHrbc()) {
-							 * System.out.println("addddddddddddddddddddddddddddddddddddddd4");
+							 * //System.out.println("addddddddddddddddddddddddddddddddddddddd4");
 							 * Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 							 * 
 							 * Integer valiedTerm =
@@ -828,11 +828,11 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 							 * childBenifList.add(benef_Child_Details); }
 							 */
 							if (children.is_cHrbic()) {
-								//System.out.println("addddddddddddddddddddddddddddddddddddddd4  called HRBIC");
+								////System.out.println("addddddddddddddddddddddddddddddddddddddd4  called HRBIC");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = 0; 
-								System.out.println(calResp.getPayTerm());
+								//System.out.println(calResp.getPayTerm());
 								if(calResp.isArtm() && !frequancy.equalsIgnoreCase("S")) {
 									try {
 										valiedTerm = calculateBenefictTerm.calculateBenifictTerm(children.get_cAge(),
@@ -865,7 +865,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 							}
 
 							if (children.is_cHrbfc()) {
-								//System.out.println("addddddddddddddddddddddddddddddddddddddd4");
+								////System.out.println("addddddddddddddddddddddddddddddddddddddd4");
 								Quo_Benef_Child_Details benef_Child_Details = new Quo_Benef_Child_Details();
 
 								Integer valiedTerm = 0; 

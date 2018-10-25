@@ -44,12 +44,12 @@ public class QuotationArtmCalculationController {
 	@RequestMapping(value = "/artmCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateATRM(@RequestBody QuotationCalculation calculation) {
 
-		//System.out.println(calculation.get_riderDetails().get_cRiders().toString());
+		////System.out.println(calculation.get_riderDetails().get_cRiders().toString());
 
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 
-			// System.out.println("call artm");
+			// //System.out.println("call artm");
 			Validation validation = new Validation(calculation);
 			String valError = validation.validateArtm(calculation);
 			if (valError.equals("ok")) {
@@ -58,9 +58,9 @@ public class QuotationArtmCalculationController {
 
 					calResp = artmService.getCalcutatedARTM(calculation, false);
 					
-					//System.out.println(calResp.getPensionPremium1());
-					//System.out.println(calResp.getPensionPremium2());
-					//System.out.println(calResp.getPensionPremium3());
+					////System.out.println(calResp.getPensionPremium1());
+					////System.out.println(calResp.getPensionPremium2());
+					////System.out.println(calResp.getPensionPremium3());
 
 					if (calResp.isErrorExist()) {
 						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
@@ -88,9 +88,9 @@ public class QuotationArtmCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -137,9 +137,9 @@ public class QuotationArtmCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -206,9 +206,9 @@ public class QuotationArtmCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -282,9 +282,9 @@ public class QuotationArtmCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

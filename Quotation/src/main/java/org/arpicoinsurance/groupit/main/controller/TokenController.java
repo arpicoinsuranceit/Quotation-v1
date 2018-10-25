@@ -114,9 +114,9 @@ public class TokenController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			throw new RuntimeException(e.getMessage());
@@ -153,9 +153,9 @@ public class TokenController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			throw new RuntimeException(e.getMessage());
@@ -202,9 +202,9 @@ public class TokenController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			throw new RuntimeException(e.getMessage());
@@ -220,7 +220,7 @@ public class TokenController {
 	 * session.setAttribute("log_list", logList);
 	 * 
 	 * ArrayList<Logs> logList2 = (ArrayList<Logs>)
-	 * session.getAttribute("log_list"); System.out.println(session.getId());
+	 * session.getAttribute("log_list"); //System.out.println(session.getId());
 	 * 
 	 * }
 	 */

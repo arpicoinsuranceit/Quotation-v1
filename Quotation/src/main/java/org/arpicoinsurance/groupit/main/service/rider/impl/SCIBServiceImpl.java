@@ -26,7 +26,7 @@ public class SCIBServiceImpl implements SCIBService {
 		BigDecimal premiumSCIB = new BigDecimal(0);
 		RateCardCIB rateCardCIB = rateCardCIBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
-		// System.out.println("SCIB ridsumasu : "+ridsumasu+" payFrequency :
+		// //System.out.println("SCIB ridsumasu : "+ridsumasu+" payFrequency :
 		// "+payFrequency+" relief : "+relief+" Rate : "+rateCardCIB.getRate());
 		try {
 			if (payFrequency.equalsIgnoreCase("S")) {
@@ -46,7 +46,7 @@ public class SCIBServiceImpl implements SCIBService {
 			throw new NullPointerException("SCIB Rate not found at Age : " + age + " and Term : " + term);
 		}
 		premiumSCIB = premiumSCIB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-		// System.out.println("premiumSCIB : "+premiumSCIB.toString());
+		// //System.out.println("premiumSCIB : "+premiumSCIB.toString());
 		return premiumSCIB;
 	}
 

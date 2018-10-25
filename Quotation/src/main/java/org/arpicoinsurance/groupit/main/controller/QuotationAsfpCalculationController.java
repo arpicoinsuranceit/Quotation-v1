@@ -38,7 +38,7 @@ public class QuotationAsfpCalculationController {
 
 	@RequestMapping(value = "/quoAsfpCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
-		// System.out.println(calculation.get_personalInfo().getMgenger());
+		// //System.out.println(calculation.get_personalInfo().getMgenger());
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
@@ -75,9 +75,9 @@ public class QuotationAsfpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,9 +86,14 @@ public class QuotationAsfpCalculationController {
 	}
 
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
+<<<<<<< HEAD
 	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) throws Exception {
 		// System.out.println(id);
+=======
+	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
+			@PathVariable Integer id) throws Exception {
+>>>>>>> refs/remotes/origin/branch-137
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -154,9 +159,9 @@ public class QuotationAsfpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -172,9 +177,10 @@ public class QuotationAsfpCalculationController {
 	}
 
 	@RequestMapping(value = "/quoAsfpEdit/{userId}/{qdId}", method = RequestMethod.POST)
+
 	public ResponseEntity<Object> editAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
-		// System.out.println(qdId);
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
@@ -228,9 +234,9 @@ public class QuotationAsfpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

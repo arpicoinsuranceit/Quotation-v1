@@ -40,9 +40,9 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 			riderCode = "SHCBIS";
 		if (riderCode.equals("CIBS"))
 			riderCode = "SCIB";
-//		System.out.println(age + "******************************************");
+//		//System.out.println(age + "******************************************");
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
-//		System.out.println(riderCode+ "******************************************");
+//		//System.out.println(riderCode+ "******************************************");
 		if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge()) {
 			Integer ageDiferance = benefits.getBenefitMaxAge() - age;
 			if (ageDiferance >= term) {
@@ -86,9 +86,9 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 
 		Benefits benefits = beneficeDao.findByRiderCode(riderCode);
 		
-//		System.out.println(benefits.getBenefitMaxAge());
-//		System.out.println(age);
-//		System.out.println(payTerm);
+//		//System.out.println(benefits.getBenefitMaxAge());
+//		//System.out.println(age);
+//		//System.out.println(payTerm);
 		// if (age >= benefits.getBenefitMinAge() && age <= benefits.getBenefitMaxAge())
 		// {
 		if (((benefits.getBenefitMaxAge() - age) - payTerm) >= 5) {
@@ -102,7 +102,7 @@ public class CalculateBenifictTermServiceImpl implements CalculateBenifictTermSe
 	 * public Integer calculateBenifictTermARP(Integer age, String riderCode,
 	 * Integer term, String payingTerm) throws Exception { if
 	 * (riderCode.equals("BSAS")) riderCode = "SCB"; if (riderCode.equals("CIBS"))
-	 * riderCode = "SCIB"; System.out.println(age +
+	 * riderCode = "SCIB"; //System.out.println(age +
 	 * "******************************************");
 	 * 
 	 * int payTerm = 0;

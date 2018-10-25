@@ -124,7 +124,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		DTAHelper dtaHelper = new DTAHelper();
 
-		// System.out.println(
+		// //System.out.println(
 		// "age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex
 		// + " loanamt : " + loanamt);
 
@@ -186,12 +186,12 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			total_premium = total_premium.add(occuLodingPremium);
 
-			// System.out.println("polyer : " + String.valueOf(i));
-			// System.out.println("outyer : " + String.valueOf(term - (i - 1)));
-			// System.out.println("outsum : " + amount.toPlainString());
-			// System.out.println("lonred : " + reduction.toPlainString());
-			// System.out.println("prmrat : " + rateCardDTA.getRate());
-			// System.out.println("premum : " + occuLodingPremium.toPlainString());
+			// //System.out.println("polyer : " + String.valueOf(i));
+			// //System.out.println("outyer : " + String.valueOf(term - (i - 1)));
+			// //System.out.println("outsum : " + amount.toPlainString());
+			// //System.out.println("lonred : " + reduction.toPlainString());
+			// //System.out.println("prmrat : " + rateCardDTA.getRate());
+			// //System.out.println("premum : " + occuLodingPremium.toPlainString());
 
 			amount = outstanding;
 
@@ -199,7 +199,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 		dtaHelper.setBsa(total_premium);
 		dtaHelper.setDtaSheduleList(dtaSheduleList);
-		// System.out.println("total_premium : " + total_premium.toString());
+		// //System.out.println("total_premium : " + total_premium.toString());
 		return dtaHelper;
 	}
 
@@ -212,7 +212,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// System.out.println(rebate + " : rebate");
+			// //System.out.println(rebate + " : rebate");
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(),
@@ -402,7 +402,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -597,7 +597,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

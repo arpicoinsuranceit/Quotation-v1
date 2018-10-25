@@ -69,9 +69,9 @@ public class QuotationArpCalculationConroller {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,8 +80,8 @@ public class QuotationArpCalculationConroller {
 	}
 
 	@RequestMapping(value = "/quoArpsave/{id}", method = RequestMethod.POST)
+
 	public ResponseEntity<Object> saveArp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) throws Exception {
-		// System.out.println(id);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		
@@ -138,9 +138,9 @@ public class QuotationArpCalculationConroller {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -159,9 +159,9 @@ public class QuotationArpCalculationConroller {
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 
 		/*
-		 * System.out.println(userId); System.out.println(qdId);
-		 * System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
+		 * //System.out.println(userId); //System.out.println(qdId);
+		 * //System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		 * //System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
 		 * get_frequance());
 		 */
 
@@ -222,9 +222,9 @@ public class QuotationArpCalculationConroller {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

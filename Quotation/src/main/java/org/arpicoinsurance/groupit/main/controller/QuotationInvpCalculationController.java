@@ -43,7 +43,7 @@ public class QuotationInvpCalculationController {
 			if (validation.validateInvpEndProd() == 1) {
 				String error = validation.validateBenifict();
 
-				// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+				// //System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 70) {
 					if (error.equals("No")) {
 						calResp = invpService.getCalcutatedInvp(calculation);
@@ -75,9 +75,9 @@ public class QuotationInvpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,9 +86,10 @@ public class QuotationInvpCalculationController {
 	}
 
 	@RequestMapping(value = "/quoInvpsave/{id}", method = RequestMethod.POST)
+
 	public ResponseEntity<Object> saveInvp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) throws Exception {
-		// System.out.println(id);
+		
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
@@ -116,7 +117,7 @@ public class QuotationInvpCalculationController {
 						if (validation.validateInvpEndProd() == 1) {
 							String error = validation.validateBenifict();
 
-							// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+							// //System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 							if (error.equals("No")) {
 								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
@@ -154,9 +155,9 @@ public class QuotationInvpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -175,9 +176,9 @@ public class QuotationInvpCalculationController {
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 
 		/*
-		 * System.out.println(userId); System.out.println(qdId);
-		 * System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
-		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
+		 * //System.out.println(userId); //System.out.println(qdId);
+		 * //System.out.println(_invpSaveQuotation.get_calPersonalInfo().getFrequance());
+		 * //System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
 		 * get_frequance());
 		 */
 		HashMap<String, Object> responseMap = new HashMap<>();
@@ -206,7 +207,7 @@ public class QuotationInvpCalculationController {
 						if (validation.validateInvpEndProd() == 1) {
 							String error = validation.validateBenifict();
 
-							// System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+							// //System.out.println(error + "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 							if (error.equals("No")) {
 								error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
@@ -244,9 +245,9 @@ public class QuotationInvpCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				System.out.println("... Error Message for Operation ...");
+				//System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				System.out.println("... Error Message for save log ...");
+				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
