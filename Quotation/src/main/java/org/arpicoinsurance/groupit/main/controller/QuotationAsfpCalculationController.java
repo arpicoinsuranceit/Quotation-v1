@@ -86,14 +86,10 @@ public class QuotationAsfpCalculationController {
 	}
 
 	@RequestMapping(value = "/quoAsfpsave/{id}", method = RequestMethod.POST)
-<<<<<<< HEAD
+
 	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable Integer id) throws Exception {
-		// System.out.println(id);
-=======
-	public ResponseEntity<Object> saveAsfp(@RequestBody InvpSaveQuotation _invpSaveQuotation,
-			@PathVariable Integer id) throws Exception {
->>>>>>> refs/remotes/origin/branch-137
+
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
