@@ -130,7 +130,8 @@ public class ASFPServiceImpl implements ASFPService {
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
-		// //System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " + term
+		// //System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " +
+		// term
 		// + " paytrm : " + paytrm);
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L10");
@@ -151,13 +152,25 @@ public class ASFPServiceImpl implements ASFPService {
 		// //System.out.println("rateCardASFP : " + rateCardASFP.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
+		/*
+		 * try { premium = ((((new BigDecimal(rateCardASFP.getRate()) .subtract(((new
+		 * BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
+		 * .divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new
+		 * BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb)))
+		 * .divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0,
+		 * RoundingMode.HALF_UP); } catch (Exception e) { throw new
+		 * NullPointerException("Error at ASFP premium calculation"); }
+		 */
+
+		// Calculation change 2018-11-01 premium multiply by 2 //
+		// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@)*2
 		try {
-			premium = ((((new BigDecimal(rateCardASFP.getRate())
+			premium = (((((new BigDecimal(rateCardASFP.getRate())
 					.subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
 							.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
 									RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb)))
-											.divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0,
-													RoundingMode.HALF_UP);
+											.divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP))
+													.multiply(new BigDecimal(2))).setScale(0, RoundingMode.HALF_UP);
 		} catch (Exception e) {
 			throw new NullPointerException("Error at ASFP premium calculation");
 		}
@@ -281,15 +294,15 @@ public class ASFPServiceImpl implements ASFPService {
 		Quotation quo = null;
 
 		QuotationQuickCalResponse calResp = getCalcutatedAsfp(calculation);
-		/*if (calResp.getTotPremium() < 1250) {
-			calResp.setErrorExist(true);
-			calResp.setError("Total premium must be greater than 1250");
-		}*/
+		/*
+		 * if (calResp.getTotPremium() < 1250) { calResp.setErrorExist(true);
+		 * calResp.setError("Total premium must be greater than 1250"); }
+		 */
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateASFP(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
 
@@ -409,7 +422,7 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		
+
 		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
@@ -523,7 +536,7 @@ public class ASFPServiceImpl implements ASFPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-		
+
 		Nominee nominee = null;
 
 		if (_invpSaveQuotation.get_personalInfo().get_plan().get_nomineeName() != null
