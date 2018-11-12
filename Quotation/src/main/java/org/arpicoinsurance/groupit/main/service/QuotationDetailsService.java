@@ -26,4 +26,7 @@ public interface QuotationDetailsService {
 	
 	public QuotationDetails findByQuotationAndSeqnum(Integer quoId,Integer seqnum) throws Exception;
 
+	public String checkNicValidation(String nic,String gender,Integer age,Integer seqNo,Integer qId) throws Exception;
+
+	
 }

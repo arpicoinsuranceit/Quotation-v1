@@ -409,7 +409,7 @@ public class ASFPServiceImpl implements ASFPService {
 		default:
 			break;
 		}
-		
+
 		benef_Details.setRiderSum(_invpSaveQuotation.get_personalInfo().get_plan().get_msfb());
 		benef_Details.setRiderTerm(quotationDetails.getPolTerm());
 
@@ -495,7 +495,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
 		Quotation quo = null;
 
@@ -593,8 +593,9 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quotation quotation = quotationDetails.getQuotation();
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
-
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);

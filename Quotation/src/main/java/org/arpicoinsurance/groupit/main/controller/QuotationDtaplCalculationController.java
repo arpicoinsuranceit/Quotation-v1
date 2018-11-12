@@ -217,7 +217,8 @@ public class QuotationDtaplCalculationController {
 							if (calculation.get_personalInfo().getMage()
 									+ calculation.get_personalInfo().getTerm() < 70) {
 
-								responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, userId, qdId,
+										1);
 							} else {
 								responseMap.replace("status", "Term is too large for mainlife age..");
 
@@ -262,7 +263,7 @@ public class QuotationDtaplCalculationController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoDtaplEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editDtaplUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
@@ -273,19 +274,19 @@ public class QuotationDtaplCalculationController {
 		 * System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().
 		 * get_frequance());
 		 */
-		
-		String userCode=new JwtDecoder().generate(token);
-		
+
+		String userCode = new JwtDecoder().generate(token);
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
-		Users user=null;
-		
+		Users user = null;
+
 		try {
 			if (userCode != null) {
-				user=usersService.getUserByUserCode(userCode);
+				user = usersService.getUserByUserCode(userCode);
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
@@ -300,7 +301,8 @@ public class QuotationDtaplCalculationController {
 							if (calculation.get_personalInfo().getMage()
 									+ calculation.get_personalInfo().getTerm() < 70) {
 
-								responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+								responseMap = dtaplService.editQuotation(calculation, _invpSaveQuotation,
+										user.getUserId(), qdId, 2);
 							} else {
 								responseMap.replace("status", "Term is too large for mainlife age..");
 

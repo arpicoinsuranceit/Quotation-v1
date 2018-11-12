@@ -7,7 +7,7 @@ import org.arpicoinsurance.groupit.main.helper.QuotationSearchProp;
 
 public interface QuotationReceiptService {
 	
-	public List<QuotationSearch> searchQuotation(String id) throws Exception;
+	public List<QuotationSearch> searchQuotation(String id, String token) throws Exception;
 	
 	public List<QuotationSearchProp> searchQuotationProp(String id) throws Exception;
 	

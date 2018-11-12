@@ -588,7 +588,7 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 			for (MedicalDetails medicalDetail : medicalDetailList) {
 				MediTestReceiptHelper mediTestReceiptHelper = new MediTestReceiptHelper();
 				mediTestReceiptHelper.setInsType(medicalDetail.getCustStatus());
-				mediTestReceiptHelper.setMediCode(medicalDetail.getMedicalReq().getMedCode());
+				mediTestReceiptHelper.setMediCode(medicalDetail.getMedicalReq().getCatCode());
 				mediTestReceiptHelper.setMediName(medicalDetail.getMedicalReq().getMedName());
 				
 				mediTestReceiptHelpers.add(mediTestReceiptHelper);

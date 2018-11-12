@@ -532,8 +532,8 @@ public class ARPServiceImpl implements ARPService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
-		//CalculationUtils calculationUtils = new CalculationUtils();
+			Integer userId, Integer qdId, Integer type) throws Exception {
+		// CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -559,7 +559,7 @@ public class ARPServiceImpl implements ARPService {
 		}
 
 
-		//Products products = productDao.findByProductCode("ARP");
+		// Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -571,7 +571,7 @@ public class ARPServiceImpl implements ARPService {
 				_invpSaveQuotation.get_personalInfo(), user);
 
 		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
-		
+
 		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
 		Customer spouse = null;
 		if (spouseDetail != null) {
@@ -612,8 +612,10 @@ public class ARPServiceImpl implements ARPService {
 
 		Quotation quotation = quotationDetails.getQuotation();
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
+		if (type == 1) {
+			quotation.setStatus("active");
 
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
@@ -653,7 +655,7 @@ public class ARPServiceImpl implements ARPService {
 				medicalDetailList.add(medicalDetail);
 			}
 		}
-		
+
 		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
 				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
 				_invpSaveQuotation.get_personalInfo().get_childrenList(),
@@ -852,9 +854,9 @@ public class ARPServiceImpl implements ARPService {
 						// //System.out.println("Rate : "+rateCardSurender != null ?
 						// rateCardSurender.getRate() : 0);
 						try {
-						surrender_val = (paidup_val
-								.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-										.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+							surrender_val = (paidup_val.multiply(
+									new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+											.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 						} catch (Exception e) {
 							throw new NullPointerException("Surrender Valuse calculation Error");
 						}
@@ -883,9 +885,9 @@ public class ARPServiceImpl implements ARPService {
 					// //System.out.println("Rate : "+(rateCardSurender == null ? 0 :
 					// rateCardSurender.getRate()));
 					try {
-					surrender_val = (paidup_val
-							.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-									.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+						surrender_val = (paidup_val
+								.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+										.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 					} catch (Exception e) {
 						throw new NullPointerException("Surrender Value Calculation Error");
 					}
@@ -914,9 +916,9 @@ public class ARPServiceImpl implements ARPService {
 				// //System.out.println("Rate : "+rateCardSurender != null ?
 				// rateCardSurender.getRate() : 0);
 				try {
-				surrender_val = (paidup_val
-						.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
-								.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
+					surrender_val = (paidup_val
+							.multiply(new BigDecimal((rateCardSurender == null ? 0 : rateCardSurender.getRate()))))
+									.divide(new BigDecimal(1000), 0, RoundingMode.HALF_UP);
 				} catch (Exception e) {
 					throw new NullPointerException("Surrender Value Calculation Error");
 				}

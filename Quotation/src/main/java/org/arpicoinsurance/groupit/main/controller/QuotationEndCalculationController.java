@@ -40,6 +40,7 @@ public class QuotationEndCalculationController {
 	@Autowired
 	private UsersService usersService;
 
+
 	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 
@@ -78,7 +79,7 @@ public class QuotationEndCalculationController {
 			logs.setHeading("Error");
 			logs.setOperation("calculateQuotation : QuotationEndCalculationController");
 			try {
-				
+
 				logService.saveLog(logs);
 			} catch (Exception e1) {
 				//System.out.println("... Error Message for Operation ...");
@@ -198,7 +199,8 @@ public class QuotationEndCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = endService.editQuotation(calculation, _invpSaveQuotation, userId, qdId);
+								responseMap = endService.editQuotation(calculation, _invpSaveQuotation, userId, qdId,
+										1);
 
 							} else {
 								responseMap.replace("status", error);
@@ -242,23 +244,23 @@ public class QuotationEndCalculationController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoEndEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEndUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
 
-		String userCode=new JwtDecoder().generate(token);
-		
+		String userCode = new JwtDecoder().generate(token);
+
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
 
 		Validation validation = null;
-		Users user=null;
-		
+		Users user = null;
+
 		try {
 			if (userCode != null) {
-				user=usersService.getUserByUserCode(userCode);
+				user = usersService.getUserByUserCode(userCode);
 				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
 					calculation = new QuotationCalculation();
 					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
@@ -271,7 +273,8 @@ public class QuotationEndCalculationController {
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 							if (error.equalsIgnoreCase("ok")) {
-								responseMap = endService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(), qdId);
+								responseMap = endService.editQuotation(calculation, _invpSaveQuotation,
+										user.getUserId(), qdId, 2);
 
 							} else {
 								responseMap.replace("status", error);

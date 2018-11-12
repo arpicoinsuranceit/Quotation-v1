@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -510,6 +511,91 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public String checkNicValidation(String nic, String gender, Integer age, Integer seqNo, Integer qId)
+			throws Exception {
+		
+		Quotation quotation=quotationDao.findById(qId);
+		QuotationDetails quotationDetails=quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+		
+		int year = 0;
+		int day = 0;
+		int bday = 0;
+		int month = 0;
+		if (nic.length() == 9) {
+			year = (1900 + Integer.parseInt(nic.substring(0, 2)));
+			// System.out.println("---- "+nic);
+			day = Integer.parseInt(nic.substring(2, 5));
+		} else if (nic.length() == 12) {
+			year = Integer.parseInt(nic.substring(0, 4));
+			day = Integer.parseInt(nic.substring(4, 7));
+		}
+
+		Integer[] daysofmonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+		int daystodate = 0;
+
+		if (day >= 500) {
+			day -= 500;
+		}
+
+		for (int i = 0; i < 12; ++i) {
+			daystodate += daysofmonth[i];
+			if (daystodate > day) {
+				month = i + 1;
+				bday = daysofmonth[i] - (daystodate - day);
+				break;
+			}
+		}
+
+		if (bday == 0) {
+			bday++;
+		}
+
+		String birthday = (bday < 10 ? ("0" + bday) : bday) + "-" + (month < 10 ? ("0" + month) : month) + "-"
+				+ (year > 1000 ? year : "19" + year);
+
+		Calendar dob = Calendar.getInstance();
+		dob.set(year, Integer.parseInt(month < 10 ? ("0" + month) : month + ""),
+				Integer.parseInt(bday < 10 ? ("0" + bday) : bday + ""));
+		
+		Calendar today = Calendar.getInstance();
+		today.setTime(quotationDetails.getQuotationquotationCreateDate());
+		
+		int newAge = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+		
+		if ((today.get(Calendar.MONTH) + 1) > dob.get(Calendar.MONTH)) {
+			newAge++;
+		} else if (((today.get(Calendar.MONTH) + 1) == (dob.get(Calendar.MONTH)))
+				&& today.get(Calendar.DAY_OF_MONTH) >= dob.get(Calendar.DAY_OF_MONTH)) {
+			newAge++;
+		}
+		
+		if(newAge == age && gender.equals(getGender(nic))) {
+			return "200";
+		}
+		
+		
+		return "204";
+		
+	}
+	
+	private String getGender(String nic) {
+		int day = 0;
+		if (nic.length() == 9) {
+			day = Integer.parseInt(nic.substring(2, 5));
+		} else if (nic.length() == 12) {
+			day = Integer.parseInt(nic.substring(4, 7));
+		}
+
+		if (day >= 500) {
+			return "F";
+		} else {
+			return "M";
+		}
+
 	}
 
 	

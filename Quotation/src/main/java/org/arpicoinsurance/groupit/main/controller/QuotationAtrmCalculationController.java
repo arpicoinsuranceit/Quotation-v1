@@ -209,7 +209,7 @@ public class QuotationAtrmCalculationController {
 							if (error.equalsIgnoreCase("ok")) {
 								if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
 									responseMap = atrmService.editQuotation(calculation, _invpSaveQuotation, userId,
-											qdId);
+											qdId, 1);
 								} else {
 									responseMap.replace("status", "Total Premium must be greater than 1250");
 								}
@@ -292,7 +292,7 @@ public class QuotationAtrmCalculationController {
 							if (error.equalsIgnoreCase("ok")) {
 								if (validation.validateInvpProdTotPremium(totPre).equals(1)) {
 									responseMap = atrmService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(),
-											qdId);
+											qdId, 2);
 								} else {
 									responseMap.replace("status", "Total Premium must be greater than 1250");
 								}

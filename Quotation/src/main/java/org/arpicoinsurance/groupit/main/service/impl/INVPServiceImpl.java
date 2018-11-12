@@ -140,7 +140,7 @@ public class INVPServiceImpl implements INVPService {
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getFrequance());
-			////System.out.println(rebate + " : rebate");
+
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
@@ -151,13 +151,15 @@ public class INVPServiceImpl implements INVPService {
 			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
 					quotationCalculation.get_personalInfo().getTerm(), 8.0, new Date(),
-					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false, 
+					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false,
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(), "M"));
+
 			
 			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
 			////System.out.println(bsaYearly);
 		////System.out.println(bsaYearly);
 			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -222,12 +224,12 @@ public class INVPServiceImpl implements INVPService {
 						chedat, chedat, chedat, chedat);
 		// //System.out.println("Pay Trm :" + paytrm);
 		try {
-		premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
-				.multiply(new BigDecimal(bassum)))
-						.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
-						.multiply((new BigDecimal(1).subtract(
-								(new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))))
-						.setScale(0, RoundingMode.HALF_UP);
+			premium = ((new BigDecimal(1000).divide(new BigDecimal(rateCardINVP.getSumasu()), 20, RoundingMode.HALF_UP))
+					.multiply(new BigDecimal(bassum)))
+							.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP)
+							.multiply((new BigDecimal(1).subtract(
+									(new BigDecimal(rebate).divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))))
+							.setScale(0, RoundingMode.HALF_UP);
 		} catch (Exception e) {
 			throw new NullPointerException("Error at INVP Premium Calculation");
 		}
@@ -257,8 +259,8 @@ public class INVPServiceImpl implements INVPService {
 		// //System.out.println("Rate : " + rateCardINVP.getRate());
 
 		try {
-		maturity = (new BigDecimal(rateCardINVP.getRate()).divide(new BigDecimal(rateCardINVP.getSumasu()), 20,
-				RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)).setScale(0, RoundingMode.HALF_UP);
+			maturity = (new BigDecimal(rateCardINVP.getRate()).divide(new BigDecimal(rateCardINVP.getSumasu()), 20,
+					RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum)).setScale(0, RoundingMode.HALF_UP);
 		} catch (Exception e) {
 			throw new NullPointerException("Calculate Maturity Error at INVP");
 		}
@@ -478,8 +480,8 @@ public class INVPServiceImpl implements INVPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Saving");
@@ -521,8 +523,8 @@ public class INVPServiceImpl implements INVPService {
 		// premium + " paytrm : " + paytrm
 		// + " Rate : " + rateCardATFESC.getRate());
 		try {
-		lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
-				.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
+			lifpos = ((new BigDecimal(bassum).multiply(new BigDecimal(rateCardATFESC.getRate())))
+					.divide(new BigDecimal("1000"))).divide(new BigDecimal(paytrm), 4, RoundingMode.DOWN);
 		} catch (Exception e) {
 			throw new NullPointerException("Error at Life Position Calcuate");
 		}
@@ -533,7 +535,7 @@ public class INVPServiceImpl implements INVPService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
 		CalculationUtils calculationUtils = new CalculationUtils();
 
@@ -560,7 +562,7 @@ public class INVPServiceImpl implements INVPService {
 			return responseMap;
 		}
 		
-		//Products products = productDao.findByProductCode("INVP");
+
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -614,8 +616,10 @@ public class INVPServiceImpl implements INVPService {
 		Quotation quotation = quotationDetails.getQuotation();
 
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
+		if (type == 1) {
+			quotation.setStatus("active");
 
+		}
 		Double lifePos = getInvestLifePremium(calculation.get_personalInfo().getMage(),
 				calculation.get_personalInfo().getTerm(), new Date(), calculation.get_personalInfo().getBsa(),
 				calResp.getBasicSumAssured(),
@@ -751,8 +755,8 @@ public class INVPServiceImpl implements INVPService {
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
 							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
 							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
-							calculation.get_personalInfo().getFrequance(),
-							calculation.get_riderDetails().get_cRiders(),calResp);
+							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+							calResp);
 
 					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
 						responseMap.put("status", "Error at Child Benifict Updating");

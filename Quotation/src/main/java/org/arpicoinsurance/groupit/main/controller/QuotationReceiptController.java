@@ -56,10 +56,11 @@ public class QuotationReceiptController {
 	@Autowired
 	private PensionSheduleService pensionSheduleService;
 
-	@RequestMapping(value = "/quotationsearch/{id}")
-	public List<QuotationSearch> getQuotationList(@PathVariable String id) {
+	@RequestMapping(value = "/quotationsearch/{id}/{token:.+}")
+	public List<QuotationSearch> getQuotationList(@PathVariable String id, @PathVariable String token) {
+		System.out.println(token);
 		try {
-			return quotationReceiptService.searchQuotation(id);
+			return quotationReceiptService.searchQuotation(id, token);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -198,6 +199,19 @@ public class QuotationReceiptController {
 		}
 
 		return new ArrayList<Nominee>();
+	}
+	
+	@RequestMapping(value = "/checkNicValidation", method = RequestMethod.POST)
+	public String checkNicValidation (@RequestParam("nic") String nic,@RequestParam("gender") String gender,@RequestParam("age") String age,@RequestParam("seqNo") String seqNo, @RequestParam("qId") String qId){
+		System.out.println("checkNicValidation");
+		
+		try {
+			return quotationDetailService.checkNicValidation(nic, gender, Integer.valueOf(age), Integer.valueOf(seqNo), Integer.valueOf(qId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

@@ -19,6 +19,6 @@ public interface ENDService {
 	HashMap<String, Object> saveQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,Integer id) throws Exception;
 
 	HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation, Integer userId,
-			Integer qdId)throws Exception;
+			Integer qdId, Integer type)throws Exception;
 
 }

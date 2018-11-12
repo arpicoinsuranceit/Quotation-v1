@@ -210,7 +210,6 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
@@ -441,7 +440,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 		QuotationQuickCalResponse calResp = getCalcutatedDta(calculation);
 
 		Quotation quo = null;
@@ -457,7 +456,7 @@ public class DTAPLServiceImpl implements DTAPLService {
 			return responseMap;
 		}
 
-		//Products products = productDao.findByProductCode("DTAPL");
+		// Products products = productDao.findByProductCode("DTAPL");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -496,10 +495,11 @@ public class DTAPLServiceImpl implements DTAPLService {
 		mainLifeDetail.setCustomer(mainlife);
 
 		Quotation quotation = quotationDetails.getQuotation();
-		
-		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
 
+		Integer count = quotationDetailDao.countByQuotation(quotation);
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);

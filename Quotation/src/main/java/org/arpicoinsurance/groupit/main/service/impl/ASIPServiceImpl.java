@@ -137,7 +137,6 @@ public class ASIPServiceImpl implements ASIPService {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getTerm(), quotationCalculation.get_personalInfo().getBsa(),
 					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
@@ -260,11 +259,10 @@ public class ASIPServiceImpl implements ASIPService {
 					.findByTermAndPolyearAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, polyear, chedat,
 							chedat, chedat, chedat);
 			BigDecimal fund_allo_rate = null;
-			
+
 			try {
-				fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2,
-						BigDecimal.ROUND_HALF_UP);
-			}catch (Exception e) {
+				fund_allo_rate = new BigDecimal(rateCardASIPFund.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
+			} catch (Exception e) {
 				throw new NullPointerException("ASIP FUND Rates not found");
 			}
 
@@ -555,9 +553,9 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
-		//CalculationUtils calculationUtils = new CalculationUtils();
+		// CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -582,7 +580,7 @@ public class ASIPServiceImpl implements ASIPService {
 			return responseMap;
 		}
 		
-		//Products products = productDao.findByProductCode("INVP");
+
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -636,8 +634,9 @@ public class ASIPServiceImpl implements ASIPService {
 		Quotation quotation = quotationDetails.getQuotation();
 
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
-
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);

@@ -135,7 +135,7 @@ public class ARTMServiceImpl implements ARTMService {
 			QuotationCalculation calculation, String divrat, List<PensionShedule> pensionShedules, Integer level)
 			throws Exception {
 
-		////System.out.println(calculation.get_personalInfo().getRetAge()+" --- "+calculation.get_personalInfo().getMage());
+
 		Integer poltrm = calculation.get_personalInfo().getRetAge() - calculation.get_personalInfo().getMage();
 		calculation.get_personalInfo().setTerm(poltrm);
 
@@ -153,7 +153,7 @@ public class ARTMServiceImpl implements ARTMService {
 		RateCardProductVar dividentRate = rateCardProductVarDao
 				.findByPrdcodAndPracodAndPramodAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat("ARTM", divrat,
 						"A", chedat, chedat, chedat, chedat);
-		////System.out.println("dividentRate : " + dividentRate.getDobval());
+
 
 		BigDecimal contributionAmount = new BigDecimal(0);
 		BigDecimal commision = new BigDecimal(0);
@@ -174,7 +174,6 @@ public class ARTMServiceImpl implements ARTMService {
 			}
 
 			commisionRatePara.setComyer(polyear);
-			////System.out.println("polyear : " + polyear);
 
 			if (i % 12 == 0) {
 				if (polyear <= 5) {
@@ -184,9 +183,6 @@ public class ARTMServiceImpl implements ARTMService {
 						throw new NullPointerException("Commotion Rate not found");
 					}
 
-//					//System.out.println(
-//					 "comsin : " + commisionRate.get("comsin") + " comper : " +
-//					 commisionRate.get("comper"));
 
 				} else {
 					commisionRate = new HashMap<String, Double>();
@@ -215,15 +211,14 @@ public class ARTMServiceImpl implements ARTMService {
 				}
 				*/
 				
+
 				rateCardARTMExpences = rateCardARTMExpencesDao
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
-				
+
 				rateCardARTMProfit = rateCardARTMProfitDao
 						.findByPolyertoOrPolyertoLessThanAndPolyerfromOrPolyerfromGreaterThanAndPaymodAndStrdatLessThanOrStrdat(
 								polyear, polyear, polyear, polyear, paymod, chedat, chedat);
-				
-				////System.out.println("rateCardARTMExpences : " + rateCardARTMExpences.getAmount() +"rateCardARTMProfit : " + rateCardARTMProfit.getRate()+ " rateCardARTMVeriableExpences : "+rateCardARTMVeriableExpences.getRate());
 
 			}
 
@@ -293,47 +288,45 @@ public class ARTMServiceImpl implements ARTMService {
 					throw new NullPointerException("rateCardARTMVeriableExpences Error");
 				}
 
-				////System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision);
+
 
 				expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
 						BigDecimal.ROUND_HALF_UP);
 
 
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				// pensionShedule.setExpenses(expenses.setScale(2,
+				// RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 
 			} else {
 				contributionAmount = new BigDecimal(0);
 				commision = new BigDecimal(0);
 				veriableExpenses = new BigDecimal(0);
-				//expenses = new BigDecimal(0);
+				// expenses = new BigDecimal(0);
 
 				pensionShedule.setCommision(commision.setScale(0, RoundingMode.HALF_UP).doubleValue());
 				pensionShedule.setContribution(contributionAmount.setScale(0, RoundingMode.HALF_UP).doubleValue());
-				//pensionShedule.setExpenses(expenses.setScale(2, RoundingMode.HALF_UP).doubleValue());
+				// pensionShedule.setExpenses(expenses.setScale(2,
+				// RoundingMode.HALF_UP).doubleValue());
 			}
 
-//			 //System.out.println("contributionAmount : " + contributionAmount + " commision : " + commision
-//			 + " Expenses : " + expenses + " veriableExpenses : " + veriableExpenses+" closingFundAmount : " + closingFundAmount);
-			////System.out.println("closingFundAmount : " + closingFundAmount);
-			
+
 			expenses = new BigDecimal(rateCardARTMExpences.getAmount()).divide(new BigDecimal(12), 2,
 					BigDecimal.ROUND_HALF_UP);
-			
+
 			profit = closingFundAmount
 					.multiply(((new BigDecimal(rateCardARTMProfit.getRate()).divide(new BigDecimal(100)))
 							.divide(new BigDecimal(12), 10, BigDecimal.ROUND_HALF_UP)))
 					.setScale(2, BigDecimal.ROUND_HALF_UP);
 
-//			//System.out.println("profit : " + profit);
+
 
 			creditedFundAmount = contributionAmount.subtract(commision).subtract(veriableExpenses).subtract(expenses)
 					.subtract(profit).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			//System.out.println("creditedFundAmount : " + creditedFundAmount);
 
 			amountBeforeInterest = closingFundAmount.add(creditedFundAmount).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			//System.out.println("amountBeforeInterest : " + amountBeforeInterest);
+
 
 			double intrat = 0.0;
 
@@ -344,13 +337,12 @@ public class ARTMServiceImpl implements ARTMService {
 			} catch (Exception e) {
 				throw new NullPointerException("Error at Divident Rate");
 			}
-//			//System.out.println("intrat : " + intrat);
+
 
 			interest = amountBeforeInterest.multiply(new BigDecimal(intrat)).setScale(4, BigDecimal.ROUND_HALF_UP);
 
-//			//System.out.println("interest : " + interest);
+
 			closingFundAmount = amountBeforeInterest.add(interest).setScale(4, BigDecimal.ROUND_HALF_UP);
-//			//System.out.println("closingFundAmount : " + closingFundAmount);
 
 			pensionShedule.setPolyer(polyear);
 			Integer month = i + 1;
@@ -474,13 +466,12 @@ public class ARTMServiceImpl implements ARTMService {
 			List<PensionShedule> pensionShedules = new ArrayList<>();
 
 			calResp.setAt6(calculateMaturity(false, calResp, calculation, "divrat1", pensionShedules, 1).doubleValue());
-			
+
 			calResp.setAt8(
 					calculateMaturity(printShedule, calResp, calculation, "divrat2", pensionShedules, 2).doubleValue());
 			calResp.setAt10(
 					calculateMaturity(false, calResp, calculation, "divrat3", pensionShedules, 3).doubleValue());
 
-			 
 			if (printShedule) {
 				calResp.setPensionShedules(pensionShedules);
 			}
@@ -744,9 +735,9 @@ public class ARTMServiceImpl implements ARTMService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
-		//CalculationUtils calculationUtils = new CalculationUtils();
+		// CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
 
@@ -759,7 +750,7 @@ public class ARTMServiceImpl implements ARTMService {
 			return responseMap;
 		}
 
-		//Products products = productDao.findByProductCode("ARTM");
+		// Products products = productDao.findByProductCode("ARTM");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -813,8 +804,9 @@ public class ARTMServiceImpl implements ARTMService {
 		Quotation quotation = quotationDetails.getQuotation();
 
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
-
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
