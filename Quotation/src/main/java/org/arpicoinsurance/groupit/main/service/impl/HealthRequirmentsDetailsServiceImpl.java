@@ -10,12 +10,20 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.arpicoinsurance.groupit.main.dao.MediGridDao;
+import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
+import org.arpicoinsurance.groupit.main.helper.MediTestReceiptHelper;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.model.MediTestGrid;
+import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalReq;
+import org.arpicoinsurance.groupit.main.model.Quotation;
+import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +36,19 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 
 	@Autowired
 	private MedicalReqDao medicalReqDao;
+	
+	@Autowired
+	private MedicalDetailsDao medicalDetailsDao;
+	
+	@Autowired
+	private QuotationDetailsService quotationDetailService;
+	
+	@Autowired
+	private QuotationDao quotationDao;
 
+	@Autowired
+	private QuotationDetailsDao quotationDetailsDao;
+	
 	@Override
 	public HashMap<String, Object> getSumAtRiskDetailsMainLife(QuotationCalculation calculation) {
 
@@ -551,6 +571,29 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		}
 
 		return new ArrayList<>(new HashSet<>(mediTestList));
+	}
+
+	@Override
+	public List<MediTestReceiptHelper> getMediTestByQuoDetails(Integer qId, Integer seqNo) throws Exception {
+		Quotation quotation = quotationDao.findById(qId);
+		
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+		
+		List<MediTestReceiptHelper> mediTestReceiptHelpers = new ArrayList<>();
+		if(details != null) {
+			List<MedicalDetails> medicalDetailList = medicalDetailsDao.findByQuotationDetails(details);
+			for (MedicalDetails medicalDetail : medicalDetailList) {
+				MediTestReceiptHelper mediTestReceiptHelper = new MediTestReceiptHelper();
+				mediTestReceiptHelper.setInsType(medicalDetail.getCustStatus());
+				mediTestReceiptHelper.setMediCode(medicalDetail.getMedicalReq().getCatCode());
+				mediTestReceiptHelper.setMediName(medicalDetail.getMedicalReq().getMedName());
+				
+				mediTestReceiptHelpers.add(mediTestReceiptHelper);
+			}
+			
+			
+		}
+		return mediTestReceiptHelpers;
 	}
 
 }

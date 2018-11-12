@@ -16,6 +16,14 @@ public class Plan {
 	private Integer pensionPaingTerm;
 	private Integer retAge;
 	private Integer age;
+	private Double policyFee;
+	private Double adminFee;
+	private Double tax;
+	private Double grsprm;
+	private Double invPos;
+	private Double lifePos;
+	private Double sumatRiskMain;
+	private Double sumatRiskSpouse;
 	
 	
 	public Integer get_term() {
@@ -107,6 +115,54 @@ public class Plan {
 	}
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+	public Double getPolicyFee() {
+		return policyFee;
+	}
+	public void setPolicyFee(Double policyFee) {
+		this.policyFee = policyFee;
+	}
+	public Double getAdminFee() {
+		return adminFee;
+	}
+	public void setAdminFee(Double adminFee) {
+		this.adminFee = adminFee;
+	}
+	public Double getTax() {
+		return tax;
+	}
+	public void setTax(Double tax) {
+		this.tax = tax;
+	}
+	public Double getGrsprm() {
+		return grsprm;
+	}
+	public void setGrsprm(Double grsprm) {
+		this.grsprm = grsprm;
+	}
+	public Double getInvPos() {
+		return invPos;
+	}
+	public void setInvPos(Double invPos) {
+		this.invPos = invPos;
+	}
+	public Double getLifePos() {
+		return lifePos;
+	}
+	public void setLifePos(Double lifePos) {
+		this.lifePos = lifePos;
+	}
+	public Double getSumatRiskMain() {
+		return sumatRiskMain;
+	}
+	public void setSumatRiskMain(Double sumatRiskMain) {
+		this.sumatRiskMain = sumatRiskMain;
+	}
+	public Double getSumatRiskSpouse() {
+		return sumatRiskSpouse;
+	}
+	public void setSumatRiskSpouse(Double sumatRiskSpouse) {
+		this.sumatRiskSpouse = sumatRiskSpouse;
 	}
 	
 	@Override

@@ -4,12 +4,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import javax.transaction.Transactional;
 import org.arpicoinsurance.groupit.main.dao.NomineeDao;
+import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.EditQuotation;
@@ -17,6 +19,7 @@ import org.arpicoinsurance.groupit.main.helper.MainLife;
 import org.arpicoinsurance.groupit.main.helper.Plan;
 import org.arpicoinsurance.groupit.main.helper.QuoBenf;
 import org.arpicoinsurance.groupit.main.helper.QuoChildBenef;
+import org.arpicoinsurance.groupit.main.helper.QuotationReceipt;
 import org.arpicoinsurance.groupit.main.helper.Spouse;
 import org.arpicoinsurance.groupit.main.model.Benefits;
 import org.arpicoinsurance.groupit.main.model.Child;
@@ -36,6 +39,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class QuotationDetailsServiceImpl implements QuotationDetailsService {
+
+	@Autowired
+	private QuotationDao quotationDao;
 
 	@Autowired
 	private QuotationDetailsDao quotationDetailsDao;
@@ -74,12 +80,14 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			// LocalDate.parse(dateFormat.format(details.getQuotationquotationCreateDate()));
 
 			LocalDate currentDate = LocalDate.now();
-			
+
 			long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 			diffInYears += 1;
 			String age = Long.toString(diffInYears);
 
 			SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");
+
+			System.out.println(customerDetails.getCustomer().getCustCode());
 
 			mainLife.set_mAge(age);
 			mainLife.set_mDob(dateFormat1.format(customerDetails.getCustDob()));
@@ -91,6 +99,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			mainLife.set_mSmoking("No");
 			mainLife.set_mTitle(customerDetails.getCustTitle());
 			mainLife.set_mCivilStatus(customerDetails.getCustCivilStatus());
+			mainLife.set_occuCode(customerDetails.getOccupation().getOcupationCode());
+			mainLife.set_mCustCode(customerDetails.getCustomer().getCustCode());
 
 			if (details.getSpouseDetails() != null) {
 				CustomerDetails spouseDetails = details.getSpouseDetails();
@@ -109,6 +119,8 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 				spouse.set_sNic(spouseDetails.getCustNic());
 				spouse.set_sOccupation(Integer.toString(spouseDetails.getOccupation().getOcupationid()));
 				spouse.set_sTitle(spouseDetails.getCustTitle());
+
+				spouse.setOccuCode(spouseDetails.getOccupation().getOcupationCode());
 
 			} else {
 				spouse.set_sActive(false);
@@ -312,6 +324,18 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			break;
 		}
 
+		plan.setPolicyFee(details.getPolicyFee());
+		plan.setAdminFee(details.getAdminFee());
+		plan.setTax(details.getTaxAmount());
+		System.out.println(plan.get_bsaTotal());
+		System.out.println(plan.getAdminFee());
+		System.out.println(plan.getPolicyFee());
+		System.out.println(plan.getTax());
+		plan.setGrsprm(plan.get_bsaTotal() - (plan.getAdminFee() + plan.getPolicyFee() + plan.getTax()));
+		plan.setSumatRiskMain(details.getSumAtRiskMain());
+		plan.setSumatRiskSpouse(details.getSumAtRiskSpouse());
+		plan.setInvPos(details.getInvestmentPos());
+		plan.setLifePos(details.getLifePos());
 		return plan;
 	}
 
@@ -339,6 +363,60 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 	}
 
 	@Override
+	public QuotationReceipt findQuotationDetailsForReceipt(Integer qId, Integer seqNo) throws Exception {
+		
+		Quotation  quotation = quotationDao.findById(qId);
+		
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+
+
+		QuotationReceipt quotationReceipt = new QuotationReceipt();
+		quotationReceipt.setBranchCode(details.getQuotation().getUser().getBranch().getBranch_Code());
+		quotationReceipt.setAgentCode(details.getQuotationCreateBy());
+		quotationReceipt.setCustomerName(details.getCustomerDetails().getCustName());
+		quotationReceipt.setCustTitle(details.getCustomerDetails().getCustTitle());
+		quotationReceipt.setQuotationDetailId(details.getQdId());
+		quotationReceipt.setQuotationId(details.getQuotation().getId());
+		quotationReceipt.setProductCode(details.getQuotation().getProducts().getProductCode());
+		quotationReceipt.setProductName(details.getQuotation().getProducts().getProductName());
+		switch (details.getPayMode()) {
+		case "M":
+			quotationReceipt.setPremium(details.getPremiumMonthT());
+			break;
+		case "Q":
+			quotationReceipt.setPremium(details.getPremiumQuaterT());
+			break;
+		case "H":
+			quotationReceipt.setPremium(details.getPremiumHalfT());
+			break;
+		case "Y":
+			quotationReceipt.setPremium(details.getPremiumYearT());
+			break;
+		case "S":
+			quotationReceipt.setPremium(details.getPremiumSingleT());
+			break;
+
+		default:
+			break;
+		}
+		quotationReceipt.setPolfeePremium((details.getPolicyFee()+ quotationReceipt.getPremium()));
+
+		return quotationReceipt;
+	}
+	
+	
+
+	
+	@Override
+	public boolean isAvailable(Integer seqNo, Integer qId) throws Exception {
+		Quotation quotation = quotationDao.findById(qId);
+		QuotationDetails details = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+		if (details != null && details.getQuotation().getId().equals(qId)) {
+			return true;
+		}
+		return false;
+	}
+
 	public EditQuotation editQuotationDetailsView(Integer qdId) throws Exception {
 		QuotationDetails details = findQuotationDetails(qdId);
 		EditQuotation editQuotation = new EditQuotation();
@@ -392,6 +470,7 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 			}
 		}
 
+
 		editQuotation.set_mainlife(mainLife);
 		editQuotation.set_spouse(spouse);
 		editQuotation.set_plan(getPlanDetails(details));
@@ -407,6 +486,117 @@ public class QuotationDetailsServiceImpl implements QuotationDetailsService {
 
 		// return editQuotation;
 		return getBenefitsAndChildDetails(details, editQuotation);
+
+	}
+	@Override
+	public boolean updateStatus(Integer seqNo, Integer qId) throws Exception {
+		
+		Quotation quotation = quotationDao.findById(qId);
+		quotation.setStatus("PROP");
+		quotationDao.save(quotation);
+		return true;
 	}
 
+	@Override
+	public QuotationDetails findByQuotationAndSeqnum(Integer quoId, Integer seqnum) throws Exception {
+		Quotation quotation=quotationDao.findById(quoId);
+		if(quotation!=null) {
+			return quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqnum);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public QuotationDetails findFirstByQuotationOrderByQdIdDesc(Integer quotationId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public String checkNicValidation(String nic, String gender, Integer age, Integer seqNo, Integer qId)
+			throws Exception {
+		
+		Quotation quotation=quotationDao.findById(qId);
+		QuotationDetails quotationDetails=quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqNo);
+		
+		int year = 0;
+		int day = 0;
+		int bday = 0;
+		int month = 0;
+		if (nic.length() == 9) {
+			year = (1900 + Integer.parseInt(nic.substring(0, 2)));
+			// System.out.println("---- "+nic);
+			day = Integer.parseInt(nic.substring(2, 5));
+		} else if (nic.length() == 12) {
+			year = Integer.parseInt(nic.substring(0, 4));
+			day = Integer.parseInt(nic.substring(4, 7));
+		}
+
+		Integer[] daysofmonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+		int daystodate = 0;
+
+		if (day >= 500) {
+			day -= 500;
+		}
+
+		for (int i = 0; i < 12; ++i) {
+			daystodate += daysofmonth[i];
+			if (daystodate > day) {
+				month = i + 1;
+				bday = daysofmonth[i] - (daystodate - day);
+				break;
+			}
+		}
+
+		if (bday == 0) {
+			bday++;
+		}
+
+		String birthday = (bday < 10 ? ("0" + bday) : bday) + "-" + (month < 10 ? ("0" + month) : month) + "-"
+				+ (year > 1000 ? year : "19" + year);
+
+		Calendar dob = Calendar.getInstance();
+		dob.set(year, Integer.parseInt(month < 10 ? ("0" + month) : month + ""),
+				Integer.parseInt(bday < 10 ? ("0" + bday) : bday + ""));
+		
+		Calendar today = Calendar.getInstance();
+		today.setTime(quotationDetails.getQuotationquotationCreateDate());
+		
+		int newAge = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+		
+		if ((today.get(Calendar.MONTH) + 1) > dob.get(Calendar.MONTH)) {
+			newAge++;
+		} else if (((today.get(Calendar.MONTH) + 1) == (dob.get(Calendar.MONTH)))
+				&& today.get(Calendar.DAY_OF_MONTH) >= dob.get(Calendar.DAY_OF_MONTH)) {
+			newAge++;
+		}
+		
+		if(newAge == age && gender.equals(getGender(nic))) {
+			return "200";
+		}
+		
+		
+		return "204";
+		
+	}
+	
+	private String getGender(String nic) {
+		int day = 0;
+		if (nic.length() == 9) {
+			day = Integer.parseInt(nic.substring(2, 5));
+		} else if (nic.length() == 12) {
+			day = Integer.parseInt(nic.substring(4, 7));
+		}
+
+		if (day >= 500) {
+			return "F";
+		} else {
+			return "M";
+		}
+
+	}
+
+	
 }

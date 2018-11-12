@@ -1,5 +1,6 @@
 package org.arpicoinsurance.groupit.main.helper;
 
+
 public class MainLife {
 	private String _mTitle;
 	private String _mName;
@@ -13,6 +14,7 @@ public class MainLife {
 	private String _mOccupation;
 	private String _mCivilStatus;
 	private String _mCustCode;
+	private String _occuCode;
 	
 	public String get_mTitle() {
 		return _mTitle;
@@ -86,11 +88,19 @@ public class MainLife {
 	public void set_mCustCode(String _mCustCode) {
 		this._mCustCode = _mCustCode;
 	}
+
+	public String get_occuCode() {
+		return _occuCode;
+	}
+	public void set_occuCode(String _occuCode) {
+		this._occuCode = _occuCode;
+	}
 	@Override
 	public String toString() {
 		return "MainLife [_mTitle=" + _mTitle + ", _mName=" + _mName + ", _mNic=" + _mNic + ", _mEmail=" + _mEmail
 				+ ", _mGender=" + _mGender + ", _mDob=" + _mDob + ", _mAge=" + _mAge + ", _mSmoking=" + _mSmoking
 				+ ", _mMobile=" + _mMobile + ", _mOccupation=" + _mOccupation + ", _mCivilStatus=" + _mCivilStatus
 				+ ", _mCustCode=" + _mCustCode + "]";
+
 	}
 }

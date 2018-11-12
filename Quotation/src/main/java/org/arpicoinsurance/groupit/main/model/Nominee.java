@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Nominee {
 
@@ -18,6 +20,7 @@ public class Nominee {
 	private Integer age;
 	private Date nomineeDob;
 	private String relation;
+	private String nomineeDateofBirth;
 	
 	private QuotationDetails quotationDetails;
 	
@@ -65,12 +68,21 @@ public class Nominee {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "quotationDetail_id", nullable = false)
+	@JsonIgnore
 	public QuotationDetails getQuotationDetails() {
 		return quotationDetails;
 	}
 
 	public void setQuotationDetails(QuotationDetails quotationDetails) {
 		this.quotationDetails = quotationDetails;
+	}
+
+	public String getNomineeDateofBirth() {
+		return nomineeDateofBirth;
+	}
+
+	public void setNomineeDateofBirth(String nomineeDateofBirth) {
+		this.nomineeDateofBirth = nomineeDateofBirth;
 	}
 	
 	

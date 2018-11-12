@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -24,6 +25,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -47,7 +49,9 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
+import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,10 +125,15 @@ public class ENDServiceImpl implements ENDService {
 	@Autowired
 	private ValidationPremium validationPremium;
 
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
+	
+	@Autowired
+	private HealthValidation healthValidation;
+	
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
-
-		// //System.out.println(quotationCalculation.get_personalInfo().getMgenger());
 
 		CalculationUtils calculationUtils = null;
 		try {
@@ -133,7 +142,7 @@ public class ENDServiceImpl implements ENDService {
 			calculationUtils = new CalculationUtils();
 			/// Calculate Rebate Premium ///
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// //System.out.println(rebate + " : rebate");
+
 			/// Calculate BSA Premium ///
 			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
@@ -141,8 +150,6 @@ public class ENDServiceImpl implements ENDService {
 					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
 
 			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
-			// //System.out.println(bsaYearly);
-			// //System.out.println(bsaYearly);
 
 			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
@@ -195,13 +202,12 @@ public class ENDServiceImpl implements ENDService {
 				rate = 1.0;
 			}
 		}
-		// //System.out.println("END bassum : " + bassum + " age : " + age + " term : " +
+
 		// term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 				age, term, chedat, chedat, chedat, chedat);
-		// //System.out.println("rateCardEND : " + rateCardEND.getRate());
 
 		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
 		premium = ((((new BigDecimal(rateCardEND.getRate())
@@ -209,8 +215,6 @@ public class ENDServiceImpl implements ENDService {
 						.divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new BigDecimal(1000), 6,
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
-
-		// //System.out.println("premium : " + premium.toString());
 
 		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 
@@ -223,10 +227,6 @@ public class ENDServiceImpl implements ENDService {
 			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
 		}
 
-		// //System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot()
-		// );
-		// //System.out.println("occu loading :" + calResp.getOccuLodingTot() );
-
 		return occuLodingPremium;
 	}
 
@@ -234,11 +234,10 @@ public class ENDServiceImpl implements ENDService {
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 		// @sum_assured@ + ((@sum_assured@*0.025)*@term@)
 		BigDecimal maturity = new BigDecimal(0);
-		// //System.out.println("term : " + term + " bassum : " + bassum);
+
 		maturity = (new BigDecimal(bassum)
 				.add(((new BigDecimal(bassum).multiply(new BigDecimal(0.025))).multiply(new BigDecimal(term)))))
 						.setScale(0, RoundingMode.HALF_UP);
-		// //System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -269,6 +268,19 @@ public class ENDServiceImpl implements ENDService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
+		
+//		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null || _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != "") {
+//			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+//			
+//			//String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+//			
+//			if (!resp.equalsIgnoreCase("ok")) {
+//				responseMap.put("status", resp);
+//				return responseMap;
+//			}
+//			
+//		}
+		
 
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(id);
@@ -387,24 +399,22 @@ public class ENDServiceImpl implements ENDService {
 		benef_DetailsList.add(benef_Details);
 		//
 		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
-		// //System.out.println("");
-		// //System.out.println(quo_Benef_Details.toString());
-		// //System.out.println("");
+
 		// }
 
 		//////////////////////////// save//////////////////////////////////
 		Customer life = (Customer) customerDao.save(mainlife);
-		// //System.out.println("custSave");
+
 		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
-		// //System.out.println("custDetailSaveSave");
+
 		ArrayList<CustChildDetails> custChildDList = null;
 		if (life != null && mainLifeDetails != null) {
 
 			if (spouse != null) {
 				Customer sp = customerDao.save(spouse);
-				// //System.out.println("custSSave");
+
 				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
-				// //System.out.println("custSDetailSave");
+
 				if (sp == null && spDetsils != null) {
 					responseMap.put("status", "Error at Spouse Saving");
 					return responseMap;
@@ -412,9 +422,9 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
-			// //System.out.println("childSave");
+
 			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
-			// //System.out.println("childDetailSave");
+
 			if (childList != null && childList.size() > 0) {
 				if (cList == null && custChildDList == null) {
 					responseMap.put("status", "Error at Child Saving");
@@ -423,7 +433,7 @@ public class ENDServiceImpl implements ENDService {
 			}
 
 			quo = quotationDao.save(quotation);
-			// //System.out.println("quotationSave");
+
 			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails);
 
 			///////////////////// Add Maturity //////////////////
@@ -435,7 +445,7 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 
@@ -445,12 +455,11 @@ public class ENDServiceImpl implements ENDService {
 
 			if (quo != null && quoDetails != null) {
 				// for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
-				// //System.out.println(benef_Details2.toString());
-				// //System.out.println("");
+
 				// }
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
-				// //System.out.println("benDetailsSave");
+
 				if (bnfdList != null) {
 
 					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
@@ -487,8 +496,7 @@ public class ENDServiceImpl implements ENDService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
-		// CalculationUtils calculationUtils = new CalculationUtils();
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
 		Quotation quo = null;
 
@@ -513,7 +521,6 @@ public class ENDServiceImpl implements ENDService {
 			return responseMap;
 		}
 
-		// Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -568,8 +575,9 @@ public class ENDServiceImpl implements ENDService {
 
 		Integer count = quotationDetailDao.countByQuotation(quotation);
 
-		quotation.setStatus("active");
-
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
 		quotationDetails1.setCustomerDetails(mainLifeDetail);
@@ -581,6 +589,7 @@ public class ENDServiceImpl implements ENDService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 
@@ -681,7 +690,7 @@ public class ENDServiceImpl implements ENDService {
 			///////////////////// Medical Re1q //////////////////////
 
 			for (MedicalDetails medicalDetails : medicalDetailList) {
-				// //System.out.println(quoDetails.getQdId() + " //////// quo detail id");
+
 				medicalDetails.setQuotationDetails(quoDetails);
 			}
 

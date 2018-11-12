@@ -2,7 +2,6 @@ package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;

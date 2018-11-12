@@ -508,7 +508,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
-			Integer userId, Integer qdId) throws Exception {
+			Integer userId, Integer qdId, Integer type) throws Exception {
 
 		Quotation quo = null;
 
@@ -606,7 +606,9 @@ public class ASFPServiceImpl implements ASFPService {
 
 		Quotation quotation = quotationDetails.getQuotation();
 		Integer count = quotationDetailDao.countByQuotation(quotation);
-		quotation.setStatus("active");
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
 
 		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 		quotationDetails1.setSeqnum(count + 1);
@@ -619,6 +621,7 @@ public class ASFPServiceImpl implements ASFPService {
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
 
 		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 

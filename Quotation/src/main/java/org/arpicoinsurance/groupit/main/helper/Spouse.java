@@ -11,6 +11,7 @@ public class Spouse {
 	private String _sSmoking;
 	private String _sOccupation;
 	private String _sCustCode;
+	private String occuCode;
 	
 	public boolean is_sActive() {
 		return _sActive;
@@ -72,10 +73,18 @@ public class Spouse {
 	public void set_sCustCode(String _sCustCode) {
 		this._sCustCode = _sCustCode;
 	}
+
+	public String getOccuCode() {
+		return occuCode;
+	}
+	public void setOccuCode(String occuCode) {
+		this.occuCode = occuCode;
+	}
 	@Override
 	public String toString() {
 		return "Spouse [_sActive=" + _sActive + ", _sTitle=" + _sTitle + ", _sName=" + _sName + ", _sNic=" + _sNic
 				+ ", _sGender=" + _sGender + ", _sDob=" + _sDob + ", _sAge=" + _sAge + ", _sSmoking=" + _sSmoking
 				+ ", _sOccupation=" + _sOccupation + ", _sCustCode=" + _sCustCode + "]";
+
 	}
 }

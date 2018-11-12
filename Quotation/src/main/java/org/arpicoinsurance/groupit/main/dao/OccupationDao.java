@@ -19,5 +19,7 @@ public interface OccupationDao extends CrudRepository<Occupation,String> {
 	@Query("DELETE FROM Occupation where id=?1")
 	Integer deleteOne(Integer id) throws Exception;
 	
+	Occupation findByOcupationCode(String ocupationCode) throws Exception;
+	
 	
 }
