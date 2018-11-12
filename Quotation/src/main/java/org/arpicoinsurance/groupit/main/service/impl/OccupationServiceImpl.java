@@ -21,4 +21,9 @@ public class OccupationServiceImpl implements OccupationServce{
 		return occupationDao.getAll();
 	}
 
+	@Override
+	public Occupation getOccupationByCode(String code) throws Exception {
+		return occupationDao.findByOcupationCode(code);
+	}
+
 }
