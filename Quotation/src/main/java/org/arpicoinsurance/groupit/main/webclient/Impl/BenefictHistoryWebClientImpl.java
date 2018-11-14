@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
+import org.arpicoinsurance.groupit.main.util.AppConstant;
 import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class BenefictHistoryWebClientImpl implements BenefictHistoryWebClient {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
 			
-			List<BenefictHistory> benefictHistories = restTemplate.postForObject("http://localhost:8085/getbeneficthistory", nic, ArrayList.class);
+			List<BenefictHistory> benefictHistories = restTemplate.postForObject(AppConstant.URL_BENEFICT_HISTORY, nic, ArrayList.class);
 			return benefictHistories;
 		} catch (Exception e) {
 			e.printStackTrace();

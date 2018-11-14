@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.webclient.Impl;
 
-import java.util.Date;
-
+import org.arpicoinsurance.groupit.main.util.AppConstant;
 import org.arpicoinsurance.groupit.main.webclient.ArtmLstYearRate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,8 +15,7 @@ class ArtmLstYearRateImpl implements ArtmLstYearRate {
 
 		try {
 
-			final String uri = "http://10.10.10.12:8080/Infosys/lstYearRate";
-			//final String uri = "http://localhost:8085/lstYearRate";
+			final String uri = AppConstant.URL_LAST_YEAR_RATE;
 			RestTemplate restTemplate = new RestTemplate();
 
 			MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
