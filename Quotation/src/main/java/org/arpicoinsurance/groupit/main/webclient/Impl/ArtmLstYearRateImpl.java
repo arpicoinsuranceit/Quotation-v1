@@ -17,7 +17,7 @@ class ArtmLstYearRateImpl implements ArtmLstYearRate {
 		try {
 
 			//final String uri = "http://10.10.10.12:8080/Infosys/lstYearRate";
-			final String uri = "http://10.10.10.11:8085/lstYearRate";
+			final String uri = "http://10.10.10.11:8087/lstYearRate";
 			//final String uri = "http://localhost:8085/lstYearRate";
 			RestTemplate restTemplate = new RestTemplate();
 

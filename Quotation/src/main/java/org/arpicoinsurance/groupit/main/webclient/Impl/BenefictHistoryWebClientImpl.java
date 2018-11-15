@@ -17,7 +17,7 @@ public class BenefictHistoryWebClientImpl implements BenefictHistoryWebClient {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
 			
-			List<BenefictHistory> benefictHistories = restTemplate.postForObject("http://localhost:8085/getbeneficthistory", nic, ArrayList.class);
+			List<BenefictHistory> benefictHistories = restTemplate.postForObject("http://10.10.10.11:8087/getbeneficthistory", nic, ArrayList.class);
 			return benefictHistories;
 		} catch (Exception e) {
 			e.printStackTrace();

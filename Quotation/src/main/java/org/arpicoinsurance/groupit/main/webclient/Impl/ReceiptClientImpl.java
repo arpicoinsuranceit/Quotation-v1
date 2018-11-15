@@ -19,7 +19,7 @@ public class ReceiptClientImpl implements ReceiptClient{
 
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			String[] result = restTemplate.postForObject("http://10.10.10.120:8084/Receipt/getBranches", map, String[].class);
+			String[] result = restTemplate.postForObject("http://10.10.10.11:8089/getBranches", map, String[].class);
 
 			List<String> braches = new ArrayList<>();
 			for (String branch : result) {
