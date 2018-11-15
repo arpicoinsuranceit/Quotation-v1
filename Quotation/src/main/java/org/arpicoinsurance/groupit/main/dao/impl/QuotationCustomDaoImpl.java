@@ -65,7 +65,7 @@ public class QuotationCustomDaoImpl implements QuotationCustomDao {
 
 			quotationSearchs = jdbcTemplate.query(
 					"SELECT qd.qd_id,qd.seqnum, qd.quotation_id FROM quotation_details qd, quotation q "
-					+ "where qd.quotation_id = q.id and q.status = 'PROP' and quotation_id like '"+id+"%'",
+					+ "where qd.quotation_id = q.id and q.status = 'PROP' and quotation_id like '"+id+"%' order by qd.seqnum desc",
 					args.toArray(), new ResultSetExtractor<List<QuotationSearchProp>>() {
 
 						@Override
