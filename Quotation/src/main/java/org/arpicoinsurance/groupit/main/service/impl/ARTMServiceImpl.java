@@ -28,6 +28,7 @@ import org.arpicoinsurance.groupit.main.dao.RateCardARTMProfitDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARTMVeriableExpencesDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardProductVarDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.CommisionRatePara;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -54,6 +55,8 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.HealthValidation;
+import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.arpicoinsurance.groupit.main.webclient.CommisionRateWC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,6 +132,12 @@ public class ARTMServiceImpl implements ARTMService {
 
 	@Autowired
 	private RateCardARTMVeriableExpencesDao rateCardARTMVeriableExpencesDao;
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
+	
+	@Autowired
+	private HealthValidation healthValidation;
 
 	@Override
 	public BigDecimal calculateMaturity(boolean printShedule, QuotationQuickCalResponse calResp,
@@ -421,7 +430,6 @@ public class ARTMServiceImpl implements ARTMService {
 		// ////System.out.println("closingFundAmount : " + closingFundAmount + " reprate :
 		// "
 		// + reprate);
-		// TODO calculate premium
 		pensionPremium = new BigDecimal(closingFundAmount).divide(new BigDecimal(reprate), 6, BigDecimal.ROUND_HALF_UP);
 		double repexp = 0.0;
 		try {
@@ -508,6 +516,25 @@ public class ARTMServiceImpl implements ARTMService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+		}
+		
 		Products products = productDao.findByProductCode("ARTM");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -748,6 +775,24 @@ public class ARTMServiceImpl implements ARTMService {
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
+		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 
 		// Products products = productDao.findByProductCode("ARTM");

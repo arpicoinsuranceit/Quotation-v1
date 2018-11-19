@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -25,6 +26,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardASIPDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardASIPFundDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
@@ -51,7 +53,9 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
+import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,6 +131,12 @@ public class ASIPServiceImpl implements ASIPService {
 	
 	@Autowired
 	private ValidationPremium validationPremium;
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
+	
+	@Autowired
+	private HealthValidation healthValidation;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedASIP(QuotationCalculation quotationCalculation) throws Exception {
@@ -354,6 +364,24 @@ public class ASIPServiceImpl implements ASIPService {
 			return responseMap;
 		}
 		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthInvpAsip(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthInvpAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+		}
+		
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -578,6 +606,23 @@ public class ASIPServiceImpl implements ASIPService {
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
 			return responseMap;
+		}
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthInvpAsip(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthInvpAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 		
 

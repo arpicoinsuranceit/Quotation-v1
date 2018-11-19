@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.common.WebClient;
@@ -26,6 +27,7 @@ import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardASFPDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -50,7 +52,9 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
+import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +130,12 @@ public class ASFPServiceImpl implements ASFPService {
 
 	@Autowired
 	private ValidationPremium validationPremium;
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
+	
+	@Autowired
+	private HealthValidation healthValidation;
 
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
@@ -296,6 +306,24 @@ public class ASFPServiceImpl implements ASFPService {
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
 			return responseMap;
+		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 
 		Products products = productDao.findByProductCode("ASFP");
@@ -539,6 +567,24 @@ public class ASFPServiceImpl implements ASFPService {
 		} else {
 			responseMap.put("status", "Error at Nominee");
 			return responseMap;
+		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 
 		Users user = userDao.findOne(userId);

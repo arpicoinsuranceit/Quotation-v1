@@ -13,6 +13,7 @@ import org.arpicoinsurance.groupit.main.dao.RateCardENDDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardSurenderDao;
 import org.arpicoinsurance.groupit.main.dao.SurrendervalDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
+import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.helper.SurrenderValHelper;
@@ -55,7 +56,9 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
+import org.arpicoinsurance.groupit.main.webclient.BenefictHistoryWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,6 +140,12 @@ public class ARPServiceImpl implements ARPService {
 	
 	@Autowired
 	private ValidationPremium validationPremium;
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
+	
+	@Autowired
+	private HealthValidation healthValidation;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
@@ -310,6 +319,24 @@ public class ARPServiceImpl implements ARPService {
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
 			return responseMap;
+		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 
 		Products products = productDao.findByProductCode("ARP");
@@ -558,6 +585,23 @@ public class ARPServiceImpl implements ARPService {
 			return responseMap;
 		}
 
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+		}
 
 		// Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
