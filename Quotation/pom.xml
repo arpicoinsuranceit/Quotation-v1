@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>arpicoinsurance.groupit</groupId>
 	<artifactId>Quotation</artifactId>
+	<version>3.0.2</version>
 	<name>Quotation</name>
 	<description>Quotation</description>
 
@@ -153,5 +154,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<version>3.0.0</version>
 </project>

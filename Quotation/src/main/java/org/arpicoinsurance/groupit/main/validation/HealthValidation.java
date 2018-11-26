@@ -1,7 +1,5 @@
 package org.arpicoinsurance.groupit.main.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HealthValidation {
 
+	/*
 	public String validateHealthEndArpAtrmAtrmAsfp(List<BenefictHistory> benefictHistories,
 			QuotationQuickCalResponse calresp, InvpSaveQuotation _invpSaveQuotation) {
 
@@ -122,5 +121,6 @@ public class HealthValidation {
 			InvpSaveQuotation _invpSaveQuotation) {
 		return null;
 	}
+	*/
 
 }
