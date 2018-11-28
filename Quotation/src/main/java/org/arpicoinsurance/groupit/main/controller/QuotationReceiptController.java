@@ -87,6 +87,16 @@ public class QuotationReceiptController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value = "/getQuotationSeqnum" , method = RequestMethod.POST)
+	public Integer getQuotationSeqnum(@RequestParam("qdId") Integer qdId) {
+		try {
+			return quotationDetailService.findQuotationDetails(qdId).getSeqnum();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@RequestMapping(value = "/getQuoDetail", method = RequestMethod.POST)
 	public ViewQuotation viewQuotation(@RequestParam("seqNo") Integer seqId, @RequestParam("qId") Integer qId) {

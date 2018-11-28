@@ -91,6 +91,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 
 	// set customer and spouse details according to quotationdetail object
 	private QuoCustomer setCustomerDetails(QuotationDetails quoDetails) {
+		//System.out.println(quoDetails.getQdId() + "qd id ////////////");
 		QuoCustomer customer = new QuoCustomer();
 		customer.setTerm(quoDetails.getPolTerm());
 		customer.setMode(quoDetails.getPayMode());
@@ -120,7 +121,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 
 		LocalDate dateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getCustomerDetails().getCustDob()));
 
-		LocalDate currentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
+		LocalDate currentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationCreateDate()));
 		long diffInYears = ChronoUnit.YEARS.between(dateOfBirth, currentDate);
 		diffInYears += 1;
 		String age = Long.toString(diffInYears);
@@ -131,7 +132,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 		customer.setMainLifeAge(Integer.parseInt(age));
 
 		LocalDate sdateOfBirth = LocalDate.parse(dateFormat.format(quoDetails.getCustomerDetails().getCustDob()));
-		LocalDate scurrentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationquotationCreateDate()));
+		LocalDate scurrentDate = LocalDate.parse(dateFormat.format(quoDetails.getQuotationCreateDate()));
 		long sdiffInYears = ChronoUnit.YEARS.between(sdateOfBirth, scurrentDate);
 		sdiffInYears += 1;
 		String sage = Long.toString(sdiffInYears);
@@ -357,19 +358,20 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 
 	@Override
 	public ViewQuotation getQuotationDetail(Integer seqId, Integer qId) throws Exception {
+		//System.out.println(seqId + "seqId");
+		//System.out.println(qId + "qId");
 		Quotation quotation = quotationDao.findById(qId);
+		//System.out.println(quotation.toString());
 		QuotationDetails quotationDetails = quotationDetailsDao.findByQuotationAndSeqnum(quotation, seqId);
-		Integer qdId = quotationDetails.getQdId();
+		//System.out.println(quotationDetails);
+		//Integer qdId = quotationDetails.getQdId();
 		ArrayList<QuotationView> viewQuotationDetailsList = (ArrayList<QuotationView>) getQuo_Benef_DetailsByQuoDetailId(
 				qId);
 		ViewQuotation viewQuotation = new ViewQuotation();
-		// System.out.println(qdId + " qdId
-		// ///////////////////////////////////////////////////////////");
+		 //System.out.println(quotationDetails.getQdId() + " qdId ///////////////////////");
 		for (QuotationView quotationView : viewQuotationDetailsList) {
-			// System.out.println(quotationView.getQuoDetailId() + "
-			// quotationView.getQuoDetailId()
-			// ///////////////////////////////////////////////////////////");
-			if (quotationView.getQuoDetailId().equals(qdId)) {
+			 //System.out.println(quotationView.getQuoDetailId() + "quotationView.getQuoDetailId()//////////////////////////////////////////////////////////// ");
+			if (quotationView.getQuoDetailId().equals(quotationDetails.getQdId())) {
 				// System.out.println(qdId + " qdId
 				// ///////////////////////////////////////////////////////////");
 				EditQuotation editQuotation = quotationDetailsService
