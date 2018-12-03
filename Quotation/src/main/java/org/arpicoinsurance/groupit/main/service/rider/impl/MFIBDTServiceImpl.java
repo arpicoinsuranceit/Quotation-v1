@@ -21,7 +21,7 @@ public class MFIBDTServiceImpl implements MFIBDTService {
 
 	@Override
 	public BigDecimal calculateMFIBDT(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 		BigDecimal premiumMFIBDT = new BigDecimal(0);
 		RateCardMFIBDT rateCardMFIBDT = rateCardMFIBDTDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
@@ -45,7 +45,7 @@ public class MFIBDTServiceImpl implements MFIBDTService {
 		} catch (Exception e) {
 			throw new NullPointerException("MFIBDT Rate not available at Age : " + age + " and Term : " + term);
 		}
-		premiumMFIBDT = premiumMFIBDT.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumMFIBDT = premiumMFIBDT.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumMFIBDT : "+premiumMFIBDT.toString());
 		return premiumMFIBDT;
 	}

@@ -48,6 +48,7 @@ import org.arpicoinsurance.groupit.main.service.ENDService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
@@ -67,9 +68,6 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
-
-	@Autowired
-	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -125,13 +123,9 @@ public class ENDServiceImpl implements ENDService {
 	@Autowired
 	private ValidationPremium validationPremium;
 
-	
 	@Autowired
-	private BenefictHistoryWebClient benefictHistoryWebClient;
-	
-	@Autowired
-	private HealthValidation healthValidation;
-	
+	private OccupationLoadingService occupationLoadingService;
+
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
 
@@ -194,16 +188,7 @@ public class ENDServiceImpl implements ENDService {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
 
-		// term + " paytrm : " + paytrm);
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardEND rateCardEND = rateCardENDDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
@@ -216,16 +201,8 @@ public class ENDServiceImpl implements ENDService {
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(bassum))).divide(new BigDecimal(paytrm),
 										10, RoundingMode.HALF_UP)).setScale(0, RoundingMode.HALF_UP);
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-
-		// //System.out.println("occu loading Without:" + calResp.getWithoutLoadingTot()
-		// );
-		// //System.out.println("occu loading :" + calResp.getOccuLodingTot() );
-
-		if (isAddOccuLoading) {
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-		}
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), bassum, occupation, benefits, calResp);
 
 		return occuLodingPremium;
 	}
@@ -268,7 +245,7 @@ public class ENDServiceImpl implements ENDService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-		
+
 //		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null || _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != "") {
 //			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 //			
@@ -280,7 +257,6 @@ public class ENDServiceImpl implements ENDService {
 //			}
 //			
 //		}
-		
 
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(id);

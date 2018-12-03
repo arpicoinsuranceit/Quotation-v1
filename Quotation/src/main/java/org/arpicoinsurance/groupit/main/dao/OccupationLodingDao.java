@@ -14,11 +14,10 @@ public interface OccupationLodingDao extends CrudRepository<OcupationLoading,Str
 	@Query("from OcupationLoading where id=?1")
 	OcupationLoading findOne(Integer id) throws Exception;
 	
-	@Modifying
-	@Query("DELETE FROM OcupationLoading where id=?1")
-	Integer deleteOne(Integer id) throws Exception;
-	
-	//@Query("from OcupationLoading where ocupation_id=?1")
+//	@Modifying
+//	@Query("DELETE FROM OcupationLoading where id=?1")
+//	Integer deleteOne(Integer id) throws Exception;
+//	
 	List<OcupationLoading> findByOccupation(Occupation occupation) throws Exception;
 	
 	OcupationLoading findByOccupationAndBenefits(Occupation occupation, Benefits benefits) throws Exception;

@@ -21,7 +21,7 @@ public class SFPOServiceImpl implements SFPOService {
 
 	@Override
 	public BigDecimal calculateSFPO(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		BigDecimal premiumSFPO = new BigDecimal(0);
 		RateCardSFPO rateCardSFPO = rateCardSFPODao
@@ -46,7 +46,7 @@ public class SFPOServiceImpl implements SFPOService {
 		} catch (Exception e) {
 			throw new NullPointerException("SFPO Rate not found at Age : " + age + " and Term : " + term);
 		}
-		premiumSFPO = premiumSFPO.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumSFPO = premiumSFPO.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumSFPO : "+premiumSFPO.toString());
 		return premiumSFPO;
 	}

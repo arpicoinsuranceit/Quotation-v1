@@ -20,7 +20,7 @@ public class SHCBIServiceImpl implements SHCBIService {
 
 	@Override
 	public BigDecimal calculateSHCBI(Integer age, String sex, Integer term, Double ridsumasu, Date chedat,
-			String payFrequency, Double relief, double occupation_loding) throws Exception {
+			String payFrequency, Double relief) throws Exception {
 		BigDecimal premiumSUHRB = new BigDecimal(0);
 		RateCardSUHRB rateCardSUHRB = rateCardSUHRBDao
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndSexAndTermAndSumasuAndStrdatLessThanOrStrdat(
@@ -47,7 +47,7 @@ public class SHCBIServiceImpl implements SHCBIService {
 					+ term + " and Rider Sumassured : " + ridsumasu);
 		}
 
-		premiumSUHRB = premiumSUHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumSUHRB = premiumSUHRB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumSUHRB : "+premiumSUHRB.toString());
 		return premiumSUHRB;
 	}

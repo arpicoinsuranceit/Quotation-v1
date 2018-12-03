@@ -21,7 +21,7 @@ public class SCBServiceImpl implements SCBService {
 
 	@Override
 	public BigDecimal calculateSCB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 
 		// //System.out.println(age);
 		// //System.out.println(term);
@@ -55,7 +55,7 @@ public class SCBServiceImpl implements SCBService {
 		} catch (Exception e) {
 			throw new NullPointerException("SCB Rate not found at Age : " + age + " and Term : " + term);
 		}
-		premiumSCB = premiumSCB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumSCB = premiumSCB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumSCB : "+premiumSCB.toString());
 		return premiumSCB;
 	}

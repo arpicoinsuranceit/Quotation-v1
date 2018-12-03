@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ADBServiceImpl implements ADBService{
 
 	@Override
-	public BigDecimal calculateADB(double ridsumasu, String payFrequency, double relief, double occupation_loding)
+	public BigDecimal calculateADB(double ridsumasu, String payFrequency, double relief)
 			throws Exception {
 //		//System.out.println("ADB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumADB = new BigDecimal(0);
@@ -25,7 +25,7 @@ public class ADBServiceImpl implements ADBService{
 			premiumADB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 		
-		premiumADB = premiumADB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+//		premiumADB = premiumADB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 //		//System.out.println("premiumADB : "+premiumADB.toString());
 		return premiumADB;
 		

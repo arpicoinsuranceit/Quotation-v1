@@ -19,8 +19,7 @@ public class TPDDTASServiceImpl implements TPDDTASService {
 	private RateCardTPDDTASDao rateCardTPDDTASDao;
 
 	@Override
-	public BigDecimal calculateTPDDTAS(int age, int term, double intrat, String sex, Date chedat, double loanamt,
-			double occupation_loding) throws Exception {
+	public BigDecimal calculateTPDDTAS(int age, int term, double intrat, String sex, Date chedat, double loanamt) throws Exception {
 		// //System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
 		// "+sex+" loanamt : "+loanamt);
 		// TODO Auto-generated method stub
@@ -72,7 +71,7 @@ public class TPDDTASServiceImpl implements TPDDTASService {
 			amount = outstanding;
 
 		}
-		premiumTPDDTAS = premiumTPDDTAS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumTPDDTAS = premiumTPDDTAS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumTPDDTAS : "+premiumTPDDTAS.toString());
 		return premiumTPDDTAS;
 	}

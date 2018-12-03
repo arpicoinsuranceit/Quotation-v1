@@ -21,7 +21,7 @@ public class ATPBServiceImpl implements ATPBService {
 
 	@Override
 	public BigDecimal calculateATPB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 
 		BigDecimal premiumATPB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao

@@ -21,7 +21,7 @@ public class FEBServiceImpl implements FEBService {
 
 	@Override
 	public BigDecimal calculateFEB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 		BigDecimal premiumFEB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
@@ -49,7 +49,7 @@ public class FEBServiceImpl implements FEBService {
 			throw new NullPointerException("ATFESC Rate not found at Age : " + age + " and Term : " + term);
 		}
 
-		premiumFEB = premiumFEB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumFEB = premiumFEB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumFEB : "+premiumFEB.toString());
 		return premiumFEB;
 	}

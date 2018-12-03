@@ -21,7 +21,7 @@ public class HBSServiceImpl implements HBSService {
 
 	@Override
 	public BigDecimal calculateHBS(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 
 		// //System.out.println("age : " + age);
 		// //System.out.println("term : " + term);
@@ -55,7 +55,7 @@ public class HBSServiceImpl implements HBSService {
 		} catch (Exception e) {
 			throw new NullPointerException("HBS term not found at Age : " + age + " and Term : " + term);
 		}
-		premiumHBS = premiumHBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumHBS = premiumHBS.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumHBS : "+premiumHBS.toString());
 		return premiumHBS;
 	}

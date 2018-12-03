@@ -21,7 +21,7 @@ public class CIBServiceImpl implements CIBService {
 
 	@Override
 	public BigDecimal calculateCIB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		// //System.out.println("age :" +age + "term : " + term );
 		BigDecimal premiumCIB = new BigDecimal(0);
@@ -49,7 +49,7 @@ public class CIBServiceImpl implements CIBService {
 			throw new NullPointerException("CIB Rate not found at Age : " + age + " ane term : " + term);
 		}
 
-		premiumCIB = premiumCIB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumCIB = premiumCIB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumCIB : "+premiumCIB.toString());
 		return premiumCIB;
 	}

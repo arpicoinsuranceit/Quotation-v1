@@ -24,7 +24,7 @@ public class HRBIServiceImpl implements HRBIService {
 
 	@Override
 	public BigDecimal calculateHRBI(Integer age, Integer term, String sex, Double ridsumasu, Date chedat,
-			String payFrequency, Double relief, double occupation_loding) throws Exception {
+			String payFrequency, Double relief) throws Exception {
 /*
 		 //System.out.println(age + "###############" + term+ "###############" + sex+
 		 "###############" + ridsumasu+ "###############" + payFrequency+
@@ -64,7 +64,7 @@ public class HRBIServiceImpl implements HRBIService {
 		} catch (Exception e) {
 			throw new NullPointerException("HCBI Discount Rate not found at Age : " + age);
 		}
-		premiumHRBI = premiumHRBI.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumHRBI = premiumHRBI.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumHRBI : "+premiumHRBI.toString());
 		return premiumHRBI;
 	}

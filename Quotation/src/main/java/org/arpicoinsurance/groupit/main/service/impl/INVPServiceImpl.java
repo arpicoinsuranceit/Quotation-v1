@@ -48,6 +48,7 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.INVPService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,10 +123,12 @@ public class INVPServiceImpl implements INVPService {
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
-	
+
 	@Autowired
 	private ValidationPremium validationPremium;
 
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedInvp(QuotationCalculation quotationCalculation) throws Exception {
@@ -154,11 +157,11 @@ public class INVPServiceImpl implements INVPService {
 					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false,
 					calculationUtils.getRebate(quotationCalculation.get_personalInfo().getTerm(), "M"));
 
-			
-			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);	
-			////System.out.println(bsaYearly);
-		////System.out.println(bsaYearly);
-			//calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate, bsaPremium));
+			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
+			//// System.out.println(bsaYearly);
+			//// System.out.println(bsaYearly);
+			// calResp.setBasicSumAssured(calculationUtils.addRebatetoBSAPremium(rebate,
+			//// bsaPremium));
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 
@@ -209,14 +212,6 @@ public class INVPServiceImpl implements INVPService {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
 
 		BigDecimal premium = new BigDecimal(0);
 		RateCardINVP rateCardINVP = rateCardINVPDao
@@ -233,13 +228,10 @@ public class INVPServiceImpl implements INVPService {
 		} catch (Exception e) {
 			throw new NullPointerException("Error at INVP Premium Calculation");
 		}
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-		if (isAddOccuLoading) {
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), bassum, occupation, benefits, calResp);
 
-		}
-		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
+		return occuLodingPremium;
 	}
 
 	@Override
@@ -288,7 +280,7 @@ public class INVPServiceImpl implements INVPService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateInvp(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
 
@@ -561,7 +553,6 @@ public class INVPServiceImpl implements INVPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-		
 
 		Users user = userDao.findOne(userId);
 

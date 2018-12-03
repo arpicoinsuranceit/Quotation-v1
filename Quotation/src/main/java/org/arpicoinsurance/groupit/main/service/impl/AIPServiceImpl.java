@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @Transactional
 public class AIPServiceImpl implements AIPService {
@@ -70,7 +69,7 @@ public class AIPServiceImpl implements AIPService {
 
 	@Autowired
 	private ProductDao productDao;
-	
+
 	@Autowired
 	private ValidationPremium validationPremium;
 
@@ -82,8 +81,6 @@ public class AIPServiceImpl implements AIPService {
 			throws Exception {
 
 		// throw new RuntimeException("Just Message");
-		
-		
 
 		AIPCalResp aipCalResp = null;
 		ArrayList<AipCalShedule> aipCalShedules = null;
@@ -106,7 +103,8 @@ public class AIPServiceImpl implements AIPService {
 			BigDecimal management_fee = new BigDecimal(fundmarat.doubleValue());
 			BigDecimal interest_rate = new BigDecimal(intrat.doubleValue());
 			BigDecimal adb_rate = new BigDecimal(adbrat.doubleValue());
-			// //System.out.println(" term : " + term + " adbrat : " + adbrat + " fundmarat :
+			// //System.out.println(" term : " + term + " adbrat : " + adbrat + " fundmarat
+			// :
 			// " + fundmarat + " intrat : "
 			// + intrat + " paymod : " + paymod);
 			aipCalShedules = new ArrayList<>();
@@ -133,13 +131,15 @@ public class AIPServiceImpl implements AIPService {
 									chedat, chedat);
 				}
 
-				// //System.out.println(" term : " + term + " polyear : " + polyear + " Rate : " +
+				// //System.out.println(" term : " + term + " polyear : " + polyear + " Rate : "
+				// +
 				// rateCardAIP.getRate());
 				BigDecimal fund_rate = null;
 				try {
 					fund_rate = new BigDecimal(rateCardAIP.getRate().doubleValue());
 				} catch (Exception e) {
-					throw new NullPointerException("AIP Rate not found at Term : " + term + ", PayMode : " + paymod + " and Policy Year : " + polyear );
+					throw new NullPointerException("AIP Rate not found at Term : " + term + ", PayMode : " + paymod
+							+ " and Policy Year : " + polyear);
 				}
 
 				// calculationUtils.getPayterm(paymod)
@@ -147,7 +147,8 @@ public class AIPServiceImpl implements AIPService {
 				// for (int j = 1; j <= 12; j++) {
 				AipCalShedule aipCalShedule = new AipCalShedule();
 				if (schedule) {
-					// //System.out.println("polyer : " + ((i / 12) + 1) + " polmth : " + ((i % 12) +
+					// //System.out.println("polyer : " + ((i / 12) + 1) + " polmth : " + ((i % 12)
+					// +
 					// 1) + " opnfun : "
 					// + open_fund.toString());
 					aipCalShedule.setPolicyYear(((i / 12) + 1));
@@ -283,14 +284,15 @@ public class AIPServiceImpl implements AIPService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
-		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("AIP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateAip(_invpSaveQuotation.get_plan().get_frequance(),
-				_invpSaveQuotation.get_plan().get_bsa(), Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()));
+				_invpSaveQuotation.get_plan().get_bsa(),
+				Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()));
 
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
@@ -302,10 +304,10 @@ public class AIPServiceImpl implements AIPService {
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,
+					_invpSaveQuotation.get_plan().get_frequance());
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
-
-			////System.out.println(fundMrate);
+			//// System.out.println(fundMrate);
 
 			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
@@ -330,8 +332,9 @@ public class AIPServiceImpl implements AIPService {
 
 			try {
 				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
-			} catch (Exception e) { }
-			
+			} catch (Exception e) {
+			}
+
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
 			quotation = new Quotation();
@@ -518,7 +521,6 @@ public class AIPServiceImpl implements AIPService {
 		// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
 		// //System.out.println(_invpSaveQuotation.get_plan().get_term());
 
-		
 		CalculationUtils calculationUtils = null;
 		Products products = null;
 		Customer customer = null;
@@ -529,31 +531,33 @@ public class AIPServiceImpl implements AIPService {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
 		QuotationDetails quotationDetails = null;
-		
-		if(productDao.findByProductCode("AIP").getActive() == 0 ) {
+
+		if (productDao.findByProductCode("AIP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateAip(_invpSaveQuotation.get_plan().get_frequance(),
-				_invpSaveQuotation.get_plan().get_bsa(), Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()));
+				_invpSaveQuotation.get_plan().get_bsa(),
+				Integer.parseInt(_invpSaveQuotation.get_mainlife().get_mAge()));
 
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-		
+
 		try {
 			calculationUtils = new CalculationUtils();
 			products = productDao.findByProductCode("AIP");
 			Double contribution = _invpSaveQuotation.get_plan().get_bsa();
 
-			Double fundMrate = calculationUtils.getFndMngRate(contribution,_invpSaveQuotation.get_plan().get_frequance());
+			Double fundMrate = calculationUtils.getFndMngRate(contribution,
+					_invpSaveQuotation.get_plan().get_frequance());
 
-			////System.out.println(fundMrate);
+			//// System.out.println(fundMrate);
 
-			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0, contribution,
-					new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
+			AIPCalResp aip = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 9.0,
+					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, true);
 
 			AIPCalResp aip2 = calculateAIPMaturaty(_invpSaveQuotation.get_plan().get_term(), 2.0, fundMrate, 10.0,
 					contribution, new Date(), _invpSaveQuotation.get_plan().get_frequance(), false, false);
@@ -568,24 +572,25 @@ public class AIPServiceImpl implements AIPService {
 
 			QuotationDetails details = quotationDetailsDao.findByQdId(qdId);
 			quotation = details.getQuotation();
-			
+
 			customer = details.getCustomerDetails().getCustomer();
 			user = quotation.getUser();
 
 			customer.setCustCreateBy(user.getUserCode());
 			customer.setCustCreateDate(new Date());
 			customer.setCustName(_invpSaveQuotation.get_mainlife().get_mName());
-			
+
 			try {
 				customer.setCustCode(new WebClient().getCustCode(_invpSaveQuotation));
-			} catch (Exception e) { }
-			
+			} catch (Exception e) {
+			}
+
 			customerDetails = getCustomerDetail(occupation, _invpSaveQuotation, user);
 			customerDetails.setCustomer(customer);
-			
+
 			Integer count = quotationDetailsDao.countByQuotation(quotation);
 			quotation.setProducts(products);
-			//quotation.setStatus("active");
+			// quotation.setStatus("active");
 			quotation.setUser(user);
 
 			quotationDetails = new QuotationDetails();
@@ -609,7 +614,8 @@ public class AIPServiceImpl implements AIPService {
 			case "M":
 
 				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee +
+				// tax);
 				// //System.out.println(adminFee);
 				// //System.out.println(tax);
 
@@ -620,7 +626,8 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			case "Q":
 				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee +
+				// tax);
 				// //System.out.println(adminFee);
 				// //System.out.println(tax);
 				quotationDetails.setPremiumQuater(_invpSaveQuotation.get_plan().get_bsa());
@@ -629,7 +636,8 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			case "H":
 				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee +
+				// tax);
 				// //System.out.println(adminFee);
 				// //System.out.println(tax);
 				quotationDetails.setPremiumHalf(_invpSaveQuotation.get_plan().get_bsa());
@@ -638,7 +646,8 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			case "Y":
 				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee +
+				// tax);
 				// //System.out.println(adminFee);
 				// //System.out.println(tax);
 				quotationDetails.setPremiumYear(_invpSaveQuotation.get_plan().get_bsa());
@@ -647,7 +656,8 @@ public class AIPServiceImpl implements AIPService {
 				break;
 			case "S":
 				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa());
-				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee + tax);
+				// //System.out.println(_invpSaveQuotation.get_plan().get_bsa()+ adminFee +
+				// tax);
 				// //System.out.println(adminFee);
 				// //System.out.println(tax);
 				quotationDetails.setPremiumSingle(_invpSaveQuotation.get_plan().get_bsa());

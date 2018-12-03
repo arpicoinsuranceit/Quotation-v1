@@ -5,5 +5,5 @@ import java.util.Date;
 
 public interface TPDDTASPLService {
 
-	BigDecimal calculateTPDDTASPL(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)throws Exception;
+	BigDecimal calculateTPDDTASPL(int age, int term, double intrat, String sex, Date chedat, double loanamt)throws Exception;
 }

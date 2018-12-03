@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public interface SUHRBSService {
-	BigDecimal calculateSUHRBS(Integer age, String sex, Integer term, Double ridsumasu, Date chedat, String payFrequency, Double relief, double occupation_loding) throws Exception;
+	BigDecimal calculateSUHRBS(Integer age, String sex, Integer term, Double ridsumasu, Date chedat, String payFrequency, Double relief) throws Exception;
 }
