@@ -208,7 +208,7 @@ public class HealthValidation {
 			}
 		}
 
-		return "oks";
+		return "ok";
 
 	}
 
@@ -400,7 +400,7 @@ public class HealthValidation {
 			}
 		}
 
-		return "oks";
+		return "ok";
 
 	}
 
@@ -503,7 +503,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0k";
+			return "ok";
 		} else {
 
 			if (sumasu == 600000) {
@@ -522,7 +522,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0	k";
+			return "ok";
 
 		}
 
@@ -558,7 +558,7 @@ public class HealthValidation {
 
 		}
 
-		String resp = "fail11";
+		String resp = "fail";
 		
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 		
@@ -645,7 +645,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0k";
+			return "ok";
 		} else {
 
 			if (sumasu == 600000) {
@@ -664,7 +664,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0	k";
+			return "ok";
 
 		}
 
