@@ -21,7 +21,7 @@ public class SCIBServiceImpl implements SCIBService {
 
 	@Override
 	public BigDecimal calculateSCIB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 		// TODO Auto-generated method stub
 		BigDecimal premiumSCIB = new BigDecimal(0);
 		RateCardCIB rateCardCIB = rateCardCIBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
@@ -45,7 +45,7 @@ public class SCIBServiceImpl implements SCIBService {
 		} catch (Exception e) {
 			throw new NullPointerException("SCIB Rate not found at Age : " + age + " and Term : " + term);
 		}
-		premiumSCIB = premiumSCIB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumSCIB = premiumSCIB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumSCIB : "+premiumSCIB.toString());
 		return premiumSCIB;
 	}

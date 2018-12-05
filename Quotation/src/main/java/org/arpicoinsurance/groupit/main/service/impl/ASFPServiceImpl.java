@@ -19,7 +19,6 @@ import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.NomineeDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
-import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -39,7 +38,6 @@ import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Nominee;
 import org.arpicoinsurance.groupit.main.model.Occupation;
-import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -51,6 +49,7 @@ import org.arpicoinsurance.groupit.main.service.ASFPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
@@ -117,9 +116,6 @@ public class ASFPServiceImpl implements ASFPService {
 	private Quo_Benef_Child_DetailsDao quoBenifChildDetailsDao;
 
 	@Autowired
-	private OccupationLodingDao occupationLodingDao;
-
-	@Autowired
 	private CalculateRiders calculateriders;
 
 	@Autowired
@@ -137,43 +133,22 @@ public class ASFPServiceImpl implements ASFPService {
 	@Autowired
 	private HealthValidation healthValidation;
 
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
+
 	@Override
 	public BigDecimal calculateL10(int ocu, int age, int term, double rebate, Date chedat, double msfb, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
-		// //System.out.println("ARP msfb : " + msfb + " age : " + age + " term : " +
-		// term
-		// + " paytrm : " + paytrm);
+
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L10");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
 
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
 		BigDecimal premium = new BigDecimal(0);
 
 		RateCardASFP rateCardASFP = rateCardASFPDao
 				.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat,
 						chedat, chedat);
-		// //System.out.println("rateCardASFP : " + rateCardASFP.getRate());
 
-		// (((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@
-		/*
-		 * try { premium = ((((new BigDecimal(rateCardASFP.getRate()) .subtract(((new
-		 * BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
-		 * .divide(new BigDecimal(100), 6, RoundingMode.HALF_UP)))).divide(new
-		 * BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(msfb)))
-		 * .divide(new BigDecimal(paytrm), 10, RoundingMode.HALF_UP)).setScale(0,
-		 * RoundingMode.HALF_UP); } catch (Exception e) { throw new
-		 * NullPointerException("Error at ASFP premium calculation"); }
-		 */
-
-		// Calculation change 2018-11-01 premium multiply by 2 //
-		// ((((@rate@-(@rate@*@rebate@/100))/1000)*@sum_assured@)/@payment_frequency@)*2
 		try {
 			premium = (((((new BigDecimal(rateCardASFP.getRate())
 					.subtract(((new BigDecimal(rateCardASFP.getRate()).multiply(new BigDecimal(rebate)))
@@ -185,24 +160,17 @@ public class ASFPServiceImpl implements ASFPService {
 			throw new NullPointerException("Error at ASFP premium calculation");
 		}
 
-		// //System.out.println("premium : " + premium.toString());
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), msfb, occupation, benefits, calResp);
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-		if (isAddOccuLoading) {
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-
-		}
-		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
+		return occuLodingPremium;
 	}
 
 	@Override
 	public BigDecimal calculateL2(int term, double msfb) throws Exception {
 		BigDecimal maturity = new BigDecimal(0);
-		// //System.out.println("term : " + term + " msfb : " + msfb);
 		maturity = (new BigDecimal(term).multiply(new BigDecimal(msfb))).multiply(new BigDecimal(12)).setScale(0,
 				RoundingMode.HALF_UP);
-		// //System.out.println("maturity : " + maturity.toString());
 		return maturity;
 	}
 
@@ -215,9 +183,7 @@ public class ASFPServiceImpl implements ASFPService {
 			calculationUtils = new CalculationUtils();
 
 			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
-			// //System.out.println(rebate + " : rebate");
-			// //System.out.println(quotationCalculation.get_personalInfo().getMsfb()
-			// + " quotationCalculation.get_personalInfo().getMsfb()");
+
 			BigDecimal bsa = calculateL2(quotationCalculation.get_personalInfo().getTerm(),
 					quotationCalculation.get_personalInfo().getMsfb());
 
@@ -234,7 +200,6 @@ public class ASFPServiceImpl implements ASFPService {
 					false);
 
 			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
-			// //System.out.println(bsaYearly);
 
 			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
@@ -256,11 +221,6 @@ public class ASFPServiceImpl implements ASFPService {
 			calResp.setExtraOE(extraOE);
 
 			calResp.setTotPremium(tot + extraOE);
-
-			/*
-			 * if (calResp.getTotPremium() < 1250) { calResp.setErrorExist(true);
-			 * calResp.setError("Total premium must be greater than 1250"); }
-			 */
 
 			calResp.setL2(bsa.doubleValue());
 

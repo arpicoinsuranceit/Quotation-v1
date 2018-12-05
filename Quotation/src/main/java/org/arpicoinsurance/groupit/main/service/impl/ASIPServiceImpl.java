@@ -52,6 +52,7 @@ import org.arpicoinsurance.groupit.main.service.ASIPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
@@ -128,7 +129,7 @@ public class ASIPServiceImpl implements ASIPService {
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
-	
+
 	@Autowired
 	private ValidationPremium validationPremium;
 	
@@ -137,6 +138,9 @@ public class ASIPServiceImpl implements ASIPService {
 	
 	@Autowired
 	private HealthValidation healthValidation;
+
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedASIP(QuotationCalculation quotationCalculation) throws Exception {
@@ -211,27 +215,20 @@ public class ASIPServiceImpl implements ASIPService {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
 		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
+
 		BigDecimal premium = new BigDecimal(0);
-		// //System.out.println("term : " + term + " bassum : " + bassum + " paytrm : " +
+		// //System.out.println("term : " + term + " bassum : " + bassum + " paytrm : "
+		// +
 		// paytrm);
 		// ((@sum_assured@/@term@)/@payment_frequency@)
 		premium = (new BigDecimal(bassum).divide(new BigDecimal(term), 6, RoundingMode.HALF_UP))
 				.divide(new BigDecimal(paytrm), 0, RoundingMode.HALF_UP);
 		// //System.out.println("premium : " + premium.toString());
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-		if (isAddOccuLoading) {
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-		}
-		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), bassum, occupation, benefits, calResp);
+
+		return occuLodingPremium;
 	}
 
 	@Override
@@ -289,7 +286,8 @@ public class ASIPServiceImpl implements ASIPService {
 			// "+fund_allo_rate+ " rate : "+rate);
 
 			fund_amount = premium.multiply(fund_allo_rate).setScale(6, BigDecimal.ROUND_HALF_UP);
-			// //System.out.println("fund_allo_rate : " + fund_allo_rate + " fund_charge : " +
+			// //System.out.println("fund_allo_rate : " + fund_allo_rate + " fund_charge : "
+			// +
 			// fund_charge + " rate : " + rate + " interest_rate : " + interest_rate + "
 			// fund_amount : " + fund_amount);
 
@@ -363,6 +361,7 @@ public class ASIPServiceImpl implements ASIPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
+<<<<<<< HEAD
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
@@ -382,6 +381,9 @@ public class ASIPServiceImpl implements ASIPService {
 			}
 		}
 		
+=======
+
+>>>>>>> refs/remotes/origin/branch-141
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -607,6 +609,7 @@ public class ASIPServiceImpl implements ASIPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
+<<<<<<< HEAD
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
@@ -626,6 +629,9 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 		
 
+=======
+
+>>>>>>> refs/remotes/origin/branch-141
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

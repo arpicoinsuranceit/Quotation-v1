@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PPDBServiceImpl implements PPDBService{
 
 	@Override
-	public BigDecimal calculatePPDB(double ridsumasu, String payFrequency, double relief, double occupation_loding) throws Exception {
+	public BigDecimal calculatePPDB(double ridsumasu, String payFrequency, double relief) throws Exception {
 //		//System.out.println("PPDB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumPPDB = new BigDecimal(0);
 		if(payFrequency.equalsIgnoreCase("S")){
@@ -24,7 +24,7 @@ public class PPDBServiceImpl implements PPDBService{
 			premiumPPDB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
 		}
 
-		premiumPPDB = premiumPPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+//		premiumPPDB = premiumPPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 //		//System.out.println("premiumPPDB : "+premiumPPDB.toString());
 		return premiumPPDB;
 	}

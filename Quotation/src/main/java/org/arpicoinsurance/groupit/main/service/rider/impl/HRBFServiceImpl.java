@@ -24,7 +24,7 @@ public class HRBFServiceImpl implements HRBFService {
 
 	@Override
 	public BigDecimal calculateHRBF(Integer age, Integer term, Double ridsumasu, Integer adlcnt, Integer chlcnt,
-			Date chedat, String payFrequency, Double relief, double occupation_loding) throws Exception {
+			Date chedat, String payFrequency, Double relief) throws Exception {
 
 		// //System.out.println(adlcnt +"##########"+ chlcnt+"##########"+
 		// term+"##########"+ age+"##########"+ ridsumasu+"##########"+ chlcnt);
@@ -63,7 +63,7 @@ public class HRBFServiceImpl implements HRBFService {
 		} catch (Exception e) {
 			throw new NullPointerException("HCBF Discount Rate not fount at Age : " + age);
 		}
-		premiumHRBF = premiumHRBF.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumHRBF = premiumHRBF.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumHRBI : "+premiumHRBF.toString());
 		return premiumHRBF;
 	}

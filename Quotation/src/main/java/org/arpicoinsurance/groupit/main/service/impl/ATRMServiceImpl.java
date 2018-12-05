@@ -48,6 +48,7 @@ import org.arpicoinsurance.groupit.main.service.ATRMService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
@@ -67,9 +68,6 @@ public class ATRMServiceImpl implements ATRMService {
 
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-
-	@Autowired
-	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -126,24 +124,20 @@ public class ATRMServiceImpl implements ATRMService {
 	private ValidationPremium validationPremium;
 
 	@Autowired
+<<<<<<< HEAD
 	private BenefictHistoryWebClient benefictHistoryWebClient;
 	
 	@Autowired
 	private HealthValidation healthValidation;
+=======
+	private OccupationLoadingService occupationLoadingService;
+>>>>>>> refs/remotes/origin/branch-141
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
 
 		BigDecimal premium = new BigDecimal(0);
 
@@ -162,12 +156,10 @@ public class ATRMServiceImpl implements ATRMService {
 		} catch (Exception e) {
 			throw new NullPointerException("ATRM Premium calculation Error");
 		}
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-		if (isAddOccuLoading) {
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-		}
-		return premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), bassum, occupation, benefits, calResp);
+
+		return occuLodingPremium;
 
 	}
 
@@ -464,7 +456,7 @@ public class ATRMServiceImpl implements ATRMService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId, Integer type) throws Exception {
-		
+
 		CalculationUtils calculationUtils = new CalculationUtils();
 
 		Quotation quo = null;
@@ -489,6 +481,7 @@ public class ATRMServiceImpl implements ATRMService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
+<<<<<<< HEAD
 		
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
@@ -510,6 +503,10 @@ public class ATRMServiceImpl implements ATRMService {
 		}
 		
 		/*Products products = productDao.findByProductCode("ATRM");*/
+=======
+
+		/* Products products = productDao.findByProductCode("ATRM"); */
+>>>>>>> refs/remotes/origin/branch-141
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

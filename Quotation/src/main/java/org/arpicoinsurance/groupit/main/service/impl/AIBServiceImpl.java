@@ -96,7 +96,8 @@ public class AIBServiceImpl implements AIBService {
 			throw new NullPointerException("AIB Rate not found at Term : " + term);
 		}
 
-		// //System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat : "
+		// //System.out.println("term : " + term + " adbrat : " + adbrat + " fundmarat :
+		// "
 		// + fundmarat + " fundrat : "
 		// + fundrat + " intrat : " + interest_rate + " paymod : " + paymod);
 		for (int i = 1; i <= term; i++) {

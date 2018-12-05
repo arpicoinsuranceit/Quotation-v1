@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TPDBServiceimpl implements TPDBService {
 
 	@Override
-	public BigDecimal calculateTPDB(double ridsumasu, String payFrequency, double relief, double occupation_loding)
+	public BigDecimal calculateTPDB(double ridsumasu, String payFrequency, double relief)
 			throws Exception {
 		// TODO Auto-generated method stub
 		// //System.out.println("TPDB ridsumasu : "+ridsumasu+" payFrequency :
@@ -29,7 +29,7 @@ public class TPDBServiceimpl implements TPDBService {
 					RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10,
 							RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}
-		premiumTPDB = premiumTPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumTPDB = premiumTPDB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumTPDB : "+premiumTPDB.toString());
 		return premiumTPDB;
 	}

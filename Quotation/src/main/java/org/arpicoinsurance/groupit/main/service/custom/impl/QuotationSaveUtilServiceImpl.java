@@ -855,7 +855,7 @@ public class QuotationSaveUtilServiceImpl implements QuotationSaveUtilService {
 									relife = rateCardARP.getRate();
 								}
 
-								BigDecimal hrbic = hrbiService.calculateHRBI(children.get_cAge(), valiedTerm, children.get_cTitle(), hrbi , new Date(), frequancy, relife, 1.0);
+								BigDecimal hrbic = hrbiService.calculateHRBI(children.get_cAge(), valiedTerm, children.get_cTitle(), hrbi , new Date(), frequancy, relife);
 
 								benef_Child_Details.setCustChildDetails(childDetails);
 								benef_Child_Details.setTerm(valiedTerm);

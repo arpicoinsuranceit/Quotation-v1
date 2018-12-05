@@ -44,6 +44,7 @@ import org.arpicoinsurance.groupit.main.service.DTAPLService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,26 +108,17 @@ public class DTAPLServiceImpl implements DTAPLService {
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
+
 	@Override
 	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt,
 			QuotationQuickCalResponse calResp, boolean isAddOccuLoading) throws Exception {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
 
 		DTAHelper dtaHelper = new DTAHelper();
-
-		// //System.out.println(
-		// "age : " + age + " term : " + term + " intrat : " + intrat + " sex : " + sex
-		// + " loanamt : " + loanamt);
 
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal total_premium = new BigDecimal(0);
@@ -166,13 +158,9 @@ public class DTAPLServiceImpl implements DTAPLService {
 			} catch (Exception e) {
 				throw new NullPointerException("DTAPL premium calculation Error");
 			}
-			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-			if (isAddOccuLoading) {
+			BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+					premium.doubleValue(), loanamt, occupation, benefits, calResp);
 
-				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-				calResp.setOccuLodingTot(
-						calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-			}
 			DTAShedule shedule = new DTAShedule();
 
 			shedule.setLonred(reduction.doubleValue());
@@ -185,13 +173,6 @@ public class DTAPLServiceImpl implements DTAPLService {
 			dtaSheduleList.add(shedule);
 
 			total_premium = total_premium.add(occuLodingPremium);
-
-			// //System.out.println("polyer : " + String.valueOf(i));
-			// //System.out.println("outyer : " + String.valueOf(term - (i - 1)));
-			// //System.out.println("outsum : " + amount.toPlainString());
-			// //System.out.println("lonred : " + reduction.toPlainString());
-			// //System.out.println("prmrat : " + rateCardDTA.getRate());
-			// //System.out.println("premum : " + occuLodingPremium.toPlainString());
 
 			amount = outstanding;
 

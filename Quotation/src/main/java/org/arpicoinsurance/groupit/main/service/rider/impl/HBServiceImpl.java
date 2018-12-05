@@ -21,7 +21,7 @@ public class HBServiceImpl implements HBService {
 
 	@Override
 	public BigDecimal calculateHB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief, double occupation_loding) throws Exception {
+			Double relief) throws Exception {
 
 		//System.out.println(age);
 		//System.out.println(term);
@@ -52,7 +52,7 @@ public class HBServiceImpl implements HBService {
 			throw new NullPointerException("HB Rate not found at Age : " + age + " and Term : " + term);
 		}
 
-		premiumHB = premiumHB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumHB = premiumHB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		// //System.out.println("premiumHB : "+premiumHB.toString());
 		return premiumHB;
 	}

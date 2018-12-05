@@ -26,7 +26,6 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
-import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_Child_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
@@ -44,7 +43,6 @@ import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
-import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
@@ -55,6 +53,7 @@ import org.arpicoinsurance.groupit.main.service.ARPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.arpicoinsurance.groupit.main.validation.HealthValidation;
 import org.arpicoinsurance.groupit.main.validation.ValidationPremium;
@@ -71,9 +70,6 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private RateCardENDDao rateCardENDDao;
-
-	@Autowired
-	private OccupationLodingDao occupationLodingDao;
 
 	@Autowired
 	private RateCardARPDao rateCardARPDao;
@@ -137,7 +133,7 @@ public class ARPServiceImpl implements ARPService {
 
 	@Autowired
 	private SurrendervalDao surrenderValDao;
-	
+
 	@Autowired
 	private ValidationPremium validationPremium;
 	
@@ -146,6 +142,9 @@ public class ARPServiceImpl implements ARPService {
 	
 	@Autowired
 	private HealthValidation healthValidation;
+
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedArp(QuotationCalculation quotationCalculation) throws Exception {
@@ -223,16 +222,17 @@ public class ARPServiceImpl implements ARPService {
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
+//		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
+//		Double rate = 1.0;
+//		if (ocupationLoading != null) {
+//			rate = ocupationLoading.getValue();
+//			if (rate == null) {
+//				rate = 1.0;
+//			}
+//		}
 
-		// //System.out.println("ARP bassum : " + bassum + " age : " + age + " term : " +
+		// //System.out.println("ARP bassum : " + bassum + " age : " + age + " term : "
+		// +
 		// term + " rebate : " + rebate
 		// + " payFrequency : " + payFrequency + " rlfterm : " + rlfterm);
 		BigDecimal premium = new BigDecimal(0);
@@ -270,16 +270,14 @@ public class ARPServiceImpl implements ARPService {
 		}
 		// //System.out.println("premium : " + premium.toString());
 
-		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-		if (isAddOccuLoading) {
-			// //System.out.println(calResp.getWithoutLoadingTot() +
-			// "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-			// //System.out.println(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-			// //System.out.println(calResp.getWithoutLoadingTot() +
-			// "occunnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-		}
+		BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+				premium.doubleValue(), bassum, occupation, benefits, calResp);
+
+//		BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
+//		if (isAddOccuLoading) {
+//			calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
+//			calResp.setOccuLodingTot(calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
+//		}
 		return occuLodingPremium;
 	}
 
@@ -312,7 +310,7 @@ public class ARPServiceImpl implements ARPService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateARP(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
 
@@ -576,7 +574,7 @@ public class ARPServiceImpl implements ARPService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		String valPrm = validationPremium.validateARP(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
 
@@ -585,6 +583,7 @@ public class ARPServiceImpl implements ARPService {
 			return responseMap;
 		}
 
+<<<<<<< HEAD
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
@@ -603,6 +602,8 @@ public class ARPServiceImpl implements ARPService {
 			}
 		}
 
+=======
+>>>>>>> refs/remotes/origin/branch-141
 		// Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
 

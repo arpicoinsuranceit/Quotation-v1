@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.arpicoinsurance.groupit.main.dao.BenefitsDao;
+import org.arpicoinsurance.groupit.main.dao.OccupationDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardARPDao;
 //import org.arpicoinsurance.groupit.main.dao.RateCardARTMDeathDao;
 import org.arpicoinsurance.groupit.main.dao.RateCardATFESCDao;
@@ -28,11 +29,14 @@ import org.arpicoinsurance.groupit.main.dao.RateCardTPDDTASDao;
 import org.arpicoinsurance.groupit.main.helper.Benifict;
 import org.arpicoinsurance.groupit.main.helper.Children;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
+import org.arpicoinsurance.groupit.main.model.Benefits;
+import org.arpicoinsurance.groupit.main.model.Occupation;
 import org.arpicoinsurance.groupit.main.model.RateCardARP;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.service.CalculateBenifictTermService;
 import org.arpicoinsurance.groupit.main.service.OccupationLodingServce;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBSService;
 import org.arpicoinsurance.groupit.main.service.rider.ADBService;
 import org.arpicoinsurance.groupit.main.service.rider.ATPBService;
@@ -199,9 +203,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 	private TPDDTASPLService tpddtasplService;
 
 	@Autowired
-	private OccupationLodingServce occupationLoding;
-
-	@Autowired
 	private CalculateBenifictTermService calculateBenefictTerm;
 
 	@Autowired
@@ -259,13 +260,19 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 	@Autowired
 	private BenefitsDao benefictDao;
+	
+	@Autowired
+	private OccupationLoadingService occupationLodingServce;
+	
+	@Autowired
+	private OccupationDao occupationDao;
 
 	@Override
 	public QuotationQuickCalResponse getRiders(QuotationCalculation quotationCalculation,
 			QuotationQuickCalResponse calResp) throws Exception {
 		Integer adultCount = 1;
 		Integer childCount = 0;
-
+		
 		Double inrate = 0.0;
 		if (quotationCalculation.get_personalInfo().getIntrate() != null
 				&& quotationCalculation.get_personalInfo().getIntrate() > 0) {
@@ -289,6 +296,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 		}
 
 		if (_mRiders != null) {
+			
+			Occupation occupation = occupationDao.findByOcupationid(quotationCalculation.get_personalInfo().getMocu());
+			
 			adultCount = 1;
 			for (Benifict benifict : _mRiders) {
 
@@ -320,20 +330,23 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 				if (quotationCalculation.get_product().equalsIgnoreCase("ARTM")
 						&& !quotationCalculation.get_personalInfo().getFrequance().equals("S")) {
+					
+					
+					
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(),
 							benifict.getType(),
 							Integer.parseInt(quotationCalculation.get_personalInfo().getPayingterm()),
 							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getMgenger(),
 							quotationCalculation.get_personalInfo().getFrequance(),
 							quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate,
-							quotationCalculation.get_product());
+							quotationCalculation.get_product(), occupation);
 				} else {
 					calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getMage(),
 							benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 							benifict.getSumAssured(), quotationCalculation.get_personalInfo().getMgenger(),
 							quotationCalculation.get_personalInfo().getFrequance(),
 							quotationCalculation.get_personalInfo().getMocu(), calResp, adultCount, childCount, inrate,
-							quotationCalculation.get_product());
+							quotationCalculation.get_product(), occupation);
 				}
 
 			}
@@ -343,6 +356,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 				&& quotationCalculation.get_personalInfo().getSgenger() != null
 				&& quotationCalculation.get_personalInfo().getSocu() != null) {
 
+			Occupation occupation = occupationDao.findByOcupationid(quotationCalculation.get_personalInfo().getSocu());
+			
 			if (_sRiders != null) {
 
 				for (Benifict benifict : _sRiders) {
@@ -356,14 +371,14 @@ public class CalculateRidersImpl implements CalculateRiders {
 								benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
 								quotationCalculation.get_personalInfo().getFrequance(),
 								quotationCalculation.get_personalInfo().getSocu(), calResp, adultCount, childCount,
-								inrate, quotationCalculation.get_product());
+								inrate, quotationCalculation.get_product(), occupation);
 					} else {
 						calResp = calculateMainlifeRiders(quotationCalculation.get_personalInfo().getSage(),
 								benifict.getType(), quotationCalculation.get_personalInfo().getTerm(),
 								benifict.getSumAssured(), quotationCalculation.get_personalInfo().getSgenger(),
 								quotationCalculation.get_personalInfo().getFrequance(),
 								quotationCalculation.get_personalInfo().getSocu(), calResp, adultCount, childCount,
-								inrate, quotationCalculation.get_product());
+								inrate, quotationCalculation.get_product(), occupation);
 					}
 				}
 			}
@@ -417,7 +432,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
-										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product());
+										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product(), null);
 							}
 							break;
 						case "HRBFC":
@@ -432,7 +447,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
-										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product());
+										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product(), null);
 							}
 							break;
 						/*
@@ -447,7 +462,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
-										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product());
+										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product(), null);
 							}
 							break;
 						case "HRBIC":
@@ -455,7 +470,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 								calculateBenifPremium(benifict.getType(), benifict.getSumAssured(),
 										children.get_cTitle(), children.get_cAge(),
 										quotationCalculation.get_personalInfo().getFrequance(), term, 0, calResp,
-										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product());
+										adultCount, childCount, -1.0, -1.0, quotationCalculation.get_product(), null);
 							}
 							break;
 
@@ -472,14 +487,14 @@ public class CalculateRidersImpl implements CalculateRiders {
 	@Override
 	public QuotationQuickCalResponse calculateMainlifeRiders(Integer age, String type, Integer payTerm, Double bsa,
 			String gender, String frequance, Integer ocu, QuotationQuickCalResponse calResp, Integer adultCount,
-			Integer childCount, Double inrate, String productCode) throws Exception {
+			Integer childCount, Double inrate, String productCode, Occupation occupation) throws Exception {
 
 		//System.out.println(age);
 
 		Integer term = calculateBenefictTerm.calculateBenifictTerm(age, type, payTerm);
 
 		calculateBenifPremium(type, bsa, gender, age, frequance, term, ocu, calResp, adultCount, childCount, bsa,
-				inrate, productCode);
+				inrate, productCode, occupation);
 
 		return calResp;
 	}
@@ -487,7 +502,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 	@Override
 	public QuotationQuickCalResponse calculateBenifPremium(String type, Double ridsumasu, String gender, Integer age,
 			String payFrequency, Integer term, Integer occupation_id, QuotationQuickCalResponse calResp,
-			Integer adultCount, Integer childCount, Double loan, Double inRate, String productCode) throws Exception {
+			Integer adultCount, Integer childCount, Double loan, Double inRate, String productCode, Occupation occupation) throws Exception {
 
 		// //System.out.println(occupation_id + " ////////////// ocu ID");
 
@@ -495,45 +510,51 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 		//System.out.println(calResp.getYearlyL2Sum() + " : L2 sum" );
 		
-		Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
+		//Map<String, Double> oculoding = occupationLoding.getOccupationLoding(occupation_id);
 
 		Double relife = 1.0;
+		
+		Benefits benefit = null;
 
-		Double ocuLoading = 1.0;
+		//Double ocuLoading = 1.0;
 		switch (type) {
 
 		case "L2":
 			//System.out.println("L2");
 			if (productCode.equalsIgnoreCase("ARTM")) {
 
-				if (benefictDao.findByRiderCode("L2").getActive() == 0) {
+				benefit = benefictDao.findByRiderCode("L2");
+				
+				if (benefit.getActive() == 0) {
 					calResp.setErrorExist(true);
 					calResp.setError("L2 under Maintenance, Please untick or reload page");
 					return calResp;
 				}
 
-				ocuLoading = oculoding.get("L2");
-				if (ocuLoading == null)
-					ocuLoading = 1.0;
+//				ocuLoading = oculoding.get("L2");
+//				if (ocuLoading == null || ocuLoading == 0)
+//					ocuLoading = 1.0;
 
 				// Integer maxTermToBenefictL2 =
 				// rateCardArtmDeathDao.findFirstByOrderByTermDesc().getTerm();
 				Integer valiedTermL2 = term;
 
-				BigDecimal l2 = l2service.calculateL2(ridsumasu, valiedTermL2, age, payFrequency, ocuLoading);
+				BigDecimal l2 = l2service.calculateL2(ridsumasu, valiedTermL2, age, payFrequency);
 
-				BigDecimal l2Yearly = l2service.calculateL2(ridsumasu, valiedTermL2, age, "Y", ocuLoading);
+				BigDecimal l2Yearly = l2service.calculateL2(ridsumasu, valiedTermL2, age, "Y");
 				calResp.setYearlyL2Sum(l2Yearly.doubleValue());
 				
-				calResp = setLodingDetails(ocuLoading, l2.doubleValue(), calResp);
+				//calResp = setLodingDetails(ocuLoading, l2.doubleValue(), calResp);
 
+				l2 = occupationLodingServce.calculateOccupationLoading(true, l2.doubleValue(), ridsumasu, occupation, benefit, calResp);
+				
 				if (!(l2.doubleValue() > 0)) {
 					calResp.setErrorExist(true);
 					calResp.setError("L2 Premium going low");
 					
 					return calResp;
 				}
-
+				
 				calResp.setL2(l2.doubleValue());
 				calResp.setL2Sum(ridsumasu);
 				calResp.setAddBenif(calResp.getAddBenif() + l2.doubleValue());
@@ -543,6 +564,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "BSAS":
+			
+			benefit = benefictDao.findByRiderCode("SCB");
 
 			if (benefictDao.findByRiderCode("SCB").getActive() == 0) {
 				calResp.setErrorExist(true);
@@ -550,9 +573,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			ocuLoading = oculoding.get("SCB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SCB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictSCB = rateCardATFESCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSCB = maxTermToBenefictSCB > term ? term : maxTermToBenefictSCB;
@@ -566,8 +589,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal scb = scbService.calculateSCB(age, valiedTermSCB, new Date(), ridsumasu, payFrequency, relife,
-					ocuLoading);
+			BigDecimal scb = scbService.calculateSCB(age, valiedTermSCB, new Date(), ridsumasu, payFrequency, relife);
 
 			if (!(scb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -575,7 +597,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, scb.doubleValue(), calResp);
+			scb = occupationLodingServce.calculateOccupationLoading(true, scb.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
+			//calResp = setLodingDetails(ocuLoading, scb.doubleValue(), calResp);
 
 			calResp.setBsas(scb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scb.doubleValue());
@@ -583,14 +607,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "ADB":
-			if (benefictDao.findByRiderCode("ADB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("ADB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("ADB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("ADB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("ADB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -601,7 +628,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal adb = adbService.calculateADB(ridsumasu, payFrequency, relife);
 
 			if (!(adb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -609,7 +636,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, adb.doubleValue(), calResp);
+			adb = occupationLodingServce.calculateOccupationLoading(true, adb.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
+			////calResp = setLodingDetails(ocuLoading, adb.doubleValue(), calResp);
 
 			calResp.setAdb(adb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adb.doubleValue());
@@ -617,41 +646,45 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SFPO":
-			if (benefictDao.findByRiderCode("SFPO").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SFPO");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SFPO under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SFPO");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+			
 			Integer maxTermToBenefictSFPO = rateCardSFPODao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSFPO = maxTermToBenefictSFPO > term ? term : maxTermToBenefictSFPO;
 
-			BigDecimal sfpo = sfpoService.calculateSFPO(age, valiedTermSFPO, new Date(), ridsumasu, payFrequency, 1.0,
-					ocuLoading);
+			BigDecimal sfpo = sfpoService.calculateSFPO(age, valiedTermSFPO, new Date(), ridsumasu, payFrequency, 1.0);
 
+			sfpo = occupationLodingServce.calculateOccupationLoading(true, sfpo.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
 			if (!(sfpo.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("SFPO Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, sfpo.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, sfpo.doubleValue(), calResp);
 			calResp.setSfpo(sfpo.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + sfpo.doubleValue());
 			calResp.setSfpoTerm(valiedTermSFPO);
 			return calResp;
 
 		case "ADBS":
-			if (benefictDao.findByRiderCode("ADBS").getActive() == 0) {
+			benefit = benefictDao.findByRiderCode("ADBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("ADBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("ADBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("ADBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -662,7 +695,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal adbs = adbsService.calculateADBS(ridsumasu, payFrequency, relife);
+			
+			adbs = occupationLodingServce.calculateOccupationLoading(true, adbs.doubleValue(), ridsumasu, occupation, benefit, calResp);
 
 			if (!(adbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -670,7 +705,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, adbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, adbs.doubleValue(), calResp);
 			calResp.setAdbs(adbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + adbs.doubleValue());
 			calResp.setAdbsTerm(term);
@@ -679,15 +714,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 		case "ATPB":
 			// //System.out.println("called/////////////////////////////////////////////////////");
 			// //System.out.println(ridsumasu);
+			
+			benefit = benefictDao.findByRiderCode("ATPB");
 
-			if (benefictDao.findByRiderCode("ATPB").getActive() == 0) {
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("ATPB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("ATPB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("ATPB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictATPB = rateCardATFESCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermATPB = maxTermToBenefictATPB > term ? term : maxTermToBenefictATPB;
@@ -702,29 +739,34 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal atpb = atpbService.calculateATPB(age, valiedTermATPB, new Date(), ridsumasu, payFrequency,
-					relife, ocuLoading);
+					relife);
 
+			atpb = occupationLodingServce.calculateOccupationLoading(true, atpb.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
 			if (!(atpb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("ATPB Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, atpb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, atpb.doubleValue(), calResp);
 			calResp.setAtpb(atpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + atpb.doubleValue());
 			calResp.setAtpbTerm(valiedTermATPB);
 			return calResp;
 
 		case "TPDASB":
-			if (benefictDao.findByRiderCode("TPDASB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDASB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDASB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDASB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDASB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDASB = rateCardTPDASBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDASB = maxTermToBenefictTPDASB > term ? term : maxTermToBenefictTPDASB;
@@ -736,10 +778,14 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
-			// //System.out.println(relife + ": relife");
+			
 
 			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, valiedTermTPDASB, new Date(), ridsumasu,
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			
+			tpdasb = occupationLodingServce.calculateOccupationLoading(true, tpdasb.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
+			System.out.println("tpdasb : " + tpdasb);
 
 			if (!(tpdasb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -747,21 +793,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpdasb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpdasb.doubleValue(), calResp);
 			calResp.setTpdasb(tpdasb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasb.doubleValue());
 			calResp.setTpdasbTerm(valiedTermTPDASB);
 			return calResp;
 
 		case "TPDASBS":
+			
+			benefit = benefictDao.findByRiderCode("TPDASBS");
+			
 			if (benefictDao.findByRiderCode("TPDASBS").getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDASBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDASBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDASBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDASBS = rateCardTPDASBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDASBS = maxTermToBenefictTPDASBS > term ? term : maxTermToBenefictTPDASBS;
@@ -777,7 +826,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal tpdasbs = tpdasbsbService.calculateTPDASBS(age, valiedTermTPDASBS, new Date(), ridsumasu,
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			
+			tpdasbs = occupationLodingServce.calculateOccupationLoading(true, tpdasbs.doubleValue(), ridsumasu, occupation, benefit, calResp);
 
 			if (!(tpdasbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -785,21 +836,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpdasbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpdasbs.doubleValue(), calResp);
 			calResp.setTpdasbs(tpdasbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdasbs.doubleValue());
 			calResp.setTpdasbsTerm(valiedTermTPDASBS);
 			return calResp;
 
 		case "TPDB":
-			if (benefictDao.findByRiderCode("TPDB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -810,7 +864,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal tpdb = tpdbService.calculateTPDB(ridsumasu, payFrequency, relife);
+			
+			tpdb = occupationLodingServce.calculateOccupationLoading(true, tpdb.doubleValue(), ridsumasu, occupation, benefit, calResp);
 
 			if (!(tpdb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -818,21 +874,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpdb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpdb.doubleValue(), calResp);
 			calResp.setTpdb(tpdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdb.doubleValue());
 			calResp.setTpdbTerm(term);
 			return calResp;
 
 		case "TPDBS":
-			if (benefictDao.findByRiderCode("TPDBS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -843,30 +902,34 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal tpdbs = tpdbsService.calculateTPDBS(ridsumasu, payFrequency, relife);
 
+			tpdbs = occupationLodingServce.calculateOccupationLoading(true, tpdbs.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
 			if (!(tpdbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDBS Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpdbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpdbs.doubleValue(), calResp);
 			calResp.setTpdbs(tpdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpdbs.doubleValue());
 			calResp.setTpdbsTerm(term);
 			return calResp;
 
 		case "PPDB":
+			
+			benefit = benefictDao.findByRiderCode("PPDB");
 
-			if (benefictDao.findByRiderCode("PPDB").getActive() == 0) {
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("PPDB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("PPDB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("PPDB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -877,28 +940,34 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal ppdb = ppdbService.calculatePPDB(ridsumasu, payFrequency, relife);
 
+			
+			ppdb = occupationLodingServce.calculateOccupationLoading(true, ppdb.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
 			if (!(ppdb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("PPDB Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, ppdb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, ppdb.doubleValue(), calResp);
 			calResp.setPpdb(ppdb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdb.doubleValue());
 			calResp.setPpdbTerm(term);
 			return calResp;
 		case "PPDBS":
-			if (benefictDao.findByRiderCode("PPDBS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("PPDBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("PPDBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("PPDBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("PPDBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			if (calResp.isArp()) {
 				RateCardARP rateCardARP = rateCardARPDao
@@ -909,28 +978,33 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, relife, ocuLoading);
+			BigDecimal ppdbs = ppdbsService.calculatePPDBS(ridsumasu, payFrequency, relife);
 
+			ppdbs = occupationLodingServce.calculateOccupationLoading(true, ppdbs.doubleValue(), ridsumasu, occupation, benefit, calResp);
+			
 			if (!(ppdbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("PPDBS Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, ppdbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, ppdbs.doubleValue(), calResp);
 			calResp.setPpdbs(ppdbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + ppdbs.doubleValue());
 			calResp.setPpdbsTerm(term);
 			return calResp;
 		case "CIB":
-			if (benefictDao.findByRiderCode("CIB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("CIB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("CIB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("CIB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("CIB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictCIB = rateCardCIBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermCIB = maxTermToBenefictCIB > term ? term : maxTermToBenefictCIB;
@@ -944,29 +1018,32 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal cib = cibService.calculateCIB(age, valiedTermCIB, new Date(), ridsumasu, payFrequency, relife,
-					ocuLoading);
+			BigDecimal cib = cibService.calculateCIB(age, valiedTermCIB, new Date(), ridsumasu, payFrequency, relife);
 
+			cib = occupationLodingServce.calculateOccupationLoading(true, cib.doubleValue(), ridsumasu, occupation, benefit, calResp);
 			if (!(cib.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("CIB Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, cib.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, cib.doubleValue(), calResp);
 			calResp.setCib(cib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cib.doubleValue());
 			calResp.setCibTerm(valiedTermCIB);
 			return calResp;
 		case "CIBS":
-			if (benefictDao.findByRiderCode("SCIB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SCIB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SCIB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SCIB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SCIB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			Integer maxTermToBenefictCIBS = rateCardCIBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermCIBS = maxTermToBenefictCIBS > term ? term : maxTermToBenefictCIBS;
 
@@ -980,7 +1057,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal scib = scibService.calculateSCIB(age, valiedTermCIBS, new Date(), ridsumasu, payFrequency,
-					relife, ocuLoading);
+					relife);
+			
+			scib = occupationLodingServce.calculateOccupationLoading(true, scib.doubleValue(), ridsumasu, occupation, benefit, calResp);
 
 			if (!(scib.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -988,21 +1067,25 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, scib.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, scib.doubleValue(), calResp);
 			calResp.setCibs(scib.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + scib.doubleValue());
 			calResp.setCibsTerm(valiedTermCIBS);
 			return calResp;
 
 		case "CIBC":
-			if (benefictDao.findByRiderCode("CIBC").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("CIBC");
+			
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("CIBC under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("CIBC");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("CIBC");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// ** 21-age < term term = 21-age else term
 
 			term = term > (21 - age) ? (21 - age) : term;
@@ -1032,6 +1115,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 			BigDecimal cibc = cibcService.calculateCIBC(age, valiedTermCIBC, new Date(), ridsumasu, payFrequency,
 					relife);
 			
+			cibc = occupationLodingServce.calculateOccupationLoading(true, cibc.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			//System.out.println("Valied term ARP cibc : " + cibc);
 
 			if (!(cibc.doubleValue() > 0)) {
@@ -1040,21 +1126,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, cibc.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, cibc.doubleValue(), calResp);
 			calResp.setCibc(calResp.getCibc() + cibc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + cibc.doubleValue());
 			calResp.setCibcTerm(valiedTermCIBC);
 			return calResp;
 
 		case "FEB":
-			if (benefictDao.findByRiderCode("FEB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("FEB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("FEB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("FEB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("FEB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictFEB = rateCardATFESCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermFEB = maxTermToBenefictFEB > term ? term : maxTermToBenefictFEB;
@@ -1068,30 +1157,35 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal feb = febService.calculateFEB(age, valiedTermFEB, new Date(), ridsumasu, payFrequency, relife,
-					ocuLoading);
+			BigDecimal feb = febService.calculateFEB(age, valiedTermFEB, new Date(), ridsumasu, payFrequency, relife);
 
+			feb = occupationLodingServce.calculateOccupationLoading(true, feb.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(feb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("FEB Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, feb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, feb.doubleValue(), calResp);
 			calResp.setFeb(feb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + feb.doubleValue());
 			calResp.setFebTerm(valiedTermFEB);
 			return calResp;
 
 		case "FEBS":
-			if (benefictDao.findByRiderCode("FEBS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("FEBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("FEBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("FEBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("FEBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictFEBS = rateCardATFESCDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermFEBS = maxTermToBenefictFEBS > term ? term : maxTermToBenefictFEBS;
@@ -1106,29 +1200,35 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal febs = febsService.calculateFEBS(age, valiedTermFEBS, new Date(), ridsumasu, payFrequency,
-					relife, ocuLoading);
+					relife);
 
+			febs = occupationLodingServce.calculateOccupationLoading(true, febs.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(febs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("FEBS Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, febs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, febs.doubleValue(), calResp);
 			calResp.setFebs(febs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + febs.doubleValue());
 			calResp.setFebsTerm(valiedTermFEBS);
 			return calResp;
 
 		case "MFIBD":
-			if (benefictDao.findByRiderCode("MFIBD").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("MFIBD");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("MFIBD under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("MFIBD");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("MFIBD");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictMFIBD = rateCardMFIBDDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBD = maxTermToBenefictMFIBD > term ? term : maxTermToBenefictMFIBD;
@@ -1150,7 +1250,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 			BigDecimal mfibd = mfibdService.calculateMFIBD(age, valiedTermMFIBD, new Date(), ridsumasu, payFrequency,
-					relife, ocuLoading);
+					relife);
+			
+			mfibd = occupationLodingServce.calculateOccupationLoading(true, mfibd.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(mfibd.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1158,21 +1261,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, mfibd.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, mfibd.doubleValue(), calResp);
 			calResp.setMifdb(mfibd.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibd.doubleValue());
 			calResp.setMifdbTerm(valiedTermMFIBD);
 			return calResp;
 
 		case "MFIBT":
-			if (benefictDao.findByRiderCode("MFIBT").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("MFIBT");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("MFIBT under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("MFIBT");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("MFIBT");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictMFIBT = rateCardMFIBTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBT = maxTermToBenefictMFIBT > term ? term : maxTermToBenefictMFIBT;
@@ -1194,7 +1300,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 			BigDecimal mfibt = mfibtService.calculateMFIBT(age, valiedTermMFIBT, new Date(), ridsumasu, payFrequency,
-					relife, ocuLoading);
+					relife);
+			
+			mfibt = occupationLodingServce.calculateOccupationLoading(true, mfibt.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(mfibt.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1202,20 +1311,23 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, mfibt.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, mfibt.doubleValue(), calResp);
 			calResp.setMifdt(mfibt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibt.doubleValue());
 			calResp.setMifdtTerm(valiedTermMFIBT);
 			return calResp;
 		case "MFIBDT":
-			if (benefictDao.findByRiderCode("MFIBDT").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("MFIBDT");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("MFIBDT under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("MFIBDT");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("MFIBDT");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictMFIBDT = rateCardMFIBDTDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermMFIBDT = maxTermToBenefictMFIBDT > term ? term : maxTermToBenefictMFIBDT;
@@ -1237,7 +1349,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 			BigDecimal mfibdt = mfibdtService.calculateMFIBDT(age, valiedTermMFIBDT, new Date(), ridsumasu,
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			
+			mfibdt = occupationLodingServce.calculateOccupationLoading(true, mfibdt.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(mfibdt.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1245,13 +1360,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, mfibdt.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, mfibdt.doubleValue(), calResp);
 			calResp.setMifdbt(mfibdt.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + mfibdt.doubleValue());
 			calResp.setMifdbtTerm(valiedTermMFIBDT);
 			return calResp;
 		/*
-		 * case "HRB": ocuLoading = oculoding.get("HRB"); if (ocuLoading == null)
+		 * case "HRB": ocuLoading = oculoding.get("HRB"); if (ocuLoading == null || ocuLoading == 0)
 		 * ocuLoading = 1.0;
 		 * 
 		 * BigDecimal hrb = hrbService.calculateHRB(age, gender, ridsumasu, adultCount,
@@ -1261,14 +1376,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "HRBF":
-			if (benefictDao.findByRiderCode("HCBF").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HCBF");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HCBF under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HRB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HRB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// Term calculation ///////
 
 			Integer maxTermToBenefictHRBF = rateCardHRBFDao.findFirstByOrderByTermDesc().getTerm();
@@ -1289,7 +1407,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 			BigDecimal hrbf = null;
 			try {
 				hrbf = hrbfService.calculateHRBF(age, valiedTermHRBF, ridsumasu, adultCount, childCount, new Date(),
-						payFrequency, relife, ocuLoading);
+						payFrequency, relife);
+				
+				hrbf = occupationLodingServce.calculateOccupationLoading(true, hrbf.doubleValue(), ridsumasu, occupation,
+						benefit, calResp);
+
 
 				if (!(hrbf.doubleValue() > 0)) {
 					calResp.setErrorExist(true);
@@ -1297,7 +1419,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 					return calResp;
 				}
 
-				calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
+				//calResp = setLodingDetails(ocuLoading, hrbf.doubleValue(), calResp);
 				calResp.setHrbf(hrbf.doubleValue());
 
 				calResp.setAddBenif(calResp.getAddBenif() + hrbf.doubleValue());
@@ -1312,14 +1434,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "HRBI":
-			if (benefictDao.findByRiderCode("HCBI").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HCBI");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HCBI under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HRB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HRB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// Term calculation ///////
 
 			Integer maxTermToBenefictHRBI = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
@@ -1340,8 +1465,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// Integer valiedTermHRBI = 10;
 
 			BigDecimal hrbi = hrbiService.calculateHRBI(age, valiedTermHRBI, gender, ridsumasu, new Date(),
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
 
+			hrbi = occupationLodingServce.calculateOccupationLoading(true, hrbi.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(hrbi.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1349,21 +1476,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, hrbi.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hrbi.doubleValue(), calResp);
 			calResp.setHrbi(hrbi.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbi.doubleValue());
 			calResp.setHrbiTerm(valiedTermHRBI);
 			return calResp;
 
 		case "HRBIS":
-			if (benefictDao.findByRiderCode("HCBIS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HCBIS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HCBIS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HRBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HRBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// Term calculation ///////
 
 			Integer maxTermToBenefictHRBIS = rateCardHRBIDao.findFirstByOrderByTermDesc().getTerm();
@@ -1380,29 +1510,35 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal hrbis = hrbiService.calculateHRBI(age, valiedTermHRBIS, gender, ridsumasu, new Date(),
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
 
+			hrbis = occupationLodingServce.calculateOccupationLoading(true, hrbis.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(hrbis.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("HCBIS Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, hrbis.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hrbis.doubleValue(), calResp);
 			calResp.setHrbis(hrbis.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hrbis.doubleValue());
 			calResp.setHrbisTerm(valiedTermHRBIS);
 			return calResp;
 
 		case "HRBIC":
-			if (benefictDao.findByRiderCode("HCBIC").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HCBIC");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HCBIC under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HRBIC");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HRBIC");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// Term calculation ///////
 
 			Integer maxTermToBenefictHRBIC = 21;
@@ -1421,7 +1557,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			
 			BigDecimal hrbic = hrbiService.calculateHRBI(age, valiedTermHRBIC, gender, ridsumasu, new Date(),
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			hrbic = occupationLodingServce.calculateOccupationLoading(true, hrbic.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(hrbic.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1429,7 +1567,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, hrbic.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hrbic.doubleValue(), calResp);
 			Double resent = calResp.getHrbic() != null ? calResp.getHrbic() : 0.0;
 			calResp.setHrbic(hrbic.doubleValue() + resent);
 			calResp.setAddBenif(calResp.getAddBenif() + hrbic.doubleValue());
@@ -1437,14 +1575,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		case "SHCBF":
-			if (benefictDao.findByRiderCode("SHCBF").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SHCBF");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SHCBF under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SUHRB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SUHRB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// Term calculation ///////
 			/*
 			 * Integer maxTermToBenefictHRBF =
@@ -1464,7 +1605,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal suhbf = shcbfService.calculateSHCBF(age, valiedTermSHCBF, ridsumasu, adultCount, childCount,
-					new Date(), payFrequency, relife, ocuLoading);
+					new Date(), payFrequency, relife);
+			
+			suhbf = occupationLodingServce.calculateOccupationLoading(true, suhbf.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(suhbf.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1472,21 +1616,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, suhbf.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, suhbf.doubleValue(), calResp);
 			calResp.setHrbf(suhbf.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhbf.doubleValue());
 			calResp.setHrbfTerm(valiedTermSHCBF);
 			return calResp;
 
 		case "SUHRB":
-			if (benefictDao.findByRiderCode("SHCBI").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SHCBI");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SHCBI under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SUHRB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SUHRB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictSUHRB = rateCardSUHRBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSUHRB = maxTermToBenefictSUHRB > term ? term : maxTermToBenefictSUHRB;
@@ -1501,14 +1648,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal suhrb = shcbiService.calculateSHCBI(age, gender, valiedTermSUHRB, ridsumasu, new Date(),
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			
+			suhrb = occupationLodingServce.calculateOccupationLoading(true, suhrb.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(suhrb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("SHCBI Premium going low");
 				return calResp;
 			}
-			calResp = setLodingDetails(ocuLoading, suhrb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, suhrb.doubleValue(), calResp);
 			calResp.setShcbi(suhrb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrb.doubleValue());
 			calResp.setShcbiTerm(valiedTermSUHRB);
@@ -1516,7 +1666,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setSuhrbTerm(valiedTermSUHRB);
 			return calResp;
 		/*
-		 * case "SUHRB": ocuLoading = oculoding.get("SUHRB"); if (ocuLoading == null)
+		 * case "SUHRB": ocuLoading = oculoding.get("SUHRB"); if (ocuLoading == null || ocuLoading == 0)
 		 * ocuLoading = 1.0;
 		 * 
 		 * Integer maxTermToBenefictSUHRB =
@@ -1533,14 +1683,17 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 */
 
 		case "SUHRBS":
-			if (benefictDao.findByRiderCode("SHCBIS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SHCBIS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SHCBIS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SUHRBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SUHRBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictSUHRBS = rateCardSUHRBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSUHRBS = maxTermToBenefictSUHRBS > term ? term : maxTermToBenefictSUHRBS;
@@ -1555,7 +1708,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// //System.out.println(relife + ": relife");
 
 			BigDecimal suhrbs = suhrbsService.calculateSUHRBS(age, gender, valiedTermSUHRBS, ridsumasu, new Date(),
-					payFrequency, relife, ocuLoading);
+					payFrequency, relife);
+			
+			suhrbs = occupationLodingServce.calculateOccupationLoading(true, suhrbs.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(suhrbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1563,7 +1719,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, suhrbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, suhrbs.doubleValue(), calResp);
 			calResp.setShcbis(suhrbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
 			calResp.setShcbisTerm(valiedTermSUHRBS);
@@ -1573,7 +1729,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			return calResp;
 
 		/*
-		 * case "SUHRBS": ocuLoading = oculoding.get("SUHRBS"); if (ocuLoading == null)
+		 * case "SUHRBS": ocuLoading = oculoding.get("SUHRBS"); if (ocuLoading == null || ocuLoading == 0)
 		 * ocuLoading = 1.0;
 		 * 
 		 * Integer maxTermToBenefictSUHRBS =
@@ -1583,21 +1739,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 * 
 		 * BigDecimal suhrbs = suhrbsService.calculateSUHRBS(age, gender,
 		 * valiedTermSUHRBS, ridsumasu, new Date(), payFrequency, 1.0, ocuLoading);
-		 * calResp = setLodingDetails(ocuLoading, suhrbs.doubleValue(), calResp);
+		 * //calResp = setLodingDetails(ocuLoading, suhrbs.doubleValue(), calResp);
 		 * calResp.setSuhrbs(suhrbs.doubleValue());
 		 * calResp.setAddBenif(calResp.getAddBenif() + suhrbs.doubleValue());
 		 * calResp.setSuhrbsTerm(valiedTermSUHRBS); return calResp;
 		 */
 
 		case "SUHRBC":
-			if (benefictDao.findByRiderCode("SHCBIC").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("SHCBIC");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("SHCBIC under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("SUHRBC");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("SUHRBC");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictSUHRBC = rateCardSUHRBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermSUHRBC = maxTermToBenefictSUHRBC > term ? term : maxTermToBenefictSUHRBC;
@@ -1613,6 +1772,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			BigDecimal suhrbc = suhrbcService.calculateSUHRBC(age, gender, valiedTermSUHRBC, ridsumasu, new Date(),
 					payFrequency, relife);
+			
+			suhrbc = occupationLodingServce.calculateOccupationLoading(true, suhrbc.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(suhrbc.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1620,7 +1782,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, suhrbc.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, suhrbc.doubleValue(), calResp);
 			calResp.setShcbic(calResp.getShcbic() + suhrbc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + suhrbc.doubleValue());
 			calResp.setShcbicTerm(valiedTermSUHRBC);
@@ -1629,7 +1791,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 			calResp.setSuhrbcTerm(valiedTermSUHRBC);
 			return calResp;
 		/*
-		 * case "SUHRBC": ocuLoading = oculoding.get("SUHRBC"); if (ocuLoading == null)
+		 * case "SUHRBC": ocuLoading = oculoding.get("SUHRBC"); if (ocuLoading == null || ocuLoading == 0)
 		 * ocuLoading = 1.0;
 		 * 
 		 * Integer maxTermToBenefictSUHRBC =
@@ -1640,21 +1802,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 		 * BigDecimal suhrbc = suhrbcService.calculateSUHRBC(age, gender,
 		 * valiedTermSUHRBC, ridsumasu, new Date(), payFrequency, 1.0);
 		 * 
-		 * calResp = setLodingDetails(ocuLoading, suhrbc.doubleValue(), calResp);
+		 * //calResp = setLodingDetails(ocuLoading, suhrbc.doubleValue(), calResp);
 		 * calResp.setSuhrbc(calResp.getSuhrbc() + suhrbc.doubleValue());
 		 * calResp.setAddBenif(calResp.getAddBenif() + suhrbc.doubleValue());
 		 * calResp.setSuhrbcTerm(valiedTermSUHRBC); return calResp;
 		 */
 
 		case "HB":
-			if (benefictDao.findByRiderCode("HB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictHB = rateCardHBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHB = maxTermToBenefictHB > term ? term : maxTermToBenefictHB;
@@ -1688,8 +1853,11 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			//System.out.println(relife + ": relife");
 
-			BigDecimal hb = hbService.calculateHB(age, valiedTermHB, new Date(), ridsumasu, payFrequency, relife,
-					ocuLoading);
+			BigDecimal hb = hbService.calculateHB(age, valiedTermHB, new Date(), ridsumasu, payFrequency, relife);
+			
+			
+			hb = occupationLodingServce.calculateOccupationLoading(true, hb.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 			
 			//System.out.println(hb + ( " : HB"));
 
@@ -1699,21 +1867,24 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 			
-			calResp = setLodingDetails(ocuLoading, hb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hb.doubleValue(), calResp);
 			calResp.setHb(hb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hb.doubleValue());
 			calResp.setHbTerm(valiedTermHB);
 			return calResp;
 
 		case "HBS":
-			if (benefictDao.findByRiderCode("HBS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictHBS = rateCardHBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermHBS = maxTermToBenefictHBS > term ? term : maxTermToBenefictHBS;
@@ -1727,30 +1898,35 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal hbs = hbsService.calculateHBS(age, valiedTermHBS, new Date(), ridsumasu, payFrequency, relife,
-					ocuLoading);
+			BigDecimal hbs = hbsService.calculateHBS(age, valiedTermHBS, new Date(), ridsumasu, payFrequency, relife);
 
+			hbs = occupationLodingServce.calculateOccupationLoading(true, hbs.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(hbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("HBS Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, hbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hbs.doubleValue(), calResp);
 			calResp.setHbs(hbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbs.doubleValue());
 			calResp.setHbsTerm(valiedTermHBS);
 			return calResp;
 
 		case "HBC":
-			if (benefictDao.findByRiderCode("HBC").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("HBC");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("HBC under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("HBC");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("HBC");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			//System.out.println("calculation term : " + term);
 
@@ -1779,32 +1955,41 @@ public class CalculateRidersImpl implements CalculateRiders {
 			// ** 21-age < term term = 21-age else term
 			BigDecimal hbc = hbcService.calculateHBC(valiedTermHBC, new Date(), ridsumasu, payFrequency, relife);
 
+			hbc = occupationLodingServce.calculateOccupationLoading(true, hbc.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(hbc.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("HBC Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, hbc.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, hbc.doubleValue(), calResp);
 			calResp.setHbc(calResp.getHbc() + hbc.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + hbc.doubleValue());
 			calResp.setHbcTerm(valiedTermHBC);
 			return calResp;
 
 		case "WPB":
-			if (benefictDao.findByRiderCode("WPB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("WPB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("WPB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("WPB");
-			// //System.out.println(ocuLoading + " wpb oculoading");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("WPB");
+//			// //System.out.println(ocuLoading + " wpb oculoading");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 			// //System.out.println(ocuLoading + " wpb oculoading");
 			BigDecimal wpb = null;
 			if (productCode.equalsIgnoreCase("ARTM")) {
-				wpb = wpbService.calculateARTMWPB(calResp, ocuLoading);
+				wpb = wpbService.calculateARTMWPB(calResp);
+				
+				wpb = occupationLodingServce.calculateOccupationLoading(true, wpb.doubleValue(), ridsumasu, occupation,
+						benefit, calResp);
 
 				if (!(wpb.doubleValue() > 0)) {
 					calResp.setErrorExist(true);
@@ -1813,7 +1998,9 @@ public class CalculateRidersImpl implements CalculateRiders {
 				}
 
 			} else {
-				wpb = wpbService.calculateWPB(calResp, ocuLoading);
+				wpb = wpbService.calculateWPB(calResp);
+				wpb = occupationLodingServce.calculateOccupationLoading(true, wpb.doubleValue(), ridsumasu, occupation,
+						benefit, calResp);
 
 				if (!(wpb.doubleValue() > 0)) {
 					calResp.setErrorExist(true);
@@ -1821,131 +2008,159 @@ public class CalculateRidersImpl implements CalculateRiders {
 					return calResp;
 				}
 			}
-			calResp = setLodingDetails(ocuLoading, wpb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, wpb.doubleValue(), calResp);
 			calResp.setWpb(wpb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpb.doubleValue());
 			calResp.setWpbTerm(term);
 			return calResp;
 		case "WPBS":
-			if (benefictDao.findByRiderCode("WPBS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("WPBS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("WPBS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("WPBS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
-			BigDecimal wpbs = wpbsService.calculateWPBS(calResp, ocuLoading);
+//			ocuLoading = oculoding.get("WPBS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
+			BigDecimal wpbs = wpbsService.calculateWPBS(calResp);
+			
+			wpbs = occupationLodingServce.calculateOccupationLoading(true, wpbs.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(wpbs.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("WPBS Premium going low");
 				return calResp;
 			}
-			calResp = setLodingDetails(ocuLoading, wpbs.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, wpbs.doubleValue(), calResp);
 			calResp.setWpbs(wpbs.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + wpbs.doubleValue());
 			calResp.setWpbsTerm(term);
 			return calResp;
 
 		case "JLB":
-			if (benefictDao.findByRiderCode("JLB").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("JLB");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("JLB under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("JLB");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("JLB");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictJLB = rateCardJLBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermJLB = maxTermToBenefictJLB > term ? term : maxTermToBenefictJLB;
 
-			BigDecimal jlb = jlbService.calculateJLB(age, valiedTermJLB, inRate, gender, new Date(), loan, ocuLoading);
+			BigDecimal jlb = jlbService.calculateJLB(age, valiedTermJLB, inRate, gender, new Date(), loan);
 
+			jlb = occupationLodingServce.calculateOccupationLoading(true, jlb.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(jlb.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("JLB Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, jlb.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, jlb.doubleValue(), calResp);
 			calResp.setJlb(jlb.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + jlb.doubleValue());
 			calResp.setJlbTerm(valiedTermJLB);
 			return calResp;
 
 		case "JLBPL":
-			if (benefictDao.findByRiderCode("JLBPL").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("JLBPL");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("JLBPL under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("JLBPL");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("JLBPL");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictJLBPL = rateCardJLBDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermJLBPL = maxTermToBenefictJLBPL > term ? term : maxTermToBenefictJLBPL;
 
-			BigDecimal jlbpl = jlbplService.calculateJLBPL(age, valiedTermJLBPL, inRate, gender, new Date(), loan,
-					ocuLoading);
+			BigDecimal jlbpl = jlbplService.calculateJLBPL(age, valiedTermJLBPL, inRate, gender, new Date(), loan);
 
+			jlbpl = occupationLodingServce.calculateOccupationLoading(true, jlbpl.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(jlbpl.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("JLBPL Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, jlbpl.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, jlbpl.doubleValue(), calResp);
 			calResp.setJlbpl(jlbpl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + jlbpl.doubleValue());
 			calResp.setJlbplTerm(valiedTermJLBPL);
 			return calResp;
 
 		case "TPDDTA":
-			if (benefictDao.findByRiderCode("TPDDTA").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDDTA");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTA under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDDTA");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDDTA");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDDTA = rateCardTPDDTADao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDDTA = maxTermToBenefictTPDDTA > term ? term : maxTermToBenefictTPDDTA;
 
-			BigDecimal tpddta = tpddtaService.calculateTPDDTA(age, valiedTermTPDDTA, inRate, gender, new Date(), loan,
-					ocuLoading);
+			BigDecimal tpddta = tpddtaService.calculateTPDDTA(age, valiedTermTPDDTA, inRate, gender, new Date(), loan);
 
+			tpddta = occupationLodingServce.calculateOccupationLoading(true, tpddta.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+			
 			if (!(tpddta.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTA Premium going low");
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpddta.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpddta.doubleValue(), calResp);
 			calResp.setTpddta(tpddta.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddta.doubleValue());
 			calResp.setTpddtaTerm(valiedTermTPDDTA);
 			return calResp;
 
 		case "TPDDTAS":
-			if (benefictDao.findByRiderCode("TPDDTAS").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDDTAS");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTAS under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDDTAS");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDDTAS");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDDTAS = rateCardTPDDTASDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDDTAS = maxTermToBenefictTPDDTAS > term ? term : maxTermToBenefictTPDDTAS;
 
 			BigDecimal tpddtas = tpddtasService.calculateTPDDTAS(age, valiedTermTPDDTAS, inRate, gender, new Date(),
-					loan, ocuLoading);
+					loan);
+			
+			tpddtas = occupationLodingServce.calculateOccupationLoading(true, tpddtas.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(tpddtas.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -1953,54 +2168,68 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpddtas.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpddtas.doubleValue(), calResp);
 			calResp.setTpddtas(tpddtas.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtas.doubleValue());
 			calResp.setTpddtasTerm(valiedTermTPDDTAS);
 			return calResp;
 
 		case "TPDDTAPL":
-			if (benefictDao.findByRiderCode("TPDDTAPL").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDDTAPL");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTAPL under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDDTAPL");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDDTAPL");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDDTAPL = rateCardTPDDTADao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDDTAPL = maxTermToBenefictTPDDTAPL > term ? term : maxTermToBenefictTPDDTAPL;
 
 			BigDecimal tpddtapl = tpddtaplService.calculateTPDDTAPL(age, valiedTermTPDDTAPL, inRate, gender, new Date(),
-					loan, ocuLoading);
+					loan);
+			
+			tpddtapl = occupationLodingServce.calculateOccupationLoading(true, tpddtapl.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
 
 			if (!(tpddtapl.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTAPL Premium going low");
 				return calResp;
 			}
-			calResp = setLodingDetails(ocuLoading, tpddtapl.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpddtapl.doubleValue(), calResp);
 			calResp.setTpddtapl(tpddtapl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtapl.doubleValue());
 			calResp.setTpddtaplTerm(valiedTermTPDDTAPL);
 			return calResp;
 
 		case "TPDDTASPL":
-			if (benefictDao.findByRiderCode("TPDDTASPL").getActive() == 0) {
+			
+			benefit = benefictDao.findByRiderCode("TPDDTASPL");
+			
+			if (benefit.getActive() == 0) {
 				calResp.setErrorExist(true);
 				calResp.setError("TPDDTASPL under Maintenance, Please untick or reload page");
 				return calResp;
 			}
-			ocuLoading = oculoding.get("TPDDTASPL");
-			if (ocuLoading == null)
-				ocuLoading = 1.0;
+//			ocuLoading = oculoding.get("TPDDTASPL");
+//			if (ocuLoading == null || ocuLoading == 0)
+//				ocuLoading = 1.0;
 
 			Integer maxTermToBenefictTPDDTASPL = rateCardTPDDTASDao.findFirstByOrderByTermDesc().getTerm();
 			Integer valiedTermTPDDTASPL = maxTermToBenefictTPDDTASPL > term ? term : maxTermToBenefictTPDDTASPL;
 
 			BigDecimal tpddtaspl = tpddtasplService.calculateTPDDTASPL(age, valiedTermTPDDTASPL, inRate, gender,
-					new Date(), loan, ocuLoading);
+					new Date(), loan);
+			
+			tpddtaspl = occupationLodingServce.calculateOccupationLoading(true, tpddtaspl.doubleValue(), ridsumasu, occupation,
+					benefit, calResp);
+
+			
 
 			if (!(tpddtaspl.doubleValue() > 0)) {
 				calResp.setErrorExist(true);
@@ -2008,7 +2237,7 @@ public class CalculateRidersImpl implements CalculateRiders {
 				return calResp;
 			}
 
-			calResp = setLodingDetails(ocuLoading, tpddtaspl.doubleValue(), calResp);
+			//calResp = setLodingDetails(ocuLoading, tpddtaspl.doubleValue(), calResp);
 			calResp.setTpddtaspl(tpddtaspl.doubleValue());
 			calResp.setAddBenif(calResp.getAddBenif() + tpddtaspl.doubleValue());
 			calResp.setTpddtasplTerm(valiedTermTPDDTASPL);
@@ -2022,18 +2251,18 @@ public class CalculateRidersImpl implements CalculateRiders {
 		}
 
 	}
-
-	private QuotationQuickCalResponse setLodingDetails(double ocuLoading, double premium,
-			QuotationQuickCalResponse calResp) {
-
-		Double bsa = new BigDecimal(premium).divide(new BigDecimal(ocuLoading), RoundingMode.HALF_UP).doubleValue();
-
-		// //System.out.println("bsa for occu : " + bsa);
-
-		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + bsa);
-		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + (premium - bsa));
-
-		return calResp;
-	}
+//
+//	private QuotationQuickCalResponse setLodingDetails(double ocuLoading, double premium,
+//			QuotationQuickCalResponse calResp) {
+//
+//		Double bsa = new BigDecimal(premium).divide(new BigDecimal(ocuLoading), RoundingMode.HALF_UP).doubleValue();
+//
+//		// //System.out.println("bsa for occu : " + bsa);
+//
+//		calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + bsa);
+//		calResp.setOccuLodingTot(calResp.getOccuLodingTot() + (premium - bsa));
+//
+//		return calResp;
+//	}
 
 }

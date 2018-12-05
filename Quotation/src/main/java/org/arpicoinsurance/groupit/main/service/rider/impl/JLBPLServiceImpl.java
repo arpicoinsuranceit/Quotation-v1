@@ -19,7 +19,7 @@ public class JLBPLServiceImpl implements JLBPLService {
 	private RateCardJLBDao rateCardJLBDao;
 	
 	@Override
-	public BigDecimal calculateJLBPL(int age, int term, double intrat, String sex, Date chedat, double loanamt, double occupation_loding)
+	public BigDecimal calculateJLBPL(int age, int term, double intrat, String sex, Date chedat, double loanamt)
 			throws Exception {
 		////System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex : "+sex+" loanamt : "+loanamt);
 		BigDecimal amount = new BigDecimal(loanamt);
@@ -68,7 +68,7 @@ public class JLBPLServiceImpl implements JLBPLService {
 
         }
 		
-		premiumJLBPL = premiumJLBPL.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
+		//premiumJLBPL = premiumJLBPL.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 		////System.out.println("premiumJLBPL : "+premiumJLBPL.toString());
 		return premiumJLBPL;
 	}

@@ -25,7 +25,7 @@ public class L2ServiceImpl implements L2Service {
 	private RateCardARTMDeathSingleDao rateCardARTMDeathSingleDao;
 
 	@Override
-	public BigDecimal calculateL2(double ridsumasu, int term, int age, String payFrequency, double occupation_loding)
+	public BigDecimal calculateL2(double ridsumasu, int term, int age, String payFrequency)
 			throws Exception {
 		////System.out.println(" ////////////////////// artm " + age + " " + term);
 		Date chedat = new Date();
@@ -55,7 +55,7 @@ public class L2ServiceImpl implements L2Service {
 		} catch (Exception e) {
 			throw new NullPointerException("ARTM L2 Rate not found at Age : " + age + " and Term : " + term);
 		}
-		premiumL2 = premiumL2.multiply(new BigDecimal(occupation_loding)).setScale(0, BigDecimal.ROUND_HALF_UP);
+		//premiumL2 = premiumL2.multiply(new BigDecimal(occupation_loding)).setScale(0, BigDecimal.ROUND_HALF_UP);
 		return premiumL2;
 	}
 
