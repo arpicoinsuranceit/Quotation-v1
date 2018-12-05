@@ -18,16 +18,7 @@ public class BenefictHistoryWebClientImpl implements BenefictHistoryWebClient {
 	@Override
 	public List<BenefictHistory> getHistory(String nic) throws Exception {
 		try {
-<<<<<<< HEAD
-			RestTemplate restTemplate = new RestTemplate();
 
-			//List<BenefictHistory> benefictHistories = restTemplate.postForObject("http://10.10.10.11:8087/getbeneficthistory", nic, ArrayList.class);
-
-			List<BenefictHistory> benefictHistories = restTemplate.postForObject(AppConstant.URL_BENEFICT_HISTORY, nic, ArrayList.class);
-
-			return benefictHistories;
-=======
-			
 			RestTemplate restTemplate = new RestTemplate();
 			MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 			map.add("nic", nic); 
@@ -36,8 +27,7 @@ public class BenefictHistoryWebClientImpl implements BenefictHistoryWebClient {
 			List<BenefictHistory> histories = Arrays.asList(benefictHistories);
 			
 			return histories;
-			
->>>>>>> refs/remotes/origin/branch-139
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

@@ -361,7 +361,6 @@ public class ASIPServiceImpl implements ASIPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-<<<<<<< HEAD
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
@@ -381,9 +380,7 @@ public class ASIPServiceImpl implements ASIPService {
 			}
 		}
 		
-=======
 
->>>>>>> refs/remotes/origin/branch-141
 		Products products = productDao.findByProductCode("ASIP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
@@ -609,7 +606,7 @@ public class ASIPServiceImpl implements ASIPService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-<<<<<<< HEAD
+
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
@@ -629,9 +626,7 @@ public class ASIPServiceImpl implements ASIPService {
 		}
 		
 
-=======
 
->>>>>>> refs/remotes/origin/branch-141
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

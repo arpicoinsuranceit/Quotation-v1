@@ -124,14 +124,14 @@ public class ATRMServiceImpl implements ATRMService {
 	private ValidationPremium validationPremium;
 
 	@Autowired
-<<<<<<< HEAD
 	private BenefictHistoryWebClient benefictHistoryWebClient;
 	
 	@Autowired
 	private HealthValidation healthValidation;
-=======
+	
+	@Autowired
 	private OccupationLoadingService occupationLoadingService;
->>>>>>> refs/remotes/origin/branch-141
+
 
 	@Override
 	public BigDecimal calculateL2(int ocu, int age, int term, double rebate, Date chedat, double bassum, int paytrm,
@@ -481,7 +481,7 @@ public class ATRMServiceImpl implements ATRMService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-<<<<<<< HEAD
+
 		
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
@@ -502,11 +502,7 @@ public class ATRMServiceImpl implements ATRMService {
 			}
 		}
 		
-		/*Products products = productDao.findByProductCode("ATRM");*/
-=======
 
-		/* Products products = productDao.findByProductCode("ATRM"); */
->>>>>>> refs/remotes/origin/branch-141
 		Users user = userDao.findOne(userId);
 
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());

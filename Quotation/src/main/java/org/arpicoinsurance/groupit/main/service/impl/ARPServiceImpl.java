@@ -583,7 +583,7 @@ public class ARPServiceImpl implements ARPService {
 			return responseMap;
 		}
 
-<<<<<<< HEAD
+
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
@@ -602,8 +602,7 @@ public class ARPServiceImpl implements ARPService {
 			}
 		}
 
-=======
->>>>>>> refs/remotes/origin/branch-141
+
 		// Products products = productDao.findByProductCode("ARP");
 		Users user = userDao.findOne(userId);
 

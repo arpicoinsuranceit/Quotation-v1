@@ -1,11 +1,8 @@
 package org.arpicoinsurance.groupit.main.validation;
 
-<<<<<<< HEAD
-=======
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
->>>>>>> refs/remotes/origin/branch-139
 import java.util.List;
 
 import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class HealthValidation {
 
-	/*
 	public String validateHealthEndArpAtrmAtrmAsfp(List<BenefictHistory> benefictHistories,
 			QuotationQuickCalResponse calresp, InvpSaveQuotation _invpSaveQuotation) {
 
@@ -212,7 +208,7 @@ public class HealthValidation {
 			}
 		}
 
-		return "oks";
+		return "ok";
 
 	}
 
@@ -404,7 +400,7 @@ public class HealthValidation {
 			}
 		}
 
-		return "oks";
+		return "ok";
 
 	}
 
@@ -507,7 +503,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0k";
+			return "ok";
 		} else {
 
 			if (sumasu == 600000) {
@@ -526,7 +522,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0	k";
+			return "ok";
 
 		}
 
@@ -562,7 +558,7 @@ public class HealthValidation {
 
 		}
 
-		String resp = "fail11";
+		String resp = "fail";
 		
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 		
@@ -649,7 +645,7 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0k";
+			return "ok";
 		} else {
 
 			if (sumasu == 600000) {
@@ -668,11 +664,10 @@ public class HealthValidation {
 				}
 			}
 
-			return "o0	k";
+			return "ok";
 
 		}
 
 	}
-	*/
 
 }

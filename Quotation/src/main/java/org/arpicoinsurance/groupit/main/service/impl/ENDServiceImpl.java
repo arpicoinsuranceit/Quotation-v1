@@ -125,6 +125,12 @@ public class ENDServiceImpl implements ENDService {
 
 	@Autowired
 	private OccupationLoadingService occupationLoadingService;
+	
+	@Autowired
+	private HealthValidation healthValidation;
+	
+	@Autowired
+	private BenefictHistoryWebClient benefictHistoryWebClient;
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedEnd(QuotationCalculation quotationCalculation) throws Exception {
@@ -245,7 +251,7 @@ public class ENDServiceImpl implements ENDService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
-<<<<<<< HEAD
+
 		
 		
 		System.out.println("_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() : " +  _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
@@ -268,20 +274,7 @@ public class ENDServiceImpl implements ENDService {
 			}
 		}
 		
-=======
 
-//		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null || _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != "") {
-//			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
-//			
-//			//String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
-//			
-//			if (!resp.equalsIgnoreCase("ok")) {
-//				responseMap.put("status", resp);
-//				return responseMap;
-//			}
-//			
-//		}
->>>>>>> refs/remotes/origin/branch-141
 
 		Products products = productDao.findByProductCode("END1");
 		Users user = userDao.findOne(id);
