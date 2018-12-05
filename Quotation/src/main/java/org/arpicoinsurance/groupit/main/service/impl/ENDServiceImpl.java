@@ -269,17 +269,26 @@ public class ENDServiceImpl implements ENDService {
 			return responseMap;
 		}
 		
-//		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null || _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != "") {
-//			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
-//			
-//			//String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
-//			
-//			if (!resp.equalsIgnoreCase("ok")) {
-//				responseMap.put("status", resp);
-//				return responseMap;
-//			}
-//			
-//		}
+		
+		System.out.println("_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() : " +  _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+		}
 		
 
 		Products products = productDao.findByProductCode("END1");
@@ -519,6 +528,24 @@ public class ENDServiceImpl implements ENDService {
 		if (!valPrm.equalsIgnoreCase("ok")) {
 			responseMap.put("status", valPrm);
 			return responseMap;
+		}
+		
+		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+			
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+			
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
+			
+		} else {
+			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			if (!resp.equalsIgnoreCase("ok")) {
+				responseMap.put("status", resp);
+				return responseMap;
+			}
 		}
 
 		Users user = userDao.findOne(userId);

@@ -9,6 +9,7 @@ public class BenefictHistory {
 	private Double sumAssuredTot;
 	private Double premiumTot;
 	private String type;
+	private String frequance;
 
 	public String getPprnum() {
 		return pprnum;
@@ -64,6 +65,21 @@ public class BenefictHistory {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getFrequance() {
+		return frequance;
+	}
+
+	public void setFrequance(String frequance) {
+		this.frequance = frequance;
+	}
+
+	@Override
+	public String toString() {
+		return "BenefictHistory [pprnum=" + pprnum + ", prdcod=" + prdcod + ", riderCode=" + riderCode + ", totPremium="
+				+ totPremium + ", sumAssuredTot=" + sumAssuredTot + ", premiumTot=" + premiumTot + ", type=" + type
+				+ ", frequance=" + frequance + "] \n";
 	}
 
 }
