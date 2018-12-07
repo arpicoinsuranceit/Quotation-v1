@@ -105,7 +105,7 @@ public class QuotationEndCalculationController {
 			responseMap.replace("status", "Phone No Invalied");
 			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
 		}
-		
+		System.out.println("/////////////////////////// Phone Validation");
 		QuotationCalculation calculation = null;
 		Validation validation = null;
 		try {
@@ -120,6 +120,9 @@ public class QuotationEndCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							
+							System.out.println("/////////////////////////// Validation" + error);
+							
 							if (error.equalsIgnoreCase("ok")) {
 								responseMap = endService.saveQuotation(calculation, _invpSaveQuotation, id);
 
@@ -142,6 +145,7 @@ public class QuotationEndCalculationController {
 			}
 			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
 					+ _invpSaveQuotation.toString() + " id : " + id);

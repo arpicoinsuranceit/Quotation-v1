@@ -231,11 +231,15 @@ public class ENDServiceImpl implements ENDService {
 
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
+		
+		System.out.println("/////////////////////////// called save");
 
 		if (productDao.findByProductCode("END1").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
+		
+		System.out.println("/////////////////////////// Maintains");
 
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
 
@@ -243,6 +247,8 @@ public class ENDServiceImpl implements ENDService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
+		
+		System.out.println("/////////////////////////// called calculation");
 
 		String valPrm = validationPremium.validateEnd(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
@@ -252,11 +258,14 @@ public class ENDServiceImpl implements ENDService {
 			return responseMap;
 		}
 
-		
+		System.out.println("/////////////////////////// called validate Premium");
 		
 		System.out.println("_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() : " +  _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+			
+			System.out.println("/////////////////////////// Not");
+			
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
 			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
@@ -267,13 +276,21 @@ public class ENDServiceImpl implements ENDService {
 			}
 			
 		} else {
+			
+			System.out.println("/////////////////////////// Empty");
+			
 			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+			
+			System.out.println(resp);
+			
 			if (!resp.equalsIgnoreCase("ok")) {
 				responseMap.put("status", resp);
 				return responseMap;
 			}
 		}
 		
+		
+		System.out.println("/////////////////////////// called validateHealth");
 
 
 		Products products = productDao.findByProductCode("END1");

@@ -412,6 +412,7 @@ public class HealthValidation {
 
 		boolean isHcb = false;
 		boolean isShcb = false;
+		
 
 		for (Benifict benifict : _invpSaveQuotation.get_riderDetails().get_mRiders()) {
 			if (benifict.getType().equalsIgnoreCase("HRB") || benifict.getType().equalsIgnoreCase("HRBI")
@@ -431,8 +432,17 @@ public class HealthValidation {
 			}
 
 		}
+		
+		
 
 		String resp = "fail";
+		
+		if(!isHcb && !isShcb ) {
+			resp = "ok";
+		}
+		
+		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
+		
 		switch (_invpSaveQuotation.get_personalInfo().get_plan().get_frequance()) {
 
 		case "Monthly":
@@ -559,6 +569,11 @@ public class HealthValidation {
 		}
 
 		String resp = "fail";
+		
+		
+		if(!isHcb && !isShcb ) {
+			resp = "ok";
+		}
 		
 		System.out.println(_invpSaveQuotation.get_personalInfo().get_plan().get_frequance());
 		
