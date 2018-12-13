@@ -166,6 +166,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 			if (benf.getBenefitType().equals("s")) {// check benf_type is spouse
 				QuoBenf qb = new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setBenefOrder(benf.getBenefitOrder());
 				qb.setRiderCode(quo_Benef_Details.getRierCode());
 				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
@@ -174,6 +175,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 			} else if (benf.getBenefitType().equals("m")) {// check benf_type is mainLife
 				QuoBenf qb = new QuoBenf();
 				qb.setBenfName(benf.getBenefitName());
+				qb.setBenefOrder(benf.getBenefitOrder());
 				qb.setRiderCode(quo_Benef_Details.getRierCode());
 				qb.setRiderTerm(quo_Benef_Details.getRiderTerm());
 				qb.setPremium(quo_Benef_Details.getRiderPremium());
@@ -191,6 +193,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 							ArrayList<QuoBenf> benfs = new ArrayList<>();// create list of benefits
 							QuoBenf qb = new QuoBenf();
 							qb.setBenfName(benf.getBenefitName());
+							qb.setBenefOrder(benf.getBenefitOrder());
 							qb.setRiderSum(quo_Benef_Details.getRiderSum());
 							qb.setRiderCode(quo_Benef_Details.getRierCode());
 							qb.setRiderTerm(quo_Benef_Child_Details.getTerm());
@@ -234,8 +237,17 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 		ArrayList<QuoChildBenef> childBenefList = new ArrayList<>();
 		for (Entry<String, QuoChildBenef> entry : benefs) {// get all map data and add to arraylist
 			QuoChildBenef cb = entry.getValue();
+			
+			ArrayList<QuoBenf> childBenfs=cb.getBenfs();
+			
+			childBenfs.sort((o1, o2) -> o1.getBenefOrder().compareTo(o2.getBenefOrder()));
+			
 			childBenefList.add(cb);
 		}
+		
+		mainLifeBenef.sort((o1, o2) -> o1.getBenefOrder().compareTo(o2.getBenefOrder()));
+		
+		spouseBenef.sort((o1, o2) -> o1.getBenefOrder().compareTo(o2.getBenefOrder()));
 
 		quotationView.setMainLifeBenf(mainLifeBenef);
 		quotationView.setSpouseBenf(spouseBenef);

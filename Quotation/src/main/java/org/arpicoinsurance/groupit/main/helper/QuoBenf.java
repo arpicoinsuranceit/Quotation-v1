@@ -6,6 +6,7 @@ public class QuoBenf {
 	private Integer riderTerm;
 	private Double riderSum;
 	private Double premium;
+	private Integer benefOrder;
 	public String getBenfName() {
 		return benfName;
 	}
@@ -35,6 +36,12 @@ public class QuoBenf {
 	}
 	public void setRiderCode(String riderCode) {
 		this.riderCode = riderCode;
+	}
+	public Integer getBenefOrder() {
+		return benefOrder;
+	}
+	public void setBenefOrder(Integer benefOrder) {
+		this.benefOrder = benefOrder;
 	}
 	
 }
