@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 
+import org.arpicoinsurance.groupit.main.dao.RateCardDTADao;
 import org.arpicoinsurance.groupit.main.dao.RateCardJLBDao;
+import org.arpicoinsurance.groupit.main.model.RateCardDTA;
 import org.arpicoinsurance.groupit.main.model.RateCardJLB;
 import org.arpicoinsurance.groupit.main.service.rider.JLBService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class JLBServiceImpl implements JLBService {
 
-	@Autowired
-	private RateCardJLBDao rateCardJLBDao;
+	//@Autowired
+	//private RateCardJLBDao rateCardJLBDao;
 
+	@Autowired
+	private RateCardDTADao rateCardDTADao;
+	
 	@Override
 	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt,
 			double occupation_loding) throws Exception {
@@ -27,8 +32,12 @@ public class JLBServiceImpl implements JLBService {
 		BigDecimal amount = new BigDecimal(loanamt);
 		BigDecimal premiumJLB = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
-
-			RateCardJLB rateCardJLB = rateCardJLBDao
+//
+//			RateCardJLB rateCardJLB = rateCardJLBDao
+//					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
+//							chedat, chedat, chedat);
+			
+			RateCardDTA rateCardDTA = rateCardDTADao
 					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
 							chedat, chedat, chedat);
 			// //System.out.println("rateCardJLB : "+ rateCardJLB.getRate());
@@ -53,7 +62,7 @@ public class JLBServiceImpl implements JLBService {
 			// (@loan_reduction@*@rate@/1000)*0.85
 			BigDecimal premium = null;
 			try {
-				premium = ((reduction.multiply(new BigDecimal(rateCardJLB.getRate())))
+				premium = ((reduction.multiply(new BigDecimal(rateCardDTA.getRate())))
 						.divide(new BigDecimal(1000), 8, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(0.85))
 								.setScale(0, RoundingMode.HALF_UP);
 			} catch (Exception e) {
