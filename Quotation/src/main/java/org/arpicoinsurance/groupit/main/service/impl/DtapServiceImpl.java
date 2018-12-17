@@ -238,9 +238,9 @@ public class DtapServiceImpl implements DTAPService{
 
 			calResp = calculateriders.getRiders(quotationCalculation, calResp);
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
-			// Double adminFee =
-			// calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
-			Double tax = calculationUtils.getTaxAmount(tot);
+			 Double adminFee =
+			 calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			Double tax = calculationUtils.getTaxAmount(tot) + adminFee;
 			Double extraOE = tax;
 
 			calResp.setExtraOE(extraOE);
