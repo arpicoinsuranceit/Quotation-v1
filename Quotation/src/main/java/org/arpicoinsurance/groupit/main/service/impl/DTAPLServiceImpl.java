@@ -216,10 +216,10 @@ public class DTAPLServiceImpl implements DTAPLService {
 			}
 
 			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
-			// Double adminFee =
-			// calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
+			 Double adminFee =
+			calculationUtils.getAdminFee(quotationCalculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot);
-			Double extraOE = tax;
+			Double extraOE = tax + adminFee;
 
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
