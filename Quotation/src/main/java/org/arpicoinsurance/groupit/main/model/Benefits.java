@@ -18,6 +18,7 @@ public class Benefits implements Serializable{
 	private Integer benefitMaxAge;
 	private String benefitType;
 	private String benefictCombination;
+	private Integer benefitOrder;
 	
 	private Integer active;
 	
@@ -123,10 +124,18 @@ public class Benefits implements Serializable{
 		return benefictCombination;
 	}
 
+	public Integer getBenefitOrder() {
+		return benefitOrder;
+	}
+
+	public void setBenefitOrder(Integer benefitOrder) {
+		this.benefitOrder = benefitOrder;
+	}
+
 	public void setBenefictCombination(String benefictCombination) {
 		this.benefictCombination = benefictCombination;
 	}
-
+	
 	public Integer getActive() {
 		return active;
 	}
