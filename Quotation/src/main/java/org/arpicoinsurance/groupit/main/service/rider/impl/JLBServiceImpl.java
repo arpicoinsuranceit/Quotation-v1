@@ -19,10 +19,10 @@ public class JLBServiceImpl implements JLBService {
 
 	//@Autowired
 	//private RateCardJLBDao rateCardJLBDao;
-	
+
 	@Autowired
 	private RateCardDTADao rateCardDTADao;
-
+	
 	@Override
 	public BigDecimal calculateJLB(int age, int term, double intrat, String sex, Date chedat, double loanamt) throws Exception {
 		// //System.out.println("age : "+age+" term : "+term+" intrat : "+intrat+" sex :
@@ -32,11 +32,12 @@ public class JLBServiceImpl implements JLBService {
 		BigDecimal premiumJLB = new BigDecimal(0);
 		for (int i = 1; i <= term; ++i) {
 
-			/*
-			RateCardJLB rateCardJLB = rateCardJLBDao
-					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
-							chedat, chedat, chedat);
-							*/
+//
+//			RateCardJLB rateCardJLB = rateCardJLBDao
+//					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
+//							chedat, chedat, chedat);
+			
+
 			RateCardDTA rateCardDTA = rateCardDTADao
 					.findByAgeAndTermAndSexAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, i, sex, chedat,
 							chedat, chedat, chedat);
