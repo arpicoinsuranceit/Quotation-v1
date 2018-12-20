@@ -513,16 +513,25 @@ public class ENDServiceImpl implements ENDService {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
+		
+		System.out.println("check active END1");
+		
 		if (productDao.findByProductCode("END1").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
+		
+		System.out.println("check active END1 pass");
 
 		QuotationQuickCalResponse calResp = getCalcutatedEnd(calculation);
+		
+		System.out.println("check cal errors");
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
+		
+		System.out.println("check cal errors pass");
 
 		String valPrm = validationPremium.validateEnd(calculation.get_personalInfo().getFrequance(),
 				calResp.getTotPremium());
@@ -531,6 +540,8 @@ public class ENDServiceImpl implements ENDService {
 			responseMap.put("status", valPrm);
 			return responseMap;
 		}
+		
+		System.out.println("check health validation");
 		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
@@ -549,6 +560,8 @@ public class ENDServiceImpl implements ENDService {
 				return responseMap;
 			}
 		}
+		
+		System.out.println("check health validation pass");
 
 		Users user = userDao.findOne(userId);
 
