@@ -17,6 +17,10 @@ public class HealthValidation {
 	public String validateHealthEndArpAtrmAtrmAsfp(List<BenefictHistory> benefictHistories,
 			QuotationQuickCalResponse calresp, InvpSaveQuotation _invpSaveQuotation) {
 
+		System.out.println("validateHealthEndArpAtrmAtrmAsfp");
+		
+		System.out.println(calresp.getTotPremium());
+		
 		System.out.println(benefictHistories.size());
 
 		benefictHistories.forEach(System.out::println);
@@ -35,13 +39,25 @@ public class HealthValidation {
 		case "Monthly":
 			totalPrm = calresp.getTotPremium() * 12;
 			break;
+		case "M":
+			totalPrm = calresp.getTotPremium() * 12;
+			break;
 		case "Quartaly":
+			totalPrm = calresp.getTotPremium() * 4;
+			break;
+		case "Q":
 			totalPrm = calresp.getTotPremium() * 4;
 			break;
 		case "Half Yearly":
 			totalPrm = calresp.getTotPremium() * 2;
 			break;
+		case "H":
+			totalPrm = calresp.getTotPremium() * 2;
+			break;
 		case "Yearly":
+			totalPrm = calresp.getTotPremium();
+			break;
+		case "Y":
 			totalPrm = calresp.getTotPremium();
 			break;
 		default:
@@ -226,13 +242,25 @@ public class HealthValidation {
 		case "Monthly":
 			totalPrm = calresp.getTotPremium() * 12;
 			break;
+		case "M":
+			totalPrm = calresp.getTotPremium() * 12;
+			break;
 		case "Quartaly":
+			totalPrm = calresp.getTotPremium() * 4;
+			break;
+		case "Q":
 			totalPrm = calresp.getTotPremium() * 4;
 			break;
 		case "Half Yearly":
 			totalPrm = calresp.getTotPremium() * 2;
 			break;
+		case "H":
+			totalPrm = calresp.getTotPremium() * 2;
+			break;
 		case "Yearly":
+			totalPrm = calresp.getTotPremium();
+			break;
+		case "Y":
 			totalPrm = calresp.getTotPremium();
 			break;
 		default:
@@ -437,7 +465,7 @@ public class HealthValidation {
 
 		String resp = "fail";
 		
-		if(!isHcb && !isShcb ) {
+		if((isHcb && !isShcb) || (!isHcb && isShcb) ) {
 			resp = "ok";
 		}
 		
@@ -571,7 +599,7 @@ public class HealthValidation {
 		String resp = "fail";
 		
 		
-		if(!isHcb && !isShcb ) {
+		if((isHcb && !isShcb) || (!isHcb && isShcb) ) {
 			resp = "ok";
 		}
 		
