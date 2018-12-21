@@ -240,7 +240,7 @@ public class Quo_Benef_DetailsServiceImpl implements Quo_Benef_DetailsService {
 			
 			ArrayList<QuoBenf> childBenfs=cb.getBenfs();
 			
-			childBenfs.sort((o1, o2) -> o1.getBenefOrder().compareTo(o2.getBenefOrder()));
+			//childBenfs.sort((o1, o2) -> o1.getBenefOrder().compareTo(o2.getBenefOrder()));
 			
 			childBenefList.add(cb);
 		}

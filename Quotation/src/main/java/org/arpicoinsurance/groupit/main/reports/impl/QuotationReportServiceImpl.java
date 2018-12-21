@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -7183,12 +7184,30 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Getting a HashMap to an ArayList
 		ArrayList<HashMap<String, Object>> benifList = new ArrayList<>();
 
+		Double dnc = 0.0;
+		Double dac = 0.0;
+		
+		
+		String [] dncArr = {"L10","ATPB","SFPO","FEB"};
+		String [] dacArr = {"L10","ATPB","SFPO","FEB","ADB"};
+		
+		java.util.List<String> dncBenfList = Arrays.asList(dncArr);
+		java.util.List<String> dacBenfList = Arrays.asList(dacArr);
+		
 		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
 
 			for (QuoBenf quoBenf : benefitsLife) {
+				
+				if(dncBenfList.contains(quoBenf.getRiderCode())) {
+					dnc+= quoBenf.getRiderSum();
+				}
+				
+				if(dacBenfList.contains(quoBenf.getRiderCode())) {
+					dac+= quoBenf.getRiderSum();
+				}
 
 				HashMap<String, Object> benefitDetailMap = new HashMap<>();
 
@@ -7986,49 +8005,63 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		/////////////////////// *End of FinanCial Requirements*///////////////////
 
 		// document.add(new Paragraph(""));
+		
+
 
 		document.add(new Paragraph("Special Notes").setFontSize(9).setBold().setUnderline().setCharacterSpacing(1));
 
 		// Creating a Special Notes List
 		List list = new List(ListNumberingType.DECIMAL);
 		list.setFontSize(9);
-
+		
 		ListItem item1 = new ListItem();
 		item1.add(
-				new Paragraph("Premiums are on standard rates and could defer on life risk: Medical, Occupational etc.")
+				new Paragraph("Death due to natural case : " + formatter.format(dnc))
 						.setFontSize(9).setFixedLeading(9));
 		list.add(item1);
-
+		
 		ListItem item2 = new ListItem();
-		item2.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(9).setFixedLeading(9));
+		item2.add(
+				new Paragraph("Death due to Accident case : " + formatter.format(dac))
+						.setFontSize(9).setFixedLeading(9));
 		list.add(item2);
 
 		ListItem item3 = new ListItem();
-		item3.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
-				.setFontSize(9).setFixedLeading(9));
+		item3.add(
+				new Paragraph("Premiums are on standard rates and could defer on life risk: Medical, Occupational etc.")
+						.setFontSize(9).setFixedLeading(9));
 		list.add(item3);
 
 		ListItem item4 = new ListItem();
-		item4.add(new Paragraph("This is only a Quotation and not an Acceptance of Risk.").setFontSize(9)
-				.setFixedLeading(9));
+		item4.add(new Paragraph("All amounts are in Sri Lankan Rupees (LKR).").setFontSize(9).setFixedLeading(9));
 		list.add(item4);
 
 		ListItem item5 = new ListItem();
-		item5.add(new Paragraph(
-				"In the case of Death of the child and if no claim has been made on the primary benefit during the policy term, Total premium paid up to date on the Primary Benefit (MSFB) will be refundered.")
-						.setFontSize(9).setFixedLeading(9));
+		item5.add(new Paragraph("Initial policy processing fee of Rs 300 (Payable only with initial deposit).")
+				.setFontSize(9).setFixedLeading(9));
 		list.add(item5);
 
 		ListItem item6 = new ListItem();
-		item6.add(new Paragraph(
-				"If no claim has been made on the primary benefit during the policy term, total premium paid on the Primary Benefit (MSFB) premium will be refundered at the policy expiry date.")
-						.setFontSize(9).setFixedLeading(9));
+		item6.add(new Paragraph("This is only a Quotation and not an Acceptance of Risk.").setFontSize(9)
+				.setFixedLeading(9));
 		list.add(item6);
 
 		ListItem item7 = new ListItem();
-		item7.add(new Paragraph("This is an indicative quoteonly and is valid for 30 days from date of issue.")
-				.setFontSize(9).setFixedLeading(9));
+		item7.add(new Paragraph(
+				"In the case of Death of the child and if no claim has been made on the primary benefit during the policy term, Total premium paid up to date on the Primary Benefit (MSFB) will be refundered.")
+						.setFontSize(9).setFixedLeading(9));
 		list.add(item7);
+
+		ListItem item8 = new ListItem();
+		item8.add(new Paragraph(
+				"If no claim has been made on the primary benefit during the policy term, total premium paid on the Primary Benefit (MSFB) premium will be refundered at the policy expiry date.")
+						.setFontSize(9).setFixedLeading(9));
+		list.add(item8);
+
+		ListItem item9 = new ListItem();
+		item9.add(new Paragraph("This is an indicative quoteonly and is valid for 30 days from date of issue.")
+				.setFontSize(9).setFixedLeading(9));
+		list.add(item9);
 
 		document.add(list);
 

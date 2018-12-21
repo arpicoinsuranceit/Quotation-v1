@@ -56,7 +56,7 @@ public class Quo_Benef_DetailsController {
 			return new ResponseEntity<Object>(detailList , HttpStatus.OK);
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\nParameters : " + id);
 			logs.setDate(new Date());
