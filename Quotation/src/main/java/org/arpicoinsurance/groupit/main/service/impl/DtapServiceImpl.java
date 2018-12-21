@@ -44,6 +44,7 @@ import org.arpicoinsurance.groupit.main.service.DTAPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
+import org.arpicoinsurance.groupit.main.service.custom.OccupationLoadingService;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,9 @@ public class DtapServiceImpl implements DTAPService{
 
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
+	
+	@Autowired
+	private OccupationLoadingService occupationLoadingService;
 
 	@Override
 	public DTAHelper calculateL2(int ocu, int age, int term, double intrat, String sex, Date chedat, double loanamt,
@@ -162,12 +166,9 @@ public class DtapServiceImpl implements DTAPService{
 			} catch (Exception e) {
 				throw new NullPointerException("Error at DTAP Premium Calculation");
 			}
-			BigDecimal occuLodingPremium = premium.multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
-			if (isAddOccuLoading) {
-				calResp.setWithoutLoadingTot(calResp.getWithoutLoadingTot() + premium.doubleValue());
-				calResp.setOccuLodingTot(
-						calResp.getOccuLodingTot() + occuLodingPremium.subtract(premium).doubleValue());
-			}
+			BigDecimal occuLodingPremium = occupationLoadingService.calculateOccupationLoading(isAddOccuLoading,
+					premium.doubleValue(), loanamt, occupation, benefits, calResp);
+			;
 
 			DTAShedule shedule = new DTAShedule();
 

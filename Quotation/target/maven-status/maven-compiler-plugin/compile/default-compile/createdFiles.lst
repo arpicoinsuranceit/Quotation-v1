@@ -32,6 +32,7 @@ org\arpicoinsurance\groupit\main\model\RateCardASIPFund.class
 org\arpicoinsurance\groupit\main\service\rider\impl\SCBServiceImpl.class
 org\arpicoinsurance\groupit\main\model\RateCardAIB.class
 org\arpicoinsurance\groupit\main\common\DateConverter.class
+org\arpicoinsurance\groupit\main\controller\QuotationDtapCalculationController.class
 org\arpicoinsurance\groupit\main\model\Occupation.class
 org\arpicoinsurance\groupit\main\helper\QuoBenf.class
 org\arpicoinsurance\groupit\main\service\impl\NomineeServiceImpl.class
@@ -283,6 +284,7 @@ org\arpicoinsurance\groupit\main\service\SheduleService.class
 org\arpicoinsurance\groupit\main\service\impl\INVPServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\HBCService.class
 org\arpicoinsurance\groupit\main\helper\HelperLogin.class
+org\arpicoinsurance\groupit\main\service\DTAPService.class
 org\arpicoinsurance\groupit\main\service\rider\L5Service.class
 org\arpicoinsurance\groupit\main\reports\impl\ItextReportsimpl.class
 org\arpicoinsurance\groupit\main\helper\BenefictHistory.class
@@ -351,6 +353,7 @@ org\arpicoinsurance\groupit\main\model\RateCardHCBDIS.class
 org\arpicoinsurance\groupit\main\service\rider\JLBPLService.class
 org\arpicoinsurance\groupit\main\model\RateCardJLB.class
 org\arpicoinsurance\groupit\main\dao\custom\QuotationCustomDao.class
+org\arpicoinsurance\groupit\main\service\impl\DtapServiceImpl.class
 org\arpicoinsurance\groupit\main\service\impl\ASIPServiceImpl.class
 org\arpicoinsurance\groupit\main\service\QuotationDetailsService.class
 org\arpicoinsurance\groupit\main\service\rider\impl\FEBServiceImpl.class

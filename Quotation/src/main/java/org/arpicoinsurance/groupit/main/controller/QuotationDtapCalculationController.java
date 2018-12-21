@@ -49,7 +49,14 @@ public class QuotationDtapCalculationController {
 			validation = new Validation(calculation);
 			String error = validation.validateBenifict();
 
-			if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 65) {
+			if ((calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm()) <= 70) {
+				
+				if(calculation.get_personalInfo().getSage() != null && calculation.get_personalInfo().getSage() > 0) {
+					if(calculation.get_personalInfo().getSage() + calculation.get_personalInfo().getTerm() >= 70){
+						error ="Term is too large for sopuse age..";
+					}
+				}
+				
 				if (error.equals("No")) {
 					calResp = dtaService.getCalcutatedDtap(calculation);
 					if (calResp.isErrorExist()) {
