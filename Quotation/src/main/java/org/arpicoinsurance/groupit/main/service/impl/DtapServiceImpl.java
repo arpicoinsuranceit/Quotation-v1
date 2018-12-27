@@ -14,7 +14,6 @@ import org.arpicoinsurance.groupit.main.dao.CustomerDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalDetailsDao;
 import org.arpicoinsurance.groupit.main.dao.MedicalReqDao;
 import org.arpicoinsurance.groupit.main.dao.OccupationDao;
-import org.arpicoinsurance.groupit.main.dao.OccupationLodingDao;
 import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
@@ -32,7 +31,6 @@ import org.arpicoinsurance.groupit.main.model.Customer;
 import org.arpicoinsurance.groupit.main.model.CustomerDetails;
 import org.arpicoinsurance.groupit.main.model.MedicalDetails;
 import org.arpicoinsurance.groupit.main.model.Occupation;
-import org.arpicoinsurance.groupit.main.model.OcupationLoading;
 import org.arpicoinsurance.groupit.main.model.Products;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
@@ -100,9 +98,6 @@ public class DtapServiceImpl implements DTAPService{
 	private SheduleDao sheduleDao;
 
 	@Autowired
-	private OccupationLodingDao occupationLodingDao;
-
-	@Autowired
 	private QuotationDetailsService quotationDetailsService;
 
 	@Autowired
@@ -117,14 +112,14 @@ public class DtapServiceImpl implements DTAPService{
 
 		Occupation occupation = occupationDao.findByOcupationid(ocu);
 		Benefits benefits = benefitsDao.findByRiderCode("L2");
-		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
-		Double rate = 1.0;
-		if (ocupationLoading != null) {
-			rate = ocupationLoading.getValue();
-			if (rate == null) {
-				rate = 1.0;
-			}
-		}
+//		OcupationLoading ocupationLoading = occupationLodingDao.findByOccupationAndBenefits(occupation, benefits);
+//		Double rate = 1.0;
+//		if (ocupationLoading != null) {
+//			rate = ocupationLoading.getValue();
+//			if (rate == null) {
+//				rate = 1.0;
+//			}
+//		}
 
 		DTAHelper dtaHelper = new DTAHelper();
 
@@ -207,7 +202,7 @@ public class DtapServiceImpl implements DTAPService{
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
+			//Double rebate = calculationUtils.getRebate(quotationCalculation.get_personalInfo().getFrequance());
 			// //System.out.println(rebate + " : rebate");
 			DTAHelper dtaHelper = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 					quotationCalculation.get_personalInfo().getMage(),
