@@ -12,6 +12,7 @@ import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class QuotationATPCalculationController {
 	
 
@@ -33,7 +35,7 @@ public class QuotationATPCalculationController {
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
-			if (validation.validateInvpEndProd() == 1) {
+			if (validation.validateAtpProd() == 1) {
 				String error = validation.validateBenifict();
 				if (error.equals("No")) {
 					calResp = atpService.getCalcutatedAtp(calculation);

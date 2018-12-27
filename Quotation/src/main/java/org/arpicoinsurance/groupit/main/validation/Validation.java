@@ -484,18 +484,20 @@ public class Validation {
 
 		return 0;
 	}
-
-	//////////////Invp Product Validation
+	
+	//////////////Atp Product Validation
 	public Integer validateAtpProd() {
-		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 45
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 10
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
 				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70
-				&& calculation.get_personalInfo().getBsa() >= 250000) {
+				&& calculation.get_personalInfo().getBsa() >= 200000) {
 			return 1;
 		}
 
 		return 0;
 	}
+
+
 
 	////////////// Asfp Product Validation
 	public Integer validateAsfpProd() {
