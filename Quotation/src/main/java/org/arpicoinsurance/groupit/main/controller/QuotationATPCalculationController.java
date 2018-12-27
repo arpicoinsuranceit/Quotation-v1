@@ -26,7 +26,7 @@ public class QuotationATPCalculationController {
 	@Autowired
 	private ATPService atpService;
 	
-	@RequestMapping(value = "/quoEndCal", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoAtpCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
@@ -48,11 +48,10 @@ public class QuotationATPCalculationController {
 			} else {
 				calResp.setErrorExist(true);
 				calResp.setError(
-						"BSA must be Greater than or Equal 250000 and Age + Term must be Less than or Equal 70");
+						"Invesment Amount must be Greater than or Equal 200,000 and Age + Term must be Less than or Equal 70");
 			}
 			return new ResponseEntity<Object>(calResp, HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + calculation.toString());
 			logs.setDate(new Date());
@@ -71,18 +70,18 @@ public class QuotationATPCalculationController {
 		}
 	}
 	
-	@RequestMapping(value = "/quoEndsave/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoAtpsave/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Object> saveEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) throws Exception {
 		return null;
 	}
 	
-	@RequestMapping(value = "/quoEndEdit/{userId}/{qdId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoAtpEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 		return null;
 	}
 
-	@RequestMapping(value = "/quoEndEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/quoAtpEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEndUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
 		return null;

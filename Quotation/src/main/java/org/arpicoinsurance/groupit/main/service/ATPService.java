@@ -10,9 +10,9 @@ import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 
 public interface ATPService {
 	
-BigDecimal calculateL2(int ocu,int age, int term, double rebate, Date chedat, double bassum, int paytrm, QuotationQuickCalResponse calResp, boolean isAddOccuLoading)throws Exception;
-	
 	BigDecimal calculateMaturity(int term, double bassum)throws Exception;
+
+	BigDecimal calculateNaturalDeath(double maturity, int age, double bassum)throws Exception;
 
 	QuotationQuickCalResponse getCalcutatedAtp(QuotationCalculation calculation)throws Exception;
 	
