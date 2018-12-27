@@ -1,7 +1,6 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.arpicoinsurance.groupit.main.common.CalculationUtils;
@@ -11,7 +10,11 @@ import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.service.ATPService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class ATPServiceImpl implements ATPService {
 	
 	@Autowired
