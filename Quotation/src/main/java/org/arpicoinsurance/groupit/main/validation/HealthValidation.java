@@ -465,7 +465,7 @@ public class HealthValidation {
 
 		String resp = "fail";
 		
-		if((isHcb && !isShcb) || (!isHcb && isShcb) ) {
+		if((isHcb && !isShcb) || (!isHcb && isShcb) || (!isHcb && !isShcb)) {
 			resp = "ok";
 		}
 		
@@ -599,7 +599,7 @@ public class HealthValidation {
 		String resp = "fail";
 		
 		
-		if((isHcb && !isShcb) || (!isHcb && isShcb) ) {
+		if((isHcb && !isShcb) || (!isHcb && isShcb) || (!isHcb && !isShcb)) {
 			resp = "ok";
 		}
 		

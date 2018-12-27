@@ -281,6 +281,8 @@ public class ASFPServiceImpl implements ASFPService {
 			return responseMap;
 		}
 		
+		System.out.println("before Health");
+		
 		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
 			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
 			
@@ -299,6 +301,8 @@ public class ASFPServiceImpl implements ASFPService {
 			}
 		}
 
+		System.out.println("end Health");
+		
 		Products products = productDao.findByProductCode("ASFP");
 		Users user = userDao.findOne(id);
 
