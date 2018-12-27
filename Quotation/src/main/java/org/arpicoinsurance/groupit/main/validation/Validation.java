@@ -81,11 +81,11 @@ public class Validation {
 					if (children.get_cName() == null || !(children.get_cName().length() > 0)) {
 						return "Children name can't be null";
 					}
-					if(children.get_cDob() == null || !(children.get_cDob().length() > 0 )) {
+					if (children.get_cDob() == null || !(children.get_cDob().length() > 0)) {
 						return "Children DOB can't be null";
 					}
 				}
-			}	
+			}
 		}
 
 		return "ok";
@@ -171,12 +171,13 @@ public class Validation {
 						// //System.out.println(calculation.get_product());
 
 						/////// for END
-						
-						/*if (calculation.get_product().equals("END1")) {
-							if (validateCIBEND().equals(0)) {
-								return "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA and CIB mod 25000 must 0";
-							}
-						} else */if (calculation.get_product().equals("ARTM")) {
+
+						/*
+						 * if (calculation.get_product().equals("END1")) { if
+						 * (validateCIBEND().equals(0)) { return
+						 * "CIB must be greater than 100,000 and less than 6,000,000 and less than sum of ATPB and BSA and CIB mod 25000 must 0"
+						 * ; } } else
+						 */if (calculation.get_product().equals("ARTM")) {
 							if (validateCIBARTM().equals(0)) {
 								return "Internal Error";
 							}
@@ -289,15 +290,16 @@ public class Validation {
 							return "Please Select SCB before get SCIB";
 						}
 						//////// validation END
-						/*if (calculation.get_product().equals("END1")) {
-							if (validateInvpSCIBEND().equals(0)) {
-								return "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
-							}
-						} else {*/
-							if (validateInvpSCIB().equals(0)) {
-								return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
-							}
-						/*}*/
+						/*
+						 * if (calculation.get_product().equals("END1")) { if
+						 * (validateInvpSCIBEND().equals(0)) { return
+						 * "SCIB must be greater than or equal 100,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0"
+						 * ; } } else {
+						 */
+						if (validateInvpSCIB().equals(0)) {
+							return "SCIB must be greater than or equal 250,000 and less than or equal 6,000,000 and SCIB nod 25000 must 0";
+						}
+						/* } */
 						break;
 					case "FEBS":
 						//////// validation END
@@ -395,15 +397,16 @@ public class Validation {
 					String type = benifict.getType();
 					switch (type) {
 					case "CIBC":
-						/*if (calculation.get_product().equals("END1")) {
-							if (validateENDCIBC().equals(0)) {
-								return "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
-							}
-						} else {*/
-							if (validateInvpCIBC().equals(0)) {
-								return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
-							}
-						/*}*/
+						/*
+						 * if (calculation.get_product().equals("END1")) { if
+						 * (validateENDCIBC().equals(0)) { return
+						 * "CIBC must be greater than or equal 100,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0"
+						 * ; } } else {
+						 */
+						if (validateInvpCIBC().equals(0)) {
+							return "CIBC must be greater than or equal 250,000 and less than or equal 1,000,000 and CIBC mod 25000 must 0";
+						}
+						/* } */
 						break;
 					/*
 					 * case "HRBC": if (validateInvpHRBC().equals(0)) { return
@@ -472,6 +475,18 @@ public class Validation {
 
 	////////////// Invp Product Validation
 	public Integer validateInvpEndProd() {
+		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 45
+				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
+				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70
+				&& calculation.get_personalInfo().getBsa() >= 250000) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	//////////////Invp Product Validation
+	public Integer validateAtpProd() {
 		if (calculation.get_personalInfo().getTerm() >= 5 && calculation.get_personalInfo().getTerm() <= 45
 				&& calculation.get_personalInfo().getMage() >= 18 && calculation.get_personalInfo().getMage() <= 65
 				&& calculation.get_personalInfo().getMage() + calculation.get_personalInfo().getTerm() <= 70
@@ -620,7 +635,8 @@ public class Validation {
 	public Integer validateARTML2() {
 		if (benefitMap.containsKey("L2")) {
 			Benifict benifict = benefitMap.get("L2");
-			if (benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000 && benifict.getSumAssured() % 25000 == 0) {
+			if (benifict.getSumAssured() >= 100000 && benifict.getSumAssured() <= 1000000
+					&& benifict.getSumAssured() % 25000 == 0) {
 				return 1;
 			}
 		}
@@ -1034,7 +1050,7 @@ public class Validation {
 		}
 
 		if (benefitMap.containsKey("CIBS") && benefitMap.containsKey("BSAS")) {
-			//System.out.println("called");
+			// System.out.println("called");
 			Double scb = benefitMap.get("BSAS").getSumAssured();
 			Double cib = benefitMap.get("CIBS").getSumAssured();
 
@@ -1349,39 +1365,42 @@ public class Validation {
 			return "L2 is required";
 		}
 		if (calculation.get_personalInfo().getRetAge() >= 40 && calculation.get_personalInfo().getRetAge() <= 65) {
-			/*if (calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())
-					* calculation.get_personalInfo().getBsa() >= 36000) {*/
-				/*if ((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S")
-						&& calculation.get_personalInfo().getBsa() < 250000)) {
-					return "Contribution must be greater than or equal 250000";
-				}*/
+			/*
+			 * if
+			 * (calculationUtils.getPayterm(calculation.get_personalInfo().getFrequance())
+			 * calculation.get_personalInfo().getBsa() >= 36000) {
+			 */
+			/*
+			 * if ((calculation.get_personalInfo().getFrequance().equalsIgnoreCase("S") &&
+			 * calculation.get_personalInfo().getBsa() < 250000)) { return
+			 * "Contribution must be greater than or equal 250000"; }
+			 */
 
-				if (calculation.get_personalInfo().getPensionPaingTerm() == 10
-						|| calculation.get_personalInfo().getPensionPaingTerm() == 15
-						|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
-					Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
-					if (paingTerm >= 10 && paingTerm <= 47
+			if (calculation.get_personalInfo().getPensionPaingTerm() == 10
+					|| calculation.get_personalInfo().getPensionPaingTerm() == 15
+					|| calculation.get_personalInfo().getPensionPaingTerm() == 20) {
+				Integer paingTerm = Integer.parseInt(calculation.get_personalInfo().getPayingterm());
+				if (paingTerm >= 10 && paingTerm <= 47 || calculation.get_personalInfo().getFrequance().equals("S")) {
+					if (paingTerm <= (calculation.get_personalInfo().getRetAge()
+							- calculation.get_personalInfo().getMage())
 							|| calculation.get_personalInfo().getFrequance().equals("S")) {
-						if (paingTerm <= (calculation.get_personalInfo().getRetAge()
-								- calculation.get_personalInfo().getMage())
-								|| calculation.get_personalInfo().getFrequance().equals("S")) {
 
-							return "ok";
+						return "ok";
 
-						} else {
-							return "Pension Paying Max Term must " + (calculation.get_personalInfo().getRetAge()
-									- calculation.get_personalInfo().getMage());
-						}
 					} else {
-						return "Pension Paying Term must between 10 and 47";
+						return "Pension Paying Max Term must " + (calculation.get_personalInfo().getRetAge()
+								- calculation.get_personalInfo().getMage());
 					}
 				} else {
-					return "Pension Pension Paying Term must be 10, 15 or 20";
+					return "Pension Paying Term must between 10 and 47";
 				}
+			} else {
+				return "Pension Pension Paying Term must be 10, 15 or 20";
+			}
 
-			/*} else {
-				return "Yearly Contribution  must be greater than or equal 36000";
-			}*/
+			/*
+			 * } else { return "Yearly Contribution  must be greater than or equal 36000"; }
+			 */
 
 		} else {
 			return "Retirement Age must between 60 and 40";
