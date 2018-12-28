@@ -21,7 +21,7 @@ public class ATPBServiceImpl implements ATPBService {
 
 	@Override
 	public BigDecimal calculateATPB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency,
-			Double relief) throws Exception {
+			Double relief, Double atpRate) throws Exception {
 
 		BigDecimal premiumATPB = new BigDecimal(0);
 		RateCardATFESC rateCardATFESC = rateCardATFESCDao
@@ -45,6 +45,11 @@ public class ATPBServiceImpl implements ATPBService {
 								RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0,
 										RoundingMode.HALF_UP);
 			}
+			
+			
+			// ATP Rate
+			premiumATPB = premiumATPB.multiply(new BigDecimal(atpRate)).setScale(0, RoundingMode.HALF_UP);;
+			
 		} catch (Exception e) {
 			throw new NullPointerException("ATPB Rate not found for Age : " + age + " and Term : " + term);
 		}

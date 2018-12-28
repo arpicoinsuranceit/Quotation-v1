@@ -72,6 +72,10 @@ public class HealthRequirmentsDetailsServiceImpl implements HealthRequirmentsSer
 		case "AIB":
 			riskCurrent = 0.0;
 			break;
+		case "ATP":
+			riskCurrent = riskCurrent + calculateRickArpAsipAtrmEndMainlife(calculation);
+			riskCurrent = riskCurrent + calculation.get_personalInfo().getBsa();
+			break;
 		case "AIP":
 			riskCurrent = 0.0;
 			break;

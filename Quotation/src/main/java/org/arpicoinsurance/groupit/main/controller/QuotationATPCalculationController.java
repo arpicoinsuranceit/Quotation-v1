@@ -1,7 +1,9 @@
 package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 
+import org.arpicoinsurance.groupit.main.common.CalculationUtils;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class QuotationATPCalculationController {
 	
+	@Autowired
+	private CalculationUtils calculationUtils;
 
 	@Autowired
 	private LogService logService;
@@ -75,8 +79,82 @@ public class QuotationATPCalculationController {
 	}
 	
 	@RequestMapping(value = "/quoAtpsave/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Object> saveEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) throws Exception {
-		return null;
+	public ResponseEntity<Object> saveAtp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) throws Exception {
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
+
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+		System.out.println("/////////////////////////// Phone Validation");
+		QuotationCalculation calculation = null;
+		Validation validation = null;
+		try {
+			if (id != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
+					validation = new Validation(calculation);
+					if (validation.validateAtpProd() == 1) {
+						String error = validation.validateBenifict();
+						if (error.equals("No")) {
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							
+							System.out.println("/////////////////////////// Validation" + error);
+							
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = atpService.saveQuotation(calculation, _invpSaveQuotation, id);
+
+							} else {
+								responseMap.replace("status", error);
+							}
+						} else {
+							responseMap.replace("status", error);
+						}
+					} else {
+						responseMap.replace("status",
+								"Invesment Amount must be Greater than or Equal 200000 and Age + Term must be Less than or Equal 70");
+					}
+				} else {
+					responseMap.replace("status", "Incomplete");
+				}
+			} else {
+				responseMap.replace("status", "User can't be identify");
+
+			}
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " id : " + id);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("saveAtp : QuotationATPCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				//System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				//System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
 	}
 	
 	@RequestMapping(value = "/quoAtpEdit/{userId}/{qdId}", method = RequestMethod.POST)
