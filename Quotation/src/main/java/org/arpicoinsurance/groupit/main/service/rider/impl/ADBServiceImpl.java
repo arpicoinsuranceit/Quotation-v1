@@ -10,29 +10,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ADBServiceImpl implements ADBService{
+public class ADBServiceImpl implements ADBService {
 
 	@Override
-	public BigDecimal calculateADB(double ridsumasu, String payFrequency, double relief)
+	public BigDecimal calculateADB(double ridsumasu, String payFrequency, double relief, Double atpRate)
 			throws Exception {
 //		//System.out.println("ADB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief);
 		BigDecimal premiumADB = new BigDecimal(0);
-		if(payFrequency.equalsIgnoreCase("S")){
-			//(((1*@rider_sum_assured@)/1000))*@relief@
-			premiumADB = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
-		}else {
+		if (payFrequency.equalsIgnoreCase("S")) {
+			// (((1*@rider_sum_assured@)/1000))*@relief@
+			premiumADB = (new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP))
+					.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
+		} else {
 			// (((1*@rider_sum_assured@)/1000)/@payment_frequency@)*@relief@
-			premiumADB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP)).divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP)).multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);  
+			premiumADB = ((new BigDecimal(ridsumasu).divide(new BigDecimal(1000), 6, RoundingMode.HALF_UP))
+					.divide(new BigDecimal(new CalculationUtils().getPayterm(payFrequency)), 10, RoundingMode.HALF_UP))
+							.multiply(new BigDecimal(relief)).setScale(0, RoundingMode.HALF_UP);
 		}
-		
+
 //		premiumADB = premiumADB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
-//		//System.out.println("premiumADB : "+premiumADB.toString());
-		return premiumADB;
+		System.out.println("premiumADB : "+premiumADB.doubleValue());
+
+		premiumADB = premiumADB.multiply(new BigDecimal(atpRate)).setScale(0, RoundingMode.HALF_UP);;
+
+		System.out.println("premiumADB : "+premiumADB.doubleValue());
 		
+		return premiumADB;
+
 	}
-
-	
-
-	
 
 }

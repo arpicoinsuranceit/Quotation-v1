@@ -69,6 +69,9 @@ public class ItextReportsimpl implements ItextReports {
 			
 			}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ARTM")) {
 				return quotationReportService.createARTMReport(quotationDetails, quotationView, quoCustomer);
+				
+			}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ATP")) {
+				return quotationReportService.createATPReport(quotationDetails, quotationView, quoCustomer);
 			}
 
 		}

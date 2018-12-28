@@ -232,6 +232,7 @@ public class QuotationQuickCalResponse {
 
 	private boolean isArp = false;
 	private boolean isArtm = false;
+	private boolean isAtp = false;
 	private String payTerm;
 
 	private List<SurrenderValHelper> surrenderValHelpers = null;
@@ -1558,6 +1559,14 @@ public class QuotationQuickCalResponse {
 		this.isArtm = isArtm;
 	}
 
+	public boolean isAtp() {
+		return isAtp;
+	}
+
+	public void setAtp(boolean isAtp) {
+		this.isAtp = isAtp;
+	}
+
 	@Override
 	public String toString() {
 		return "QuotationQuickCalResponse [basicSumAssured=" + basicSumAssured + ", extraOE=" + extraOE + ", addBenif="
@@ -1603,8 +1612,8 @@ public class QuotationQuickCalResponse {
 				+ isWarningExist + ", warning=" + warning + ", mainLifeHealthReq=" + mainLifeHealthReq
 				+ ", spouseHealthReq=" + spouseHealthReq + ", pensionPremium1=" + pensionPremium1 + ", pensionPremium2="
 				+ pensionPremium2 + ", pensionPremium3=" + pensionPremium3 + ", isArp=" + isArp + ", isArtm=" + isArtm
-				+ ", payTerm=" + payTerm + ", surrenderValHelpers=" + surrenderValHelpers + ", pensionShedules="
-				+ pensionShedules + "]";
+				+ ", isAtp=" + isAtp + ", payTerm=" + payTerm + ", surrenderValHelpers=" + surrenderValHelpers
+				+ ", pensionShedules=" + pensionShedules + "]";
 	}
 
 }

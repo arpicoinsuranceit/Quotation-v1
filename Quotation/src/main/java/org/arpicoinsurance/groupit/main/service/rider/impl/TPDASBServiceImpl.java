@@ -19,7 +19,7 @@ public class TPDASBServiceImpl implements TPDASBService{
 	private RateCardTPDASBDao cardTPDASBDao;
 	
 	@Override
-	public BigDecimal calculateTPDASB(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief)
+	public BigDecimal calculateTPDASB(int age, int term, Date chedat, double ridsumasu, String payFrequency, double relief, Double atpRate)
 			throws Exception {
 		
 //		//System.out.println("age :" +age + "term : " + term );
@@ -37,6 +37,9 @@ public class TPDASBServiceImpl implements TPDASBService{
 		} catch (Exception e) {
 			throw new NullPointerException("TPDASB Rate not found at Age : " + age + " and Term : " + term);
 		}
+		
+		// ATP Rate
+		premiumTPDASB = premiumTPDASB.multiply(new BigDecimal(atpRate)).setScale(0, RoundingMode.HALF_UP);;
 		
 		//premiumTPDASB = premiumTPDASB.multiply(new BigDecimal(occupation_loding)).setScale(0, RoundingMode.HALF_UP);
 //		//System.out.println("premiumTPDASB : "+premiumTPDASB.toString());

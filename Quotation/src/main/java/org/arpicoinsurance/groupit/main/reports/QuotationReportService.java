@@ -29,6 +29,8 @@ public interface QuotationReportService {
 
 	byte[] createARTMReport(QuotationDetails quotationDetails,QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
 
+	byte[] createATPReport(QuotationDetails quotationDetails, QuotationView quotationView, QuoCustomer quoCustomer) throws Exception;
+
 
 	
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class ReportController {
+public class PrintController {
 
 	
 	@Autowired
@@ -48,7 +48,7 @@ public class ReportController {
 			logs.setData("Error : " + e.getMessage() + ",\n Parameters : " + id);
 			logs.setDate(new Date());
 			logs.setHeading("Error");
-			logs.setOperation("getQuotationByQuoDetailId : ReportController");
+			logs.setOperation("getQuotationByQuoDetailId : PrintController");
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {

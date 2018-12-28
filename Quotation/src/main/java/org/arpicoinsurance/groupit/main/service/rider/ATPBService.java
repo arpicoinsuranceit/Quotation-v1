@@ -5,6 +5,6 @@ import java.util.Date;
 
 public interface ATPBService {
 	
-	BigDecimal calculateATPB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief) throws Exception;
+	BigDecimal calculateATPB(Integer age, Integer term, Date chedat, Double ridsumasu, String payFrequency, Double relief, Double atpRate) throws Exception;
 
 }
