@@ -35,6 +35,7 @@ import org.arpicoinsurance.groupit.main.model.QuotationDetails;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.ATPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
+import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ATPServiceImpl implements ATPService {
+	
+	@Autowired
+	private QuotationDetailsService quotationDetailsService;
 	
 	@Autowired
 	private QuotationDao quotationDao;
@@ -492,8 +496,264 @@ public class ATPServiceImpl implements ATPService {
 	@Override
 	public HashMap<String, Object> editQuotation(QuotationCalculation calculation, InvpSaveQuotation _invpSaveQuotation,
 			Integer userId, Integer qdId, Integer type) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Quotation quo = null;
+
+		HashMap<String, Object> responseMap = new HashMap<>();
+
+		if (productDao.findByProductCode("ATP").getActive() == 0) {
+			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
+			return responseMap;
+		}
+	
+		QuotationQuickCalResponse calResp = getCalcutatedAtp(calculation);
+		
+		if (calResp.isErrorExist()) {
+			responseMap.put("status", "Error at calculation");
+			return responseMap;
+		}
+		
+//		System.out.println("check cal errors pass");
+//
+//		String valPrm = validationPremium.validateAtp(calculation.get_personalInfo().getFrequance(),
+//				calResp.getTotPremium());
+//
+//		if (!valPrm.equalsIgnoreCase("ok")) {
+//			responseMap.put("status", valPrm);
+//			return responseMap;
+//		}
+//		
+//		System.out.println("check health validation");
+//		
+//		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
+//			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
+//			
+//			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
+//			
+//			if (!resp.equalsIgnoreCase("ok")) {
+//				responseMap.put("status", resp);
+//				return responseMap;
+//			}
+//			
+//		} else {
+//			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
+//			if (!resp.equalsIgnoreCase("ok")) {
+//				responseMap.put("status", resp);
+//				return responseMap;
+//			}
+//		}
+//		
+//		System.out.println("check health validation pass");
+
+		Users user = userDao.findOne(userId);
+
+		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
+//		Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+
+		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
+				_invpSaveQuotation.get_personalInfo(), user);
+//		CustomerDetails spouseDetail = quotationSaveUtilService.getSpouseDetail(occupationSpouse,
+//				_invpSaveQuotation.get_personalInfo(), user);
+
+		QuotationDetails quotationDetails = quotationDetailsService.findQuotationDetails(qdId);
+
+		Customer mainlife = quotationDetails.getCustomerDetails().getCustomer();
+		Customer spouse = null;
+//		if (spouseDetail != null) {
+//			try {
+//				spouse = quotationDetails.getSpouseDetails().getCustomer();
+//			} catch (NullPointerException ex) {
+//				spouse = null;
+//			}
+//
+//			if (spouse != null) {
+//				spouseDetail.setCustomer(spouse);
+//			} else {
+//				spouse = new Customer();
+//				spouse.setCustName(spouseDetail.getCustName());
+//				spouse.setCustCreateDate(new Date());
+//				spouse.setCustCreateBy(user.getUser_Name());
+//				spouseDetail.setCustomer(spouse);
+//			}
+//
+//		} else {
+//
+//		}
+
+		mainLifeDetail.setCustomer(mainlife);
+
+//		ArrayList<Child> childList = quotationSaveUtilService
+//				.getChilds(_invpSaveQuotation.get_personalInfo().get_childrenList());
+//
+//		ArrayList<CustChildDetails> custChildDetailsList = new ArrayList<>();
+//		if (childList != null && !childList.isEmpty()) {
+//			for (Child child : childList) {
+//				CustChildDetails custChildDetails = new CustChildDetails();
+//				custChildDetails.setChild(child);
+//				custChildDetails.setCustomer(mainLifeDetail);
+//				custChildDetailsList.add(custChildDetails);
+//			}
+//		}
+
+		Quotation quotation = quotationDetails.getQuotation();
+
+		Integer count = quotationDetailDao.countByQuotation(quotation);
+
+		if (type == 1) {
+			quotation.setStatus("active");
+		}
+		QuotationDetails quotationDetails1 = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
+		quotationDetails1.setSeqnum(count + 1);
+		quotationDetails1.setCustomerDetails(mainLifeDetail);
+//		if (spouseDetail != null) {
+//			quotationDetails1.setSpouseDetails(spouseDetail);
+//		} else {
+			quotationDetails1.setSpouseDetails(null);
+//		}
+
+		quotationDetails1.setQuotation(quotation);
+		quotationDetails1.setQuotationCreateBy(user.getUserCode());
+		quotationDetails1.setQuotationCreateDate(new Date());
+
+//		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
+//
+//		if (calResp.getMainLifeHealthReq() != null && calResp.getMainLifeHealthReq().get("reqListMain") != null) {
+//			for (String testCodes : (ArrayList<String>) calResp.getMainLifeHealthReq().get("reqListMain")) {
+//				MedicalDetails medicalDetail = new MedicalDetails();
+//				medicalDetail.setCustStatus("main");
+//				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+//				medicalDetail.setMedDetailsCreatedate(new Date());
+//				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+//				medicalDetail.setStatus("Required");
+//				medicalDetailList.add(medicalDetail);
+//			}
+//		}
+//
+//		if (calResp.getSpouseHealthReq() != null && calResp.getSpouseHealthReq().get("reqListMain") != null) {
+//			for (String testCodes : (ArrayList<String>) calResp.getSpouseHealthReq().get("reqListMain")) {
+//				MedicalDetails medicalDetail = new MedicalDetails();
+//				medicalDetail.setCustStatus("spouse");
+//				medicalDetail.setMedDetailsCreateBy(user.getUserCode());
+//				medicalDetail.setMedDetailsCreatedate(new Date());
+//				medicalDetail.setMedicalReq(medicalReqDao.findOneByMedCode(testCodes));
+//				medicalDetail.setStatus("Required");
+//				medicalDetailList.add(medicalDetail);
+//			}
+//		}
+
+		ArrayList<Quo_Benef_Details> benef_DetailsList = quotationSaveUtilService.getBenifDetails(
+				_invpSaveQuotation.get_riderDetails(), calResp, quotationDetails1,
+				_invpSaveQuotation.get_personalInfo().get_childrenList(),
+				_invpSaveQuotation.get_personalInfo().get_plan().get_term());
+
+//		Quo_Benef_Details benef_Details = new Quo_Benef_Details();
+//		benef_Details.setBenefit(benefitsDao.findOne(21));
+//		benef_Details.setRierCode("L2");
+//		benef_Details.setQuo_Benef_CreateBy(user.getUserCode());
+//		benef_Details.setQuo_Benef_CreateDate(new Date());
+//		benef_Details.setQuotationDetails(quotationDetails1);
+//		switch (quotationDetails1.getPayMode()) {
+//		case "M":
+//			benef_Details.setRiderPremium(quotationDetails1.getPremiumMonth());
+//			break;
+//		case "Q":
+//			benef_Details.setRiderPremium(quotationDetails1.getPremiumQuater());
+//			break;
+//		case "H":
+//			benef_Details.setRiderPremium(quotationDetails1.getPremiumHalf());
+//			break;
+//		case "Y":
+//			benef_Details.setRiderPremium(quotationDetails1.getPremiumYear());
+//			break;
+//		case "S":
+//			benef_Details.setRiderPremium(quotationDetails1.getPremiumSingle());
+//			break;
+//
+//		default:
+//			break;
+//		}
+//		benef_Details.setRiderSum(quotationDetails1.getBaseSum());
+//		benef_Details.setRiderTerm(quotationDetails1.getPolTerm());
+//
+//		benef_DetailsList.add(benef_Details);
+		//////////////////////////// save edit//////////////////////////////////
+
+		Customer life = (Customer) customerDao.save(mainlife);
+		CustomerDetails mainLifeDetails = customerDetailsDao.save(mainLifeDetail);
+//		ArrayList<CustChildDetails> custChildDList = null;
+		if (life != null && mainLifeDetails != null) {
+
+//			if (spouseDetail != null) {
+//				Customer sp = customerDao.save(spouse);
+//				CustomerDetails spDetsils = customerDetailsDao.save(spouseDetail);
+//				if (sp == null && spDetsils != null) {
+//					responseMap.put("status", "Error at Spouse Updating");
+//					return responseMap;
+//				}
+//			}
+//
+//			ArrayList<Child> cList = (ArrayList<Child>) childDao.save(childList);
+//			custChildDList = (ArrayList<CustChildDetails>) custChildDetailsDao.save(custChildDetailsList);
+//			if (childList != null && childList.size() > 0) {
+//				if (cList == null && custChildDList == null) {
+//					responseMap.put("status", "Error at Child Updating");
+//					return responseMap;
+//				}
+//			}
+
+			quo = quotationDao.save(quotation);
+			QuotationDetails quoDetails = quotationDetailDao.save(quotationDetails1);
+
+			///////////////////// Add Maturity //////////////////
+
+			benef_DetailsList = quotationSaveUtilService.addMaturity("ATP", benef_DetailsList, calResp,
+					_invpSaveQuotation.get_personalInfo().get_plan().get_term(), quoDetails);
+
+			///////////////////// Done Add Maturity //////////////////
+
+			///////////////////// Medical Re1q //////////////////////
+
+//			for (MedicalDetails medicalDetails : medicalDetailList) {
+//
+//				medicalDetails.setQuotationDetails(quoDetails);
+//			}
+//
+//			medicalDetailsDao.save(medicalDetailList);
+
+			///////////////////// Done Save Medical req ////////////////
+
+			if (quo != null && quoDetails != null) {
+				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
+						.save(benef_DetailsList);
+				if (bnfdList != null) {
+
+//					ArrayList<Quo_Benef_Child_Details> childBenifList = quotationSaveUtilService.getChildBenif(bnfdList,
+//							custChildDList, childList, _invpSaveQuotation.get_personalInfo().get_childrenList(),
+//							_invpSaveQuotation.get_personalInfo().get_plan().get_term(),
+//							calculation.get_personalInfo().getFrequance(), calculation.get_riderDetails().get_cRiders(),
+//							calResp);
+//
+//					if (quoBenifChildDetailsDao.save(childBenifList) == null) {
+//						responseMap.put("status", "Error at Child Benifict Updating");
+//						return responseMap;
+//					}
+
+				} else {
+					responseMap.put("status", "Error at Benifict Updating");
+					return responseMap;
+				}
+			} else {
+				responseMap.put("status", "Error at Quotation Updating");
+				return responseMap;
+			}
+
+		} else {
+			responseMap.put("status", "Error at MainLife Updating");
+			return responseMap;
+		}
+
+		responseMap.put("status", "Success");
+		responseMap.put("code", quo.getId().toString());
+		return responseMap;
 	}
 
 }

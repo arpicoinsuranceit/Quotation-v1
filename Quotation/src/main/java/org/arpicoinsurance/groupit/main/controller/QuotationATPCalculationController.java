@@ -8,8 +8,11 @@ import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
 import org.arpicoinsurance.groupit.main.helper.QuotationCalculation;
 import org.arpicoinsurance.groupit.main.helper.QuotationQuickCalResponse;
 import org.arpicoinsurance.groupit.main.model.Logs;
+import org.arpicoinsurance.groupit.main.model.Users;
+import org.arpicoinsurance.groupit.main.security.JwtDecoder;
 import org.arpicoinsurance.groupit.main.service.ATPService;
 import org.arpicoinsurance.groupit.main.service.LogService;
+import org.arpicoinsurance.groupit.main.service.UsersService;
 import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,10 @@ public class QuotationATPCalculationController {
 	
 	@Autowired
 	private ATPService atpService;
+	
+	@Autowired
+	private UsersService usersService;
+
 	
 	@RequestMapping(value = "/quoAtpCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
@@ -160,13 +167,151 @@ public class QuotationATPCalculationController {
 	@RequestMapping(value = "/quoAtpEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
-		return null;
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
+		QuotationCalculation calculation = null;
+		
+		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
+
+		if (!phone.equals("Error")) {
+			_invpSaveQuotation.get_personalInfo().get_mainlife().set_mMobile(phone);
+		} else {
+			responseMap.replace("status", "Phone No Invalied");
+			return new ResponseEntity<Object>(responseMap, HttpStatus.BAD_REQUEST);
+		}
+
+		Validation validation = null;
+		try {
+			if (userId != null) {
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
+					validation = new Validation(calculation);
+					if (validation.validateAtpProd() == 1) {
+						String error = validation.validateBenifict();
+
+						if (error.equals("No")) {
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = atpService.editQuotation(calculation, _invpSaveQuotation, userId, qdId,
+										1);
+
+							} else {
+								responseMap.replace("status", error);
+							}
+						} else {
+							responseMap.replace("status", error);
+						}
+					} else {
+						responseMap.replace("status", "Error at product");
+					}
+				} else {
+					responseMap.replace("status", "Incomplete");
+				}
+			} else {
+				responseMap.replace("status", "User can't be identify");
+
+			}
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " userId : " + userId + " qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editEnd : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				//System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				//System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
 	}
 
 	@RequestMapping(value = "/quoAtpEditUnderwrite/{token}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEndUnderwrite(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("token") String token, @PathVariable("qdId") Integer qdId) {
-		return null;
+		String userCode = new JwtDecoder().generate(token);
+
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("status", "fail");
+		QuotationCalculation calculation = null;
+
+		Validation validation = null;
+		Users user = null;
+
+		try {
+			if (userCode != null) {
+				user = usersService.getUserByUserCode(userCode);
+				if (_invpSaveQuotation.get_calPersonalInfo() != null) {
+					calculation = new QuotationCalculation();
+					calculation.set_personalInfo(_invpSaveQuotation.get_calPersonalInfo());
+					calculation.set_riderDetails(_invpSaveQuotation.get_riderDetails());
+					calculation.set_product(_invpSaveQuotation.get_product());
+					validation = new Validation(calculation);
+					if (validation.validateAtpProd() == 1) {
+						String error = validation.validateBenifict();
+
+						if (error.equals("No")) {
+							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
+							if (error.equalsIgnoreCase("ok")) {
+								responseMap = atpService.editQuotation(calculation, _invpSaveQuotation,
+										user.getUserId(), qdId, 2);
+
+							} else {
+								responseMap.replace("status", error);
+							}
+						} else {
+							responseMap.replace("status", error);
+						}
+					} else {
+						responseMap.replace("status", "Error at product");
+					}
+				} else {
+					responseMap.replace("status", "Incomplete");
+				}
+			} else {
+				responseMap.replace("status", "User can't be identify");
+
+			}
+			return new ResponseEntity<Object>(responseMap, HttpStatus.CREATED);
+		} catch (Exception e) {
+			Logs logs = new Logs();
+			logs.setData("Error : " + e.getMessage() + ",\n Parameters : _invpSaveQuotation : "
+					+ _invpSaveQuotation.toString() + " userId : " + user.getUserId() + " qdId : " + qdId);
+			logs.setDate(new Date());
+			logs.setHeading("Error");
+			logs.setOperation("editEndUnderwrite : QuotationEndCalculationController");
+			try {
+				logService.saveLog(logs);
+			} catch (Exception e1) {
+				System.out.println("... Error Message for Operation ...");
+				e.printStackTrace();
+				System.out.println("... Error Message for save log ...");
+				e1.printStackTrace();
+			}
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} finally {
+			if (calculation != null) {
+				calculation = null;
+			}
+			if (validation != null) {
+				validation = null;
+			}
+		}
 	}
 
 	
