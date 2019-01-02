@@ -7,6 +7,8 @@ org\arpicoinsurance\groupit\main\model\MediTestGrid.class
 org\arpicoinsurance\groupit\main\service\rider\impl\ATPBServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\MFIBDTService.class
 org\arpicoinsurance\groupit\main\dao\impl\QuotationCustomDaoImpl$1.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpAtpbDao.class
+org\arpicoinsurance\groupit\main\controller\QuotationATPCalculationController.class
 org\arpicoinsurance\groupit\main\helper\QuotationReceipt.class
 org\arpicoinsurance\groupit\main\service\rider\impl\JLBServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\PPDBService.class
@@ -30,6 +32,7 @@ org\arpicoinsurance\groupit\main\dao\RateCardASIPDao.class
 org\arpicoinsurance\groupit\main\helper\CommisionRatePara.class
 org\arpicoinsurance\groupit\main\model\RateCardASIPFund.class
 org\arpicoinsurance\groupit\main\service\rider\impl\SCBServiceImpl.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpAdbPpdDao.class
 org\arpicoinsurance\groupit\main\model\RateCardAIB.class
 org\arpicoinsurance\groupit\main\common\DateConverter.class
 org\arpicoinsurance\groupit\main\controller\QuotationDtapCalculationController.class
@@ -45,6 +48,7 @@ org\arpicoinsurance\groupit\main\service\DTAService.class
 org\arpicoinsurance\groupit\main\service\impl\ENDServiceImpl.class
 org\arpicoinsurance\groupit\main\service\Quo_Benef_DetailsService.class
 org\arpicoinsurance\groupit\main\webclient\Impl\ReceiptClientImpl.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpTpdAsbDao.class
 org\arpicoinsurance\groupit\main\dao\RateCardINVPDao.class
 org\arpicoinsurance\groupit\main\dao\RateCardARTMDeathSingleDao.class
 org\arpicoinsurance\groupit\main\service\rider\TPDDTAPLService.class
@@ -123,6 +127,7 @@ org\arpicoinsurance\groupit\main\helper\CodeTransferReqHelper.class
 org\arpicoinsurance\groupit\main\service\impl\ASFPServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\impl\SUHRBCServiceImpl.class
 org\arpicoinsurance\groupit\main\dao\NomineeDao.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpTpdAsb.class
 org\arpicoinsurance\groupit\main\service\ENDService.class
 org\arpicoinsurance\groupit\main\service\rider\impl\BSAServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\SHCBFService.class
@@ -131,7 +136,6 @@ org\arpicoinsurance\groupit\main\service\rider\impl\SCIBServiceImpl.class
 org\arpicoinsurance\groupit\main\model\RateCardASFP.class
 org\arpicoinsurance\groupit\main\dao\impl\QuotationCustomDaoImpl$4.class
 org\arpicoinsurance\groupit\main\service\impl\CalculateBenifictTermServiceImpl.class
-org\arpicoinsurance\groupit\main\controller\ReportController.class
 org\arpicoinsurance\groupit\main\service\rider\impl\SUHRBServiceImpl.class
 org\arpicoinsurance\groupit\main\model\Nominee.class
 org\arpicoinsurance\groupit\main\service\custom\CalculateRiders.class
@@ -147,6 +151,7 @@ org\arpicoinsurance\groupit\main\service\rider\impl\MFIBDTServiceImpl.class
 org\arpicoinsurance\groupit\main\dao\impl\QuotationCustomDaoImpl$5.class
 org\arpicoinsurance\groupit\main\dao\OccupationDao.class
 org\arpicoinsurance\groupit\main\helper\ResponseHelper.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpTpdDao.class
 org\arpicoinsurance\groupit\main\security\JwtSuccessHandler.class
 org\arpicoinsurance\groupit\main\model\RateCardHBC.class
 org\arpicoinsurance\groupit\main\service\AIPService.class
@@ -167,6 +172,7 @@ org\arpicoinsurance\groupit\main\dao\impl\AipPrintSheduleDaoImpl$1.class
 org\arpicoinsurance\groupit\main\model\Quotation.class
 org\arpicoinsurance\groupit\main\model\RateCardTPDDTAS.class
 org\arpicoinsurance\groupit\main\model\JwtAuthenticationToken.class
+org\arpicoinsurance\groupit\main\service\impl\ATPServiceImpl.class
 org\arpicoinsurance\groupit\main\helper\Spouse.class
 org\arpicoinsurance\groupit\main\service\custom\impl\QuotationSaveUtilServiceImpl.class
 org\arpicoinsurance\groupit\main\service\ASFPService.class
@@ -221,6 +227,7 @@ org\arpicoinsurance\groupit\main\service\rider\SCIBService.class
 org\arpicoinsurance\groupit\main\dao\RateCardASFPDao.class
 org\arpicoinsurance\groupit\main\service\rider\impl\SFPOServiceImpl.class
 org\arpicoinsurance\groupit\main\dao\DesignationDao.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpAtpb.class
 org\arpicoinsurance\groupit\main\service\rider\impl\TPDDTASServiceImpl.class
 org\arpicoinsurance\groupit\main\dao\RateCardARTMExpencesDao.class
 org\arpicoinsurance\groupit\main\service\rider\impl\TPDDTAServiceImpl.class
@@ -240,6 +247,7 @@ org\arpicoinsurance\groupit\main\dao\RateCardHBDao.class
 org\arpicoinsurance\groupit\main\dao\PreviousPasswordDao.class
 org\arpicoinsurance\groupit\main\model\RateCardProductVar.class
 org\arpicoinsurance\groupit\main\model\CustChildDetails.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpAdbPpd.class
 org\arpicoinsurance\groupit\main\model\RateCardASIP.class
 org\arpicoinsurance\groupit\main\service\rider\SCBService.class
 org\arpicoinsurance\groupit\main\service\ASIPService.class
@@ -314,6 +322,7 @@ org\arpicoinsurance\groupit\main\dao\RateCardTPDASBDao.class
 org\arpicoinsurance\groupit\main\service\rider\impl\HBServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\FEBService.class
 org\arpicoinsurance\groupit\main\dao\custom\MedicalRequirementsDaoCustom.class
+org\arpicoinsurance\groupit\main\service\ATPService.class
 org\arpicoinsurance\groupit\main\service\impl\OccupationLodingServceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\impl\HRBServiceImpl.class
 org\arpicoinsurance\groupit\main\service\LoginService.class
@@ -382,10 +391,12 @@ org\arpicoinsurance\groupit\main\dao\SurrendervalDao.class
 org\arpicoinsurance\groupit\main\controller\QuotationReceiptController.class
 org\arpicoinsurance\groupit\main\util\AppConstant.class
 org\arpicoinsurance\groupit\main\controller\QuotationAtrmCalculationController.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpTpd.class
 org\arpicoinsurance\groupit\main\security\JwtAuthenticationProvider.class
 org\arpicoinsurance\groupit\main\service\impl\LoginServiceImpl.class
 org\arpicoinsurance\groupit\main\model\RateCardMFIBDT.class
 org\arpicoinsurance\groupit\main\helper\MainLife.class
+org\arpicoinsurance\groupit\main\controller\PrintController.class
 org\arpicoinsurance\groupit\main\dao\custom\MedicalRequirementsHelperRowMapper.class
 org\arpicoinsurance\groupit\main\model\Users.class
 org\arpicoinsurance\groupit\main\service\impl\PreviousPasswordServiceImpl.class
