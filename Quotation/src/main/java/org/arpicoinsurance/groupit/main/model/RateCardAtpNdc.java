@@ -5,13 +5,13 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "inratecardatpmc")
-public class RateCardAtpAtpb {
-
+@Document(collection = "agefrom")
+public class RateCardAtpNdc {
+	
 	@Id
 	private String id;
-	private Integer age;
-	private Integer term;
+	private Integer ageto;
+	private Integer agefrom;
 	private Double rate;
 	private Date strdat;
 	private Date enddat;
@@ -23,23 +23,23 @@ public class RateCardAtpAtpb {
 	}
 
 	public void setId(String id) {
-		this.id = id; 
+		this.id = id;
 	}
 
-	public Integer getAge() {
-		return age;
+	public Integer getAgeto() {
+		return ageto;
 	}
 
-	public void setAge(Integer age) {
-		this.age = age;
+	public void setAgeto(Integer ageto) {
+		this.ageto = ageto;
 	}
 
-	public Integer getTerm() {
-		return term;
+	public Integer getAgefrom() {
+		return agefrom;
 	}
 
-	public void setTerm(Integer term) {
-		this.term = term;
+	public void setAgefrom(Integer agefrom) {
+		this.agefrom = agefrom;
 	}
 
 	public Double getRate() {

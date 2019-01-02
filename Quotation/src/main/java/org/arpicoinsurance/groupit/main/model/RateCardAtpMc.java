@@ -3,14 +3,11 @@ package org.arpicoinsurance.groupit.main.model;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "inratecardatpmc")
-public class RateCardAtpAtpb {
+public class RateCardAtpMc {
 
 	@Id
 	private String id;
-	private Integer age;
 	private Integer term;
 	private Double rate;
 	private Date strdat;
@@ -23,15 +20,7 @@ public class RateCardAtpAtpb {
 	}
 
 	public void setId(String id) {
-		this.id = id; 
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
+		this.id = id;
 	}
 
 	public Integer getTerm() {
