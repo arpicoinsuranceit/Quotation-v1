@@ -189,13 +189,13 @@ public class HealthValidation {
 			System.out.println((totalPrm / 12) > 3000);
 
 			if (((cover + hcb) == 100000 || (cover + hcb) == 200000 || (cover + hcb) == 300000) && (totalPrm / 12) < 3000) {
-				return "Minmum Total Premium of All Policies Must be 3000";
+				return "Premium must be 3000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 400000) && (totalPrm / 12) < 4000) {
-				return "Minmum Total Premium of All Policies Must be 4000";
+				return "Premium must be 4000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 500000) && (totalPrm / 12) < 5000) {
-				return "Minmum Total Premium of All Policies Must be 5000";
+				return "Premium must be 5000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 		}
 
@@ -214,13 +214,13 @@ public class HealthValidation {
 			}
 
 			if ((cover == 600000) && (totalPrm / 12) < 6000) {
-				return "Minmum Total Premium of All Policies Must be 6000";
+				return "Premium must be 6000 (Old Policies + Current Policy) to get SUHCB 600000";
 			}
 			if ((cover == 800000) && (totalPrm / 12) < 7500) {
-				return "Minmum Total Premium of All Policies Must be 7500";
+				return "Premium must be 6000 (Old Policies + Current Policy) to get SUHCB 800000";
 			}
 			if ((cover == 1000000) && (totalPrm / 12) < 10000) {
-				return "Minmum Total Premium of All Policies Must be 10000";
+				return "Premium must be 6000 (Old Policies + Current Policy) to get SUHCB 1000000";
 			}
 		}
 
@@ -387,19 +387,19 @@ public class HealthValidation {
 
 
 			if (((cover + hcb) == 100000) && (totalPrm / 12) < 3000) {
-				return "Minmum Total Premium of All Policies Must be 3,000";
+				return "Premium must be 3000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 200000) && (totalPrm / 12) < 5000) {
-				return "Minmum Total Premium of All Policies Must be 5,000";
+				return "Premium must be 5000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 300000) && (totalPrm / 12) < 7500) {
-				return "Minmum Total Premium of All Policies Must be 7,500";
+				return "Premium must be 7500 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 400000) && (totalPrm / 12) < 10000) {
-				return "Minmum Total Premium of All Policies Must be 10,000";
+				return "Premium must be 10000 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 			if (((cover + hcb) == 500000) && (totalPrm / 12) < 12500) {
-				return "Minmum Total Premium of All Policies Must be 12,500";
+				return "Premium must be 12500 (Old Policies + Current Policy) to get HCB " + (cover + hcb) + " (Old Policies + Current Policy)";
 			}
 		}
 
@@ -418,13 +418,13 @@ public class HealthValidation {
 			}
 
 			if ((cover == 600000) && (totalPrm / 12) < 15000) {
-				return "Minmum Total Premium of All Policies Must be 15,000";
+				return "Premium must be 15000 (Old Policies + Current Policy) to get SUHCB 600000";
 			}
 			if ((cover == 800000) && (totalPrm / 12) < 17500) {
-				return "Minmum Total Premium of All Policies Must be 17,500";
+				return "Premium must be 17500 (Old Policies + Current Policy) to get SUHCB 600000";
 			}
 			if ((cover == 1000000) && (totalPrm / 12) < 20000) {
-				return "Minmum Total Premium of All Policies Must be 20,000";
+				return "Premium must be 20000 (Old Policies + Current Policy) to get SUHCB 600000";
 			}
 		}
 

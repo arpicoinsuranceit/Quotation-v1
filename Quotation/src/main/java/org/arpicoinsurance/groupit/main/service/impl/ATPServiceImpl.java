@@ -1,6 +1,7 @@
 package org.arpicoinsurance.groupit.main.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import org.arpicoinsurance.groupit.main.dao.ProductDao;
 import org.arpicoinsurance.groupit.main.dao.Quo_Benef_DetailsDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDao;
 import org.arpicoinsurance.groupit.main.dao.QuotationDetailsDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardAtpMcDao;
+import org.arpicoinsurance.groupit.main.dao.RateCardAtpNdcDao;
 import org.arpicoinsurance.groupit.main.dao.UsersDao;
 import org.arpicoinsurance.groupit.main.helper.BenefictHistory;
 import org.arpicoinsurance.groupit.main.helper.InvpSaveQuotation;
@@ -32,6 +35,8 @@ import org.arpicoinsurance.groupit.main.model.Quo_Benef_Child_Details;
 import org.arpicoinsurance.groupit.main.model.Quo_Benef_Details;
 import org.arpicoinsurance.groupit.main.model.Quotation;
 import org.arpicoinsurance.groupit.main.model.QuotationDetails;
+import org.arpicoinsurance.groupit.main.model.RateCardAtpMc;
+import org.arpicoinsurance.groupit.main.model.RateCardAtpNdc;
 import org.arpicoinsurance.groupit.main.model.Users;
 import org.arpicoinsurance.groupit.main.service.ATPService;
 import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
@@ -45,90 +50,69 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ATPServiceImpl implements ATPService {
-	
+
 	@Autowired
 	private QuotationDetailsService quotationDetailsService;
-	
+
 	@Autowired
 	private QuotationDao quotationDao;
-	
+
 	@Autowired
 	private CustomerDetailsDao customerDetailsDao;
 
 	@Autowired
 	private QuotationSaveUtilService quotationSaveUtilService;
-	
+
 	@Autowired
 	private CalculateRiders calculateriders;
-	
+
 	@Autowired
 	private ProductDao productDao;
-	
+
 	@Autowired
 	private UsersDao userDao;
 
 	@Autowired
 	private OccupationDao occupationDao;
-	
+
 	@Autowired
 	private Quo_Benef_DetailsDao quoBenifDetailDao;
 
 	@Autowired
 	private CustomerDao customerDao;
-	
+
 	@Autowired
 	private QuotationDetailsDao quotationDetailDao;
-	
+
 	@Autowired
 	private HealthRequirmentsService healthRequirmentsService;
 
-	
+	@Autowired
+	private RateCardAtpMcDao rateCardAtpMcDao;
+
+	@Autowired
+	private RateCardAtpNdcDao rateCardAtpNdcDao;
+
 	@Override
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
 
-		BigDecimal maturity = null;
+		Double rate = rateCardAtpMcDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(),
+				new Date(), new Date(), new Date()).getRate();
 
-		switch (term) {
-		case 5:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.30));
-			break;
-		case 6:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.35));
-			break;
-		case 7:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.45));
-			break;
-		case 8:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.55));
-			break;
-		case 9:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.65));
-			break;
-		case 10:
-			maturity = new BigDecimal(bassum).multiply(new BigDecimal(1.75));
-			break;
+		BigDecimal maturity = new BigDecimal(bassum).multiply(new BigDecimal(rate)).setScale(0, RoundingMode.HALF_UP);
 
-		default:
-			break;
-		}
 		return maturity;
 	}
 
 	@Override
 	public BigDecimal calculateNaturalDeath(double maturity, int age, double bassum) throws Exception {
-		BigDecimal ndc = null;
+		Double rate = rateCardAtpNdcDao
+				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
+						age, age, age, age, new Date(), new Date(), new Date(), new Date())
+				.getRate();
 
-		if (18 <= age && age <= 35) {
-			ndc = (new BigDecimal(bassum).multiply(new BigDecimal(0.25))).add(new BigDecimal(maturity));
-		} else if (36 <= age && age <= 45) {
-			ndc = (new BigDecimal(bassum).multiply(new BigDecimal(0.20))).add(new BigDecimal(maturity));
-		} else if (46 <= age && age <= 55) {
-			ndc = (new BigDecimal(bassum).multiply(new BigDecimal(0.15))).add(new BigDecimal(maturity));
-		} else if (56 <= age && age <= 60) {
-			ndc = (new BigDecimal(bassum).multiply(new BigDecimal(0.10))).add(new BigDecimal(maturity));
-		} else if (61 <= age && age <= 65) {
-			ndc = (new BigDecimal(bassum).multiply(new BigDecimal(0.05))).add(new BigDecimal(maturity));
-		}
+		BigDecimal ndc = (new BigDecimal(bassum).multiply(new BigDecimal(rate))).add(new BigDecimal(maturity))
+				.setScale(0, RoundingMode.HALF_UP);
 
 		return ndc;
 	}
@@ -140,10 +124,10 @@ public class ATPServiceImpl implements ATPService {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
-			
+
 			calResp.setBasicSumAssured(calculation.get_personalInfo().getBsa());
 			/// Calculate Rebate Premium ///
-			
+
 			/// Calculate BSA Premium ///
 //			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
 //					quotationCalculation.get_personalInfo().getMage(),
@@ -161,11 +145,14 @@ public class ATPServiceImpl implements ATPService {
 //			calResp.setBasicSumAssured(bsaPremium.doubleValue());
 //			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp.setAtp(true);
-			
+
 			calResp = calculateriders.getRiders(calculation, calResp);
-			calResp.setAt6(calculateMaturity(calculation.get_personalInfo().getTerm(), calculation.get_personalInfo().getBsa()).doubleValue());
-			calResp.setAt8(calculateNaturalDeath(calResp.getAt6(),calculation.get_personalInfo().getMage(), calculation.get_personalInfo().getBsa()).doubleValue());
-			
+			calResp.setAt6(
+					calculateMaturity(calculation.get_personalInfo().getTerm(), calculation.get_personalInfo().getBsa())
+							.doubleValue());
+			calResp.setAt8(calculateNaturalDeath(calResp.getAt6(), calculation.get_personalInfo().getMage(),
+					calculation.get_personalInfo().getBsa()).doubleValue());
+
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(calculation));
 
 //			if (calculation.get_personalInfo().getSage() != null
@@ -198,14 +185,14 @@ public class ATPServiceImpl implements ATPService {
 			Integer id) throws Exception {
 		Quotation quo = null;
 		HashMap<String, Object> responseMap = new HashMap<>();
-		
+
 		System.out.println("/////////////////////////// called save");
 
 		if (productDao.findByProductCode("ATP").getActive() == 0) {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-		
+
 		System.out.println("/////////////////////////// Maintains");
 
 		QuotationQuickCalResponse calResp = getCalcutatedAtp(calculation);
@@ -214,7 +201,7 @@ public class ATPServiceImpl implements ATPService {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 		System.out.println("/////////////////////////// called calculation");
 
 //		String valPrm = validationPremium.validateEnd(calculation.get_personalInfo().getFrequance(),
@@ -259,11 +246,11 @@ public class ATPServiceImpl implements ATPService {
 //		
 //		System.out.println("/////////////////////////// called validateHealth");
 
-
 		Products products = productDao.findByProductCode("ATP");
 		Users user = userDao.findOne(id);
 		Occupation occupationMainlife = occupationDao.findByOcupationid(calculation.get_personalInfo().getMocu());
-		//Occupation occupationSpouse = occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
+		// Occupation occupationSpouse =
+		// occupationDao.findByOcupationid(calculation.get_personalInfo().getSocu());
 
 		CustomerDetails mainLifeDetail = quotationSaveUtilService.getCustomerDetail(occupationMainlife,
 				_invpSaveQuotation.get_personalInfo(), user);
@@ -407,8 +394,7 @@ public class ATPServiceImpl implements ATPService {
 //		l18.setRiderTerm(quotationDetails.getPolTerm());
 //
 //		benef_DetailsList.add(l18);
-		
-		
+
 		//
 		// for (Quo_Benef_Details quo_Benef_Details : benef_DetailsList) {
 
@@ -504,14 +490,14 @@ public class ATPServiceImpl implements ATPService {
 			responseMap.put("status", "This Function is Currently Unavailable Due to Maintenance");
 			return responseMap;
 		}
-	
+
 		QuotationQuickCalResponse calResp = getCalcutatedAtp(calculation);
-		
+
 		if (calResp.isErrorExist()) {
 			responseMap.put("status", "Error at calculation");
 			return responseMap;
 		}
-		
+
 //		System.out.println("check cal errors pass");
 //
 //		String valPrm = validationPremium.validateAtp(calculation.get_personalInfo().getFrequance(),
@@ -607,7 +593,7 @@ public class ATPServiceImpl implements ATPService {
 //		if (spouseDetail != null) {
 //			quotationDetails1.setSpouseDetails(spouseDetail);
 //		} else {
-			quotationDetails1.setSpouseDetails(null);
+		quotationDetails1.setSpouseDetails(null);
 //		}
 
 		quotationDetails1.setQuotation(quotation);

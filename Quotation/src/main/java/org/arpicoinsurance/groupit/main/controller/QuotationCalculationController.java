@@ -27,6 +27,15 @@ public class QuotationCalculationController {
 
 	@RequestMapping(value = "/ageCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAge(@RequestBody String dob) {
+		
+		long diffInYears = getAge(dob);
+		
+		return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
+		
+	}
+	
+	
+	private long getAge(String dob) {
 		try {
 			Date initDate = new SimpleDateFormat("dd-MM-yyyy").parse(dob);
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -39,12 +48,12 @@ public class QuotationCalculationController {
 				long diffInMonth = ChronoUnit.MONTHS.between(dateOfBirth, currentDate);
 				
 				if(diffInMonth<6) {
-					return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
+					return diffInYears;
 				}
 				////System.out.println(diffInMonth);
 			}
 			diffInYears = diffInYears + 1;
-			return new ResponseEntity<Object>(diffInYears , HttpStatus.OK);
+			return diffInYears;
 		} catch (Exception e) {
 			Logs logs = new Logs();
 			logs.setData("Error : " + e.getMessage() + ",\n dob : " + dob);
@@ -59,12 +68,11 @@ public class QuotationCalculationController {
 				//System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
-			return new ResponseEntity<Object>(e.getMessage() , HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new RuntimeException();
 		}
-		// return null;
 	}
-	
-	
+
+
 	@RequestMapping(value = "/ageCalNominee", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateAgeNominee(@RequestBody String dob) {
 		try {
@@ -191,17 +199,19 @@ public class QuotationCalculationController {
 			String birthday = (bday < 10 ? ("0" + bday) : bday) + "-" + (month < 10 ? ("0" + month) : month) + "-"
 					+ (year > 1000 ? year : "19" + year);
 
-			Calendar dob = Calendar.getInstance();
-			dob.set(year, Integer.parseInt(month < 10 ? ("0" + month) : month + ""),
-					Integer.parseInt(bday < 10 ? ("0" + bday) : bday + ""));
-			Calendar today = Calendar.getInstance();
-			int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-			if ((today.get(Calendar.MONTH) + 1) > dob.get(Calendar.MONTH)) {
-				age++;
-			} else if (((today.get(Calendar.MONTH) + 1) == (dob.get(Calendar.MONTH)))
-					&& today.get(Calendar.DAY_OF_MONTH) >= dob.get(Calendar.DAY_OF_MONTH)) {
-				age++;
-			}
+//			Calendar dob = Calendar.getInstance();
+//			dob.set(year, Integer.parseInt(month < 10 ? ("0" + month) : month + ""),
+//					Integer.parseInt(bday < 10 ? ("0" + bday) : bday + ""));
+//			Calendar today = Calendar.getInstance();
+//			int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+//			if ((today.get(Calendar.MONTH) + 1) > dob.get(Calendar.MONTH)) {
+//				age++;
+//			} else if (((today.get(Calendar.MONTH) + 1) == (dob.get(Calendar.MONTH)))
+//					&& today.get(Calendar.DAY_OF_MONTH) >= dob.get(Calendar.DAY_OF_MONTH)) {
+//				age++;
+//			}
+			
+			long age = getAge(birthday);
 
 			map.put("Age", age);
 			map.put("DOB", birthday);
