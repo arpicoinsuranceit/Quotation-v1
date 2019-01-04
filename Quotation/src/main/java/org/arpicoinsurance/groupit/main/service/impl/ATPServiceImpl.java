@@ -95,6 +95,9 @@ public class ATPServiceImpl implements ATPService {
 
 	@Override
 	public BigDecimal calculateMaturity(int term, double bassum) throws Exception {
+		
+		System.out.println(term);
+		System.out.println(bassum);
 
 		Double rate = rateCardAtpMcDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(),
 				new Date(), new Date(), new Date()).getRate();
