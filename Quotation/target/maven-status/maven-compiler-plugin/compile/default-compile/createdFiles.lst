@@ -8,6 +8,7 @@ org\arpicoinsurance\groupit\main\service\rider\impl\ATPBServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\MFIBDTService.class
 org\arpicoinsurance\groupit\main\dao\impl\QuotationCustomDaoImpl$1.class
 org\arpicoinsurance\groupit\main\dao\RateCardAtpAtpbDao.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpNdc.class
 org\arpicoinsurance\groupit\main\controller\QuotationATPCalculationController.class
 org\arpicoinsurance\groupit\main\helper\QuotationReceipt.class
 org\arpicoinsurance\groupit\main\service\rider\impl\JLBServiceImpl.class
@@ -38,6 +39,7 @@ org\arpicoinsurance\groupit\main\common\DateConverter.class
 org\arpicoinsurance\groupit\main\controller\QuotationDtapCalculationController.class
 org\arpicoinsurance\groupit\main\model\Occupation.class
 org\arpicoinsurance\groupit\main\helper\QuoBenf.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpMcDao.class
 org\arpicoinsurance\groupit\main\service\impl\NomineeServiceImpl.class
 org\arpicoinsurance\groupit\main\service\rider\impl\TPDBServiceimpl.class
 org\arpicoinsurance\groupit\main\service\impl\QuotationDetailsServiceImpl.class
@@ -61,6 +63,7 @@ org\arpicoinsurance\groupit\main\dao\Quo_Benef_Child_DetailsDao.class
 org\arpicoinsurance\groupit\main\controller\BenefictController.class
 org\arpicoinsurance\groupit\main\service\rider\HRBIService.class
 org\arpicoinsurance\groupit\main\service\rider\impl\TPDDTAPLServiceImpl.class
+org\arpicoinsurance\groupit\main\model\RateCardAtpMc.class
 org\arpicoinsurance\groupit\main\dao\impl\Medical_RequirementsDaoImpl.class
 org\arpicoinsurance\groupit\main\helper\QuoChildBenef.class
 org\arpicoinsurance\groupit\main\webclient\Impl\BenefictHistoryWebClientImpl.class
@@ -120,6 +123,7 @@ org\arpicoinsurance\groupit\main\dao\LogDao.class
 org\arpicoinsurance\groupit\main\service\OccupationLodingServce.class
 org\arpicoinsurance\groupit\main\service\NomineeService.class
 org\arpicoinsurance\groupit\main\dao\RateCardAIPDao.class
+org\arpicoinsurance\groupit\main\dao\RateCardAtpNdcDao.class
 org\arpicoinsurance\groupit\main\config\JwtSecurityConfig.class
 org\arpicoinsurance\groupit\main\webclient\Impl\CommisionRateWCImpl.class
 org\arpicoinsurance\groupit\main\webclient\ArtmLstYearRate.class
