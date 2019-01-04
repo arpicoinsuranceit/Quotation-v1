@@ -275,13 +275,13 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 	@Autowired
 	private RateCardAtpAdbPpdDao rateCardAtpAdbPpdDao;
-	
+
 	@Autowired
 	private RateCardAtpAtpbDao rateCardAtpAtpbDao;
-	
+
 	@Autowired
 	private RateCardAtpTpdDao rateCardAtpTpdDao;
-	
+
 	@Autowired
 	private RateCardAtpTpdAsbDao rateCardAtpTpdAsbDao;
 
@@ -649,8 +649,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 			if (calResp.isAtp()) {
 
 				RateCardAtpAdbPpd adbPpd = rateCardAtpAdbPpdDao
-						.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(),
-								new Date(), new Date(), new Date());
+						.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(), new Date(),
+								new Date(), new Date());
 
 				atpRate = adbPpd.getRate();
 			}
@@ -769,8 +769,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 			if (calResp.isAtp()) {
-				
-				RateCardAtpAtpb atpAtpb = rateCardAtpAtpbDao.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermATPB, age, new Date(), new Date(), new Date(), new Date());
+
+				RateCardAtpAtpb atpAtpb = rateCardAtpAtpbDao
+						.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermATPB, age,
+								new Date(), new Date(), new Date(), new Date());
 
 				atpRate = atpAtpb.getRate();
 			}
@@ -820,8 +822,10 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			if (calResp.isAtp()) {
 
-				RateCardAtpTpdAsb tpdAsb = rateCardAtpTpdAsbDao.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermTPDASB, age, new Date(), new Date(), new Date(), new Date());
-				
+				RateCardAtpTpdAsb tpdAsb = rateCardAtpTpdAsbDao
+						.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermTPDASB, age,
+								new Date(), new Date(), new Date(), new Date());
+
 				atpRate = tpdAsb.getRate();
 			}
 
@@ -910,19 +914,20 @@ public class CalculateRidersImpl implements CalculateRiders {
 			}
 
 			if (calResp.isAtp()) {
-				
+
 				System.out.println(term + ": term");
 
 				RateCardAtpTpd atpTpd = null;
 
 				try {
-					atpTpd = rateCardAtpTpdDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(), new Date(), new Date(), new Date());
-				}catch (Exception e) {
+					atpTpd = rateCardAtpTpdDao.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term,
+							new Date(), new Date(), new Date(), new Date());
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				System.out.println(atpTpd + ": atpTpd");
-				
+
 				atpRate = atpTpd.getRate();
 			}
 
@@ -1006,10 +1011,12 @@ public class CalculateRidersImpl implements CalculateRiders {
 
 			if (calResp.isAtp()) {
 				RateCardAtpAdbPpd adbPpd = rateCardAtpAdbPpdDao
-						.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(),
-								new Date(), new Date(), new Date());
+						.findByTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(term, new Date(), new Date(),
+								new Date(), new Date());
 
 				atpRate = adbPpd.getRate();
+				
+				atpRate = atpRate * 2;
 			}
 
 			// //System.out.println(relife + ": relife");
@@ -1230,9 +1237,18 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
+			if (calResp.isAtp()) {
+
+				RateCardAtpAtpb atpAtpb = rateCardAtpAtpbDao
+						.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermFEB, age,
+								new Date(), new Date(), new Date(), new Date());
+
+				atpRate = atpAtpb.getRate();
+			}
+
 			// //System.out.println(relife + ": relife");
 
-			BigDecimal feb = febService.calculateFEB(age, valiedTermFEB, new Date(), ridsumasu, payFrequency, relife);
+			BigDecimal feb = febService.calculateFEB(age, valiedTermFEB, new Date(), ridsumasu, payFrequency, relife, atpRate);
 
 			feb = occupationLodingServce.calculateOccupationLoading(true, feb.doubleValue(), ridsumasu, occupation,
 					benefit, calResp);

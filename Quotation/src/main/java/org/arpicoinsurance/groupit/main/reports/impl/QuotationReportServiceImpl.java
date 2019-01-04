@@ -13079,6 +13079,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setBottomMargin(10);
 
 		// Agent Details
+		
 		float[] pointColumnWidths1 = { 90, 150 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -14014,8 +14015,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		Double adbs = 0.0;
 		Double adbsp = 0.0;
 
-//		Double feb = 0.0;
-//		Double febp = 0.0;
+		Double feb = 0.0;
+		Double febp = 0.0;
 
 //		Double febs = 0.0;
 //		Double febsp = 0.0;
@@ -14039,6 +14040,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					// only Accidental Death Benefit
 					adb = quoAddBenf.getRiderSum();
 					adbp = adbp + quoAddBenf.getPremium();
+
+				}
+				
+				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
+					// only Accidental Death Benefit
+					feb = quoAddBenf.getRiderSum();
+					febp = febp + quoAddBenf.getPremium();
 
 				}
 //				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
@@ -14164,6 +14172,37 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		}
 		benAddTable.addCell(abCelld10);
+		
+		
+		//////
+		
+		benAddTable.startNewRow();
+
+		Cell abCelld11 = new Cell();
+		abCelld11.setBorderLeft(new SolidBorder(1));
+
+		abCelld11.add(new Paragraph("Funeral Expenses").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		benAddTable.addCell(abCelld11);
+
+		Cell abCelld12 = new Cell();
+		if (feb == 0.0) {
+			abCelld12.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+
+		} else {
+			abCelld12.add(new Paragraph(formatter.format(feb)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+
+		}
+		benAddTable.addCell(abCelld12);
+
+		Cell abCelld13 = new Cell();
+		if (febp == 0.0) {
+			abCelld13.add(new Paragraph("-").setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+
+		} else {
+			abCelld13.add(new Paragraph(formatter.format(febp)).setFontSize(9).setTextAlignment(TextAlignment.RIGHT));
+
+		}
+		benAddTable.addCell(abCelld13);
 
 //		Cell abCelld11 = new Cell();
 //		if (adbs == 0.0) {
@@ -14269,6 +14308,49 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		//////////////////////////// * Medical Requirements
 		//////////////////////////// Table*/////////////////////////
+		
+		document.add(new Paragraph(""));
+		
+		float[] pointColumnWidths3 = { 150, 250 };
+		Table gurantiedMaturitytbl = new Table(pointColumnWidths3);
+		gurantiedMaturitytbl.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+		Cell gmcell1 = new Cell();
+		gmcell1.setBorder(Border.NO_BORDER);
+		gmcell1.add(new Paragraph("Guaranteed Maturity Value").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell1);
+		
+		Cell gmcell2 = new Cell();
+		gmcell2.setBorder(Border.NO_BORDER);
+		gmcell2.add(new Paragraph(": " + formatter.format(maturityVal)).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell2);
+		
+		Cell gmcell3 = new Cell();
+		gmcell3.setBorder(Border.NO_BORDER);
+		gmcell3.add(new Paragraph("Death due to Natural Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell3);
+		
+		Cell gmcell4 = new Cell();
+		gmcell4.setBorder(Border.NO_BORDER);
+		gmcell4.add(new Paragraph(": " + formatter.format(maturityVal) + " + " + formatter.format(naturalDeathCover)  + " + " + formatter.format(ndc)+ " + " + formatter.format(feb) ).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell4);
+		
+		Cell gmcell5 = new Cell();
+		gmcell5.setBorder(Border.NO_BORDER);
+		gmcell5.add(new Paragraph("Death due to Accidental Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell5);
+		
+		Cell gmcell6 = new Cell();
+		gmcell6.setBorder(Border.NO_BORDER);
+		gmcell6.add(new Paragraph(": " + formatter.format(maturityVal) + " + " + formatter.format(naturalDeathCover)  + " + " + formatter.format(ndc)+ " + " + formatter.format(feb) + " + " + formatter.format(adb) ).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gurantiedMaturitytbl.addCell(gmcell6);
+
+		
+		document.add(gurantiedMaturitytbl);
+		
+
+		document.add(new Paragraph(""));
+		
 		java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
 				.findByQuoDetail(quotationDetails.getQdId());
 
@@ -14439,17 +14521,17 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		List list = new List(ListNumberingType.DECIMAL);
 		list.setFontSize(9);
 		
-		ListItem item = new ListItem();
-		item.add(
-				new Paragraph("Maturity Benefit : " + formatter.format(maturityVal))
-						.setFontSize(9).setFixedLeading(10));
-		list.add(item);
-		
-		ListItem item0 = new ListItem();
-		item0.add(
-				new Paragraph("Death Benefit : " + formatter.format(naturalDeathCover))
-						.setFontSize(9).setFixedLeading(10));
-		list.add(item0);
+//		ListItem item = new ListItem();
+//		item.add(
+//				new Paragraph("Maturity Benefit : " + formatter.format(maturityVal))
+//						.setFontSize(9).setFixedLeading(10));
+//		list.add(item);
+//		
+//		ListItem item0 = new ListItem();
+//		item0.add(
+//				new Paragraph("Death Benefit : " + formatter.format(naturalDeathCover))
+//						.setFontSize(9).setFixedLeading(10));
+//		list.add(item0);
 
 		ListItem item1 = new ListItem();
 		item1.add(
