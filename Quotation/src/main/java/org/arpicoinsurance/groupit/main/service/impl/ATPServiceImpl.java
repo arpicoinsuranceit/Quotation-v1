@@ -43,6 +43,7 @@ import org.arpicoinsurance.groupit.main.service.HealthRequirmentsService;
 import org.arpicoinsurance.groupit.main.service.QuotationDetailsService;
 import org.arpicoinsurance.groupit.main.service.custom.CalculateRiders;
 import org.arpicoinsurance.groupit.main.service.custom.QuotationSaveUtilService;
+import org.arpicoinsurance.groupit.main.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,6 +111,8 @@ public class ATPServiceImpl implements ATPService {
 				.findByAgetoOrAgetoLessThanAndAgefromOrAgefromGreaterThanAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(
 						age, age, age, age, new Date(), new Date(), new Date(), new Date())
 				.getRate();
+		
+		System.out.println("rate : " + rate );
 
 		BigDecimal ndc = (new BigDecimal(bassum).multiply(new BigDecimal(rate))).add(new BigDecimal(maturity))
 				.setScale(0, RoundingMode.HALF_UP);
@@ -119,40 +122,46 @@ public class ATPServiceImpl implements ATPService {
 
 	@Override
 	public QuotationQuickCalResponse getCalcutatedAtp(QuotationCalculation calculation) throws Exception {
+		
+		Double invAmt = calculation.get_personalInfo().getBsa();
 		CalculationUtils calculationUtils = null;
 		try {
 
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			calculationUtils = new CalculationUtils();
 
-			calResp.setBasicSumAssured(calculation.get_personalInfo().getBsa());
-			/// Calculate Rebate Premium ///
-
-			/// Calculate BSA Premium ///
-//			BigDecimal bsaMonthly = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
-//					quotationCalculation.get_personalInfo().getMage(),
-//					quotationCalculation.get_personalInfo().getTerm(), calculationUtils.getRebate("M"), new Date(),
-//					quotationCalculation.get_personalInfo().getBsa(), calculationUtils.getPayterm("M"), calResp, false);
-//
-//			BigDecimal bsaYearly = bsaMonthly.multiply(new BigDecimal(12)).setScale(2);
-//
-//			BigDecimal bsaPremium = calculateL2(quotationCalculation.get_personalInfo().getMocu(),
-//					quotationCalculation.get_personalInfo().getMage(),
-//					quotationCalculation.get_personalInfo().getTerm(), rebate, new Date(),
-//					quotationCalculation.get_personalInfo().getBsa(),
-//					calculationUtils.getPayterm(quotationCalculation.get_personalInfo().getFrequance()), calResp, true);
-
-//			calResp.setBasicSumAssured(bsaPremium.doubleValue());
-//			calResp.setBsaYearlyPremium(bsaYearly.doubleValue());
 			calResp.setAtp(true);
 
-			calResp = calculateriders.getRiders(calculation, calResp);
 			calResp.setAt6(
-					calculateMaturity(calculation.get_personalInfo().getTerm(), calculation.get_personalInfo().getBsa())
+					calculateMaturity(calculation.get_personalInfo().getTerm(), invAmt)
 							.doubleValue());
 			calResp.setAt8(calculateNaturalDeath(calResp.getAt6(), calculation.get_personalInfo().getMage(),
-					calculation.get_personalInfo().getBsa()).doubleValue());
+					invAmt).doubleValue());
+			
+			System.out.println("calResp.getAt8()  : "  + calResp.getAt8());
+			System.out.println("calResp.getAt6()  : "  + calResp.getAt6());
+			System.out.println("calculation.get_personalInfo().getBsa()  : "  + calculation.get_personalInfo().getBsa());
 
+			calResp.setBasicSumAssured((calResp.getAt8() - calculation.get_personalInfo().getBsa()));
+			
+			calculation.get_personalInfo().setBsa(calResp.getBasicSumAssured());
+			
+			
+			Validation validation = new Validation(calculation);
+			
+			System.out.println(calculation.get_personalInfo().getBsa() + " : calculation.get_personalInfo().getBsa()");
+			
+			String error = validation.validateBenifict();
+			calResp.setInvesmantAmountAtp(invAmt);
+			if(!error.equals("No")) {
+				calResp.setErrorExist(true);
+				calResp.setError(error);
+				
+				return calResp;
+			}
+			
+			calResp = calculateriders.getRiders(calculation, calResp);
+			
 			calResp.setMainLifeHealthReq(healthRequirmentsService.getSumAtRiskDetailsMainLife(calculation));
 
 //			if (calculation.get_personalInfo().getSage() != null
@@ -164,13 +173,14 @@ public class ATPServiceImpl implements ATPService {
 //			calResp.setGuaranteed(calculateMaturity(quotationCalculation.get_personalInfo().getTerm(),
 //					quotationCalculation.get_personalInfo().getBsa()).doubleValue());
 
-			Double tot = calResp.getBasicSumAssured() + calResp.getAddBenif();
+			Double tot = calResp.getInvesmantAmountAtp() + calResp.getAddBenif();
 			Double adminFee = calculationUtils.getAdminFee(calculation.get_personalInfo().getFrequance());
 			Double tax = calculationUtils.getTaxAmount(tot + adminFee);
 			Double extraOE = adminFee + tax;
 			calResp.setExtraOE(extraOE);
 			calResp.setTotPremium(tot + extraOE);
 
+			
 			return calResp;
 
 		} finally {
@@ -202,49 +212,7 @@ public class ATPServiceImpl implements ATPService {
 			return responseMap;
 		}
 
-		System.out.println("/////////////////////////// called calculation");
 
-//		String valPrm = validationPremium.validateEnd(calculation.get_personalInfo().getFrequance(),
-//				calResp.getTotPremium());
-//
-//		if (!valPrm.equalsIgnoreCase("ok")) {
-//			responseMap.put("status", valPrm);
-//			return responseMap;
-//		}
-//
-//		System.out.println("/////////////////////////// called validate Premium");
-//		
-//		System.out.println("_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() : " +  _invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
-//		
-//		if(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic() != null && !_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic().isEmpty()) {
-//			
-//			System.out.println("/////////////////////////// Not");
-//			
-//			List<BenefictHistory> benefictHistories = benefictHistoryWebClient.getHistory(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mNic());
-//			
-//			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(benefictHistories, calResp, _invpSaveQuotation);
-//			
-//			if (!resp.equalsIgnoreCase("ok")) {
-//				responseMap.put("status", resp);
-//				return responseMap;
-//			}
-//			
-//		} else {
-//			
-//			System.out.println("/////////////////////////// Empty");
-//			
-//			String resp = healthValidation.validateHealthEndArpAtrmAtrmAsfp(calResp, _invpSaveQuotation);
-//			
-//			System.out.println(resp);
-//			
-//			if (!resp.equalsIgnoreCase("ok")) {
-//				responseMap.put("status", resp);
-//				return responseMap;
-//			}
-//		}
-//		
-//		
-//		System.out.println("/////////////////////////// called validateHealth");
 
 		Products products = productDao.findByProductCode("ATP");
 		Users user = userDao.findOne(id);
@@ -292,6 +260,28 @@ public class ATPServiceImpl implements ATPService {
 
 		QuotationDetails quotationDetails = quotationSaveUtilService.getQuotationDetail(calResp, calculation, 0.0);
 
+		quotationDetails.setPremium(calResp.getInvesmantAmountAtp());
+		
+		switch (calculation.get_personalInfo().getFrequance()) {
+		case "M":
+			quotationDetails.setPremiumMonth(calResp.getInvesmantAmountAtp());
+			break;
+		case "Q":
+			quotationDetails.setPremiumQuater(calResp.getInvesmantAmountAtp());
+			break;
+		case "H":
+			quotationDetails.setPremiumHalf(calResp.getInvesmantAmountAtp());
+			break;
+		case "Y":
+			quotationDetails.setPremiumYear(calResp.getInvesmantAmountAtp());
+			break;
+		case "S":
+			quotationDetails.setPremiumSingle(calResp.getInvesmantAmountAtp());
+			break;
+		default:
+			break;
+		}
+		
 		quotationDetails.setCustomerDetails(mainLifeDetail);
 //		if (spouseDetail != null) {
 //			quotationDetails.setSpouseDetails(spouseDetail);
@@ -455,6 +445,9 @@ public class ATPServiceImpl implements ATPService {
 				// for (Quo_Benef_Details benef_Details2 : benef_DetailsList) {
 
 				// }
+				
+				benef_DetailsList.forEach(System.out::println);
+				
 				ArrayList<Quo_Benef_Details> bnfdList = (ArrayList<Quo_Benef_Details>) quoBenifDetailDao
 						.save(benef_DetailsList);
 
@@ -594,6 +587,8 @@ public class ATPServiceImpl implements ATPService {
 //			quotationDetails1.setSpouseDetails(spouseDetail);
 //		} else {
 		quotationDetails1.setSpouseDetails(null);
+		
+		quotationDetails1.setPremium(calculation.get_personalInfo().getBsa());
 //		}
 
 		quotationDetails1.setQuotation(quotation);
