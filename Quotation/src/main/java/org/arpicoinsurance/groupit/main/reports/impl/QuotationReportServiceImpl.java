@@ -32,6 +32,8 @@ import org.arpicoinsurance.groupit.main.reports.QuotationReportService;
 import org.arpicoinsurance.groupit.main.service.ARTMService;
 import org.arpicoinsurance.groupit.main.webclient.ArtmLstYearRate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -55,7 +57,12 @@ import com.itextpdf.layout.property.VerticalAlignment;
 
 @Service
 @Transactional
+@PropertySource("classpath:application.properties")
 public class QuotationReportServiceImpl implements QuotationReportService {
+	
+	@Value("${prtinttest}")
+	private String test;
+
 
 	public static final String FONT = "./src/main/resources/Reports/FONTDIR/Times_New_Romance.ttf";
 
@@ -270,7 +277,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph(""));
 
 		// sub header
-		document.add(new Paragraph("ARPICO INVESTMENT PLUS").setFontSize(9).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO INVESTMENT PLUS " + test).setFontSize(9).setCharacterSpacing(1));
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
 		document.add(new Paragraph(""));
@@ -712,7 +719,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setTopMargin(5);
 
 		// header
-		document.add(new Paragraph("Arpico Insurance PLC Quotation").setBold().setFontSize(14)
+		document.add(new Paragraph("Arpico Insurance PLC Quotation " + test ).setBold().setFontSize(14)
 				.setTextAlignment(TextAlignment.CENTER).setCharacterSpacing(1));
 
 		document.add(new Paragraph(" "));
@@ -1285,7 +1292,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		// checking arpico investment plan or super investment plan
 		if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("INVP")) {
-			document.add(new Paragraph("ARPICO INVESTMENT PLAN").setFontSize(9).setCharacterSpacing(1));
+			document.add(new Paragraph("ARPICO INVESTMENT PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 		}
 
 		final SolidLine lineDrawer = new SolidLine(1f);
@@ -2976,10 +2983,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(new Paragraph(""));
 
 		if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTA")) {
-			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE FOR HOUSING LOAN").setFontSize(10)
+			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE FOR HOUSING LOAN " + test ).setFontSize(10)
 					.setCharacterSpacing(1));
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL")) {
-			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE FOR PERSONAL LOAN").setFontSize(10)
+			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE FOR PERSONAL LOAN " + test).setFontSize(10)
 					.setCharacterSpacing(1));
 		}
 
@@ -3837,7 +3844,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO TERM PLAN").setFontSize(9).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO TERM PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
@@ -5309,7 +5316,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.add(agtTable);
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO ENDOWMENT PLAN").setFontSize(9).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO ENDOWMENT PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
@@ -6781,7 +6788,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO SCHOOL FEES PLAN").setFontSize(9).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO SCHOOL FEES PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 		document.add(new Paragraph("TOTAL PROTECTION OF CHILD SCHOOL FEE OR MONEY BACK GUARANTEE").setFontSize(9)
 				.setCharacterSpacing(1).setFixedLeading(1));
 
@@ -7186,27 +7193,26 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Double dnc = 0.0;
 		Double dac = 0.0;
-		
-		
-		String [] dncArr = {"L10","ATPB","SFPO","FEB"};
-		String [] dacArr = {"L10","ATPB","SFPO","FEB","ADB"};
-		
+
+		String[] dncArr = { "L10", "ATPB", "SFPO", "FEB" };
+		String[] dacArr = { "L10", "ATPB", "SFPO", "FEB", "ADB" };
+
 		java.util.List<String> dncBenfList = Arrays.asList(dncArr);
 		java.util.List<String> dacBenfList = Arrays.asList(dacArr);
-		
+
 		// Checking MainLife Having Benefits
 		if (benefitsLife.isEmpty()) {
 
 		} else {
 
 			for (QuoBenf quoBenf : benefitsLife) {
-				
-				if(dncBenfList.contains(quoBenf.getRiderCode())) {
-					dnc+= quoBenf.getRiderSum();
+
+				if (dncBenfList.contains(quoBenf.getRiderCode())) {
+					dnc += quoBenf.getRiderSum();
 				}
-				
-				if(dacBenfList.contains(quoBenf.getRiderCode())) {
-					dac+= quoBenf.getRiderSum();
+
+				if (dacBenfList.contains(quoBenf.getRiderCode())) {
+					dac += quoBenf.getRiderSum();
 				}
 
 				HashMap<String, Object> benefitDetailMap = new HashMap<>();
@@ -7827,11 +7833,14 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		BigDecimal sfpo = new BigDecimal(0.0);
 		BigDecimal rdrprm = new BigDecimal(0.0);
+		BigDecimal atpb = new BigDecimal(0.0);
 		for (QuoBenf quoBenf : benefitsLife) {
 			if (quoBenf.getRiderCode().equalsIgnoreCase("SFPO")) {
 				sfpo = new BigDecimal(quoBenf.getRiderSum());
 			} else if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
 				rdrprm = new BigDecimal(quoBenf.getPremium());
+			} else if (quoBenf.getRiderCode().equalsIgnoreCase("ATPB")) {
+				atpb = new BigDecimal(quoBenf.getPremium());
 			}
 		}
 
@@ -8005,25 +8014,44 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		/////////////////////// *End of FinanCial Requirements*///////////////////
 
 		// document.add(new Paragraph(""));
-		
-
 
 		document.add(new Paragraph("Special Notes").setFontSize(9).setBold().setUnderline().setCharacterSpacing(1));
 
 		// Creating a Special Notes List
 		List list = new List(ListNumberingType.DECIMAL);
 		list.setFontSize(9);
-		
+
 		ListItem item1 = new ListItem();
-		item1.add(
-				new Paragraph("Death due to natural case : " + formatter.format(dnc))
-						.setFontSize(9).setFixedLeading(9));
+//		item1.add(new Paragraph("Death due to natural case : " + formatter.format(dnc)).setFontSize(9)
+//				.setFixedLeading(9));
+
+		String ddnc = "Death due to Natural Case	: " + formatter.format(msfeb)
+				+ " (Monthly up to expiry of the policy)";
+
+		if ((feb + atpb.doubleValue()) > 0) {
+			ddnc += " + " + (feb + atpb.doubleValue());
+		}
+
+		if (sfpo.doubleValue() > 0) {
+			ddnc += " + " + sfpo + " (Expiry of the policy)";
+		}
+
+		item1.add(new Paragraph(ddnc).setFontSize(9).setFixedLeading(9));
 		list.add(item1);
-		
+
+		String ddac = "Death due to Accident Case	: " + formatter.format(msfeb)
+				+ " (Monthly up to expiry of the policy)";
+
+		if ((adb + atpb.doubleValue() + feb) > 0) {
+			ddac += " + " + (feb + adb + atpb.doubleValue());
+		}
+
+		if (sfpo.doubleValue() > 0) {
+			ddac += " + " + sfpo + " (Expiry of the policy)";
+		}
+
 		ListItem item2 = new ListItem();
-		item2.add(
-				new Paragraph("Death due to Accident case : " + formatter.format(dac))
-						.setFontSize(9).setFixedLeading(9));
+		item2.add(new Paragraph(ddac).setFontSize(9).setFixedLeading(9));
 		list.add(item2);
 
 		ListItem item3 = new ListItem();
@@ -8258,7 +8286,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO RELIEF PLAN").setFontSize(8).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO RELIEF PLAN " + test).setFontSize(8).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1);
 		document.add(new LineSeparator(lineDrawer));
@@ -9931,7 +9959,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO RETIREMENT PLAN").setFontSize(8).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO RETIREMENT PLAN " + test).setFontSize(8).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
@@ -10394,19 +10422,20 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Date prev = cal.getTime();
 
-		if (quotationDetails.getQuotationCreateDate() != null) {
-
-			String rateDate = rateDateFormat.format(prev);
-
-			Double rate = artmLstYearRate.getLstYearRate(rateDate);
-
-			document.add(new Paragraph("Guaranteed dividend rate declared last year " + rate + "%").setBold()
-					.setFontSize(8).setCharacterSpacing(1));
-
-		}else {
-			document.add(new Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold()
-					.setFontSize(8).setCharacterSpacing(1));
-		}
+		/*
+		 * if (quotationDetails.getQuotationCreateDate() != null) {
+		 * 
+		 * String rateDate = rateDateFormat.format(prev);
+		 * 
+		 * Double rate = artmLstYearRate.getLstYearRate(rateDate);
+		 * 
+		 * document.add(new Paragraph("Guaranteed dividend rate declared last year " +
+		 * rate + "%").setBold() .setFontSize(8).setCharacterSpacing(1));
+		 * 
+		 * }else { document.add(new
+		 * Paragraph("Guaranteed dividend rate declared last year 9.5%").setBold()
+		 * .setFontSize(8).setCharacterSpacing(1)); }
+		 */
 
 		document.add(new Paragraph(""));
 
@@ -11273,7 +11302,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 * 
 		 * } else if (quotationDetails.getPayMode().equalsIgnoreCase("H")) { contriution
 		 * = contriution + (quotationDetails.getPremium() * 2);
-		 * //System.out.println("half yearlyyyyyyyyyyyyyyyyyyyyyyyyyyyy " + contriution);
+		 * //System.out.println("half yearlyyyyyyyyyyyyyyyyyyyyyyyyyyyy " +
+		 * contriution);
 		 * 
 		 * }
 		 * 
@@ -11395,8 +11425,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		 * // getting Previous Year Calendar prevYear = Calendar.getInstance();
 		 * prevYear.add(Calendar.YEAR, -1);
 		 * 
-		 * // //System.out.println("yearrrrrrrrrrrrrrrrr " +prevYear.get(Calendar.YEAR));
-		 * document.add(new
+		 * // //System.out.println("yearrrrrrrrrrrrrrrrr "
+		 * +prevYear.get(Calendar.YEAR)); document.add(new
 		 * Paragraph("** Guranteed minimum dividend rate declared for Last Year "+
 		 * prevYear.get(Calendar.YEAR)).setFontSize(9));
 		 */
@@ -11631,7 +11661,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(new Paragraph(""));
 
-		document.add(new Paragraph("ARPICO SUPER INVESTMENT PLAN").setFontSize(9).setCharacterSpacing(1));
+		document.add(new Paragraph("ARPICO SUPER INVESTMENT PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
@@ -13010,13 +13040,13 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 	@Override
 	public byte[] createATPReport(QuotationDetails quotationDetails, QuotationView quotationView,
 			QuoCustomer quoCustomer) throws Exception {
-		
+
 		String mainLifeOcc = quotationDetails.getCustomerDetails().getOccupation().getOcupationName();
 		String mainLifeOccupation = "";
 
 		String spouseOcc = quoCustomer.getSpouseOccupation();
 		String spouseOccupation = "";
-		
+
 		Double maturityVal = 0.0;
 		Double naturalDeathCover = 0.0;
 
@@ -13079,7 +13109,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		document.setBottomMargin(10);
 
 		// Agent Details
-		
+
 		float[] pointColumnWidths1 = { 90, 150 };
 		Table agtTable = new Table(pointColumnWidths1);
 		agtTable.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -13194,8 +13224,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		document.add(agtTable);
 		document.add(new Paragraph(""));
-
-		document.add(new Paragraph("ARPICO TRUST PLAN").setFontSize(9).setCharacterSpacing(1));
+ 
+		document.add(new Paragraph("ARPICO TRUST PLAN " + test).setFontSize(9).setCharacterSpacing(1));
 
 		final SolidLine lineDrawer = new SolidLine(1f);
 		document.add(new LineSeparator(lineDrawer));
@@ -13483,15 +13513,10 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Display Basic Sum Assured
 		Cell cuCellP9 = new Cell();
 
-		
-			
-						cuCellP9.add(new Paragraph(formatter.format(quotationDetails.getPremium())).setFontSize(9)
-								.setTextAlignment(TextAlignment.CENTER).setFixedLeading(10));
+		cuCellP9.add(new Paragraph(formatter.format(quotationDetails.getPremium())).setFontSize(9)
+				.setTextAlignment(TextAlignment.CENTER).setFixedLeading(10));
 
-						cusTable.addCell(cuCellP9);
-
-
-		
+		cusTable.addCell(cuCellP9);
 
 		//////////////////// * End of Plan Details*/
 
@@ -13594,16 +13619,16 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 				 * Do not Print Basic Sum Assured,ATPB,ADB and FEB Its Printed on Additional
 				 * Benefits Table
 				 */
-				if(quoBenf.getRiderCode().equalsIgnoreCase("L17")) {
+				if (quoBenf.getRiderCode().equalsIgnoreCase("L17")) {
 					maturityVal = quoBenf.getRiderSum();
 				}
-				
-				if(quoBenf.getRiderCode().equalsIgnoreCase("L18")) {
+
+				if (quoBenf.getRiderCode().equalsIgnoreCase("L18")) {
 					naturalDeathCover = quoBenf.getRiderSum();
 				}
-				
-				
-				if (!quoBenf.getRiderCode().equalsIgnoreCase("L17") && !quoBenf.getRiderCode().equalsIgnoreCase("L18") && (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
+
+				if (!quoBenf.getRiderCode().equalsIgnoreCase("L17") && !quoBenf.getRiderCode().equalsIgnoreCase("L18")
+						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ATPB"))
 						&& (!quoBenf.getRiderCode().equalsIgnoreCase("ADB"))
 						&& (!quoBenf.getRiderCode().equalsIgnoreCase("FEB"))) {
 
@@ -14042,7 +14067,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 					adbp = adbp + quoAddBenf.getPremium();
 
 				}
-				
+
 				if (quoAddBenf.getRiderCode().equalsIgnoreCase("FEB")) {
 					// only Accidental Death Benefit
 					feb = quoAddBenf.getRiderSum();
@@ -14092,7 +14117,8 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		/* Printing All Additional Benefits Data */
 		Cell abCelld1 = new Cell();
 		abCelld1.setBorderLeft(new SolidBorder(1));
-		abCelld1.add(new Paragraph("Additional Term Protection Benefit").setFontSize(9).setTextAlignment(TextAlignment.LEFT));
+		abCelld1.add(new Paragraph("Additional Term Protection Benefit").setFontSize(9)
+				.setTextAlignment(TextAlignment.LEFT));
 		benAddTable.addCell(abCelld1);
 
 		Cell abCelld2 = new Cell();
@@ -14172,10 +14198,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		}
 		benAddTable.addCell(abCelld10);
-		
-		
+
 		//////
-		
+
 		benAddTable.startNewRow();
 
 		Cell abCelld11 = new Cell();
@@ -14308,49 +14333,53 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		//////////////////////////// * Medical Requirements
 		//////////////////////////// Table*/////////////////////////
-		
+
 		document.add(new Paragraph(""));
-		
-		float[] pointColumnWidths3 = { 150, 250 };
+
+		float[] pointColumnWidths3 = { 130, 100 };
 		Table gurantiedMaturitytbl = new Table(pointColumnWidths3);
 		gurantiedMaturitytbl.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
 		Cell gmcell1 = new Cell();
 		gmcell1.setBorder(Border.NO_BORDER);
-		gmcell1.add(new Paragraph("Guaranteed Maturity Value").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell1.add(new Paragraph("Guaranteed Maturity Value").setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+				.setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell1);
-		
+
 		Cell gmcell2 = new Cell();
 		gmcell2.setBorder(Border.NO_BORDER);
-		gmcell2.add(new Paragraph(": " + formatter.format(maturityVal)).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell2.add(new Paragraph(": " + formatter.format(maturityVal)).setFontSize(9)
+				.setTextAlignment(TextAlignment.RIGHT).setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell2);
-		
+
 		Cell gmcell3 = new Cell();
 		gmcell3.setBorder(Border.NO_BORDER);
-		gmcell3.add(new Paragraph("Death due to Natural Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell3.add(new Paragraph("Death due to Natural Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+				.setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell3);
-		
+
 		Cell gmcell4 = new Cell();
 		gmcell4.setBorder(Border.NO_BORDER);
-		gmcell4.add(new Paragraph(": " + formatter.format(maturityVal) + " + " + formatter.format(naturalDeathCover)  + " + " + formatter.format(ndc)+ " + " + formatter.format(feb) ).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell4.add(new Paragraph(": " + formatter.format(maturityVal + naturalDeathCover + ndc + feb)).setFontSize(9)
+				.setTextAlignment(TextAlignment.RIGHT).setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell4);
-		
+
 		Cell gmcell5 = new Cell();
 		gmcell5.setBorder(Border.NO_BORDER);
-		gmcell5.add(new Paragraph("Death due to Accidental Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell5.add(new Paragraph("Death due to Accidental Case ").setFontSize(9).setTextAlignment(TextAlignment.LEFT)
+				.setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell5);
-		
+
 		Cell gmcell6 = new Cell();
 		gmcell6.setBorder(Border.NO_BORDER);
-		gmcell6.add(new Paragraph(": " + formatter.format(maturityVal) + " + " + formatter.format(naturalDeathCover)  + " + " + formatter.format(ndc)+ " + " + formatter.format(feb) + " + " + formatter.format(adb) ).setFontSize(9).setTextAlignment(TextAlignment.LEFT).setFixedLeading(10));
+		gmcell6.add(new Paragraph(": " + formatter.format(maturityVal + naturalDeathCover + ndc + feb + adb))
+				.setFontSize(9).setTextAlignment(TextAlignment.RIGHT).setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell6);
 
-		
 		document.add(gurantiedMaturitytbl);
-		
 
 		document.add(new Paragraph(""));
-		
+
 		java.util.List<MedicalRequirementsHelper> medicalDetails = medicalRequirementsDaoCustom
 				.findByQuoDetail(quotationDetails.getQdId());
 
@@ -14520,7 +14549,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		// Creating a Special Notes List
 		List list = new List(ListNumberingType.DECIMAL);
 		list.setFontSize(9);
-		
+
 //		ListItem item = new ListItem();
 //		item.add(
 //				new Paragraph("Maturity Benefit : " + formatter.format(maturityVal))

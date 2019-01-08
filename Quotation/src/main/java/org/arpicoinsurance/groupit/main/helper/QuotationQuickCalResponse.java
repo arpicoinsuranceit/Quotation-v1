@@ -239,6 +239,8 @@ public class QuotationQuickCalResponse {
 
 	private List<PensionShedule> pensionShedules = null;
 
+	private Double invesmantAmountAtp;
+
 	public Double getBasicSumAssured() {
 		return basicSumAssured;
 	}
@@ -1567,6 +1569,14 @@ public class QuotationQuickCalResponse {
 		this.isAtp = isAtp;
 	}
 
+	public Double getInvesmantAmountAtp() {
+		return invesmantAmountAtp;
+	}
+
+	public void setInvesmantAmountAtp(Double invesmantAmountAtp) {
+		this.invesmantAmountAtp = invesmantAmountAtp;
+	}
+
 	@Override
 	public String toString() {
 		return "QuotationQuickCalResponse [basicSumAssured=" + basicSumAssured + ", extraOE=" + extraOE + ", addBenif="
@@ -1613,7 +1623,7 @@ public class QuotationQuickCalResponse {
 				+ ", spouseHealthReq=" + spouseHealthReq + ", pensionPremium1=" + pensionPremium1 + ", pensionPremium2="
 				+ pensionPremium2 + ", pensionPremium3=" + pensionPremium3 + ", isArp=" + isArp + ", isArtm=" + isArtm
 				+ ", isAtp=" + isAtp + ", payTerm=" + payTerm + ", surrenderValHelpers=" + surrenderValHelpers
-				+ ", pensionShedules=" + pensionShedules + "]";
+				+ ", pensionShedules=" + pensionShedules + ", invesmantAmountAtp=" + invesmantAmountAtp + "]";
 	}
 
 }
