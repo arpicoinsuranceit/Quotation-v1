@@ -27,39 +27,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*")
 public class QuotationATPCalculationController {
-	
+
 	@Autowired
 	private CalculationUtils calculationUtils;
 
 	@Autowired
 	private LogService logService;
-	
+
 	@Autowired
 	private ATPService atpService;
-	
+
 	@Autowired
 	private UsersService usersService;
 
-	
 	@RequestMapping(value = "/quoAtpCal", method = RequestMethod.POST)
 	public ResponseEntity<Object> calculateQuotation(@RequestBody QuotationCalculation calculation) {
 		try {
 			QuotationQuickCalResponse calResp = new QuotationQuickCalResponse();
 			Validation validation = new Validation(calculation);
 			if (validation.validateAtpProd() == 1) {
-				String error = validation.validateBenifict();
-				if (error.equals("No")) {
-					calResp = atpService.getCalcutatedAtp(calculation);
-					if (calResp.isErrorExist()) {
-						QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
-						calRespPost.setError(calResp.getError());
-						calRespPost.setErrorExist(true);
-						return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
-					}
-				} else {
-					calResp.setErrorExist(true);
-					calResp.setError(error);
+//				String error = validation.validateBenifict();
+//				if (error.equals("No")) {
+				calculation.set_product("ATP");
+				calResp = atpService.getCalcutatedAtp(calculation);
+				if (calResp.isErrorExist()) {
+					QuotationQuickCalResponse calRespPost = new QuotationQuickCalResponse();
+					calRespPost.setError(calResp.getError());
+					calRespPost.setErrorExist(true);
+					return new ResponseEntity<Object>(calRespPost, HttpStatus.OK);
 				}
+//				} else {
+//					calResp.setErrorExist(true);
+//					calResp.setError(error);
+//				}
 			} else {
 				calResp.setErrorExist(true);
 				calResp.setError(
@@ -76,17 +76,18 @@ public class QuotationATPCalculationController {
 
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				//System.out.println("... Error Message for Operation ...");
+				// System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				//System.out.println("... Error Message for save log ...");
+				// System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoAtpsave/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Object> saveAtp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id) throws Exception {
+	public ResponseEntity<Object> saveAtp(@RequestBody InvpSaveQuotation _invpSaveQuotation, @PathVariable Integer id)
+			throws Exception {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 
@@ -113,9 +114,9 @@ public class QuotationATPCalculationController {
 						String error = validation.validateBenifict();
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
-							
+
 							System.out.println("/////////////////////////// Validation" + error);
-							
+
 							if (error.equalsIgnoreCase("ok")) {
 								responseMap = atpService.saveQuotation(calculation, _invpSaveQuotation, id);
 
@@ -148,9 +149,9 @@ public class QuotationATPCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				//System.out.println("... Error Message for Operation ...");
+				// System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				//System.out.println("... Error Message for save log ...");
+				// System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -163,14 +164,14 @@ public class QuotationATPCalculationController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value = "/quoAtpEdit/{userId}/{qdId}", method = RequestMethod.POST)
 	public ResponseEntity<Object> editEnd(@RequestBody InvpSaveQuotation _invpSaveQuotation,
 			@PathVariable("userId") Integer userId, @PathVariable("qdId") Integer qdId) throws Exception {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("status", "fail");
 		QuotationCalculation calculation = null;
-		
+
 		String phone = calculationUtils.getPhoneNo(_invpSaveQuotation.get_personalInfo().get_mainlife().get_mMobile());
 
 		if (!phone.equals("Error")) {
@@ -225,9 +226,9 @@ public class QuotationATPCalculationController {
 			try {
 				logService.saveLog(logs);
 			} catch (Exception e1) {
-				//System.out.println("... Error Message for Operation ...");
+				// System.out.println("... Error Message for Operation ...");
 				e.printStackTrace();
-				//System.out.println("... Error Message for save log ...");
+				// System.out.println("... Error Message for save log ...");
 				e1.printStackTrace();
 			}
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -313,8 +314,5 @@ public class QuotationATPCalculationController {
 			}
 		}
 	}
-
-	
-		
 
 }
