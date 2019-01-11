@@ -111,7 +111,7 @@ public class QuotationATPCalculationController {
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateAtpProd() == 1) {
-						String error = validation.validateBenifict();
+						String error = "No";
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
 
@@ -191,7 +191,7 @@ public class QuotationATPCalculationController {
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateAtpProd() == 1) {
-						String error = validation.validateBenifict();
+						String error = "No";
 
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
@@ -264,7 +264,7 @@ public class QuotationATPCalculationController {
 					calculation.set_product(_invpSaveQuotation.get_product());
 					validation = new Validation(calculation);
 					if (validation.validateAtpProd() == 1) {
-						String error = validation.validateBenifict();
+						String error = "No";
 
 						if (error.equals("No")) {
 							error = validation.saveEditValidations(_invpSaveQuotation.get_personalInfo());
