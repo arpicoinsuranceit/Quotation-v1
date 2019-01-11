@@ -25,6 +25,9 @@ public class TPDASBServiceImpl implements TPDASBService{
 //		//System.out.println("age :" +age + "term : " + term );
 		BigDecimal premiumTPDASB = new BigDecimal(0);
 		RateCardTPDASB rateCardTPDASB = cardTPDASBDao.findByAgeAndTermAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(age, term, chedat, chedat, chedat, chedat);
+		
+		System.out.println("common Rate : " + rateCardTPDASB.getRate());
+		
 //		//System.out.println("TPDASB ridsumasu : "+ridsumasu+" payFrequency : "+payFrequency+" relief : "+relief+" Rate : "+rateCardTPDASB.getRate());
 		try {
 			if(payFrequency.equalsIgnoreCase("S")){
@@ -37,6 +40,8 @@ public class TPDASBServiceImpl implements TPDASBService{
 		} catch (Exception e) {
 			throw new NullPointerException("TPDASB Rate not found at Age : " + age + " and Term : " + term);
 		}
+		
+		System.out.println("premiumTPDASB : " + premiumTPDASB);
 		
 		// ATP Rate
 		premiumTPDASB = premiumTPDASB.multiply(new BigDecimal(atpRate)).setScale(0, RoundingMode.HALF_UP);;

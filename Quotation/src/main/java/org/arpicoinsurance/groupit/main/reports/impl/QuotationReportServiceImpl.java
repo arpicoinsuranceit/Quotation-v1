@@ -14360,7 +14360,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Cell gmcell4 = new Cell();
 		gmcell4.setBorder(Border.NO_BORDER);
-		gmcell4.add(new Paragraph(": " + formatter.format(maturityVal + naturalDeathCover + ndc + feb)).setFontSize(9)
+		gmcell4.add(new Paragraph(": " + formatter.format(maturityVal + (naturalDeathCover - maturityVal) + ndc + feb)).setFontSize(9)
 				.setTextAlignment(TextAlignment.RIGHT).setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell4);
 
@@ -14372,7 +14372,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 
 		Cell gmcell6 = new Cell();
 		gmcell6.setBorder(Border.NO_BORDER);
-		gmcell6.add(new Paragraph(": " + formatter.format(maturityVal + naturalDeathCover + ndc + feb + adb))
+		gmcell6.add(new Paragraph(": " + formatter.format(maturityVal + (naturalDeathCover - maturityVal) + ndc + feb + adb))
 				.setFontSize(9).setTextAlignment(TextAlignment.RIGHT).setFixedLeading(10));
 		gurantiedMaturitytbl.addCell(gmcell6);
 
@@ -14573,7 +14573,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		list.add(item2);
 
 		ListItem item3 = new ListItem();
-		item3.add(new Paragraph("Initial policy processing fee of Rs. 450 (Payable only with initial deposit).")
+		item3.add(new Paragraph("Initial policy processing fee of Rs. 300 (Payable only with initial deposit).")
 				.setFontSize(9).setFixedLeading(10));
 		list.add(item3);
 
