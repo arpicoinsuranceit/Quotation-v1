@@ -820,13 +820,25 @@ public class CalculateRidersImpl implements CalculateRiders {
 				relife = rateCardARP.getRate();
 			}
 
+			System.out.println("atpRatetpdAsb");
+			
 			if (calResp.isAtp()) {
 
+				System.out.println("atpRatetpdAsb");
+				
+				System.out.println(valiedTermTPDASB);
+				System.out.println(age);
+				
 				RateCardAtpTpdAsb tpdAsb = rateCardAtpTpdAsbDao
 						.findByTermAndAgeAndStrdatLessThanOrStrdatAndEnddatGreaterThanOrEnddat(valiedTermTPDASB, age,
 								new Date(), new Date(), new Date(), new Date());
 
+				
+				
+				
 				atpRate = tpdAsb.getRate();
+				
+				System.out.println("atpRatetpdAsb : " + atpRate);
 			}
 
 			BigDecimal tpdasb = tpdasbService.calculateTPDASB(age, valiedTermTPDASB, new Date(), ridsumasu,
@@ -929,6 +941,8 @@ public class CalculateRidersImpl implements CalculateRiders {
 				System.out.println(atpTpd + ": atpTpd");
 
 				atpRate = atpTpd.getRate();
+				
+				atpRate = atpRate * 2;
 			}
 
 			System.out.println(atpRate + ": atpRate");
@@ -1015,8 +1029,6 @@ public class CalculateRidersImpl implements CalculateRiders {
 								new Date(), new Date());
 
 				atpRate = adbPpd.getRate();
-				
-				atpRate = atpRate * 2;
 			}
 
 			// //System.out.println(relife + ": relife");
