@@ -588,12 +588,32 @@ public class ATPServiceImpl implements ATPService {
 //		} else {
 		quotationDetails1.setSpouseDetails(null);
 		
-		quotationDetails1.setPremium(calculation.get_personalInfo().getBsa());
+		quotationDetails1.setPremium(calResp.getInvesmantAmountAtp());
 //		}
 
 		quotationDetails1.setQuotation(quotation);
 		quotationDetails1.setQuotationCreateBy(user.getUserCode());
 		quotationDetails1.setQuotationCreateDate(new Date());
+		
+		switch (calculation.get_personalInfo().getFrequance()) {
+		case "M":
+			quotationDetails1.setPremiumMonth(calResp.getInvesmantAmountAtp());
+			break;
+		case "Q":
+			quotationDetails1.setPremiumQuater(calResp.getInvesmantAmountAtp());
+			break;
+		case "H":
+			quotationDetails1.setPremiumHalf(calResp.getInvesmantAmountAtp());
+			break;
+		case "Y":
+			quotationDetails1.setPremiumYear(calResp.getInvesmantAmountAtp());
+			break;
+		case "S":
+			quotationDetails1.setPremiumSingle(calResp.getInvesmantAmountAtp());
+			break;
+		default:
+			break;
+		}
 
 //		ArrayList<MedicalDetails> medicalDetailList = new ArrayList<>();
 //
