@@ -11,6 +11,14 @@ public class AppConstant {
 	public final static String URL_GET_CODE_TRANSFERS = "http://10.10.10.12:8089/code_transfer/getCodeTransfersToApprove";
 	public final static String URL_GET_CODE_TRANSFER_APPROVE = "http://10.10.10.12:8089/code_transfer/approveCodeTran";
 	public final static String URL_GET_CODE_TRANSFER_REJECT = "http://10.10.10.12:8089/code_transfer/rejectCodeTran";
+	public final static String URL_GET_AGENTS = "http://localhost:8088/getAgentByBranch";
+	public final static String URL_GET_AGENT_DETAILS = "http://localhost:8088/getAgentsDetails";
+	public final static String URL_GET_PENDING_PRP = "http://localhost:8088/code_transfer/getPendingCodeTransfersPrp";
+	public final static String URL_GET_PENDING_POL = "http://localhost:8088/code_transfer/getPendingCodeTransfersPol";
+	public final static String URL_GET_CANCELED_PRP = "http://localhost:8088/code_transfer/getCanceledCodeTransfersPrp";
+	public final static String URL_GET_CANCELED_POL = "http://localhost:8088/code_transfer/getCanceledCodeTransfersPol";
+	public final static String URL_GET_CODE_PENDING_PRP = "http://localhost:8088/code_transfer/getCodePendingProposalDetails";
+	public final static String URL_GET_CODE_SAVE_PRP = "http://localhost:8088/code_transfer/saveCodeTranPrp";
 
 
 }

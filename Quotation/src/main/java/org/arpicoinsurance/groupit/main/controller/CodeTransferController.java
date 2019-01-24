@@ -2,8 +2,11 @@ package org.arpicoinsurance.groupit.main.controller;
 
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.helper.Agent;
+import org.arpicoinsurance.groupit.main.helper.CodeTransfer;
 import org.arpicoinsurance.groupit.main.helper.CodeTransferHelper;
 import org.arpicoinsurance.groupit.main.helper.CodeTransferReqHelper;
+import org.arpicoinsurance.groupit.main.helper.SaveCodeTransfer;
 import org.arpicoinsurance.groupit.main.webclient.ReceiptClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,50 @@ public class CodeTransferController {
 	public ResponseEntity<Object> approveCodeTran(@RequestBody CodeTransferReqHelper reqHelper)throws Exception{
 		
 		return receiptClient.approveCodeTransfer(reqHelper.getUser(),reqHelper.getTransId(),reqHelper.getRemark());
+	}
+	
+	@RequestMapping(value = "/code_transfer/getAgentByBranch", method = RequestMethod.POST)
+	public List<Agent> getAgentDtos (@RequestParam Integer agentCode, @RequestParam String token, @RequestParam String branchCode) throws Exception{
+		
+		return receiptClient.getAgents(agentCode, token, branchCode);
+	}
+	
+	@RequestMapping(value = "/code_transfer/getAgentsDetails", method = RequestMethod.POST)
+	public Agent getAgentDetails(@RequestBody String agentCode) throws Exception{
+		
+		return receiptClient.getAgentDetails(agentCode);
+	}
+	
+	@RequestMapping(value="/code_transfer/getPendingCodeTransfersPrp/{token:.+}", method = RequestMethod.GET)
+	public List<CodeTransfer> getPendingCodeTransfersPrp(@PathVariable String token)throws Exception{
+		return receiptClient.getPendingCodeTransferPrp(token);
+	}
+	
+	@RequestMapping(value="/code_transfer/getPendingCodeTransfersPol/{token:.+}", method = RequestMethod.GET)
+	public List<CodeTransfer> getPendingCodeTransfersPol(@PathVariable String token)throws Exception{
+		return receiptClient.getPendingCodeTransfersPol(token);
+	}
+	
+	@RequestMapping(value="/code_transfer/getCanceledCodeTransfersPrp/{token:.+}", method = RequestMethod.GET)
+	public List<CodeTransfer> getCanceledCodeTransfersPrp(@PathVariable String token)throws Exception{
+		return receiptClient.getCanceledCodeTransfersPrp(token);
+	}
+	
+	@RequestMapping(value="/code_transfer/getCanceledCodeTransfersPol/{token:.+}", method = RequestMethod.GET)
+	public List<CodeTransfer> getCanceledCodeTransfersPol(@PathVariable String token)throws Exception{
+		return receiptClient.getCanceledCodeTransfersPol(token);
+	}
+	
+	@RequestMapping(value="/code_transfer/getCodePendingProposalDetails/{token:.+}", method = RequestMethod.GET)
+	public ResponseEntity<Object> getCodePendingProposalDetails(@PathVariable("token")String token)throws Exception{
+		return receiptClient.getCodePendingProposalDetails(token);
+	}
+	
+	@RequestMapping(value="/code_transfer/saveCodeTranPrp", method = RequestMethod.POST)
+	public ResponseEntity<Object> saveCodeTranPrp(@RequestBody SaveCodeTransfer saveCodeTransferDto)throws Exception{
+		
+		//System.out.println(saveCodeTransferDto.toString());
+		return receiptClient.saveCodeTransferPrp(saveCodeTransferDto);
 	}
 	
 }
