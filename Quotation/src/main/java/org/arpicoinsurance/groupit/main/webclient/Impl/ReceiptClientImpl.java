@@ -136,7 +136,7 @@ public class ReceiptClientImpl implements ReceiptClient{
 
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			Agent result = restTemplate.postForObject(AppConstant.URL_GET_AGENT_DETAILS, map, Agent.class);
+			Agent result = restTemplate.postForObject(AppConstant.URL_GET_AGENT_DETAILS, agentCode, Agent.class);
 
 			return result;
 		} catch (Exception e) {
