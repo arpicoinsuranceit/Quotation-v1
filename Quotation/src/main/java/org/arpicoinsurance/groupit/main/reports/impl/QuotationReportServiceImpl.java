@@ -2988,6 +2988,9 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL")) {
 			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE FOR PERSONAL LOAN " + test).setFontSize(10)
 					.setCharacterSpacing(1));
+		} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAP")) {
+			document.add(new Paragraph("ARPICO DECRASING TERM ASSURANCE PLAN " + test).setFontSize(10)
+					.setCharacterSpacing(1));
 		}
 
 		final SolidLine lineDrawer = new SolidLine(1f);
