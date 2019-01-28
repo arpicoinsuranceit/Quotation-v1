@@ -3,8 +3,12 @@ package org.arpicoinsurance.groupit.main.webclient.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.arpicoinsurance.groupit.main.helper.Agent;
+import org.arpicoinsurance.groupit.main.helper.CodeTransfer;
 import org.arpicoinsurance.groupit.main.helper.CodeTransferHelper;
+import org.arpicoinsurance.groupit.main.helper.CodeTransferHelperDto;
 import org.arpicoinsurance.groupit.main.helper.ResponseHelper;
+import org.arpicoinsurance.groupit.main.helper.SaveCodeTransfer;
 import org.arpicoinsurance.groupit.main.util.AppConstant;
 import org.arpicoinsurance.groupit.main.webclient.ReceiptClient;
 import org.springframework.http.HttpStatus;
@@ -98,6 +102,174 @@ public class ReceiptClientImpl implements ReceiptClient{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public List<Agent> getAgents(Integer agentCode, String token, String branchCode) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("agentCode", Integer.toString(agentCode));
+		map.add("token", token);
+		map.add("branchCode", branchCode);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			Agent[] result = restTemplate.postForObject(AppConstant.URL_GET_AGENTS, map, Agent[].class);
+
+			List<Agent> codes = new ArrayList<>();
+			for (Agent code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Agent getAgentDetails(String agentCode) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("agentCode", agentCode);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			Agent result = restTemplate.postForObject(AppConstant.URL_GET_AGENT_DETAILS, agentCode, Agent.class);
+
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<CodeTransfer> getPendingCodeTransferPrp(String token) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("token", token);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			CodeTransfer[] result = restTemplate.postForObject(AppConstant.URL_GET_PENDING_PRP, map, CodeTransfer[].class);
+
+			List<CodeTransfer> codes = new ArrayList<>();
+			for (CodeTransfer code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<CodeTransfer> getPendingCodeTransfersPol(String token) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("token", token);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			CodeTransfer[] result = restTemplate.postForObject(AppConstant.URL_GET_PENDING_POL, map, CodeTransfer[].class);
+
+			List<CodeTransfer> codes = new ArrayList<>();
+			for (CodeTransfer code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<CodeTransfer> getCanceledCodeTransfersPrp(String token) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("token", token);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			CodeTransfer[] result = restTemplate.postForObject(AppConstant.URL_GET_CANCELED_PRP, map, CodeTransfer[].class);
+
+			List<CodeTransfer> codes = new ArrayList<>();
+			for (CodeTransfer code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<CodeTransfer> getCanceledCodeTransfersPol(String token) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("token", token);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			CodeTransfer[] result = restTemplate.postForObject(AppConstant.URL_GET_CANCELED_POL, map, CodeTransfer[].class);
+
+			List<CodeTransfer> codes = new ArrayList<>();
+			for (CodeTransfer code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Object> getCodePendingProposalDetails(String token) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("token", token);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			CodeTransferHelperDto[] result = restTemplate.postForObject(AppConstant.URL_GET_CODE_PENDING_PRP, map, CodeTransferHelperDto[].class);
+
+			List<CodeTransferHelperDto> codes = new ArrayList<>();
+			for (CodeTransferHelperDto code : result) {
+				codes.add(code);
+			}
+
+			return new ResponseEntity<>(codes,HttpStatus.OK);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Object> saveCodeTransferPrp(SaveCodeTransfer saveCodeTransferDto) throws Exception {
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseHelper result = restTemplate.postForObject(AppConstant.URL_GET_CODE_SAVE_PRP, saveCodeTransferDto, ResponseHelper.class);
+
+			return new ResponseEntity<>(result,HttpStatus.OK);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
