@@ -52,7 +52,8 @@ public class ItextReportsimpl implements ItextReports {
 				return quotationReportService.createASIPReport(quotationDetails, quotationView, quoCustomer);
 
 			}else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTA")
-					|| (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL"))) {
+					|| quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAPL") 
+					|| quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("DTAP")) {
 				return quotationReportService.createDTAReport(quotationDetails, quotationView, quoCustomer);
 
 			} else if (quotationDetails.getQuotation().getProducts().getProductCode().equalsIgnoreCase("ATRM")) {
