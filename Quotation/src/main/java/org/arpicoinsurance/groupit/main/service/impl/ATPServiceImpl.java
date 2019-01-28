@@ -141,9 +141,9 @@ public class ATPServiceImpl implements ATPService {
 			calResp.setAt8(calculateNaturalDeath(calResp.getAt6(), calculation.get_personalInfo().getMage(),
 					invAmt).doubleValue());
 			
-			System.out.println("calResp.getAt8()  : "  + calResp.getAt8());
-			System.out.println("calResp.getAt6()  : "  + calResp.getAt6());
-			System.out.println("calculation.get_personalInfo().getBsa()  : "  + calculation.get_personalInfo().getBsa());
+			System.out.println("calResp.getAt8() : "  + calResp.getAt8());
+			System.out.println("calResp.getAt6() : "  + calResp.getAt6());
+			System.out.println("calculation.get_personalInfo().getBsa() : "  + calculation.get_personalInfo().getBsa());
 
 			calResp.setBasicSumAssured((calResp.getAt8() - calculation.get_personalInfo().getBsa()));
 			
