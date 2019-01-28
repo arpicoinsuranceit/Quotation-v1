@@ -7843,7 +7843,7 @@ public class QuotationReportServiceImpl implements QuotationReportService {
 			} else if (quoBenf.getRiderCode().equalsIgnoreCase("L10")) {
 				rdrprm = new BigDecimal(quoBenf.getPremium());
 			} else if (quoBenf.getRiderCode().equalsIgnoreCase("ATPB")) {
-				atpb = new BigDecimal(quoBenf.getPremium());
+				atpb = new BigDecimal(quoBenf.getRiderSum());
 			}
 		}
 
