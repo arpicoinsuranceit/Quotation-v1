@@ -46,9 +46,11 @@ public class ReceiptClientImpl implements ReceiptClient{
 	}
 
 	@Override
-	public List<CodeTransferHelper> getCodeTransferToApprove(String userCode) throws Exception {
+	public List<CodeTransferHelper> getCodeTransferToApprove(String userCode,String dashPara,String userType) throws Exception {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("userCode", userCode);
+		map.add("dashPara", dashPara);
+		map.add("userType", userType);
 
 		try {
 			RestTemplate restTemplate = new RestTemplate();
