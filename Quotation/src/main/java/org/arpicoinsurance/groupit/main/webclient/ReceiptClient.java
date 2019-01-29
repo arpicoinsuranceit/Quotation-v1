@@ -12,7 +12,7 @@ public interface ReceiptClient {
 
 	List<String> getBranches(String userCode) throws Exception;
 	
-	List<CodeTransferHelper> getCodeTransferToApprove(String userCode) throws Exception;
+	List<CodeTransferHelper> getCodeTransferToApprove(String userCode,String dashPara,String userType) throws Exception;
 	
 	ResponseEntity<Object> approveCodeTransfer(String user,String codeTransferId,String remark) throws Exception;
 	

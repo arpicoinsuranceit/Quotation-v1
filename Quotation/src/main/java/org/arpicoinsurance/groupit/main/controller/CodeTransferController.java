@@ -25,9 +25,9 @@ public class CodeTransferController {
 	@Autowired
 	private ReceiptClient receiptClient;
 	
-	@RequestMapping(value="/code_transfer/getCodeTransfersToApprove/{userCode:.+}", method = RequestMethod.GET)
-	public List<CodeTransferHelper> getCodeTransfersToApprove(@PathVariable String userCode)throws Exception{
-		return receiptClient.getCodeTransferToApprove(userCode);
+	@RequestMapping(value="/code_transfer/getCodeTransfersToApprove", method = RequestMethod.POST)
+	public List<CodeTransferHelper> getCodeTransfersToApprove(@RequestParam("userCode") String userCode,@RequestParam("dashPara") String dashPara,@RequestParam("userType") String userType)throws Exception{
+		return receiptClient.getCodeTransferToApprove(userCode,dashPara,userType);
 	}
     
 	@RequestMapping(value="/code_transfer/rejectCodeTransfer", method = RequestMethod.POST)
