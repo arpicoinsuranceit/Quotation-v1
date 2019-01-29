@@ -278,7 +278,7 @@ public class QuotationAsfpCalculationController {
 						if (error.equals("No")) {
 
 							responseMap = asfpService.editQuotation(calculation, _invpSaveQuotation, user.getUserId(),
-									qdId, 1);
+									qdId, 2);
 
 						} else {
 							responseMap.replace("status", error);
