@@ -19,6 +19,7 @@ public class AppConstant {
 	public final static String URL_GET_CANCELED_POL = "http://10.10.10.12:8089/code_transfer/getCanceledCodeTransfersPol";
 	public final static String URL_GET_CODE_PENDING_PRP = "http://10.10.10.12:8089/code_transfer/getCodePendingProposalDetails";
 	public final static String URL_GET_CODE_SAVE_PRP = "http://10.10.10.12:8089/code_transfer/saveCodeTranPrp";
+	public final static String URL_GET_AGENTS_BY_REGION = "http://10.10.10.12:8089/getAgentByRegion";
 
 
 }

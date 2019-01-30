@@ -20,6 +20,8 @@ public interface ReceiptClient {
 	
 	List<Agent> getAgents (Integer agentCode, String token, String branchCode) throws Exception;
 	
+	List<Agent> getAgentsByRegion (Integer agentCode, String token, String branchCode) throws Exception;
+	
 	Agent getAgentDetails(String agentCode) throws Exception;
 
 	List<CodeTransfer> getPendingCodeTransferPrp(String token)throws Exception;
@@ -30,7 +32,7 @@ public interface ReceiptClient {
 
 	List<CodeTransfer> getCanceledCodeTransfersPol(String token)throws Exception;
 
-	ResponseEntity<Object> getCodePendingProposalDetails(String token)throws Exception;
+	ResponseEntity<Object> getCodePendingProposalDetails(String token,String dashPara,String userType)throws Exception;
 
 	ResponseEntity<Object> saveCodeTransferPrp(SaveCodeTransfer saveCodeTransferDto)throws Exception;
 	
