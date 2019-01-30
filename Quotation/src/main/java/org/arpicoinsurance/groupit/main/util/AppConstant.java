@@ -8,10 +8,11 @@ public class AppConstant {
 	public final static String URL_COMMISION_RATE = "http://10.10.10.12:8085/commisionRate";
 	public final static String URL_BENEFICT_HISTORY = "http://10.10.10.12:8085/getbeneficthistory";
 	public final static String URL_GET_BRANCH = "http://10.10.10.12:8089/getBranches";
-	public final static String URL_GET_CODE_TRANSFERS = "http://10.10.10.12:8089/code_transfer/getCodeTransfersToApprove";
+	public final static String URL_GET_CODE_TRANSFERS = "http://localhost:8088/code_transfer/getCodeTransfersToApprove";
 	public final static String URL_GET_CODE_TRANSFER_APPROVE = "http://10.10.10.12:8089/code_transfer/approveCodeTran";
 	public final static String URL_GET_CODE_TRANSFER_REJECT = "http://10.10.10.12:8089/code_transfer/rejectCodeTran";
 	public final static String URL_GET_AGENTS = "http://localhost:8088/getAgentByBranch";
+	public final static String URL_GET_AGENTS_BY_REGION = "http://localhost:8088/getAgentByRegion";
 	public final static String URL_GET_AGENT_DETAILS = "http://localhost:8088/getAgentsDetails";
 	public final static String URL_GET_PENDING_PRP = "http://localhost:8088/code_transfer/getPendingCodeTransfersPrp";
 	public final static String URL_GET_PENDING_POL = "http://localhost:8088/code_transfer/getPendingCodeTransfersPol";

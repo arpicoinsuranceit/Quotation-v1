@@ -130,6 +130,30 @@ public class ReceiptClientImpl implements ReceiptClient{
 		
 		return null;
 	}
+	
+	@Override
+	public List<Agent> getAgentsByRegion(Integer agentCode, String token, String branchCode) throws Exception {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("agentCode", Integer.toString(agentCode));
+		map.add("token", token);
+		map.add("branchCode", branchCode);
+
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			Agent[] result = restTemplate.postForObject(AppConstant.URL_GET_AGENTS_BY_REGION, map, Agent[].class);
+
+			List<Agent> codes = new ArrayList<>();
+			for (Agent code : result) {
+				codes.add(code);
+			}
+
+			return codes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 	@Override
 	public Agent getAgentDetails(String agentCode) throws Exception {
@@ -237,9 +261,11 @@ public class ReceiptClientImpl implements ReceiptClient{
 	}
 
 	@Override
-	public ResponseEntity<Object> getCodePendingProposalDetails(String token) throws Exception {
+	public ResponseEntity<Object> getCodePendingProposalDetails(String token,String dashPara,String userType) throws Exception {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("token", token);
+		map.add("dashPara", dashPara);
+		map.add("userType", userType);
 
 		try {
 			RestTemplate restTemplate = new RestTemplate();

@@ -48,14 +48,20 @@ public class CodeTransferController {
 		return receiptClient.getAgents(agentCode, token, branchCode);
 	}
 	
+	@RequestMapping(value = "/code_transfer/getAgentByRegion", method = RequestMethod.POST)
+	public List<Agent> getAgentDtosByREgion (@RequestParam Integer agentCode, @RequestParam String token, @RequestParam String branchCode) throws Exception{
+		
+		return receiptClient.getAgentsByRegion(agentCode, token, branchCode);
+	}
+	
 	@RequestMapping(value = "/code_transfer/getAgentsDetails", method = RequestMethod.POST)
 	public Agent getAgentDetails(@RequestBody String agentCode) throws Exception{
 		
 		return receiptClient.getAgentDetails(agentCode);
 	}
 	
-	@RequestMapping(value="/code_transfer/getPendingCodeTransfersPrp/{token:.+}", method = RequestMethod.GET)
-	public List<CodeTransfer> getPendingCodeTransfersPrp(@PathVariable String token)throws Exception{
+	@RequestMapping(value="/code_transfer/getPendingCodeTransfersPrp", method = RequestMethod.POST)
+	public List<CodeTransfer> getPendingCodeTransfersPrp(@RequestParam("token")String token)throws Exception{
 		return receiptClient.getPendingCodeTransferPrp(token);
 	}
 	
@@ -64,8 +70,8 @@ public class CodeTransferController {
 		return receiptClient.getPendingCodeTransfersPol(token);
 	}
 	
-	@RequestMapping(value="/code_transfer/getCanceledCodeTransfersPrp/{token:.+}", method = RequestMethod.GET)
-	public List<CodeTransfer> getCanceledCodeTransfersPrp(@PathVariable String token)throws Exception{
+	@RequestMapping(value="/code_transfer/getCanceledCodeTransfersPrp", method = RequestMethod.POST)
+	public List<CodeTransfer> getCanceledCodeTransfersPrp(@RequestParam("token")String token)throws Exception{
 		return receiptClient.getCanceledCodeTransfersPrp(token);
 	}
 	
@@ -74,9 +80,9 @@ public class CodeTransferController {
 		return receiptClient.getCanceledCodeTransfersPol(token);
 	}
 	
-	@RequestMapping(value="/code_transfer/getCodePendingProposalDetails/{token:.+}", method = RequestMethod.GET)
-	public ResponseEntity<Object> getCodePendingProposalDetails(@PathVariable("token")String token)throws Exception{
-		return receiptClient.getCodePendingProposalDetails(token);
+	@RequestMapping(value="/code_transfer/getCodePendingProposalDetails", method = RequestMethod.POST)
+	public ResponseEntity<Object> getCodePendingProposalDetails(@RequestParam("token")String token,@RequestParam("dashPara") String dashPara,@RequestParam("userType") String userType)throws Exception{
+		return receiptClient.getCodePendingProposalDetails(token,dashPara,userType);
 	}
 	
 	@RequestMapping(value="/code_transfer/saveCodeTranPrp", method = RequestMethod.POST)
