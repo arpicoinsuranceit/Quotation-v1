@@ -25,7 +25,7 @@ public class BranchUnderwriteServiceImpl implements BranchUnderwriteService{
 	public List<QuotationSearch> getQuotationToUnderwrite(String token) throws Exception {
 		String userCode=new JwtDecoder().generate(token);
 		Users user=usersService.getUserByUserCode(userCode);
-		System.out.println(user.getBranch().getBranchId() + " user.getBranch().getBranchId() /////////////");
+		//System.out.println(user.getBranch().getBranchId() + " user.getBranch().getBranchId() /////////////");
 		return quotationCustomDao.getQuotationToUnderwrite("PROP", user.getBranch().getBranchId());
 	}
 	
